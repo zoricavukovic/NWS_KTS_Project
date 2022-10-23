@@ -1,0 +1,11 @@
+version: "6.0"
+services:
+  mongodb_container:
+    image: mongo:latest
+    volumes:
+      - mongodb_data_container:/data/db
+    ports:
+      - 27017:27017
+
+volumes:
+  mongodb_data_container:
