@@ -1,5 +1,6 @@
 package com.example.serbUber.exception;
 
 public enum EntityType {
-    USER
+    USER,
+    VEHICLE_TYPE_INFO
 }

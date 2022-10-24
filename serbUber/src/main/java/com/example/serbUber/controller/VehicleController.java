@@ -2,6 +2,7 @@ package com.example.serbUber.controller;
 
 
 import com.example.serbUber.dto.VehicleDTO;
+import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.request.VehicleRequest;
 import com.example.serbUber.service.VehicleService;
 import org.springframework.http.HttpStatus;
@@ -14,21 +15,10 @@ import java.util.List;
 @RequestMapping("/vehicles")
 public class VehicleController {
 
-    private VehicleService vehicleService;
+    private final VehicleService vehicleService;
 
-    public VehicleController(VehicleService vehicleServie) {
+    public VehicleController(final VehicleService vehicleServie) {
         this.vehicleService = vehicleServie;
-    }
-
-    @PostMapping()
-    @ResponseStatus(HttpStatus.CREATED)
-    public void create(@Valid @RequestBody VehicleRequest vehicleRequest) {
-
-        this.vehicleService.create(
-          vehicleRequest.isPetFriendly(),
-          vehicleRequest.isBabySeat(),
-          vehicleRequest.getVehicleType()
-        );
     }
 
     @GetMapping()
@@ -38,8 +28,19 @@ public class VehicleController {
         return this.vehicleService.getAll();
     }
 
+    @PostMapping()
+    @ResponseStatus(HttpStatus.CREATED)
+    public VehicleDTO create(@Valid @RequestBody VehicleRequest vehicleRequest) throws EntityNotFoundException {
+
+        return this.vehicleService.create(
+          vehicleRequest.isPetFriendly(),
+          vehicleRequest.isBabySeat(),
+          vehicleRequest.getVehicleType()
+        );
+    }
+
     @DeleteMapping(value = "/{id}")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable String id) {
 
         this.vehicleService.delete(id);

@@ -1,10 +1,7 @@
 package com.example.serbUber.controller;
 
 import com.example.serbUber.dto.NotificationDTO;
-import com.example.serbUber.dto.VehicleDTO;
-import com.example.serbUber.model.Notification;
 import com.example.serbUber.request.NotificationRequest;
-import com.example.serbUber.request.VehicleRequest;
 import com.example.serbUber.service.NotificationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -16,10 +13,17 @@ import java.util.List;
 @RequestMapping("/notifications")
 public class NotificationController {
 
-    private NotificationService notificationService;
+    private final NotificationService notificationService;
 
     public NotificationController(final NotificationService notificationService) {
         this.notificationService = notificationService;
+    }
+
+    @GetMapping()
+    @ResponseStatus(HttpStatus.OK)
+    public List<NotificationDTO> getAll() {
+
+        return this.notificationService.getAll();
     }
 
     @PostMapping()
@@ -32,13 +36,6 @@ public class NotificationController {
             notificationRequest.getReceiver(),
             notificationRequest.isReport()
         );
-    }
-
-    @GetMapping()
-    @ResponseStatus(HttpStatus.OK)
-    public List<NotificationDTO> getAll() {
-
-        return this.notificationService.getAll();
     }
 
     @DeleteMapping(value = "/{id}")

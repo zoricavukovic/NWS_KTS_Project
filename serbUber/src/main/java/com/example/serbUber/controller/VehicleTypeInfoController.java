@@ -1,7 +1,6 @@
 package com.example.serbUber.controller;
 
 import com.example.serbUber.dto.VehicleTypeInfoDTO;
-import com.example.serbUber.model.VehicleType;
 import com.example.serbUber.request.VehicleTypeInfoRequest;
 import com.example.serbUber.service.VehicleTypeInfoService;
 import org.springframework.http.HttpStatus;
@@ -14,9 +13,9 @@ import java.util.List;
 @RequestMapping("/vehicle-type-infos")
 public class VehicleTypeInfoController {
 
-    private VehicleTypeInfoService vehicleTypeInfoService;
+    private final VehicleTypeInfoService vehicleTypeInfoService;
 
-    public VehicleTypeInfoController(VehicleTypeInfoService vehicleTypeInfoService) {
+    public VehicleTypeInfoController(final VehicleTypeInfoService vehicleTypeInfoService) {
         this.vehicleTypeInfoService = vehicleTypeInfoService;
     }
 

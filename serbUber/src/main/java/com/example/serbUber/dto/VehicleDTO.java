@@ -20,6 +20,16 @@ public class VehicleDTO {
         this.rate = vehicle.getRate();
     }
 
+    public Vehicle toVehicle(VehicleDTO vehicleDTO) {
+
+        return new Vehicle(
+                vehicleDTO.isPetFriendly(),
+                vehicleDTO.isBabySeat(),
+                vehicleDTO.getVehicleTypeInfo(),
+                vehicleDTO.getRate()
+        );
+    }
+
     public static List<VehicleDTO> fromVehicles(List<Vehicle> vehicles) {
         List<VehicleDTO> vehicleDTOs = new LinkedList<>();
         vehicles.forEach(v ->

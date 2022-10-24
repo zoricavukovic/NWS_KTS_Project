@@ -1,6 +1,8 @@
 package com.example.serbUber.service;
 
 import com.example.serbUber.dto.VehicleTypeInfoDTO;
+import com.example.serbUber.exception.EntityNotFoundException;
+import com.example.serbUber.exception.EntityType;
 import com.example.serbUber.model.VehicleType;
 import com.example.serbUber.model.VehicleTypeInfo;
 import com.example.serbUber.repository.VehicleTypeInfoRepository;
@@ -39,9 +41,10 @@ public class VehicleTypeInfoService {
         ));
     }
 
-    public VehicleTypeInfo findBy(VehicleType vehicleType) {
-        Optional<VehicleTypeInfo> vti = vehicleTypeInfoRepository.findByVehicleType(vehicleType);
+    public VehicleTypeInfoDTO findBy(VehicleType vehicleType) throws EntityNotFoundException {
+        Optional<VehicleTypeInfo> vehicleTypeInfoOpt = vehicleTypeInfoRepository.findByVehicleType(vehicleType);
 
-        return vti.get();
+        return vehicleTypeInfoOpt.map(VehicleTypeInfoDTO::new).orElseThrow(() ->
+                new EntityNotFoundException(vehicleType.toString(), EntityType.VEHICLE_TYPE_INFO));
     }
 }

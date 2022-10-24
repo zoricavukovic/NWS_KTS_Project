@@ -1,25 +1,27 @@
 package com.example.serbUber.request;
 
-import javax.validation.constraints.Email;
+import com.example.serbUber.util.Constants;
+import org.hibernate.validator.constraints.Range;
+
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 public class ReviewRequest {
 
-    @NotNull
-    @Min(value = 1, message = "Rate must be at least 1 star or greater!")
+    @NotNull(message = "Rate must exist")
+    @Range(min = Constants.minRate, max = Constants.maxRate, message = "Rate must be value between 1 and 5!")
     private double vehicleRate;
 
     @NotNull
-    @Min(value = 1, message = "Rate must be at least 1 star or greater!")
+    @Range(min = Constants.minRate, max = Constants.maxRate, message = "Rate must be value between 1 and 5!")
     private double driverRate;
 
-    @NotNull(message = "Message cannot ve null!")
+    @NotNull(message = "Message must exist!")
     @Size(min = 20, max = 100, message = "Message must have between 20-100 characters!")
     private String message;
 
-    @NotNull
+    @NotNull(message = "Driving must be selected!")
     private String driving;
 
     public ReviewRequest(

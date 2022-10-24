@@ -1,16 +1,17 @@
 package com.example.serbUber.service;
 
 import com.example.serbUber.dto.VehicleDTO;
-import com.example.serbUber.helper.Constants;
+import com.example.serbUber.exception.EntityNotFoundException;
+import com.example.serbUber.util.Constants;
 import com.example.serbUber.model.Vehicle;
 import com.example.serbUber.model.VehicleType;
 import com.example.serbUber.repository.VehicleRepository;
-import com.example.serbUber.repository.VehicleTypeInfoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 import static com.example.serbUber.dto.VehicleDTO.fromVehicles;
+import static com.example.serbUber.dto.VehicleTypeInfoDTO.toVehicleTypeInfo;
 
 @Service
 public class VehicleService {
@@ -26,17 +27,19 @@ public class VehicleService {
         this.vehicleTypeInfoService = vehicleTypeInfoService;
     }
 
-    public void create(
+    public VehicleDTO create(
             final boolean petFriendly,
             final boolean babySeat,
-            final VehicleType vehicleType) {
-
-        vehicleRepository.save(new Vehicle(
+            final VehicleType vehicleType
+    ) throws EntityNotFoundException {
+        Vehicle vehicle = vehicleRepository.save(new Vehicle(
                 petFriendly,
                 babySeat,
-                vehicleTypeInfoService.findBy(vehicleType),
+                toVehicleTypeInfo(vehicleTypeInfoService.findBy(vehicleType)),
                 Constants.startingRate
         ));
+
+        return new VehicleDTO(vehicle);
     }
 
     public List<VehicleDTO> getAll() {

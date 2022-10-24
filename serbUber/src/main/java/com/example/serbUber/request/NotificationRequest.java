@@ -1,6 +1,7 @@
 package com.example.serbUber.request;
 
 import com.example.serbUber.model.User;
+import com.example.serbUber.util.Constants;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
@@ -8,16 +9,16 @@ import javax.validation.constraints.Size;
 
 public class NotificationRequest {
 
-    @NotNull(message = "Message cannot ve null!")
-    @Size(min = 20, max = 100, message = "Message must have between 20-100 characters!")
+    @NotNull(message = "Message must exist!")
+    @Size(min = Constants.minLengthOfMessage, max = Constants.maxLengthOfMessage, message = "Message must have between 20-100 characters!")
     private String message;
 
-    @NotNull(message = "Message cannot ve null!")
-    @Email
+    @NotNull(message = "Message must exist!")
+    @Email(message = "Email is in wrong format")
     private String sender;
 
-    @NotNull(message = "Message cannot ve null!")
-    @Email
+    @NotNull(message = "Message must exist!")
+    @Email(message = "Email is in wrong format!")
     private String receiver;
 
     @NotNull(message = "Report option must be selected!")

@@ -4,18 +4,19 @@ import com.example.serbUber.model.VehicleType;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 public class VehicleTypeInfoRequest {
 
     @NotNull(message = "Vehicle must exist!")
     private VehicleType vehicleType;
 
-    @NotNull
+    @NotNull(message = "Start price must exist!")
     @Min(value = 1, message = "Start price must be greater than 1!")
     private double startPrice;
 
-    @NotNull
-    @Min(value = 1, message = "Number of seats must be greater than 1!")
+    @NotNull(message = "Number of seats must exist!")
+    @Positive(message = "Number of seats must be greater than 0!")
     private int numOfSeats;
 
     public VehicleTypeInfoRequest(

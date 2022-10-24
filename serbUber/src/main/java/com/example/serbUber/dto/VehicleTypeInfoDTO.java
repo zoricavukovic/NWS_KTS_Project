@@ -8,14 +8,25 @@ import java.util.List;
 
 public class VehicleTypeInfoDTO {
 
+    private String id;
     private VehicleType vehicleType;
     private double startPrice;
     private int numOfSeats;
 
     public VehicleTypeInfoDTO(final VehicleTypeInfo vti) {
+        this.id = vti.getId();
         this.vehicleType = vti.getVehicleType();
         this.startPrice = vti.getStartPrice();
         this.numOfSeats = vti.getNumOfSeats();
+    }
+
+    public static VehicleTypeInfo toVehicleTypeInfo(VehicleTypeInfoDTO vehicleTypeInfoDTO) {
+
+        return new VehicleTypeInfo(
+            vehicleTypeInfoDTO.getVehicleType(),
+            vehicleTypeInfoDTO.getStartPrice(),
+            vehicleTypeInfoDTO.getNumOfSeats()
+        );
     }
 
     public static List<VehicleTypeInfoDTO> fromVehicleTypeInfos(List<VehicleTypeInfo> vtis) {
@@ -25,6 +36,10 @@ public class VehicleTypeInfoDTO {
         );
 
         return vtiDTOs;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public VehicleType getVehicleType() {

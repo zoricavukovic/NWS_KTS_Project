@@ -14,10 +14,17 @@ import java.util.List;
 @RequestMapping("/reviews")
 public class ReviewController {
 
-    private ReviewService reviewService;
+    private final ReviewService reviewService;
 
-    public ReviewController(ReviewService reviewService) {
+    public ReviewController(final ReviewService reviewService) {
         this.reviewService = reviewService;
+    }
+
+    @GetMapping()
+    @ResponseStatus(HttpStatus.OK)
+    public List<ReviewDTO> getAll() {
+
+        return this.reviewService.getAll();
     }
 
     @PostMapping()
@@ -30,13 +37,6 @@ public class ReviewController {
             reviewRequest.getMessage(),
             reviewRequest.getDriving()
         );
-    }
-
-    @GetMapping()
-    @ResponseStatus(HttpStatus.OK)
-    public List<ReviewDTO> getAll() {
-
-        return this.reviewService.getAll();
     }
 
     @DeleteMapping(value = "/{id}")
