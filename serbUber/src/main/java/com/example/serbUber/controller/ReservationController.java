@@ -12,26 +12,25 @@ import java.util.List;
 @RestController
 @RequestMapping("/reservations")
 public class ReservationController {
-    private ReservationService reservationService;
+    private final ReservationService reservationService;
 
-    public ReservationController(ReservationService reservationService) { this.reservationService = reservationService; }
-
-
-    @PostMapping()
-    @ResponseStatus(HttpStatus.CREATED)
-    public void create(@Valid @RequestBody ReservationRequest reservationRequest) {
-
-        this.reservationService.create(
-                reservationRequest.getTimeStamp(),
-                reservationRequest.getRoute(),
-                reservationRequest.getUsers()
-        );
-    }
+    public ReservationController(final ReservationService reservationService) { this.reservationService = reservationService; }
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
     public List<ReservationDTO> getAll() {
 
         return this.reservationService.getAll();
+    }
+
+    @PostMapping()
+    @ResponseStatus(HttpStatus.CREATED)
+    public ReservationDTO create(@Valid @RequestBody ReservationRequest reservationRequest) {
+
+        return this.reservationService.create(
+                reservationRequest.getTimeStamp(),
+                reservationRequest.getRoute(),
+                reservationRequest.getUsers()
+        );
     }
 }

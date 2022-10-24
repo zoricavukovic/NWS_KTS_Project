@@ -19,7 +19,7 @@ public class ReservationDTO {
         this.users = reservation.getUsers();
     }
 
-    public static List<ReservationDTO> fromReservations(List<Reservation> reservations){
+    public static List<ReservationDTO> fromReservations(final List<Reservation> reservations){
         List<ReservationDTO> reservationDTOs = new LinkedList<>();
         reservations.forEach(reservation ->
                 reservationDTOs.add(new ReservationDTO(reservation))

@@ -33,7 +33,7 @@ public class DrivingDTO {
         this.price = driving.getPrice();
     }
 
-    public static List<DrivingDTO> fromDrivings(List<Driving> drivings){
+    public static List<DrivingDTO> fromDrivings(final List<Driving> drivings){
         List<DrivingDTO> drivingDTOs = new LinkedList<>();
         drivings.forEach(driving ->
                 drivingDTOs.add(new DrivingDTO(driving))

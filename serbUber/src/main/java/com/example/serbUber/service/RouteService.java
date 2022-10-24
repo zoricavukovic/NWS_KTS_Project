@@ -25,16 +25,18 @@ public class RouteService {
         return fromRoutes(routes);
     }
 
-    public void create(
+    public RouteDTO create(
             final Location startPoint,
             final List<Location> destinations,
             final double kilometers
     ) {
 
-        routeRepository.save(new Route(
+        Route route = routeRepository.save(new Route(
                 startPoint,
                 destinations,
                 kilometers
         ));
+
+        return new RouteDTO(route);
     }
 }

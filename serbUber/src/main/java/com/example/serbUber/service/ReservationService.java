@@ -19,22 +19,25 @@ public class ReservationService {
         this.reservationRepository = reservationRepository;
     }
 
-    public void create(
-            final LocalDateTime timeStamp,
-            final Route route,
-            final List<String> users
-    ) {
-
-        reservationRepository.save(new Reservation(
-                timeStamp,
-                route,
-                users
-        ));
-    }
-
     public List<ReservationDTO> getAll() {
         List<Reservation> reservations = reservationRepository.findAll();
 
         return fromReservations(reservations);
     }
+
+    public ReservationDTO create(
+            final LocalDateTime timeStamp,
+            final Route route,
+            final List<String> users
+    ) {
+
+        Reservation reservation = reservationRepository.save(new Reservation(
+                timeStamp,
+                route,
+                users
+        ));
+
+        return new ReservationDTO(reservation);
+    }
+
 }

@@ -18,7 +18,7 @@ public class RouteDTO {
         this.kilometers = route.getKilometers();
     }
 
-    public static List<RouteDTO> fromRoutes(List<Route> routes){
+    public static List<RouteDTO> fromRoutes(final List<Route> routes){
         List<RouteDTO> routeDTOs = new LinkedList<>();
         routes.forEach(route ->
                 routeDTOs.add(new RouteDTO(route))
