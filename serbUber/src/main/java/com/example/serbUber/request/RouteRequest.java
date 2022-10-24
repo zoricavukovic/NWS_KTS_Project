@@ -1,23 +1,25 @@
-package com.example.serbUber.model;
+package com.example.serbUber.request;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import com.example.serbUber.model.Location;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.util.LinkedList;
 import java.util.List;
 
-@Document(collection = "routes")
-public class Route {
-    @Id
-    private String id;
+public class RouteRequest {
+    @NotNull
     private Location startPoint;
+    @NotEmpty
     private List<Location> destinations = new LinkedList<>();
+    @Positive
     private double kilometers;
 
-    public Route(
-        final Location startPoint,
-        final List<Location> destinations,
-        final double kilometers
+    public RouteRequest(
+            final Location startPoint,
+            final List<Location> destinations,
+            final double kilometers
     ) {
         this.startPoint = startPoint;
         this.destinations = destinations;
