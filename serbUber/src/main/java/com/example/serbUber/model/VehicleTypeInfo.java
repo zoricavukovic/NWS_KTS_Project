@@ -1,6 +1,13 @@
 package com.example.serbUber.model;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "vehicleTypeInfos")
 public class VehicleTypeInfo {
+    @Id
+    private String id;
+
     private VehicleType vehicleType;
     private double startPrice;
     private int numOfSeats;
@@ -14,6 +21,8 @@ public class VehicleTypeInfo {
         this.startPrice = startPrice;
         this.numOfSeats = numOfSeats;
     }
+
+    public String getId() { return id; }
 
     public VehicleType getVehicleType() {
         return vehicleType;

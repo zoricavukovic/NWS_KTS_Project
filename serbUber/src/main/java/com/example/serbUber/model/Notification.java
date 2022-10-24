@@ -1,6 +1,13 @@
 package com.example.serbUber.model;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "notifications")
 public class Notification {
+
+    @Id
+    private String id;
 
     private String message;
     private User sender;
@@ -33,5 +40,9 @@ public class Notification {
 
     public boolean isReport() {
         return report;
+    }
+
+    public String getId() {
+        return id;
     }
 }

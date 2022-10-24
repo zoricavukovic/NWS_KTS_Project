@@ -11,12 +11,12 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/locations")
 public class LocationController {
+
     private LocationService locationService;
 
     public LocationController(LocationService locationService) {
         this.locationService = locationService;
     }
-
 
 
     @PostMapping()
