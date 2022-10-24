@@ -1,16 +1,16 @@
-package com.example.serbUber.model;
+package com.example.serbUber.dto;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import com.example.serbUber.model.Driving;
+import com.example.serbUber.model.DrivingStatus;
+import com.example.serbUber.model.Route;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
-@Document(collection = "drivings")
-public class Driving {
-    @Id
-    private String id;
+public class DrivingDTO {
+
     private boolean active;
     private int duration;
     private LocalDateTime started;
@@ -21,26 +21,25 @@ public class Driving {
     private HashMap<String, Boolean> usersPaid = new HashMap<String, Boolean>();
     private double price;
 
-    public Driving(
-        final boolean active,
-        final int duration,
-        final LocalDateTime started,
-        final LocalDateTime payingLimit,
-        final Route route,
-        final DrivingStatus drivingStatus,
-        final String driverEmail,
-        final HashMap<String, Boolean> usersPaid,
-        final double price
-    ) {
-        this.active = active;
-        this.duration = duration;
-        this.started = started;
-        this.payingLimit = payingLimit;
-        this.route = route;
-        this.drivingStatus = drivingStatus;
-        this.driverEmail = driverEmail;
-        this.usersPaid = usersPaid;
-        this.price = price;
+    public DrivingDTO(final Driving driving){
+        this.active = driving.isActive();
+        this.duration = driving.getDuration();
+        this.started = driving.getStarted();
+        this.payingLimit = driving.getPayingLimit();
+        this.route = driving.getRoute();
+        this.drivingStatus = driving.getDrivingStatus();
+        this.driverEmail = driving.getDriverEmail();
+        this.usersPaid = driving.getUsersPaid();
+        this.price = driving.getPrice();
+    }
+
+    public static List<DrivingDTO> fromDrivings(List<Driving> drivings){
+        List<DrivingDTO> drivingDTOs = new LinkedList<>();
+        drivings.forEach(driving ->
+                drivingDTOs.add(new DrivingDTO(driving))
+        );
+
+        return drivingDTOs;
     }
 
     public boolean isActive() {

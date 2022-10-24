@@ -1,23 +1,26 @@
-package com.example.serbUber.model;
+package com.example.serbUber.request;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import com.example.serbUber.model.Route;
 
+import javax.validation.constraints.Future;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Document(collection = "reservations")
-public class Reservation {
-    @Id
-    private String id;
+public class ReservationRequest {
+    @NotNull
+    @Future
     private LocalDateTime timeStamp;
+    @NotNull
     private Route route;
+    @NotEmpty
     private List<String> users;
 
-    public Reservation(
-        final LocalDateTime timeStamp,
-        final Route route,
-        final List<String> users
+    public ReservationRequest(
+            final LocalDateTime timeStamp,
+            final Route route,
+            final List<String> users
     ) {
         this.timeStamp = timeStamp;
         this.route = route;
