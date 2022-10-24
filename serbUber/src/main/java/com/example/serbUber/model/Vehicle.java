@@ -1,6 +1,13 @@
 package com.example.serbUber.model;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "vehicle")
 public class Vehicle {
+    @Id
+    private String id;
+
     private boolean petFriendly;
     private boolean babySeat;
     private VehicleTypeInfo vehicleTypeInfo;

@@ -1,6 +1,14 @@
 package com.example.serbUber.model;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "reviews")
 public class Review {
+
+    @Id
+    private String id;
+
     private double vehicleRate;
     private double driverRate;
     private String message;
@@ -32,5 +40,9 @@ public class Review {
 
     public Driving getDriving() {
         return driving;
+    }
+
+    public String getId() {
+        return id;
     }
 }
