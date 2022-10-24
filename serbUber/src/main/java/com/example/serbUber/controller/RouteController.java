@@ -12,22 +12,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/routes")
 public class RouteController {
+    private final RouteService routeService;
 
-    private RouteService routeService;
-
-
-    public RouteController(RouteService routeService) {
+    public RouteController(final RouteService routeService) {
         this.routeService = routeService;
-    }
-
-    @PostMapping()
-    @ResponseStatus(HttpStatus.CREATED)
-    public void create(@Valid @RequestBody RouteRequest routeRequest) {
-        this.routeService.create(
-                routeRequest.getStartPoint(),
-                routeRequest.getDestinations(),
-                routeRequest.getKilometers()
-        );
     }
 
     @GetMapping()
@@ -35,5 +23,15 @@ public class RouteController {
     public List<RouteDTO> getAll() {
 
         return this.routeService.getAll();
+    }
+
+    @PostMapping()
+    @ResponseStatus(HttpStatus.CREATED)
+    public RouteDTO create(@Valid @RequestBody RouteRequest routeRequest) {
+        return this.routeService.create(
+                routeRequest.getStartPoint(),
+                routeRequest.getDestinations(),
+                routeRequest.getKilometers()
+        );
     }
 }

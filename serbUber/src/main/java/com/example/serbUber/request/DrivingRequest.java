@@ -25,6 +25,7 @@ public class DrivingRequest {
     private String driverEmail;
     @NotEmpty
     private HashMap<String, Boolean> usersPaid = new HashMap<String, Boolean>();
+    @Positive
     private double price;
 
     public DrivingRequest(

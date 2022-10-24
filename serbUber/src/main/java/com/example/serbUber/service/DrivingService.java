@@ -18,12 +18,11 @@ public class DrivingService {
 
     private final DrivingRepository drivingRepository;
 
-
     public DrivingService(final DrivingRepository drivingRepository) {
         this.drivingRepository = drivingRepository;
     }
 
-    public void create(
+    public DrivingDTO create(
             final boolean active,
             final int duration,
             final LocalDateTime started,
@@ -35,7 +34,7 @@ public class DrivingService {
             final double price
     ) {
 
-        drivingRepository.save(new Driving(
+        Driving driving = drivingRepository.save(new Driving(
                 active,
                 duration,
                 started,
@@ -46,6 +45,8 @@ public class DrivingService {
                 usersPaid,
                 price
         ));
+
+        return new DrivingDTO(driving);
     }
 
     public List<DrivingDTO> getAll() {

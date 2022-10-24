@@ -1,6 +1,7 @@
 package com.example.serbUber.controller;
 
 import com.example.serbUber.dto.DrivingDTO;
+import com.example.serbUber.model.Driving;
 import com.example.serbUber.request.DrivingRequest;
 import com.example.serbUber.service.DrivingService;
 import org.springframework.http.HttpStatus;
@@ -12,19 +13,24 @@ import java.util.List;
 @RequestMapping("/drivings")
 public class DrivingController {
 
+    private final DrivingService drivingService;
 
-    private DrivingService drivingService;
-
-
-    public DrivingController(DrivingService drivingService) {
+    public DrivingController(final DrivingService drivingService) {
         this.drivingService = drivingService;
+    }
+
+    @GetMapping()
+    @ResponseStatus(HttpStatus.OK)
+    public List<DrivingDTO> getAll() {
+
+        return this.drivingService.getAll();
     }
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@Valid @RequestBody DrivingRequest drivingRequest) {
-        System.out.println(drivingRequest.getDriverEmail());
-        this.drivingService.create(
+    public DrivingDTO create(@Valid @RequestBody DrivingRequest drivingRequest) {
+
+        return this.drivingService.create(
               drivingRequest.isActive(),
                 drivingRequest.getDuration(),
                 drivingRequest.getStarted(),
@@ -35,12 +41,5 @@ public class DrivingController {
                 drivingRequest.getUsersPaid(),
                 drivingRequest.getPrice()
         );
-    }
-
-    @GetMapping()
-    @ResponseStatus(HttpStatus.OK)
-    public List<DrivingDTO> getAll() {
-
-        return this.drivingService.getAll();
     }
 }
