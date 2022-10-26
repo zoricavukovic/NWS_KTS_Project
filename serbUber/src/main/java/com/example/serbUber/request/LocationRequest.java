@@ -5,9 +5,16 @@ import javax.validation.constraints.Size;
 public class LocationRequest {
     @Size(max = 1024, message = "{validation.name.size.too_long}")
     private String city;
+
+    @Size(max = 1024, message = "{validation.name.size.too_long}")
     private String street;
+
+    @Size(max = 1024, message = "{validation.name.size.too_long}")
     private String number;
+
+    @Size(max = 1024, message = "{validation.name.size.too_long}")
     private String zipCode;
+
     private double lon;
     private double lat;
 

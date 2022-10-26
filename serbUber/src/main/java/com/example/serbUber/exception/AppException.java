@@ -1,11 +1,8 @@
 package com.example.serbUber.exception;
 
 public class AppException extends Exception {
-    private String message;
 
-    public AppException() {
-        super();
-    }
+    private final String message;
 
     public AppException(String id, EntityType entityType) {
         super();

@@ -1,0 +1,11 @@
+package com.example.serbUber.repository.user;
+
+import com.example.serbUber.model.user.Driver;
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+import java.util.Optional;
+
+public interface DriverRepository extends MongoRepository<Driver, String> {
+
+    Optional<Driver> getDriverByEmail(String email);
+}

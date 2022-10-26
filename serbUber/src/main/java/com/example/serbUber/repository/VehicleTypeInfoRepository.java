@@ -11,7 +11,6 @@ import java.util.Optional;
 @Repository
 public interface VehicleTypeInfoRepository extends MongoRepository<VehicleTypeInfo, String> {
 
-    @Query(value = "{ 'vehicleType' : ?0 }, fields = { 'vehicleType' : 1, 'startPrice' : 1, 'numOfSeats' : 1 }")
-    Optional<VehicleTypeInfo> findByVehicleType(VehicleType vehicleType);
+     Optional<VehicleTypeInfo> findByVehicleType(VehicleType vehicleType);
 
 }

@@ -1,75 +1,58 @@
 package com.example.serbUber.dto;
 
+import com.example.serbUber.model.Location;
+
+import java.util.LinkedList;
+import java.util.List;
+
 public class LocationDTO {
 
-    private String city;
-    private String street;
-    private String number;
-    private String zipCode;
-    private double lon;
-    private double lat;
+    private final String city;
+    private final String street;
+    private final String number;
+    private final String zipCode;
+    private final double lon;
+    private final double lat;
 
-    public LocationDTO(
-        final String city,
-        final String street,
-        final String number,
-        final String zipCode,
-        final double lon,
-        final double lat
-    ) {
-        this.city = city;
-        this.street = street;
-        this.number = number;
-        this.zipCode = zipCode;
-        this.lon = lon;
-        this.lat = lat;
+    public LocationDTO(final Location location) {
+        this.city = location.getCity();
+        this.street = location.getStreet();
+        this.number = location.getNumber();
+        this.zipCode = location.getZipCode();
+        this.lon = location.getLon();
+        this.lat = location.getLat();
+    }
+
+    public static List<LocationDTO> fromLocations(final List<Location> locations){
+        List<LocationDTO> locationDTOs = new LinkedList<>();
+        locations.forEach(location ->
+            locationDTOs.add(new LocationDTO(location))
+        );
+
+        return locationDTOs;
     }
 
     public String getCity() {
         return city;
     }
 
-    public void setCity(String city) {
-        this.city = city;
-    }
-
     public String getStreet() {
         return street;
-    }
-
-    public void setStreet(String street) {
-        this.street = street;
     }
 
     public String getNumber() {
         return number;
     }
 
-    public void setNumber(String number) {
-        this.number = number;
-    }
-
     public String getZipCode() {
         return zipCode;
-    }
-
-    public void setZipCode(String zipCode) {
-        this.zipCode = zipCode;
     }
 
     public double getLon() {
         return lon;
     }
 
-    public void setLon(double lon) {
-        this.lon = lon;
-    }
-
     public double getLat() {
         return lat;
-    }
-
-    public void setLat(double lat) {
-        this.lat = lat;
     }
 }

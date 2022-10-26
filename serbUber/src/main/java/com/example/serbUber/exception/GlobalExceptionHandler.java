@@ -12,4 +12,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> entityNotFoundException(EntityNotFoundException entityNotFoundException) {
         return new ResponseEntity<>(entityNotFoundException.getMessage(), HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(value = PasswordsDoNotMatchException.class)
+    public ResponseEntity<String> passwordsDoNotMatchException(PasswordsDoNotMatchException passwordsDoNotMatchException) {
+        return new ResponseEntity<>(passwordsDoNotMatchException.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 }

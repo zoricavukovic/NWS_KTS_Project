@@ -1,0 +1,25 @@
+<div>
+    <mat-grid-list cols="1" rowHeight="3:1"> 
+       <h1 class="title">SerbUber</h1>
+       <mat-grid-tile>
+        <form class="login-form" [formGroup]="loginForm">
+            <mat-form-field class="full-width" appearance="fill">
+                <mat-label>Enter email</mat-label>
+                <input matInput placeholder="serbUber@example.com" formControlName="email" required>
+                <mat-error *ngIf="loginForm.invalid">{{getErrorMessage()}}</mat-error>
+            </mat-form-field>
+           
+            <mat-form-field class="full-width" appearance="fill">
+                <mat-label>Enter password</mat-label>
+                <input matInput [type]="hide ? 'password' : 'text'" formControlName="password">
+                <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                  <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+              </mat-form-field>
+
+              <button mat-button (click)="logIn()">Log in</button>
+          </form>
+          
+        </mat-grid-tile>
+    </mat-grid-list>
+</div>

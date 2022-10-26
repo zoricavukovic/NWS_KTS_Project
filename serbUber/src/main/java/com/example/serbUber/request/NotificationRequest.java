@@ -1,6 +1,5 @@
 package com.example.serbUber.request;
 
-import com.example.serbUber.model.User;
 import com.example.serbUber.util.Constants;
 
 import javax.validation.constraints.Email;

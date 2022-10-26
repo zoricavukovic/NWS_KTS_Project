@@ -1,0 +1,43 @@
+.mat-grid-list {
+    font-size: 18px;
+    background-color: lightblue;
+    margin-top: 5%;
+    margin-bottom: 40%;
+    margin-right: 35%;
+    margin-left: 35%;
+    padding:2%
+}
+
+.mat-grid-tile {
+    height: 100%;
+}
+
+.title {
+    text-align: center;
+    font-weight: bold;
+    font-size: 30px;
+}
+
+.login-form {
+    min-width: 150px;
+    max-width: 500px;
+    height: 100%;
+    width: 100%;
+    margin-top:10%;
+    margin-left: 15%;
+    margin-right: 15%;
+  }
+  
+.full-width {
+    width: 100%;
+    margin-bottom:5%;
+}
+
+.mat-button {
+    background-color: azure;
+    margin-right: 15%;
+    margin-left: 15%;
+    width: 70%;
+    padding: 2%;
+    font-size: 20px;
+}

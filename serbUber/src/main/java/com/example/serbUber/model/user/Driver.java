@@ -1,21 +1,30 @@
-package com.example.serbUber.model;
+package com.example.serbUber.model.user;
+
+import com.example.serbUber.model.Driving;
+import com.example.serbUber.model.Location;
+import com.example.serbUber.model.Vehicle;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
+@Document(collection = "drivers")
 public class Driver extends User {
 
-    private boolean blocked;
-    private boolean active;
-    private double rate;
+    private final double START_RATE = 0.0;
+    private final int START_WORKING_MINUTES = 0;
+
     private Location currentLocation;
     private List<Driving> drives = new LinkedList<>();
-    private int workingMinutes;
     private Vehicle vehicle;
-    private LocalDateTime lastActive;
-    private LocalDateTime startShift;
-    private LocalDateTime endShift;
+    private LocalDateTime lastActive = null;
+    private LocalDateTime startShift = null;
+    private LocalDateTime endShift = null;
+    private boolean blocked = false;
+    private boolean active = false;
+    private double rate = START_RATE;
+    private int workingMinutes = START_WORKING_MINUTES;
 
     public Driver(
         final String email,
@@ -36,7 +45,7 @@ public class Driver extends User {
         final LocalDateTime startShift,
         final LocalDateTime endShift
     ) {
-        super(email, password, name, surname, phoneNumber, address, profilePicture);
+        super(email, password, name, surname, phoneNumber, address, profilePicture, new Role("ROLE_DRIVER"));
         this.blocked = blocked;
         this.rate = rate;
         this.currentLocation = currentLocation;
@@ -47,6 +56,20 @@ public class Driver extends User {
         this.vehicle = vehicle;
         this.startShift = startShift;
         this.endShift = endShift;
+    }
+
+    public Driver(
+        final String email,
+        final String password,
+        final String name,
+        final String surname,
+        final String phoneNumber,
+        final Location address,
+        final String profilePicture,
+        final Vehicle vehicle
+    ) {
+        super(email, password, name, surname, phoneNumber, address, profilePicture, new Role("ROLE_DRIVER"));
+        this.vehicle = vehicle;
     }
 
     public boolean isBlocked() {

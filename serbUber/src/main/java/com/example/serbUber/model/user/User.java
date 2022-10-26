@@ -1,6 +1,11 @@
-package com.example.serbUber.model;
+package com.example.serbUber.model.user;
+
+import com.example.serbUber.model.Location;
+import org.springframework.data.annotation.Id;
 
 public abstract class User {
+
+    @Id
     private String id;
     private String email;
     private String password;
@@ -9,6 +14,7 @@ public abstract class User {
     private String phoneNumber;
     private Location address;
     private String profilePicture;
+    private Role role;
 
     public User(
         final String email,
@@ -17,7 +23,8 @@ public abstract class User {
         final String surname,
         final String phoneNumber,
         final Location address,
-        final String profilePicture
+        final String profilePicture,
+        final Role role
     ) {
         this.email = email;
         this.password = password;
@@ -26,14 +33,15 @@ public abstract class User {
         this.phoneNumber = phoneNumber;
         this.address = address;
         this.profilePicture = profilePicture;
+        this.role = role;
+    }
+
+    public User() {
+
     }
 
     public String getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getEmail() {
@@ -62,5 +70,14 @@ public abstract class User {
 
     public String getProfilePicture() {
         return profilePicture;
+    }
+
+    public static boolean passwordsMatch(String password, String confirmationPassword){
+
+        return password.equals(confirmationPassword);
+    }
+
+    public Role getRole() {
+        return role;
     }
 }

@@ -1,12 +1,17 @@
-package com.example.serbUber.model;
+package com.example.serbUber.model.user;
+
+import com.example.serbUber.dto.user.UserDTO;
+import com.example.serbUber.model.Driving;
+import com.example.serbUber.model.Location;
+import com.example.serbUber.model.Route;
 
 import java.util.LinkedList;
 import java.util.List;
 
 public class RegularUser extends User{
 
-    private boolean blocked;
-    private boolean verified;
+    private boolean blocked = false;
+    private boolean verified = false;
     private List<Driving> drives = new LinkedList<>();
     private List<Route> favourites = new LinkedList<>();
 
@@ -18,16 +23,24 @@ public class RegularUser extends User{
         final String phoneNumber,
         final Location address,
         final String profilePicture,
-        final boolean blocked,
-        final boolean verified,
         final List<Driving> drives,
         final List<Route> favourites
     ) {
-        super(email, password, name, surname, phoneNumber, address, profilePicture);
-        this.blocked = blocked;
-        this.verified = verified;
+        super(email, password, name, surname, phoneNumber, address, profilePicture, new Role("ROLE_REGULAR_USER"));
         this.drives = drives;
         this.favourites = favourites;
+    }
+
+    public RegularUser(
+        final String email,
+        final String password,
+        final String name,
+        final String surname,
+        final String phoneNumber,
+        final Location address,
+        final String profilePicture
+    ) {
+        super(email, password, name, surname, phoneNumber, address, profilePicture, new Role("ROLE_REGULAR_USER"));
     }
 
     public boolean isBlocked() {

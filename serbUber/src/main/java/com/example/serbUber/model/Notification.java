@@ -1,5 +1,6 @@
 package com.example.serbUber.model;
 
+import com.example.serbUber.model.user.User;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 

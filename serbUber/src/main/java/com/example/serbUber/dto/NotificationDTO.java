@@ -1,7 +1,7 @@
 package com.example.serbUber.dto;
 
 import com.example.serbUber.model.Notification;
-import com.example.serbUber.model.User;
+import com.example.serbUber.model.user.User;
 
 import java.util.LinkedList;
 import java.util.List;

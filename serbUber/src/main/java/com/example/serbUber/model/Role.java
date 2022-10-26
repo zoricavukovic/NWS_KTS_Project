@@ -1,8 +1,5 @@
 package com.example.serbUber.model;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 public class Role{
 
     private String name;
