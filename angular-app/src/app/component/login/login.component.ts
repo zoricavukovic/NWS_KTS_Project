@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import { FormControl, Validators, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { LoginRequest } from 'src/app/model/login-request';
 import { AuthService } from 'src/app/service/auth.service';

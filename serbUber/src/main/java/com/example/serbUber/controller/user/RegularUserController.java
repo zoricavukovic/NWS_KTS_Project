@@ -38,13 +38,13 @@ public class RegularUserController {
         return regularUserService.get(emailRequest.getEmail());
     }
 
-    @PostMapping()
+    @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public RegularUserDTO create(@Valid @RequestBody RegularUserRequest regularUserRequest)
         throws PasswordsDoNotMatchException
     {
-
-        return regularUserService.create(
+        System.out.println(regularUserRequest.getEmail());
+;        return regularUserService.create(
             regularUserRequest.getEmail(),
             regularUserRequest.getPassword(),
             regularUserRequest.getConfirmationPassword(),

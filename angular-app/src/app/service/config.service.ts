@@ -11,9 +11,15 @@ export class ConfigService {
 
   private _api_url = environment.apiUrl;
   private _login_user = this._api_url + "/auth/login";
+  private _register_user = this._api_url + "/regularUsers/register";
 
   get login_url(): string {
     return this._login_user;
+  }
+
+
+  get registration_url(): string{
+    return this._register_user;
   }
 
 }

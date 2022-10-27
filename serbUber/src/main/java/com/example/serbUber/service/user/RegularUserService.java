@@ -5,7 +5,10 @@ import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.EntityType;
 import com.example.serbUber.exception.PasswordsDoNotMatchException;
 import com.example.serbUber.model.Location;
+import com.example.serbUber.model.user.LoginUserInfo;
 import com.example.serbUber.model.user.RegularUser;
+import com.example.serbUber.model.user.Role;
+import com.example.serbUber.repository.user.LoginUserInfoRepository;
 import com.example.serbUber.repository.user.RegularUserRepository;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +22,11 @@ import static com.example.serbUber.model.user.User.passwordsMatch;
 public class RegularUserService {
 
     private final RegularUserRepository regularUserRepository;
+    private final LoginUserInfoRepository loginUserInfoRepository;
 
-    public RegularUserService(RegularUserRepository regularUserRepository) {
+    public RegularUserService(RegularUserRepository regularUserRepository, LoginUserInfoRepository loginUserInfoRepository) {
         this.regularUserRepository = regularUserRepository;
+        this.loginUserInfoRepository = loginUserInfoRepository;
     }
 
     public List<RegularUserDTO> getAll() {
@@ -58,6 +63,9 @@ public class RegularUserService {
                 address,
                 profilePicture
             ));
+
+            LoginUserInfo loginUserInfo = new LoginUserInfo(email, password, new Role("regularUser"));
+            loginUserInfoRepository.save(loginUserInfo);
 
             return new RegularUserDTO(regularUser);
         } else {
