@@ -25,7 +25,7 @@ public class AdminRequest {
     @Size(max = 1024, message = "Phone number length is too long.")
     private final String phoneNumber;
     @NotNull(message = "Must add admin address.")
-    private final Location address;
+    private String city;
     private final String profilePicture;
 
     public AdminRequest(
@@ -34,7 +34,7 @@ public class AdminRequest {
         final String name,
         final String surname,
         final String phoneNumber,
-        final Location address,
+        final String city,
         final String profilePicture
     ) {
         this.email = email;
@@ -42,7 +42,7 @@ public class AdminRequest {
         this.name = name;
         this.surname = surname;
         this.phoneNumber = phoneNumber;
-        this.address = address;
+        this.city = city;
         this.profilePicture = profilePicture;
     }
 
@@ -66,8 +66,8 @@ public class AdminRequest {
         return phoneNumber;
     }
 
-    public Location getAddress() {
-        return address;
+    public String getCity() {
+        return city;
     }
 
     public String getProfilePicture() {

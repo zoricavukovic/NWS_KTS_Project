@@ -12,7 +12,7 @@ public class RegularUserDTO {
     private final String name;
     private final String surname;
     private final String phoneNumber;
-    private final Location address;
+    private final String city;
     private final String profilePicture;
     private final boolean blocked;
     private final boolean verified;
@@ -23,7 +23,7 @@ public class RegularUserDTO {
         this.name = regularUser.getName();
         this.surname = regularUser.getSurname();
         this.phoneNumber = regularUser.getPhoneNumber();
-        this.address = regularUser.getAddress();
+        this.city = regularUser.getCity();
         this.profilePicture = regularUser.getProfilePicture();
         this.blocked = regularUser.isBlocked();
         this.verified = regularUser.isVerified();
@@ -55,8 +55,8 @@ public class RegularUserDTO {
         return phoneNumber;
     }
 
-    public Location getAddress() {
-        return address;
+    public String getCity() {
+        return city;
     }
 
     public String getProfilePicture() {

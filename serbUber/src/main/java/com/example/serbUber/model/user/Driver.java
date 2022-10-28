@@ -32,7 +32,7 @@ public class Driver extends User {
         final String name,
         final String surname,
         final String phoneNumber,
-        final Location address,
+        final String city,
         final String profilePicture,
         final boolean blocked,
         final double rate,
@@ -45,7 +45,7 @@ public class Driver extends User {
         final LocalDateTime startShift,
         final LocalDateTime endShift
     ) {
-        super(email, password, name, surname, phoneNumber, address, profilePicture, new Role("ROLE_DRIVER"));
+        super(email, password, name, surname, phoneNumber, city, profilePicture, new Role("ROLE_DRIVER"));
         this.blocked = blocked;
         this.rate = rate;
         this.currentLocation = currentLocation;
@@ -64,11 +64,11 @@ public class Driver extends User {
         final String name,
         final String surname,
         final String phoneNumber,
-        final Location address,
+        final String city,
         final String profilePicture,
         final Vehicle vehicle
     ) {
-        super(email, password, name, surname, phoneNumber, address, profilePicture, new Role("ROLE_DRIVER"));
+        super(email, password, name, surname, phoneNumber, city, profilePicture, new Role("ROLE_DRIVER"));
         this.vehicle = vehicle;
     }
 

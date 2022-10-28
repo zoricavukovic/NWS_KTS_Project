@@ -42,7 +42,7 @@ public class DriverService {
         final String name,
         final String surname,
         final String phoneNumber,
-        final Location address,
+        final String city,
         final String profilePicture
     ) {
         Vehicle driverVehicle = null; //TODO: findVehicle
@@ -52,7 +52,7 @@ public class DriverService {
             name,
             surname,
             phoneNumber,
-            address,
+            city,
             profilePicture,
             driverVehicle
         ));

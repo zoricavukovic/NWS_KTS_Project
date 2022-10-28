@@ -11,7 +11,7 @@ public class AdminDTO {
     private final String name;
     private final String surname;
     private final String phoneNumber;
-    private final Location address;
+    private final String city;
     private final String profilePicture;
 
     public AdminDTO(final Admin admin) {
@@ -19,7 +19,7 @@ public class AdminDTO {
         this.name = admin.getName();
         this.surname = admin.getSurname();
         this.phoneNumber = admin.getPhoneNumber();
-        this.address = admin.getAddress();
+        this.city = admin.getCity();
         this.profilePicture = admin.getProfilePicture();
     }
 
@@ -48,8 +48,8 @@ public class AdminDTO {
         return phoneNumber;
     }
 
-    public Location getAddress() {
-        return address;
+    public String getCity() {
+        return city;
     }
 
     public String getProfilePicture() {

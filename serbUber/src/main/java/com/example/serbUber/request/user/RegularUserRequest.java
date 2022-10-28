@@ -28,7 +28,7 @@ public class RegularUserRequest {
     @Size(max = 1024, message = "Phone number length is too long.")
     private final String phoneNumber;
     @NotNull(message = "Must add user address.")
-    private final Location address;
+    private String city;
     private final String profilePicture;
 
     public RegularUserRequest(
@@ -38,7 +38,7 @@ public class RegularUserRequest {
         final String name,
         final String surname,
         final String phoneNumber,
-        final Location address,
+        final String city,
         final String profilePicture
     ) {
         this.email = email;
@@ -47,7 +47,7 @@ public class RegularUserRequest {
         this.name = name;
         this.surname = surname;
         this.phoneNumber = phoneNumber;
-        this.address = address;
+        this.city = city;
         this.profilePicture = profilePicture;
     }
 
@@ -75,8 +75,8 @@ public class RegularUserRequest {
         return phoneNumber;
     }
 
-    public Location getAddress() {
-        return address;
+    public String getCity() {
+        return city;
     }
 
     public String getProfilePicture() {

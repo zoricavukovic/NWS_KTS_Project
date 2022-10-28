@@ -51,7 +51,7 @@ public class AdminService {
         final String name,
         final String surname,
         final String phoneNumber,
-        final Location address,
+        final String city,
         final String profilePicture
     ) {
         String hashedPassword = getHashedNewUserPassword(password);
@@ -61,7 +61,7 @@ public class AdminService {
             name,
             surname,
             phoneNumber,
-            address,
+            city,
             profilePicture
         ));
         loginUserInfoRepository.save(new LoginUserInfo(email, hashedPassword, new Role("ROLE_ADMIN")));

@@ -13,7 +13,7 @@ public class UserDTO {
     private final String name;
     private final String surname;
     private final String phoneNumber;
-    private final Location address;
+    private final String city;
     private final String profilePicture;
     private Role role;
     private String password;
@@ -23,7 +23,7 @@ public class UserDTO {
         this.name = user.getName();
         this.surname = user.getSurname();
         this.phoneNumber = user.getPhoneNumber();
-        this.address = user.getAddress();
+        this.city = user.getCity();
         this.profilePicture = user.getProfilePicture();
         this.role = user.getRole();
         this.password = user.getPassword();
@@ -54,8 +54,8 @@ public class UserDTO {
         return phoneNumber;
     }
 
-    public Location getAddress() {
-        return address;
+    public String getCity() {
+        return city;
     }
 
     public String getProfilePicture() {

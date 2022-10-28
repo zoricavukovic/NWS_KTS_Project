@@ -49,7 +49,7 @@ public class RegularUserService {
         final String name,
         final String surname,
         final String phoneNumber,
-        final Location address,
+        final String city,
         final String profilePicture
     ) throws PasswordsDoNotMatchException {
 
@@ -60,7 +60,7 @@ public class RegularUserService {
                 name,
                 surname,
                 phoneNumber,
-                address,
+                city,
                 profilePicture
             ));
 

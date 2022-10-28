@@ -47,7 +47,7 @@ public class DriverController {
             driverRequest.getName(),
             driverRequest.getSurname(),
             driverRequest.getPhoneNumber(),
-            driverRequest.getAddress(),
+            driverRequest.getCity(),
             driverRequest.getProfilePicture()
         );
     }

@@ -12,7 +12,7 @@ public abstract class User {
     private String name;
     private String surname;
     private String phoneNumber;
-    private Location address;
+    private String city;
     private String profilePicture;
     private Role role;
 
@@ -22,7 +22,7 @@ public abstract class User {
         final String name,
         final String surname,
         final String phoneNumber,
-        final Location address,
+        final String city,
         final String profilePicture,
         final Role role
     ) {
@@ -31,7 +31,7 @@ public abstract class User {
         this.name = name;
         this.surname = surname;
         this.phoneNumber = phoneNumber;
-        this.address = address;
+        this.city = city;
         this.profilePicture = profilePicture;
         this.role = role;
     }
@@ -64,8 +64,8 @@ public abstract class User {
         return phoneNumber;
     }
 
-    public Location getAddress() {
-        return address;
+    public String getCity() {
+        return city;
     }
 
     public String getProfilePicture() {

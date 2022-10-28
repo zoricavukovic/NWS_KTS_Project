@@ -51,7 +51,7 @@ public class RegularUserController {
             regularUserRequest.getName(),
             regularUserRequest.getSurname(),
             regularUserRequest.getPhoneNumber(),
-            regularUserRequest.getAddress(),
+            regularUserRequest.getCity(),
             regularUserRequest.getProfilePicture()
         );
     }

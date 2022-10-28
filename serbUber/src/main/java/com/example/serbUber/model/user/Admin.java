@@ -12,10 +12,10 @@ public class Admin extends User{
         final String name,
         final String surname,
         final String phoneNumber,
-        final Location address,
+        final String city,
         final String profilePicture
     ) {
-        super(email, password, name, surname, phoneNumber, address, profilePicture, new Role("ROLE_ADMIN"));
+        super(email, password, name, surname, phoneNumber, city, profilePicture, new Role("ROLE_ADMIN"));
     }
 
 }
