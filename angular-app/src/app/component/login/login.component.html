@@ -1,4 +1,6 @@
 <div>
+  <div id="fb-root"></div>
+  <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v15.0&appId=1847252125610861&autoLogAppEvents=1" nonce="u0AUSsuv"></script>
     <mat-grid-list cols="1" rowHeight="3:1"> 
        <h1 class="title">SerbUber</h1>
        <mat-grid-tile>
@@ -15,11 +17,27 @@
                 <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
                   <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
                 </button>
-              </mat-form-field>
+            </mat-form-field>
 
-              <button mat-button (click)="logIn()">Log in</button>
-          </form>
+            <button mat-button (click)="logIn()">Log in</button>
+
+            <div class="devider-container">
+              <div class="devider-line"><mat-divider></mat-divider></div>
+              <div class="devider-text mat-typography"><b>OR</b></div>
+              <div class="devider-line"><mat-divider></mat-divider></div>
+            </div>
+              <asl-google-signin-button class="google-button" type="standard" theme="outline" size="large" text="signin_with" locale="en" width='280'></asl-google-signin-button>
+            
+              <button type="button" class="btn btn-primary soc" (click)="signInWithFB()"></button>
+         
+              <button (click)="signInWithFB()">
+                <div class="fb-login-button" (click)="signInWithFB()" data-width="" data-size="large" data-button-type="continue_with" data-layout="default" data-auto-logout-link="false" data-use-continue-as="false"></div>
           
+              </button>
+              
+          </form>
+            
         </mat-grid-tile>
+        
     </mat-grid-list>
-</div>
+</div>    

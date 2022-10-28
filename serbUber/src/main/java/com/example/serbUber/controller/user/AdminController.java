@@ -7,6 +7,7 @@ import com.example.serbUber.request.user.AdminRequest;
 import com.example.serbUber.request.user.UserEmailRequest;
 import com.example.serbUber.service.user.AdminService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -24,6 +25,7 @@ public class AdminController {
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public List<AdminDTO> getAll() {
 
         return adminService.getAll();
@@ -31,6 +33,7 @@ public class AdminController {
 
     @GetMapping("/byEmail")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public UserDTO get(
         @Valid @RequestBody UserEmailRequest emailRequest
     ) throws EntityNotFoundException {
@@ -40,6 +43,7 @@ public class AdminController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public AdminDTO create(@Valid @RequestBody AdminRequest adminRequest) {
 
         return adminService.create(

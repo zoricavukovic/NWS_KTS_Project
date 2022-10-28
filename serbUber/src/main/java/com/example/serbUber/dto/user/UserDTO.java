@@ -7,7 +7,7 @@ import com.example.serbUber.model.user.User;
 import java.util.LinkedList;
 import java.util.List;
 
-public class UserDTO {
+public class UserDTO{
 
     private final String email;
     private final String name;
@@ -27,6 +27,26 @@ public class UserDTO {
         this.profilePicture = user.getProfilePicture();
         this.role = user.getRole();
         this.password = user.getPassword();
+    }
+
+    public UserDTO(
+        final String email,
+        final String name,
+        final String surname,
+        final String phoneNumber,
+        final Location address,
+        final String profilePicture,
+        final Role role,
+        final String password
+    ) {
+        this.email = email;
+        this.name = name;
+        this.surname = surname;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+        this.profilePicture = profilePicture;
+        this.role = role;
+        this.password = password;
     }
 
     public static List<UserDTO> fromUsers(final List<User> users){

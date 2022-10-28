@@ -35,20 +35,35 @@ export class AuthService {
     );
     }
 
-  // loginWithGoogle(token:String):Observable<User> {
+  loginWithGoogle(token:String):Observable<User> {
     
-  //   return this.http.post<LoginResponse>(this.configService.auth_url, {token})
-  //   .pipe(
-  //       map((response) => { 
-  //           const loggedUser = response as LoginResponse;
-  //           this.setLocalStorage(loggedUser); 
-  //           this.currentUser = loggedUser.userDTO;
+    return this.http.post<LoginResponse>(this.configService.login_with_gmail_url, {token})
+    .pipe(
+        map((response) => { 
+            const loggedUser = response as LoginResponse;
+            this.setLocalStorage(loggedUser); 
+            this.currentUser = loggedUser.userDTO;
 
-  //           return loggedUser.userDTO;
-  //         }
-  //       ).call
-  //   );
-  // }
+            return loggedUser.userDTO;
+          }
+        )
+    );
+  }
+
+  loginWithFacebook(token:String):Observable<User> {
+    
+    return this.http.post<LoginResponse>(this.configService.login_with_facebook_url, {token})
+    .pipe(
+        map((response) => { 
+            const loggedUser = response as LoginResponse;
+            this.setLocalStorage(loggedUser); 
+            this.currentUser = loggedUser.userDTO;
+
+            return loggedUser.userDTO;
+          }
+        )
+    );
+  }
 
   setLocalStorage(loginResponse: LoginResponse): void {
     localStorage.setItem('token','Bearer ' + loginResponse.token);

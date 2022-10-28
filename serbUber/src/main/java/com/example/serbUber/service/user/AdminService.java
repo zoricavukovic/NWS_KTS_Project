@@ -1,7 +1,6 @@
 package com.example.serbUber.service.user;
 
 import com.example.serbUber.dto.user.AdminDTO;
-import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.EntityType;
 import com.example.serbUber.model.Location;
@@ -38,10 +37,10 @@ public class AdminService {
         return fromAdmins(admins);
     }
 
-    public UserDTO get(String email) throws EntityNotFoundException {
+    public AdminDTO get(String email) throws EntityNotFoundException {
         Optional<Admin> optionalAdmin = adminRepository.getAdminByEmail(email);
 
-        return optionalAdmin.map(UserDTO::new)
+        return optionalAdmin.map(AdminDTO::new)
             .orElseThrow(() ->  new EntityNotFoundException(email, EntityType.USER));
     }
 
