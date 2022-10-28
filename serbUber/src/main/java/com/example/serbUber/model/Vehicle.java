@@ -14,6 +14,19 @@ public class Vehicle {
     private double rate;
 
     public Vehicle(
+            final String id,
+            final boolean petFriendly,
+            final boolean babySeat,
+            final VehicleTypeInfo vehicleTypeInfo,
+            final double rate) {
+        this.id = id;
+        this.petFriendly = petFriendly;
+        this.babySeat = babySeat;
+        this.vehicleTypeInfo = vehicleTypeInfo;
+        this.rate = rate;
+    }
+
+    public Vehicle(
         final boolean petFriendly,
         final boolean babySeat,
         final VehicleTypeInfo vehicleTypeInfo,
@@ -39,5 +52,9 @@ public class Vehicle {
 
     public double getRate() {
         return rate;
+    }
+
+    public String getId() {
+        return id;
     }
 }

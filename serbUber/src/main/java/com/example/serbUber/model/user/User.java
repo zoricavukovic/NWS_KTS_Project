@@ -1,12 +1,15 @@
 package com.example.serbUber.model.user;
 
 import com.example.serbUber.model.Location;
+import org.checkerframework.common.aliasing.qual.Unique;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 public abstract class User {
 
     @Id
     private String id;
+    @Indexed(unique = true)
     private String email;
     private String password;
     private String name;

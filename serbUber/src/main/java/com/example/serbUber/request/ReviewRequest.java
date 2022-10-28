@@ -10,11 +10,11 @@ import javax.validation.constraints.Size;
 public class ReviewRequest {
 
     @NotNull(message = "Rate must exist")
-    @Range(min = Constants.minRate, max = Constants.maxRate, message = "Rate must be value between 1 and 5!")
+    @Range(min = Constants.MIN_RATE, max = Constants.MAX_RATE, message = "Rate must be value between 1 and 5!")
     private double vehicleRate;
 
     @NotNull
-    @Range(min = Constants.minRate, max = Constants.maxRate, message = "Rate must be value between 1 and 5!")
+    @Range(min = Constants.MIN_RATE, max = Constants.MAX_RATE, message = "Rate must be value between 1 and 5!")
     private double driverRate;
 
     @NotNull(message = "Message must exist!")
