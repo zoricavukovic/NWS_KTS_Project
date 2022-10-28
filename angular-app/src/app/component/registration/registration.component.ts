@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroupDirective, NgForm, Validators} from '@angular/forms';
 import {ErrorStateMatcher} from '@angular/material/core';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
+import {map, startWith} from 'rxjs/operators';
 import { RegistrationService } from 'src/app/service/registration.service';
 import { RegistrationRequest } from 'src/app/model/registration-request';
 
@@ -12,24 +13,32 @@ import { RegistrationRequest } from 'src/app/model/registration-request';
   templateUrl:'./registration.component.html'
 })
 export class RegistrationComponent implements OnInit{
+  filteredCities: Observable<string[]>;
   emailFormControl = new FormControl('', [Validators.required, Validators.email]);
   phoneNumberFormControl = new FormControl('', [Validators.required]);
   nameFormControl = new FormControl('', [Validators.required]);
   lastNameFormControl = new FormControl('', [Validators.required]);
   passwordAgainFormControl = new FormControl('', [Validators.required]);
-  addressFormControl = new FormControl('', [Validators.required]);
   passwordFormControl = new FormControl('',[Validators.required],);
-  addressNumberFormControl = new FormControl('',[Validators.required],);
   cityFormControl = new FormControl('',[Validators.required],);
-  zipCodeFormControl = new FormControl('',[Validators.required],);
   matcher = new MyErrorStateMatcher();
   
   ngOnInit(): void {
   }
 
+  cities: string[] = ['Belgrade', 'Novi Sad', 'Kraljevo', 'Sabac'];
   registrationSubscription: Subscription;
   constructor(private registrationService: RegistrationService) {
-    
+    this.filteredCities = this.cityFormControl.valueChanges.pipe(
+      startWith(''),
+      map(city=> (city ? this._filterCities(city) : this.cities.slice())),
+    );
+  } 
+
+  _filterCities(value: string): string[] {
+    const filterValue = value.toLowerCase();
+
+    return this.cities.filter(city => city.toLowerCase().includes(filterValue));
   }
   register(){
 
@@ -40,10 +49,7 @@ export class RegistrationComponent implements OnInit{
       this.nameFormControl.value,
       this.lastNameFormControl.value,
       this.phoneNumberFormControl.value,
-      this.zipCodeFormControl.value,
       this.cityFormControl.value,
-      this.addressNumberFormControl.value,
-      this.addressFormControl.value
     )).subscribe();
   }
 
