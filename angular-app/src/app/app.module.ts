@@ -22,7 +22,7 @@ import { RegistrationComponent } from './component/registration/registration.com
     HttpClientModule,
     MaterialModule,
     FormsModule,
-    ReactiveFormsModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
