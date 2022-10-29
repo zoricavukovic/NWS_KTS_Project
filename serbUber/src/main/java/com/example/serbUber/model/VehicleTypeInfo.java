@@ -12,6 +12,10 @@ public class VehicleTypeInfo {
     private double startPrice;
     private int numOfSeats;
 
+    public VehicleTypeInfo() {
+
+    }
+
     public VehicleTypeInfo(
         final VehicleType vehicleType,
         final double startPrice,

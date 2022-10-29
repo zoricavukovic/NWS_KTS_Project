@@ -32,6 +32,14 @@ public class RegularUser extends User{
     }
 
     public RegularUser(
+            final RegularUser regularUser
+    ) {
+        super(regularUser.getEmail(), regularUser.getPassword(), regularUser.getName(),
+                regularUser.getSurname(), regularUser.getPhoneNumber(), regularUser.getCity(),
+                regularUser.getProfilePicture(), new Role("ROLE_REGULAR_USER"));
+    }
+
+    public RegularUser(
         final String email,
         final String password,
         final String name,
@@ -57,5 +65,9 @@ public class RegularUser extends User{
 
     public List<Route> getFavourites() {
         return favourites;
+    }
+
+    public void setVerified(boolean verified) {
+        this.verified = verified;
     }
 }

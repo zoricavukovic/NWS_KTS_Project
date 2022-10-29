@@ -3,6 +3,7 @@ package com.example.serbUber.controller.user;
 import com.example.serbUber.dto.user.DriverDTO;
 import com.example.serbUber.exception.EntityAlreadyExistsException;
 import com.example.serbUber.exception.EntityNotFoundException;
+import com.example.serbUber.exception.MailCannotBeSentException;
 import com.example.serbUber.exception.PasswordsDoNotMatchException;
 import com.example.serbUber.request.user.DriverRegistrationRequest;
 import com.example.serbUber.request.user.UserEmailRequest;
@@ -42,7 +43,7 @@ public class DriverController {
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public DriverDTO create(@Valid @RequestBody DriverRegistrationRequest driverRegistrationRequest)
-            throws EntityNotFoundException, PasswordsDoNotMatchException, EntityAlreadyExistsException {
+            throws EntityNotFoundException, PasswordsDoNotMatchException, EntityAlreadyExistsException, MailCannotBeSentException {
 
         return driverService.create(
             driverRegistrationRequest.getEmail(),

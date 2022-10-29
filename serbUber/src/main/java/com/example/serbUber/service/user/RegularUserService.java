@@ -4,12 +4,15 @@ import com.example.serbUber.dto.user.RegularUserDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.EntityType;
 import com.example.serbUber.exception.PasswordsDoNotMatchException;
+import com.example.serbUber.exception.WrongVerifyTryException;
 import com.example.serbUber.model.Location;
+import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.model.user.LoginUserInfo;
 import com.example.serbUber.model.user.RegularUser;
 import com.example.serbUber.model.user.Role;
 import com.example.serbUber.repository.user.LoginUserInfoRepository;
 import com.example.serbUber.repository.user.RegularUserRepository;
+import com.example.serbUber.service.VerifyService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,11 +25,19 @@ import static com.example.serbUber.model.user.User.passwordsMatch;
 public class RegularUserService {
 
     private final RegularUserRepository regularUserRepository;
+
     private final LoginUserInfoRepository loginUserInfoRepository;
 
-    public RegularUserService(RegularUserRepository regularUserRepository, LoginUserInfoRepository loginUserInfoRepository) {
+    private final VerifyService verifyService;
+
+    public RegularUserService(
+            final RegularUserRepository regularUserRepository,
+            final LoginUserInfoRepository loginUserInfoRepository,
+            final VerifyService verifyService
+    ) {
         this.regularUserRepository = regularUserRepository;
         this.loginUserInfoRepository = loginUserInfoRepository;
+        this.verifyService = verifyService;
     }
 
     public List<RegularUserDTO> getAll() {
@@ -40,6 +51,13 @@ public class RegularUserService {
 
         return optionalRegularUser.map(RegularUserDTO::new)
             .orElseThrow(() ->  new EntityNotFoundException(email, EntityType.USER));
+    }
+
+    public RegularUser getRegularById(String id) throws EntityNotFoundException {
+        Optional<RegularUser> optionalRegularUser = regularUserRepository.findById(id);
+
+        return optionalRegularUser.map(RegularUser::new)
+                .orElseThrow(() ->  new EntityNotFoundException(id, EntityType.USER));
     }
 
     public RegularUserDTO create(
@@ -70,6 +88,18 @@ public class RegularUserService {
             return new RegularUserDTO(regularUser);
         } else {
             throw new PasswordsDoNotMatchException();
+        }
+    }
+
+    public void activate(String userId, String verifyId, int securityCode)
+    throws EntityNotFoundException, WrongVerifyTryException{
+        try {
+            verifyService.update(verifyId, securityCode);
+            RegularUser regularUser = getRegularById(userId);
+            regularUser.setVerified(true);
+            regularUserRepository.save(regularUser);
+        } catch (WrongVerifyTryException e) {
+            throw new WrongVerifyTryException(e.getMessage());
         }
     }
 }

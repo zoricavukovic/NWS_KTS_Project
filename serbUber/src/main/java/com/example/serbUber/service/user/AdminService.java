@@ -65,6 +65,7 @@ public class AdminService {
             profilePicture
         ));
         loginUserInfoRepository.save(new LoginUserInfo(email, hashedPassword, new Role("ROLE_ADMIN")));
+
         return new AdminDTO(admin);
     }
 

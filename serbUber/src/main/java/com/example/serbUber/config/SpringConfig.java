@@ -60,6 +60,8 @@ public class SpringConfig extends WebSecurityConfigurerAdapter {
             .permitAll()
             .antMatchers("/drivers")
             .permitAll()
+            .antMatchers("/verify")
+            .permitAll()
             .anyRequest()
             .authenticated()
             .and()

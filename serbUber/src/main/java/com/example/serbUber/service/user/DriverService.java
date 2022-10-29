@@ -1,15 +1,14 @@
 package com.example.serbUber.service.user;
 
 import com.example.serbUber.dto.user.DriverDTO;
-import com.example.serbUber.exception.EntityAlreadyExistsException;
-import com.example.serbUber.exception.EntityNotFoundException;
-import com.example.serbUber.exception.EntityType;
-import com.example.serbUber.exception.PasswordsDoNotMatchException;
+import com.example.serbUber.exception.*;
 import com.example.serbUber.model.Vehicle;
 import com.example.serbUber.model.VehicleType;
 import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.repository.user.DriverRepository;
 import com.example.serbUber.service.VehicleService;
+import com.example.serbUber.service.VerifyService;
+import com.example.serbUber.util.Constants;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,11 +26,17 @@ public class DriverService {
 
     private final VehicleService vehicleService;
 
+    private final VerifyService verifyService;
+
+
     public DriverService(
             final DriverRepository driverRepository,
-            final VehicleService vehicleService) {
+            final VehicleService vehicleService,
+            final VerifyService verifyService
+    ) {
         this.driverRepository = driverRepository;
         this.vehicleService = vehicleService;
+        this.verifyService = verifyService;
     }
 
     public List<DriverDTO> getAll() {
@@ -47,6 +52,16 @@ public class DriverService {
             .orElseThrow(() ->  new EntityNotFoundException(email, EntityType.USER));
     }
 
+    public Driver getById(String id) throws EntityNotFoundException {
+        Optional<Driver> optionalDriver = driverRepository.getDriverById(id);
+
+        if (optionalDriver.isPresent()){
+            return optionalDriver.get();
+        } else {
+            throw new EntityNotFoundException(id, EntityType.USER);
+        }
+    }
+
     public DriverDTO create(
             final String email,
             final String password,
@@ -59,7 +74,8 @@ public class DriverService {
             final boolean petFriendly,
             final boolean babySeat,
             final VehicleType vehicleType
-            ) throws EntityNotFoundException, PasswordsDoNotMatchException, EntityAlreadyExistsException {
+            ) throws EntityNotFoundException, PasswordsDoNotMatchException, EntityAlreadyExistsException, MailCannotBeSentException
+    {
 
         if (!passwordsMatch(password, confirmPassword)) {
             throw new PasswordsDoNotMatchException();
@@ -74,14 +90,33 @@ public class DriverService {
                     surname,
                     phoneNumber,
                     city,
-                    (profilePicture == null) ? "default.jpg" : profilePicture,
+                    (profilePicture == null) ? Constants.DEFAULT_PICTURE : profilePicture,
                     vehicle
             ));
+            String verifyId = verifyService.sendEmail(driver.getId(), driver.getEmail());
+            DriverDTO newDriver = new DriverDTO(driver);
+            newDriver.setVerifyId(verifyId);
 
-            return new DriverDTO(driver);
-
+            return newDriver;
+        }catch (MailCannotBeSentException e) {
+            throw new MailCannotBeSentException(e.getMessage());
         } catch (Exception e) {
             throw new EntityAlreadyExistsException("User with " + email + " already exists.");
         }
+    }
+
+
+
+    public void activate(String userId, String verifyId, int securityCode)
+            throws EntityNotFoundException, WrongVerifyTryException {
+        try {
+            verifyService.update(verifyId, securityCode);
+            Driver driver = getById(userId);
+            driver.setVerified(true);
+            driverRepository.save(driver);
+        } catch (WrongVerifyTryException e) {
+            throw new WrongVerifyTryException(e.getMessage());
+        }
+
     }
 }

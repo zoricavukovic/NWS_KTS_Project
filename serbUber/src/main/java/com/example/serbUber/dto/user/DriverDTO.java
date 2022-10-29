@@ -11,7 +11,7 @@ import java.util.List;
 
 public class DriverDTO {
 
-
+    private String id;
     private String email;
     private String name;
     private String surname;
@@ -28,8 +28,10 @@ public class DriverDTO {
     private LocalDateTime lastActive;
     private LocalDateTime startShift;
     private LocalDateTime endShift;
+    private String verifyId = null;
 
     public DriverDTO(final Driver driver) {
+        this.id = driver.getId();
         this.email = driver.getEmail();
         this.name = driver.getName();
         this.surname = driver.getSurname();
@@ -79,5 +81,17 @@ public class DriverDTO {
 
     public String getProfilePicture() {
         return profilePicture;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getVerifyId() {
+        return verifyId;
+    }
+
+    public void setVerifyId(String verifyId) {
+        this.verifyId = verifyId;
     }
 }

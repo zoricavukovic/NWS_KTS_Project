@@ -17,4 +17,19 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> passwordsDoNotMatchException(PasswordsDoNotMatchException passwordsDoNotMatchException) {
         return new ResponseEntity<>(passwordsDoNotMatchException.getMessage(), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(value = EntityAlreadyExistsException.class)
+    public ResponseEntity<String> entityAlreadyExistsException(EntityAlreadyExistsException entityAlreadyExists) {
+        return new ResponseEntity<>(entityAlreadyExists.getMessage(), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(value = MailCannotBeSentException.class)
+    public ResponseEntity<String> mailCannotBeSentException(MailCannotBeSentException mailCannotBeSentException) {
+        return new ResponseEntity<>(mailCannotBeSentException.getMessage(), HttpStatus.EXPECTATION_FAILED);
+    }
+
+    @ExceptionHandler(value = WrongVerifyTryException.class)
+    public ResponseEntity<String> wrongVerifyTryException(WrongVerifyTryException wrongVerifyTryException) {
+        return new ResponseEntity<>(wrongVerifyTryException.getMessage(), HttpStatus.EXPECTATION_FAILED);
+    }
 }

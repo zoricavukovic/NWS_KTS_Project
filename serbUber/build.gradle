@@ -25,6 +25,7 @@ dependencies {
 	implementation 'com.google.auth:google-auth-library-oauth2-http:1.12.1'
 	implementation 'com.google.apis:google-api-services-drive:v3-rev20220815-2.0.0'
 	implementation 'com.auth0:java-jwt:4.1.0'
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
