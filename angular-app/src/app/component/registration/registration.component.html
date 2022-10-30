@@ -3,57 +3,69 @@
         <mat-grid-tile></mat-grid-tile>
         <mat-grid-tile></mat-grid-tile>
         <mat-grid-tile rowspan="3">
-            <form class="example-form">
+            <form class="example-form" [formGroup]="registrationForm">
                 <h1 class="title">SerbUber</h1>
                 <h2 class="subtitle">Registration</h2>
                 <mat-form-field appearance="fill">
                 <mat-label>Email</mat-label>
-                <input type="email" matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher">
-                <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
+                <input type="email" matInput formControlName="emailFormControl" [errorStateMatcher]="matcher">
+                <mat-error *ngIf="registrationForm.get('emailFormControl').hasError('email') && !registrationForm.get('emailFormControl').hasError('required')">
                     Please enter a valid email address
                 </mat-error>
-                <mat-error *ngIf="emailFormControl.hasError('required')">
+                <mat-error *ngIf="registrationForm.get('emailFormControl').hasError('required')">
                     Email is <strong>required</strong>
                 </mat-error>
                 </mat-form-field>
 
                 <mat-form-field appearance="fill">
                 <mat-label>Phone number</mat-label>
-                <input type="tel" matInput [formControl]="phoneNumberFormControl" [errorStateMatcher]="matcher">
-                <mat-error *ngIf="emailFormControl.hasError('required')">
+                <input type="tel" matInput formControlName="phoneNumberFormControl" [errorStateMatcher]="matcher">
+                <mat-error *ngIf="registrationForm.get('phoneNumberFormControl').hasError('required')">
                     Phone number is <strong>required</strong>
+                </mat-error>
+                <mat-error *ngIf="registrationForm.get('phoneNumberFormControl').hasError('pattern')">
+                    Please enter a valid phone number
                 </mat-error>
                 </mat-form-field>
             <br>
                 <mat-form-field appearance="fill">
                 <mat-label>Name</mat-label>
-                <input type="text" matInput [formControl]="nameFormControl" [errorStateMatcher]="matcher">
-                <mat-error *ngIf="nameFormControl.hasError('required')">
+                <input type="text" matInput formControlName="nameFormControl" [errorStateMatcher]="matcher">
+                <mat-error *ngIf="registrationForm.get('nameFormControl').hasError('required')">
                     Name is <strong>required</strong>
+                </mat-error>
+                <mat-error *ngIf="registrationForm.get('nameFormControl').hasError('pattern')">
+                    Please enter a valid name
                 </mat-error>
                 </mat-form-field>
 
                 <mat-form-field appearance="fill">
                 <mat-label>Surname</mat-label>
-                <input type="text" matInput [formControl]="lastNameFormControl" [errorStateMatcher]="matcher">
-                <mat-error *ngIf="lastNameFormControl.hasError('required')">
+                <input type="text" matInput formControlName="surnameFormControl" [errorStateMatcher]="matcher">
+                <mat-error *ngIf="registrationForm.get('surnameFormControl').hasError('required')">
                     Surname is <strong>required</strong>
+                </mat-error>
+                <mat-error *ngIf="registrationForm.get('surnameFormControl').hasError('pattern')">
+                    Please enter a valid surname
                 </mat-error>
                 </mat-form-field>
             <br>
                 <mat-form-field appearance="fill">
                 <mat-label>Password</mat-label>
-                <input type="password" matInput [formControl]="passwordFormControl" [errorStateMatcher]="matcher">
-                <mat-error *ngIf="passwordFormControl.hasError('required')">
+                <input type="password" matInput formControlName="passwordFormControl" [errorStateMatcher]="matcher">
+                <mat-error *ngIf="registrationForm.get('passwordFormControl').hasError('required')">
                     Password is <strong>required</strong>
                 </mat-error>
                 </mat-form-field>
 
                 <mat-form-field appearance="fill">
                 <mat-label>Confirm password</mat-label>
-                <input type="password" matInput [formControl]="passwordAgainFormControl" [errorStateMatcher]="matcher">
-                <mat-error *ngIf="passwordAgainFormControl.hasError('required')">
-                    Password is <strong>required</strong>
+                <input type="password" matInput formControlName="passwordAgainFormControl" [errorStateMatcher]="matcher">
+                <mat-error *ngIf="registrationForm.get('passwordAgainFormControl').hasError('required')">
+                    Confirm password is <strong>required</strong>
+                </mat-error>
+                <mat-error *ngIf="registrationForm.get('passwordAgainFormControl').hasError('mismatch')">
+                    Passwords are not match
                 </mat-error>
                 </mat-form-field>
                 
@@ -62,13 +74,13 @@
                     <mat-label>City</mat-label>
                     <input type="text" matInput [errorStateMatcher]="matcher" aria-label="State"
                     [matAutocomplete]="auto"
-                    [formControl]="cityFormControl">
+                    formControlName="cityFormControl">
                     <mat-autocomplete #auto="matAutocomplete">
                         <mat-option *ngFor="let city of filteredCities | async" [value]="city">
                           <span>{{city}}</span> 
                         </mat-option>
                       </mat-autocomplete>
-                    <mat-error *ngIf="cityFormControl.hasError('required')">
+                    <mat-error *ngIf="registrationForm.get('cityFormControl').hasError('required')">
                         City is <strong>required</strong>
                     </mat-error>
                 </mat-form-field>

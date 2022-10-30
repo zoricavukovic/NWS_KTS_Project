@@ -24,13 +24,13 @@ public class RegularUserRequest {
     @Pattern(regexp = Constants.LEGIT_NAME_REG, message = "Name must contain only letters and cannot be too long.")
     private final String name;
 
-    @Pattern(regexp = Constants.LEGIT_NAME_REG, message = "Surname must contain betwen 2 and 30 letters.")
+    @Pattern(regexp = Constants.LEGIT_NAME_REG, message = "Surname must contain between 2 and 30 letters.")
     private final String surname;
 
     @Pattern(regexp = Constants.LEGIT_PHONE_NUMBER_REG, message = "Phone number must contain 9 digits.")
     private final String phoneNumber;
 
-    @Pattern(regexp = Constants.LEGIT_NAME_REG, message = "City must contain betwen 2 and 30 letters.")
+    @Pattern(regexp = Constants.LEGIT_NAME_REG, message = "City must contain between 2 and 30 letters.")
     private String city;
 
     private final String profilePicture;
