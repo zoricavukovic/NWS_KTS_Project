@@ -4,6 +4,7 @@ import com.example.serbUber.dto.user.DriverDTO;
 import com.example.serbUber.exception.*;
 import com.example.serbUber.model.Vehicle;
 import com.example.serbUber.model.VehicleType;
+import com.example.serbUber.model.Verify;
 import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.repository.user.DriverRepository;
 import com.example.serbUber.service.VehicleService;
@@ -107,11 +108,11 @@ public class DriverService {
 
 
 
-    public void activate(String userId, String verifyId, int securityCode)
+    public void activate(String verifyId, int securityCode)
             throws EntityNotFoundException, WrongVerifyTryException {
         try {
-            verifyService.update(verifyId, securityCode);
-            Driver driver = getById(userId);
+            Verify verify = verifyService.update(verifyId, securityCode);
+            Driver driver = getById(verify.getUserId());
             driver.setVerified(true);
             driverRepository.save(driver);
         } catch (WrongVerifyTryException e) {

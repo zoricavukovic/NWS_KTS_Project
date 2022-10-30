@@ -23,16 +23,16 @@ export class AuthService {
       console.log(loginRequest);
 
       return this.http.post<LoginResponse>(this.configService.login_url, loginRequest)
-    .pipe(
-        map((response) => { 
-            const loggedUser = response as LoginResponse;
-            this.setLocalStorage(loggedUser); 
-            this.currentUser = loggedUser.userDTO;
+      .pipe(
+          map((response) => { 
+              const loggedUser = response as LoginResponse;
+              this.setLocalStorage(loggedUser); 
+              this.currentUser = loggedUser.userDTO;
 
-            return loggedUser.userDTO;
-          }
-        )
-    );
+              return loggedUser.userDTO;
+            }
+          )
+      );
     }
 
   // loginWithGoogle(token:String):Observable<User> {

@@ -1,6 +1,7 @@
 package com.example.serbUber.controller;
 
 import com.example.serbUber.exception.EntityNotFoundException;
+import com.example.serbUber.exception.MailCannotBeSentException;
 import com.example.serbUber.exception.WrongVerifyTryException;
 import com.example.serbUber.request.VerifyRequest;
 import com.example.serbUber.service.VerifyService;
@@ -19,12 +20,26 @@ public class VerifyController {
 
     public final RegularUserService regularUserService;
 
+    public final VerifyService verifyService;
+
     public VerifyController(
             final DriverService driverService,
-            final RegularUserService regularUserService
+            final RegularUserService regularUserService,
+            final VerifyService verifyService
         ) {
         this.driverService = driverService;
         this.regularUserService = regularUserService;
+        this.verifyService = verifyService;
+    }
+
+    @PostMapping("/send-code-again")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void create(@RequestBody String verifyId)
+            throws EntityNotFoundException, MailCannotBeSentException {
+
+        this.verifyService.generateNewSecurityCode(
+          verifyId
+        );
     }
 
     @PutMapping()
@@ -34,13 +49,11 @@ public class VerifyController {
 
         if (verifyRequest.getUserRole().equalsIgnoreCase("ROLE_DRIVER")){
             driverService.activate(
-                verifyRequest.getUserId(),
                 verifyRequest.getVerifyId(),
                 verifyRequest.getSecurityCode()
             );
         } else if (verifyRequest.getUserRole().equalsIgnoreCase("ROLE_REGULAR_USER")) {
             regularUserService.activate(
-                verifyRequest.getUserId(),
                 verifyRequest.getVerifyId(),
                 verifyRequest.getSecurityCode()
             );
