@@ -84,3 +84,8 @@ div {
 input:invalid {
     border: 2px solid red;
 }
+
+mat-icon.mail-icon {
+    transform: scale(4);
+    margin-bottom: 5%;
+}

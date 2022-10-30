@@ -65,27 +65,33 @@ public class VerifyService {
         )));
     }
 
-    public void update(String id, int securityCode)
+    public Verify update(String id, int securityCode)
             throws EntityNotFoundException, WrongVerifyTryException {
         Verify verify = get(id);
-
         if (verify.isNotUsed() && verify.hasTries() && verify.checkSecurityCode(securityCode)){
             verify.setNumOfTries(verify.getNumOfTries() + 1);
             verify.setUsed(true);
             verifyRepository.save(verify);
 
-        } else if (verify.hasTries()){
+            return verify;
+        } else if (verify.hasTries() && verify.isNotUsed()){
             verify.setNumOfTries(verify.getNumOfTries() + 1);
             verify.setUsed(verify.getNumOfTries() >= 3);
             verifyRepository.save(verify);
-
             throw new WrongVerifyTryException("Your security code is not accepted. Try again.");
         } else {
             verify.setUsed(true);
             verifyRepository.save(verify);
-
             throw new WrongVerifyTryException("You tried to verify with wrong code more than 3 times.");
         }
     }
 
+    public void generateNewSecurityCode(String verifyId)
+            throws EntityNotFoundException, MailCannotBeSentException {
+        Verify verify = get(verifyId);
+        verify.setUsed(true);
+        verifyRepository.save(verify);
+
+        this.sendEmail(verify.getUserId(), verify.getEmail());
+    }
 }

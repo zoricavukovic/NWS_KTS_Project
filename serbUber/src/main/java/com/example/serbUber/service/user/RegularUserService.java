@@ -6,6 +6,7 @@ import com.example.serbUber.exception.EntityType;
 import com.example.serbUber.exception.PasswordsDoNotMatchException;
 import com.example.serbUber.exception.WrongVerifyTryException;
 import com.example.serbUber.model.Location;
+import com.example.serbUber.model.Verify;
 import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.model.user.LoginUserInfo;
 import com.example.serbUber.model.user.RegularUser;
@@ -91,11 +92,11 @@ public class RegularUserService {
         }
     }
 
-    public void activate(String userId, String verifyId, int securityCode)
+    public void activate(String verifyId, int securityCode)
     throws EntityNotFoundException, WrongVerifyTryException{
         try {
-            verifyService.update(verifyId, securityCode);
-            RegularUser regularUser = getRegularById(userId);
+            Verify verify = verifyService.update(verifyId, securityCode);
+            RegularUser regularUser = getRegularById(verify.getUserId());
             regularUser.setVerified(true);
             regularUserRepository.save(regularUser);
         } catch (WrongVerifyTryException e) {
