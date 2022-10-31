@@ -4,9 +4,27 @@ plugins {
 	id 'java'
 }
 
-group = 'com.example'
+group = 'com.example.serbUber'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
+archivesBaseName = 'springboot-mongo-docker'
+apply plugin: "java"
+apply plugin: "application"
+apply plugin: "org.springframework.boot"
+
+compileJava {
+	sourceCompatibility = 17
+	targetCompatibility = 17
+	mainClassName       = "com.example.serbUber.SerbUberApplication"
+}
+
+jar {
+	baseName = "springboot-mongo-docker"
+	group    = "com.example.serbUber"
+	version  = "0.0.1-SNAPSHOT"
+	manifest { attributes "Main-Class": "com.example.serbUber.SerbUberApplication" }
+}
+
 
 repositories {
 	mavenCentral()

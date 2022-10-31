@@ -30,11 +30,6 @@ export class LoginComponent implements OnInit {
               private social: AuthService) { }
 
   ngOnInit(): void {
-    this.authService.authState.subscribe(
-      data => {
-        this.isLogin = (data != null);
-      }
-    );
   }
 
   signInWithGoogle(): void {
@@ -47,6 +42,11 @@ export class LoginComponent implements OnInit {
         );
       }
     );
+    this.authService.authState.subscribe(
+      data => {
+        this.isLogin = (data != null);
+      }
+    );
   }
 
   signInWithFB(): void {
@@ -57,6 +57,12 @@ export class LoginComponent implements OnInit {
             console.log(res);
           }
         );
+      }
+    );
+
+    this.authService.authState.subscribe(
+      data => {
+        this.isLogin = (data != null);
       }
     );
   }

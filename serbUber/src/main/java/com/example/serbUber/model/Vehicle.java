@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "vehicle")
 public class Vehicle {
     @Id
-    private String id;
+    private Long id;
 
     private boolean petFriendly;
     private boolean babySeat;
