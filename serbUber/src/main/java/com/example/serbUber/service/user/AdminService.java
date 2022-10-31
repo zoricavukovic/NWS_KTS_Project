@@ -4,7 +4,6 @@ import com.example.serbUber.dto.user.AdminDTO;
 import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.EntityType;
-import com.example.serbUber.model.Location;
 import com.example.serbUber.model.user.Admin;
 import com.example.serbUber.model.user.LoginUserInfo;
 import com.example.serbUber.model.user.Role;
@@ -16,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.example.serbUber.dto.user.AdminDTO.fromAdmins;
+import static com.example.serbUber.util.Constants.getProfilePicture;
 import static com.example.serbUber.util.JwtProperties.getHashedNewUserPassword;
 
 @Service
@@ -51,7 +51,7 @@ public class AdminService {
         final String name,
         final String surname,
         final String phoneNumber,
-        final Location address,
+        final String city,
         final String profilePicture
     ) {
         String hashedPassword = getHashedNewUserPassword(password);
@@ -61,10 +61,11 @@ public class AdminService {
             name,
             surname,
             phoneNumber,
-            address,
-            profilePicture
+            city,
+            getProfilePicture(profilePicture)
         ));
         loginUserInfoRepository.save(new LoginUserInfo(email, hashedPassword, new Role("ROLE_ADMIN")));
+
         return new AdminDTO(admin);
     }
 

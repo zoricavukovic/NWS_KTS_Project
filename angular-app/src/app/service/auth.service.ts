@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { LoginRequest } from '../model/login-request';
 import { LoginResponse } from '../model/login-response';
 import { User } from '../model/user';
@@ -23,16 +22,16 @@ export class AuthService {
       console.log(loginRequest);
 
       return this.http.post<LoginResponse>(this.configService.login_url, loginRequest)
-    .pipe(
-        map((response) => { 
-            const loggedUser = response as LoginResponse;
-            this.setLocalStorage(loggedUser); 
-            this.currentUser = loggedUser.userDTO;
+      .pipe(
+          map((response) => { 
+              const loggedUser = response as LoginResponse;
+              this.setLocalStorage(loggedUser); 
+              this.currentUser = loggedUser.userDTO;
 
-            return loggedUser.userDTO;
-          }
-        )
-    );
+              return loggedUser.userDTO;
+            }
+          )
+      );
     }
 
   // loginWithGoogle(token:String):Observable<User> {

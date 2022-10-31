@@ -15,20 +15,8 @@ public class RegularUser extends User{
     private List<Driving> drives = new LinkedList<>();
     private List<Route> favourites = new LinkedList<>();
 
-    public RegularUser(
-        final String email,
-        final String password,
-        final String name,
-        final String surname,
-        final String phoneNumber,
-        final Location address,
-        final String profilePicture,
-        final List<Driving> drives,
-        final List<Route> favourites
-    ) {
-        super(email, password, name, surname, phoneNumber, address, profilePicture, new Role("ROLE_REGULAR_USER"));
-        this.drives = drives;
-        this.favourites = favourites;
+    public RegularUser() {
+        super();
     }
 
     public RegularUser(
@@ -37,10 +25,34 @@ public class RegularUser extends User{
         final String name,
         final String surname,
         final String phoneNumber,
-        final Location address,
+        final String city,
+        final String profilePicture,
+        final List<Driving> drives,
+        final List<Route> favourites
+    ) {
+        super(email, password, name, surname, phoneNumber, city, profilePicture, new Role("ROLE_REGULAR_USER"));
+        this.drives = drives;
+        this.favourites = favourites;
+    }
+
+    public RegularUser(
+            final RegularUser regularUser
+    ) {
+        super(regularUser.getEmail(), regularUser.getPassword(), regularUser.getName(),
+                regularUser.getSurname(), regularUser.getPhoneNumber(), regularUser.getCity(),
+                regularUser.getProfilePicture(), new Role("ROLE_REGULAR_USER"));
+    }
+
+    public RegularUser(
+        final String email,
+        final String password,
+        final String name,
+        final String surname,
+        final String phoneNumber,
+        final String city,
         final String profilePicture
     ) {
-        super(email, password, name, surname, phoneNumber, address, profilePicture, new Role("ROLE_REGULAR_USER"));
+        super(email, password, name, surname, phoneNumber, city, profilePicture, new Role("ROLE_REGULAR_USER"));
     }
 
     public boolean isBlocked() {
@@ -57,5 +69,9 @@ public class RegularUser extends User{
 
     public List<Route> getFavourites() {
         return favourites;
+    }
+
+    public void setVerified(boolean verified) {
+        this.verified = verified;
     }
 }

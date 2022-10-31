@@ -11,12 +11,12 @@ import java.util.List;
 
 public class DriverDTO {
 
-
+    private String id;
     private String email;
     private String name;
     private String surname;
     private String phoneNumber;
-    private Location address;
+    private String city;
     private String profilePicture;
     private boolean blocked;
     private boolean active;
@@ -30,11 +30,12 @@ public class DriverDTO {
     private LocalDateTime endShift;
 
     public DriverDTO(final Driver driver) {
+        this.id = driver.getId();
         this.email = driver.getEmail();
         this.name = driver.getName();
         this.surname = driver.getSurname();
         this.phoneNumber = driver.getPhoneNumber();
-        this.address = driver.getAddress();
+        this.city = driver.getCity();
         this.profilePicture = driver.getProfilePicture();
         this.blocked = driver.isBlocked();
         this.rate = driver.getRate();
@@ -73,11 +74,15 @@ public class DriverDTO {
         return phoneNumber;
     }
 
-    public Location getAddress() {
-        return address;
+    public String getCity() {
+        return city;
     }
 
     public String getProfilePicture() {
         return profilePicture;
+    }
+
+    public String getId() {
+        return id;
     }
 }
