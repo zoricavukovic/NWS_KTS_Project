@@ -1,8 +1,5 @@
 package com.example.serbUber;
 
-import com.example.serbUber.repository.LocationRepository;
-import com.example.serbUber.service.LocationService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;

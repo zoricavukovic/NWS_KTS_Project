@@ -52,7 +52,7 @@ public class AdminController {
             adminRequest.getName(),
             adminRequest.getSurname(),
             adminRequest.getPhoneNumber(),
-            adminRequest.getAddress(),
+            adminRequest.getCity(),
             adminRequest.getProfilePicture()
         );
     }

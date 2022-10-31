@@ -5,6 +5,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatIconModule} from '@angular/material/icon';
+import { MatOptionModule } from '@angular/material/core';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
 
 const MaterialConstants = [
   MatButtonModule,
@@ -12,7 +14,9 @@ const MaterialConstants = [
   MatFormFieldModule,
   MatGridListModule,
   MatDividerModule,
-  MatIconModule
+  MatIconModule,
+  MatOptionModule,
+  MatAutocompleteModule
 ]
 
 @NgModule({

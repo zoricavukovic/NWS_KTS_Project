@@ -44,6 +44,7 @@ dependencies {
 	implementation 'com.google.apis:google-api-services-drive:v3-rev20220815-2.0.0'
 	implementation 'org.springframework.social:spring-social-facebook:2.0.3.RELEASE'
 	implementation 'com.auth0:java-jwt:4.1.0'
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 

@@ -4,11 +4,13 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import static com.example.serbUber.exception.ErrorMessagesConstants.*;
+
 public class UserEmailRequest {
 
-    @NotBlank(message = "Email must exist!")
-    @Size(max = 1024, message = "Email length is too long.")
-    @Email(message = "Email is in wrong format")
+    @Email(message = WRONG_EMAIL)
+    @NotBlank(message = EMPTY_EMAIL)
+    @Size(max = 60, message = TOO_LONG_EMAIL)
     private final String email;
 
     public UserEmailRequest(final String email) {

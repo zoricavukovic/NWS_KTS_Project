@@ -1,8 +1,11 @@
 package com.example.serbUber.controller.user;
 
 import com.example.serbUber.dto.user.DriverDTO;
+import com.example.serbUber.exception.EntityAlreadyExistsException;
 import com.example.serbUber.exception.EntityNotFoundException;
-import com.example.serbUber.request.user.DriverRequest;
+import com.example.serbUber.exception.MailCannotBeSentException;
+import com.example.serbUber.exception.PasswordsDoNotMatchException;
+import com.example.serbUber.request.user.DriverRegistrationRequest;
 import com.example.serbUber.request.user.UserEmailRequest;
 import com.example.serbUber.service.user.DriverService;
 import org.springframework.http.HttpStatus;
@@ -37,18 +40,23 @@ public class DriverController {
         return driverService.get(emailRequest.getEmail());
     }
 
-    @PostMapping()
+    @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public DriverDTO create(@Valid @RequestBody DriverRequest driverRequest) {
+    public DriverDTO create(@Valid @RequestBody DriverRegistrationRequest driverRegistrationRequest)
+            throws EntityNotFoundException, PasswordsDoNotMatchException, EntityAlreadyExistsException, MailCannotBeSentException {
 
         return driverService.create(
-            driverRequest.getEmail(),
-            driverRequest.getPassword(),
-            driverRequest.getName(),
-            driverRequest.getSurname(),
-            driverRequest.getPhoneNumber(),
-            driverRequest.getAddress(),
-            driverRequest.getProfilePicture()
+            driverRegistrationRequest.getEmail(),
+            driverRegistrationRequest.getPassword(),
+            driverRegistrationRequest.getConfirmPassword(),
+            driverRegistrationRequest.getName(),
+            driverRegistrationRequest.getSurname(),
+            driverRegistrationRequest.getPhoneNumber(),
+            driverRegistrationRequest.getCity(),
+            driverRegistrationRequest.getProfilePicture(),
+            driverRegistrationRequest.getVehicleRequest().isPetFriendly(),
+            driverRegistrationRequest.getVehicleRequest().isBabySeat(),
+            driverRegistrationRequest.getVehicleRequest().getVehicleType()
         );
     }
 }

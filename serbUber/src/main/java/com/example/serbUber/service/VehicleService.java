@@ -36,7 +36,7 @@ public class VehicleService {
                 petFriendly,
                 babySeat,
                 toVehicleTypeInfo(vehicleTypeInfoService.findBy(vehicleType)),
-                Constants.startingRate
+                Constants.STARTING_RATE
         ));
 
         return new VehicleDTO(vehicle);

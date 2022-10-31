@@ -11,12 +11,16 @@ import { SocialLoginModule, SocialAuthServiceConfig } from '@abacritt/angularx-s
 import { GoogleLoginProvider, FacebookLoginProvider } from '@abacritt/angularx-social-login';
 import { environment } from 'src/environments/environment';
 import { RegistrationComponent } from './component/registration/registration.component';
+import { VerifyComponent } from './component/verify/verify.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    RegistrationComponent
+    RegistrationComponent,
+    VerifyComponent
   ],
   imports: [
     BrowserModule,
@@ -49,7 +53,9 @@ import { RegistrationComponent } from './component/registration/registration.com
           console.error(err);
         }
       } as SocialAuthServiceConfig,
-    }
+    },
+    MatCheckboxModule,
+    MatSelectModule
   ],
   bootstrap: [AppComponent]
 })

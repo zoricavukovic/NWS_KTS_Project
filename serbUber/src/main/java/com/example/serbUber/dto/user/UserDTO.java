@@ -1,6 +1,5 @@
 package com.example.serbUber.dto.user;
 
-import com.example.serbUber.model.Location;
 import com.example.serbUber.model.user.Role;
 import com.example.serbUber.model.user.User;
 
@@ -13,7 +12,7 @@ public class UserDTO{
     private final String name;
     private final String surname;
     private final String phoneNumber;
-    private final Location address;
+    private final String city;
     private final String profilePicture;
     private Role role;
     private String password;
@@ -23,7 +22,7 @@ public class UserDTO{
         this.name = user.getName();
         this.surname = user.getSurname();
         this.phoneNumber = user.getPhoneNumber();
-        this.address = user.getAddress();
+        this.city = user.getCity();
         this.profilePicture = user.getProfilePicture();
         this.role = user.getRole();
         this.password = user.getPassword();
@@ -34,7 +33,7 @@ public class UserDTO{
         final String name,
         final String surname,
         final String phoneNumber,
-        final Location address,
+        final String city,
         final String profilePicture,
         final Role role,
         final String password
@@ -43,7 +42,7 @@ public class UserDTO{
         this.name = name;
         this.surname = surname;
         this.phoneNumber = phoneNumber;
-        this.address = address;
+        this.city = city;
         this.profilePicture = profilePicture;
         this.role = role;
         this.password = password;
@@ -74,8 +73,8 @@ public class UserDTO{
         return phoneNumber;
     }
 
-    public Location getAddress() {
-        return address;
+    public String getCity() {
+        return city;
     }
 
     public String getProfilePicture() {

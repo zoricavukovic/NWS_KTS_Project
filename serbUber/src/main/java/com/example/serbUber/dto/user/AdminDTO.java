@@ -13,7 +13,7 @@ public class AdminDTO extends UserDTO{
             admin.getName(),
             admin.getSurname(),
             admin.getPhoneNumber(),
-            admin.getAddress(),
+            admin.getCity(),
             admin.getProfilePicture(),
             admin.getRole(),
             admin.getPassword()

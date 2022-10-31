@@ -1,7 +1,9 @@
 package com.example.serbUber.controller.user;
 
 import com.example.serbUber.dto.user.RegularUserDTO;
+import com.example.serbUber.exception.EntityAlreadyExistsException;
 import com.example.serbUber.exception.EntityNotFoundException;
+import com.example.serbUber.exception.MailCannotBeSentException;
 import com.example.serbUber.exception.PasswordsDoNotMatchException;
 import com.example.serbUber.request.user.RegularUserRequest;
 import com.example.serbUber.request.user.UserEmailRequest;
@@ -41,17 +43,16 @@ public class RegularUserController {
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public RegularUserDTO create(@Valid @RequestBody RegularUserRequest regularUserRequest)
-        throws PasswordsDoNotMatchException
-    {
-        System.out.println(regularUserRequest.getEmail());
-;        return regularUserService.create(
+        throws PasswordsDoNotMatchException, EntityAlreadyExistsException, MailCannotBeSentException {
+
+        return regularUserService.create(
             regularUserRequest.getEmail(),
             regularUserRequest.getPassword(),
             regularUserRequest.getConfirmationPassword(),
             regularUserRequest.getName(),
             regularUserRequest.getSurname(),
             regularUserRequest.getPhoneNumber(),
-            regularUserRequest.getAddress(),
+            regularUserRequest.getCity(),
             regularUserRequest.getProfilePicture()
         );
     }

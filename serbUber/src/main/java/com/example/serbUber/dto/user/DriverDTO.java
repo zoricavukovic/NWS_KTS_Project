@@ -10,7 +10,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class DriverDTO extends UserDTO {
-
     private boolean blocked;
     private boolean active;
     private double rate;
@@ -27,7 +26,7 @@ public class DriverDTO extends UserDTO {
             driver.getName(),
             driver.getSurname(),
             driver.getPhoneNumber(),
-            driver.getAddress(),
+            driver.getCity(),
             driver.getProfilePicture(),
             driver.getRole(),
             driver.getPassword()

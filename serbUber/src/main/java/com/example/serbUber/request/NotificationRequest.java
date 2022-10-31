@@ -1,15 +1,16 @@
 package com.example.serbUber.request;
 
-import com.example.serbUber.util.Constants;
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import static com.example.serbUber.util.Constants.MAX_LENGTH_OF_MESSAGE;
+import static com.example.serbUber.util.Constants.MIN_LENGTH_OF_MESSAGE;
+
 public class NotificationRequest {
 
-    @NotNull(message = "Message must exist")
-    @Size(min = Constants.minLengthOfMessage, max = Constants.maxLengthOfMessage, message = "Message must have between 20-100 characters!")
+    @NotNull(message = "Message must exist!")
+    @Size(min = MIN_LENGTH_OF_MESSAGE, max = MAX_LENGTH_OF_MESSAGE, message = "Message must have between 20-100 characters!")
     private String message;
 
     @NotNull(message = "Message must exist")

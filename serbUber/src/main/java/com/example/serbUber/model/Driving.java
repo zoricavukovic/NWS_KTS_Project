@@ -21,6 +21,10 @@ public class Driving {
     private HashMap<String, Boolean> usersPaid = new HashMap<String, Boolean>();
     private double price;
 
+    public Driving() {
+
+    }
+
     public Driving(
         final boolean active,
         final int duration,

@@ -17,7 +17,7 @@ public class RegularUserDTO extends UserDTO{
             regularUser.getName(),
             regularUser.getSurname(),
             regularUser.getPhoneNumber(),
-            regularUser.getAddress(),
+            regularUser.getCity(),
             regularUser.getProfilePicture(),
             regularUser.getRole(),
             regularUser.getPassword()

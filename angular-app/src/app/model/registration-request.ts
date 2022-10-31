@@ -1,19 +1,10 @@
-import { zip } from "rxjs";
-
 export class RegistrationRequest {
     email: string;
     password: string;
     confirmationPassword: string;
     name: string;
     surname: string;
-    address:{
-        city: string;
-        street: string;
-        number: string;
-        zipCode: string;
-        lon: number;
-        lat: number;
-    }
+    city: string;
     phoneNumber: string;
 
     constructor(
@@ -23,10 +14,7 @@ export class RegistrationRequest {
         name: string,
         surname: string,
         phoneNumber: string,
-        city: string,
-        street: string,
-        number: string,
-        zipCode: string,
+        city: string
 
     ){
         this.email = email;
@@ -34,14 +22,7 @@ export class RegistrationRequest {
         this.confirmationPassword = confirmationPassword;
         this.name = name;
         this.surname = surname;
-        this.address = {
-            city:city,
-            street:street,
-            number:number,
-            zipCode: zipCode,
-            lon: 0,
-            lat:0
-        }
+        this.city = city;
         this.phoneNumber = phoneNumber;
     }
 }

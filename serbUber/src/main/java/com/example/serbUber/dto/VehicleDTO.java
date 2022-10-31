@@ -8,21 +8,24 @@ import java.util.List;
 
 public class VehicleDTO {
 
+    private String id;
     private boolean petFriendly;
     private boolean babySeat;
     private VehicleTypeInfo vehicleTypeInfo;
     private double rate;
 
     public VehicleDTO(final Vehicle vehicle) {
+        this.id = vehicle.getId();
         this.petFriendly = vehicle.isPetFriendly();
         this.babySeat = vehicle.isBabySeat();
         this.vehicleTypeInfo = vehicle.getVehicleTypeInfo();
         this.rate = vehicle.getRate();
     }
 
-    public Vehicle toVehicle(VehicleDTO vehicleDTO) {
+    public static Vehicle toVehicle(VehicleDTO vehicleDTO) {
 
         return new Vehicle(
+                vehicleDTO.getId(),
                 vehicleDTO.isPetFriendly(),
                 vehicleDTO.isBabySeat(),
                 vehicleDTO.getVehicleTypeInfo(),
@@ -69,5 +72,9 @@ public class VehicleDTO {
 
     public void setRate(double rate) {
         this.rate = rate;
+    }
+
+    public String getId() {
+        return id;
     }
 }
