@@ -37,9 +37,7 @@ public class VerifyController {
     public void create(@RequestBody String verifyId)
             throws EntityNotFoundException, MailCannotBeSentException {
 
-        this.verifyService.generateNewSecurityCode(
-          verifyId
-        );
+        this.verifyService.generateNewSecurityCode(verifyId);
     }
 
     @PutMapping()

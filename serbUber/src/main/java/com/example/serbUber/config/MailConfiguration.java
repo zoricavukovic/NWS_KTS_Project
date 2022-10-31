@@ -7,6 +7,8 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.util.Properties;
 
+import static com.example.serbUber.util.Constants.*;
+
 @Configuration
 public class MailConfiguration {
 
@@ -14,10 +16,10 @@ public class MailConfiguration {
     public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost("smtp.mail.yahoo.com");
-        mailSender.setPort(587);
+        mailSender.setPort(YAHOO_PORT_NUM);
 
-        mailSender.setUsername("mail_za_isa_mrs@yahoo.com");
-        mailSender.setPassword("qmnbsxeitomdwqmg");
+        mailSender.setUsername(EMAIL_ADDRESS);
+        mailSender.setPassword(EMAIL_PASSWORD);
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");

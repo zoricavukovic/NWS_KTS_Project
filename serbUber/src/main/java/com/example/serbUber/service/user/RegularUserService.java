@@ -92,8 +92,9 @@ public class RegularUserService {
         }
     }
 
-    public void activate(String verifyId, int securityCode)
-    throws EntityNotFoundException, WrongVerifyTryException{
+    public void activate(final String verifyId, final int securityCode)
+        throws EntityNotFoundException, WrongVerifyTryException
+    {
         try {
             Verify verify = verifyService.update(verifyId, securityCode);
             RegularUser regularUser = getRegularById(verify.getUserId());

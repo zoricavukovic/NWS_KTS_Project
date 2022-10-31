@@ -15,6 +15,10 @@ public class RegularUser extends User{
     private List<Driving> drives = new LinkedList<>();
     private List<Route> favourites = new LinkedList<>();
 
+    public RegularUser() {
+        super();
+    }
+
     public RegularUser(
         final String email,
         final String password,

@@ -6,10 +6,12 @@ import com.example.serbUber.model.Vehicle;
 import com.example.serbUber.model.VehicleType;
 import com.example.serbUber.model.Verify;
 import com.example.serbUber.model.user.Driver;
+import com.example.serbUber.model.user.LoginUserInfo;
+import com.example.serbUber.model.user.Role;
 import com.example.serbUber.repository.user.DriverRepository;
+import com.example.serbUber.repository.user.LoginUserInfoRepository;
 import com.example.serbUber.service.VehicleService;
 import com.example.serbUber.service.VerifyService;
-import com.example.serbUber.util.Constants;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +20,7 @@ import java.util.Optional;
 import static com.example.serbUber.dto.VehicleDTO.toVehicle;
 import static com.example.serbUber.dto.user.DriverDTO.fromDrivers;
 import static com.example.serbUber.model.user.User.passwordsMatch;
+import static com.example.serbUber.util.Constants.getProfilePicture;
 import static com.example.serbUber.util.JwtProperties.getHashedNewUserPassword;
 
 @Service
@@ -29,15 +32,18 @@ public class DriverService {
 
     private final VerifyService verifyService;
 
+    private final LoginUserInfoRepository loginUserInfoRepository;
 
     public DriverService(
             final DriverRepository driverRepository,
             final VehicleService vehicleService,
-            final VerifyService verifyService
+            final VerifyService verifyService,
+            final LoginUserInfoRepository loginUserInfoRepository
     ) {
         this.driverRepository = driverRepository;
         this.vehicleService = vehicleService;
         this.verifyService = verifyService;
+        this.loginUserInfoRepository = loginUserInfoRepository;
     }
 
     public List<DriverDTO> getAll() {
@@ -75,30 +81,38 @@ public class DriverService {
             final boolean petFriendly,
             final boolean babySeat,
             final VehicleType vehicleType
-            ) throws EntityNotFoundException, PasswordsDoNotMatchException, EntityAlreadyExistsException, MailCannotBeSentException
+    ) throws EntityNotFoundException,
+            PasswordsDoNotMatchException,
+            EntityAlreadyExistsException,
+            MailCannotBeSentException
     {
-
         if (!passwordsMatch(password, confirmPassword)) {
             throw new PasswordsDoNotMatchException();
         }
         Vehicle vehicle = toVehicle(vehicleService.create(petFriendly, babySeat, vehicleType));
 
+        Driver driver = saveDriver(email, password, name, surname, phoneNumber, city, profilePicture, vehicle);
+        return new DriverDTO(driver);
+    }
+
+    private Driver saveDriver(String email, String password, String name, String surname, String phoneNumber, String city, String profilePicture, Vehicle vehicle) throws MailCannotBeSentException, EntityAlreadyExistsException {
         try {
+            String hashedPassword = getHashedNewUserPassword(password);
             Driver driver = driverRepository.save(new Driver(
                     email,
-                    getHashedNewUserPassword(password),
+                    hashedPassword,
                     name,
                     surname,
                     phoneNumber,
                     city,
-                    (profilePicture == null) ? Constants.DEFAULT_PICTURE : profilePicture,
+                    getProfilePicture(profilePicture),
                     vehicle
             ));
-            String verifyId = verifyService.sendEmail(driver.getId(), driver.getEmail());
-            DriverDTO newDriver = new DriverDTO(driver);
-            newDriver.setVerifyId(verifyId);
+            verifyService.sendEmail(driver.getId(), driver.getEmail());
+            LoginUserInfo loginUserInfo = new LoginUserInfo(email, hashedPassword, new Role("ROLE_DRIVER"));
+            loginUserInfoRepository.save(loginUserInfo);
 
-            return newDriver;
+            return driver;
         }catch (MailCannotBeSentException e) {
             throw new MailCannotBeSentException(e.getMessage());
         } catch (Exception e) {
@@ -107,9 +121,10 @@ public class DriverService {
     }
 
 
-
-    public void activate(String verifyId, int securityCode)
-            throws EntityNotFoundException, WrongVerifyTryException {
+    public void activate(
+            final String verifyId,
+            final int securityCode
+    ) throws EntityNotFoundException, WrongVerifyTryException {
         try {
             Verify verify = verifyService.update(verifyId, securityCode);
             Driver driver = getById(verify.getUserId());

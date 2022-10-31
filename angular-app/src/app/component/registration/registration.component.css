@@ -1,24 +1,11 @@
-.mat-form-field{
-    margin-left: 10px;
-}
-
-form{
+div.registration-content {
+    margin-top: 5% !important;
     background-color: lightblue;
-    padding:20px;
 }
 
-.title{
-    margin-left:150px;
-    font-size:30px;
-    color:white;
+div.center-items {
 }
 
-.subtitle{
-    margin-left:150px;
-    font-size:20px;
-    color:white;
-}
-
-button{
-    margin-left:160px;
+mat-form-field {
+    margin: 10px;
 }

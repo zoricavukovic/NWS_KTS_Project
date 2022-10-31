@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+import static com.example.serbUber.util.Constants.FRONT_VERIFY_URL;
+import static com.example.serbUber.util.Constants.MAX_NUM_VERIFY_TRIES;
+
 @Service
 public class VerifyService {
 
@@ -38,14 +41,17 @@ public class VerifyService {
         throw new EntityNotFoundException(id, EntityType.VERIFY);
     }
 
-    public String sendEmail(String userId, String email) throws MailCannotBeSentException {
+    public void sendEmail(
+            final String userId,
+            final String email
+    ) throws MailCannotBeSentException {
         try {
             VerifyDTO verify = this.create(userId, email);
             emailService.sendMail(email, "Verification mail",
-                    "Your code is: " + verify.getSecurityCode() + "\nClick here to activate your account: http://localhost:4200/verify/" + verify.getId()
+                    String.format("Your code is: %d \nClick here to activate your account: %s%s",
+                            verify.getSecurityCode(), FRONT_VERIFY_URL, verify.getId())
             );
 
-            return verify.getId();
         } catch (Exception e) {
             throw new MailCannotBeSentException("Something went wrong. Email to " + email + " cannot be sent.");
         }
@@ -65,33 +71,35 @@ public class VerifyService {
         )));
     }
 
-    public Verify update(String id, int securityCode)
+    public Verify update(final String id, final int securityCode)
             throws EntityNotFoundException, WrongVerifyTryException {
+
         Verify verify = get(id);
-        if (verify.isNotUsed() && verify.hasTries() && verify.checkSecurityCode(securityCode)){
-            verify.setNumOfTries(verify.getNumOfTries() + 1);
-            verify.setUsed(true);
-            verifyRepository.save(verify);
+        if (verify.canVerify(securityCode)) {
+            verify.incrementNumOfTries();
+            this.saveChanges(verify, true);
 
             return verify;
-        } else if (verify.hasTries() && verify.isNotUsed()){
-            verify.setNumOfTries(verify.getNumOfTries() + 1);
-            verify.setUsed(verify.getNumOfTries() >= 3);
-            verifyRepository.save(verify);
+        } else if (verify.wrongCodeButHasTries()){
+            this.saveChanges(verify, verify.incrementNumOfTries() >= MAX_NUM_VERIFY_TRIES);
+
             throw new WrongVerifyTryException("Your security code is not accepted. Try again.");
         } else {
-            verify.setUsed(true);
-            verifyRepository.save(verify);
+            saveChanges(verify, true);
+
             throw new WrongVerifyTryException("You tried to verify with wrong code more than 3 times.");
         }
     }
 
-    public void generateNewSecurityCode(String verifyId)
+    private void saveChanges(final Verify verify, final boolean used) {
+        verify.setUsed(used);
+        verifyRepository.save(verify);
+    }
+
+    public void generateNewSecurityCode(final String verifyId)
             throws EntityNotFoundException, MailCannotBeSentException {
         Verify verify = get(verifyId);
-        verify.setUsed(true);
-        verifyRepository.save(verify);
-
         this.sendEmail(verify.getUserId(), verify.getEmail());
+        verifyRepository.delete(verify);
     }
 }

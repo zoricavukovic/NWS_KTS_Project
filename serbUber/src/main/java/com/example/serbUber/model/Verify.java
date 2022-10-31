@@ -3,6 +3,8 @@ package com.example.serbUber.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import static com.example.serbUber.util.Constants.MAX_NUM_VERIFY_TRIES;
+
 @Document(collection = "verifies")
 public class Verify {
     @Id
@@ -88,10 +90,18 @@ public class Verify {
     }
 
     public boolean hasTries() {
-        return this.numOfTries < 3;
+        return this.numOfTries < MAX_NUM_VERIFY_TRIES;
     }
+
+    public int incrementNumOfTries() {return this.numOfTries += 1;}
 
     public boolean checkSecurityCode(int securityCode){
         return this.securityCode == securityCode;
     }
+
+    public boolean canVerify(int securityCode) {
+        return isNotUsed() && hasTries() && checkSecurityCode(securityCode);
+    }
+
+    public boolean wrongCodeButHasTries() {return hasTries() && isNotUsed(); }
 }

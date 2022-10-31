@@ -9,12 +9,17 @@ import java.util.HashMap;
 
 public class DrivingRequest {
 
+    @NotNull(message = "Active must be selected")
     private boolean active;
-    @PositiveOrZero
+
+    @NotNull(message = "Duration must be selected.")
+    @PositiveOrZero(message = "Duration must be grater or equal with 0.")
     private int duration;
-    @NotNull
-    @FutureOrPresent
+
+    @NotNull(message = "Started date must be selected.")
+    @FutureOrPresent(message = "Started time cannot be in past.")
     private LocalDateTime started;
+
     @NotNull
     private LocalDateTime payingLimit;
     @NotNull

@@ -28,7 +28,6 @@ public class DriverDTO {
     private LocalDateTime lastActive;
     private LocalDateTime startShift;
     private LocalDateTime endShift;
-    private String verifyId = null;
 
     public DriverDTO(final Driver driver) {
         this.id = driver.getId();
@@ -85,13 +84,5 @@ public class DriverDTO {
 
     public String getId() {
         return id;
-    }
-
-    public String getVerifyId() {
-        return verifyId;
-    }
-
-    public void setVerifyId(String verifyId) {
-        this.verifyId = verifyId;
     }
 }
