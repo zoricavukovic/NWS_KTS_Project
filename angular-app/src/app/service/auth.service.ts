@@ -5,6 +5,7 @@ import { LoginResponse } from '../model/login-response';
 import { User } from '../model/user';
 import { ConfigService } from './config.service';
 import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'

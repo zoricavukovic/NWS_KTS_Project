@@ -16,5 +16,15 @@
     "zipCode": "21000",
     "lon": 41.7,
     "lat": 30.3
+  },
+  {
+    "_class": "com.example.serbUber.model.user.Admin",
+    "email": "zoka200015@gmail.com",
+    "password": "124",
+    "name": "Mika",
+    "surname": "Mikic",
+    "phoneNumber": "345645232",
+    "city": "Novi Sad",
+    "profilePicture": "neka_slika.png"
   }
 ]

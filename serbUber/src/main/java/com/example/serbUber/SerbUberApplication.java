@@ -13,7 +13,7 @@ public class SerbUberApplication {
 	@Bean
 	Jackson2RepositoryPopulatorFactoryBean  repositoryPopulator() {
 		Jackson2RepositoryPopulatorFactoryBean factoryBean = new Jackson2RepositoryPopulatorFactoryBean();
-		factoryBean.setResources(new Resource[] { new ClassPathResource("locations.json") });
+		factoryBean.setResources(new Resource[] { new ClassPathResource("locations.json"), new ClassPathResource("admins.json") });
 		return factoryBean;
 	}
 
