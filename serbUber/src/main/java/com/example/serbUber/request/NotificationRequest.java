@@ -8,19 +8,19 @@ import javax.validation.constraints.Size;
 
 public class NotificationRequest {
 
-    @NotNull(message = "Message must exist!")
+    @NotNull(message = "Message must exist")
     @Size(min = Constants.minLengthOfMessage, max = Constants.maxLengthOfMessage, message = "Message must have between 20-100 characters!")
     private String message;
 
-    @NotNull(message = "Message must exist!")
+    @NotNull(message = "Message must exist")
     @Email(message = "Email is in wrong format")
     private String sender;
 
-    @NotNull(message = "Message must exist!")
-    @Email(message = "Email is in wrong format!")
+    @NotNull(message = "Message must exist")
+    @Email(message = "Email is in wrong format")
     private String receiver;
 
-    @NotNull(message = "Report option must be selected!")
+    @NotNull(message = "Report option must be selected")
     private boolean report;
 
     public NotificationRequest(

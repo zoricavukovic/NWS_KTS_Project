@@ -9,8 +9,8 @@ import javax.validation.constraints.Size;
 
 public class AdminRequest {
 
-    @Email
-    @NotBlank
+    @Email(message = "Email is in wrong format")
+    @NotBlank(message = "Email must exist!")
     @Size(max = 1024, message = "Email length is too long.")
     private final String email;
     @NotBlank

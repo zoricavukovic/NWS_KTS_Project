@@ -11,9 +11,20 @@ export class ConfigService {
 
   private _api_url = environment.apiUrl;
   private _login_user = this._api_url + "/auth/login";
+  private _login_with_gmail_user = this._api_url + "/auth/login/google";
+  private _login_with_facebook_user = this._api_url + "/auth/login/facebook";
 
   get login_url(): string {
     return this._login_user;
   }
+
+  get login_with_gmail_url(): string {
+    return this._login_with_gmail_user;
+  }
+
+  get login_with_facebook_url(): string {
+    return this._login_with_facebook_user;
+  }
+
 
 }

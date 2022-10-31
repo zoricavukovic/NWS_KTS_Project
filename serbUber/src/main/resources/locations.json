@@ -1,0 +1,20 @@
+[
+  {
+    "_class": "com.example.serbUber.model.Location",
+    "city": "Novi Sad",
+    "street": "Lasla Gala",
+    "number": "21",
+    "zipCode": "21000",
+    "lon": 40.7,
+    "lat": 30.6
+  },
+  {
+    "_class": "com.example.serbUber.model.Location",
+    "city": "Novi Sad",
+    "street": "Bolmanska",
+    "number": "12",
+    "zipCode": "21000",
+    "lon": 41.7,
+    "lat": 30.3
+  }
+]

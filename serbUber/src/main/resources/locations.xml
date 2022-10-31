@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<location>
+    <id>1</id>
+    <city>Novi Sad</city>
+    <street>Lasla Gala</street>
+    <number>21</number>
+    <zipCode>21000</zipCode>
+    <lon>123.21</lon>
+    <lat>21.01</lat>
+</location>

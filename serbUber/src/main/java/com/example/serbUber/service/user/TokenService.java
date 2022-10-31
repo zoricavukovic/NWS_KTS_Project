@@ -6,10 +6,12 @@ import com.example.serbUber.dto.user.LoginDTO;
 import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.model.user.UserPrinciple;
 import com.example.serbUber.util.JwtProperties;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -24,9 +26,7 @@ public class TokenService {
         this.authenticationManager = authenticationManager;
     }
 
-    private String generateToken(final Authentication authResult) {
-
-        UserPrinciple principal = (UserPrinciple) authResult.getPrincipal();
+    private String generateToken(final UserPrinciple principal) {
 
         return JWT.create()
                 .withSubject(principal.getUsername())
@@ -39,7 +39,7 @@ public class TokenService {
             new UsernamePasswordAuthenticationToken(jwtLogin.email(), jwtLogin.password())
         );
         SecurityContextHolder.getContext().setAuthentication(authenticate);
-        final String token = generateToken(authenticate);
+        final String token = generateToken((UserPrinciple) authenticate.getPrincipal());
         UserPrinciple userPrinciple = (UserPrinciple) authenticate.getPrincipal();
         UserDTO userDTO = userPrinciple.getUser();
         userDTO.setRole(userPrinciple.getUser().getRole());
@@ -47,4 +47,10 @@ public class TokenService {
         return new LoginDTO(token, userDTO);
     }
 
+    public LoginDTO googleLogin(UserDTO userDTO) {
+        UserPrinciple userPrinciple = new UserPrinciple(userDTO);
+        final String token = generateToken(userPrinciple);
+
+        return new LoginDTO(token, userDTO);
+    }
 }
