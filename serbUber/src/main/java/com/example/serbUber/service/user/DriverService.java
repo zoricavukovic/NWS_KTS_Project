@@ -95,7 +95,16 @@ public class DriverService {
         return new DriverDTO(driver);
     }
 
-    private Driver saveDriver(String email, String password, String name, String surname, String phoneNumber, String city, String profilePicture, Vehicle vehicle) throws MailCannotBeSentException, EntityAlreadyExistsException {
+    private Driver saveDriver(
+            final String email,
+            final String password,
+            final String name,
+            final String surname,
+            final String phoneNumber,
+            final String city,
+            final String profilePicture,
+            final Vehicle vehicle
+    ) throws MailCannotBeSentException, EntityAlreadyExistsException {
         try {
             String hashedPassword = getHashedNewUserPassword(password);
             Driver driver = driverRepository.save(new Driver(
@@ -121,10 +130,9 @@ public class DriverService {
     }
 
 
-    public void activate(
-            final String verifyId,
-            final int securityCode
-    ) throws EntityNotFoundException, WrongVerifyTryException {
+    public void activate(final String verifyId, final int securityCode)
+            throws EntityNotFoundException, WrongVerifyTryException
+    {
         try {
             Verify verify = verifyService.update(verifyId, securityCode);
             Driver driver = getById(verify.getUserId());

@@ -1,5 +1,3 @@
-import { zip } from "rxjs";
-
 export class RegistrationRequest {
     email: string;
     password: string;

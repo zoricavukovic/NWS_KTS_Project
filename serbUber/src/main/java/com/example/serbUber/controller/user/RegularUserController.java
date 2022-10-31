@@ -43,8 +43,8 @@ public class RegularUserController {
     public RegularUserDTO create(@Valid @RequestBody RegularUserRequest regularUserRequest)
         throws PasswordsDoNotMatchException
     {
-        System.out.println(regularUserRequest.getEmail());
-;        return regularUserService.create(
+
+        return regularUserService.create(
             regularUserRequest.getEmail(),
             regularUserRequest.getPassword(),
             regularUserRequest.getConfirmationPassword(),

@@ -1,13 +1,8 @@
 package com.example.serbUber.service.user;
 
 import com.example.serbUber.dto.user.RegularUserDTO;
-import com.example.serbUber.exception.EntityNotFoundException;
-import com.example.serbUber.exception.EntityType;
-import com.example.serbUber.exception.PasswordsDoNotMatchException;
-import com.example.serbUber.exception.WrongVerifyTryException;
-import com.example.serbUber.model.Location;
+import com.example.serbUber.exception.*;
 import com.example.serbUber.model.Verify;
-import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.model.user.LoginUserInfo;
 import com.example.serbUber.model.user.RegularUser;
 import com.example.serbUber.model.user.Role;
@@ -21,6 +16,7 @@ import java.util.Optional;
 
 import static com.example.serbUber.dto.user.RegularUserDTO.fromRegularUsers;
 import static com.example.serbUber.model.user.User.passwordsMatch;
+import static com.example.serbUber.util.JwtProperties.getHashedNewUserPassword;
 
 @Service
 public class RegularUserService {
@@ -70,30 +66,50 @@ public class RegularUserService {
         final String phoneNumber,
         final String city,
         final String profilePicture
-    ) throws PasswordsDoNotMatchException {
+    ) throws PasswordsDoNotMatchException, EntityAlreadyExistsException, MailCannotBeSentException {
 
-        if (passwordsMatch(password, confirmationPassword)) {
+        if (!passwordsMatch(password, confirmationPassword)) {
+            throw new PasswordsDoNotMatchException();
+        }
+        RegularUser regularUser = saveRegularUser(email, password, name, surname, phoneNumber, city, profilePicture);
+
+        return new RegularUserDTO(regularUser);
+    }
+
+    private RegularUser saveRegularUser(
+            final String email,
+            final String password,
+            final String name,
+            final String surname,
+            final String phoneNumber,
+            final String city,
+            final String profilePicture
+    ) throws MailCannotBeSentException, EntityAlreadyExistsException {
+        try {
+            String hashedPassword = getHashedNewUserPassword(password);
             RegularUser regularUser = regularUserRepository.save(new RegularUser(
-                email,
-                password,
-                name,
-                surname,
-                phoneNumber,
-                city,
-                profilePicture
+                    email,
+                    hashedPassword,
+                    name,
+                    surname,
+                    phoneNumber,
+                    city,
+                    profilePicture
             ));
-
-            LoginUserInfo loginUserInfo = new LoginUserInfo(email, password, new Role("regularUser"));
+            verifyService.sendEmail(regularUser.getId(), regularUser.getEmail());
+            LoginUserInfo loginUserInfo = new LoginUserInfo(email, hashedPassword, new Role("ROLE_REGULAR_USER"));
             loginUserInfoRepository.save(loginUserInfo);
 
-            return new RegularUserDTO(regularUser);
-        } else {
-            throw new PasswordsDoNotMatchException();
+            return regularUser;
+        } catch (MailCannotBeSentException e) {
+            throw new MailCannotBeSentException(e.getMessage());
+        } catch (Exception e) {
+            throw new EntityAlreadyExistsException("User with " + email + " already exists.");
         }
     }
 
     public void activate(final String verifyId, final int securityCode)
-        throws EntityNotFoundException, WrongVerifyTryException
+            throws EntityNotFoundException, WrongVerifyTryException
     {
         try {
             Verify verify = verifyService.update(verifyId, securityCode);
