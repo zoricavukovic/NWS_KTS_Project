@@ -13,6 +13,7 @@ export class ConfigService {
   private _login_user = this._api_url + "/auth/login";
   private _login_with_gmail_user = this._api_url + "/auth/login/google";
   private _login_with_facebook_user = this._api_url + "/auth/login/facebook";
+  private _register_user = this._api_url + "/regularUsers/register";
 
   get login_url(): string {
     return this._login_user;
@@ -27,4 +28,7 @@ export class ConfigService {
   }
 
 
+  get registration_url(): string{
+    return this._register_user;
+  }
 }

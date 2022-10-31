@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { LoginRequest } from 'src/app/model/login-request';
 import { AuthService } from 'src/app/service/auth.service';
 import { FacebookLoginProvider, GoogleLoginProvider, SocialAuthService } from "@abacritt/angularx-social-login";
 import { SocialUser } from "@abacritt/angularx-social-login";
-import { User } from 'src/app/model/user';
 
 @Component({
   selector: 'app-login',

@@ -1,6 +1,7 @@
 package com.example.serbUber.request.user;
 
 import com.example.serbUber.model.Location;
+import com.example.serbUber.request.LocationRequest;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -26,7 +27,7 @@ public class RegularUserRequest {
     @NotBlank
     @Size(max = 1024, message = "Phone number length is too long.")
     private final String phoneNumber;
-    @NotNull(message = "Must add admin address.")
+    @NotNull(message = "Must add user address.")
     private final Location address;
     private final String profilePicture;
 
