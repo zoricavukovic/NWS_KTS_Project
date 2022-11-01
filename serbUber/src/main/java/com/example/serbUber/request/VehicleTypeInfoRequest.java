@@ -12,7 +12,7 @@ public class VehicleTypeInfoRequest {
     private VehicleType vehicleType;
 
     @NotNull(message = "Start price must exist!")
-    @Min(value = 1, message = "Start price must be greater than 1!")
+    @Positive(message = "Start price must be greater than 1!")
     private double startPrice;
 
     @NotNull(message = "Number of seats must exist!")

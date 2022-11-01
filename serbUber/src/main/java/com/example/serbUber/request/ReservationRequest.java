@@ -9,17 +9,20 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class ReservationRequest {
-    @NotNull
-    @Future
+
+    @NotNull(message = "Reservation time must be selected.")
+    @Future(message = "Reservation time must be in future.")
     private LocalDateTime timeStamp;
-    @NotNull
-    private Route route;
-    @NotEmpty
+
+    @NotNull(message = "Route must be selected.")
+    private RouteRequest route;
+
+    @NotEmpty(message = "Users must be added to reservation.")
     private List<String> users;
 
     public ReservationRequest(
             final LocalDateTime timeStamp,
-            final Route route,
+            final RouteRequest route,
             final List<String> users
     ) {
         this.timeStamp = timeStamp;
@@ -31,7 +34,7 @@ public class ReservationRequest {
         return timeStamp;
     }
 
-    public Route getRoute() {
+    public RouteRequest getRoute() {
         return route;
     }
 

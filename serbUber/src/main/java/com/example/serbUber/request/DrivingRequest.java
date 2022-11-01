@@ -3,9 +3,12 @@ package com.example.serbUber.request;
 import com.example.serbUber.model.DrivingStatus;
 import com.example.serbUber.model.Route;
 
+import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+
+import static com.example.serbUber.exception.ErrorMessagesConstants.*;
 
 public class DrivingRequest {
 
@@ -20,17 +23,27 @@ public class DrivingRequest {
     @FutureOrPresent(message = "Started time cannot be in past.")
     private LocalDateTime started;
 
-    @NotNull
+    @NotNull(message = "Paying limit must be selected.")
+    @FutureOrPresent(message = "Paying limit cannot be in past.")
     private LocalDateTime payingLimit;
-    @NotNull
-    private Route route;
-    @NotNull
+
+    @NotNull(message = "Route must be selected.")
+    @Valid
+    private RouteRequest route;
+
+    @NotNull(message = "Driving status must be selected.")
     private DrivingStatus drivingStatus;
-    @NotNull @Email
+
+    @Email(message = WRONG_EMAIL)
+    @NotBlank(message = EMPTY_EMAIL)
+    @Size(max = 60, message = TOO_LONG_EMAIL)
     private String driverEmail;
-    @NotEmpty
+
+    @NotEmpty(message = "Users paid cannot be empty.")
     private HashMap<String, Boolean> usersPaid = new HashMap<String, Boolean>();
-    @Positive
+
+    @NotNull(message = "Price cannot be empty.")
+    @Positive(message = "Price must be greater than 0.")
     private double price;
 
     public DrivingRequest(
@@ -38,7 +51,7 @@ public class DrivingRequest {
             final int duration,
             final LocalDateTime started,
             final LocalDateTime payingLimit,
-            final Route route,
+            final RouteRequest route,
             final DrivingStatus drivingStatus,
             final String driverEmail,
             final HashMap<String, Boolean> usersPaid,
@@ -87,11 +100,11 @@ public class DrivingRequest {
         this.payingLimit = payingLimit;
     }
 
-    public Route getRoute() {
+    public RouteRequest getRoute() {
         return route;
     }
 
-    public void setRoute(Route route) {
+    public void setRoute(RouteRequest route) {
         this.route = route;
     }
 
