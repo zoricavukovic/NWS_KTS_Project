@@ -28,10 +28,12 @@ public class RouteController {
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public RouteDTO create(@Valid @RequestBody RouteRequest routeRequest) {
+        /* TODO postojalo od ranije, a izmenjeno da se ne dobija location vec locationRequest
         return this.routeService.create(
                 routeRequest.getStartPoint(),
                 routeRequest.getDestinations(),
                 routeRequest.getKilometers()
-        );
+        );*/
+        return null;
     }
 }

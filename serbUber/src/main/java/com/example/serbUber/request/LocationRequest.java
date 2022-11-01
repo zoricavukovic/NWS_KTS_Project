@@ -1,18 +1,28 @@
 package com.example.serbUber.request;
 
-import javax.validation.constraints.Size;
+import com.example.serbUber.util.Constants;
+
+import javax.validation.constraints.*;
+
+import static com.example.serbUber.exception.ErrorMessagesConstants.WRONG_CITY;
+import static com.example.serbUber.util.Constants.POSITIVE_INT_NUM_REG;
 
 public class LocationRequest {
-    @Size(max = 1024, message = "{validation.name.size.too_long}")
+
+    @NotBlank(message = WRONG_CITY)
+    @Pattern(regexp = Constants.LEGIT_NAME_REG, message = WRONG_CITY)
     private String city;
 
-    @Size(max = 1024, message = "{validation.name.size.too_long}")
+    @NotBlank(message = "Street cannot be empty.")
+    @Size(min = 2, max = 50, message = "Street cannot be longer than 50 characters nor shorter tha 2")
     private String street;
 
-    @Size(max = 1024, message = "{validation.name.size.too_long}")
+    @NotBlank(message = "Street number must be selected")
+    @Pattern(regexp = POSITIVE_INT_NUM_REG, message = "Street number must be whole number.")
     private String number;
 
-    @Size(max = 1024, message = "{validation.name.size.too_long}")
+    @NotBlank(message = "Zip code must be selected.")
+    @Pattern(regexp = POSITIVE_INT_NUM_REG, message = "Zip code must be whole number.")
     private String zipCode;
 
     private double lon;

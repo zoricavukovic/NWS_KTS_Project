@@ -53,7 +53,8 @@ public class VerifyService {
             );
 
         } catch (Exception e) {
-            throw new MailCannotBeSentException("Something went wrong. Email to " + email + " cannot be sent.");
+            throw new MailCannotBeSentException(String.format("Something went wrong. Email to %s" +
+                    " cannot be sent.", email));
         }
     }
 

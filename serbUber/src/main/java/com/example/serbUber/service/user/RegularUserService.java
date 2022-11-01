@@ -104,7 +104,7 @@ public class RegularUserService {
         } catch (MailCannotBeSentException e) {
             throw new MailCannotBeSentException(e.getMessage());
         } catch (Exception e) {
-            throw new EntityAlreadyExistsException("User with " + email + " already exists.");
+            throw new EntityAlreadyExistsException(String.format("User with %s already exists.", email));
         }
     }
 

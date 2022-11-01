@@ -26,11 +26,12 @@ public class ReservationController {
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public ReservationDTO create(@Valid @RequestBody ReservationRequest reservationRequest) {
-
+        /* TODO izmenjen request da ne prima route vec routeReq
         return this.reservationService.create(
                 reservationRequest.getTimeStamp(),
                 reservationRequest.getRoute(),
                 reservationRequest.getUsers()
-        );
+        );*/
+        return null;
     }
 }
