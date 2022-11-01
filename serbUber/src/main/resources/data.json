@@ -1,0 +1,112 @@
+[
+  {
+    "_class": "com.example.serbUber.model.user.Admin",
+    "email": "zoka200015@gmail.com",
+    "password": "124",
+    "name": "Mika",
+    "surname": "Mikic",
+    "phoneNumber": "345645232",
+    "city": "Novi Sad",
+    "profilePicture": "neka_slika.png"
+  },
+  {
+    "_class": "com.example.serbUber.model.user.RegularUser",
+    "email": "ana12@gmail.com",
+    "password": "123",
+    "name": "Ana",
+    "surname": "Anic",
+    "phoneNumber": "065151151",
+    "city": "Novi Sad",
+    "profilePicture": "neka_slika.png"
+  },
+  {
+    "_class": "com.example.serbUber.model.user.RegularUser",
+    "email": "pera12@gmail.com",
+    "password": "123",
+    "name": "Pera",
+    "surname": "Peric",
+    "phoneNumber": "065151151",
+    "city": "Novi Sad",
+    "profilePicture": "neka_slika.png"
+  },
+  {
+    "_class": "com.example.serbUber.model.user.Driver",
+    "email": "mile12@gmail.com",
+    "password": "123",
+    "name": "Mile",
+    "surname": "Milic",
+    "phoneNumber": "065151151",
+    "city": "Novi Sad",
+    "profilePicture": "neka_slika.png",
+    "vehicle": {
+      "_class": "com.example.serbUber.model.Vehicle",
+      "petFriendly": false,
+      "babySeat": true,
+      "vehicleTypeInfo": {
+        "vehicleType": "CAR",
+        "startPrice": 100.00,
+        "numOfSeats": 5
+      }
+    }
+  },
+  {
+    "_class": "com.example.serbUber.model.user.Driver",
+    "email": "miki1@gmail.com",
+    "password": "123",
+    "name": "Miki",
+    "surname": "Milan",
+    "phoneNumber": "065151151",
+    "city": "Novi Sad",
+    "profilePicture": "neka_slika.png",
+    "vehicle": {
+      "_class": "com.example.serbUber.model.Vehicle",
+      "petFriendly": true,
+      "babySeat": false,
+      "vehicleTypeInfo": {
+        "vehicleType": "VAN",
+        "startPrice": 150.00,
+        "numOfSeats": 9
+      }
+      }
+  },
+  {
+    "_class": "com.example.serbUber.model.user.LoginUserInfo",
+    "email": "zoka200015@gmail.com",
+    "password": "124",
+    "role": {
+      "name": "ROLE_ADMIN"
+    }
+  },
+  {
+    "_class": "com.example.serbUber.model.user.LoginUserInfo",
+    "email": "ana12@gmail.com",
+    "password": "123",
+    "role": {
+      "name": "ROLE_REGULAR_USER"
+    }
+  },
+  {
+    "_class": "com.example.serbUber.model.user.LoginUserInfo",
+    "email": "pera12@gmail.com",
+    "password": "123",
+    "role": {
+      "name": "ROLE_REGULAR_USER"
+    }
+  },
+  {
+    "_class": "com.example.serbUber.model.user.LoginUserInfo",
+    "email": "pera12@gmail.com",
+    "password": "123",
+    "role": {
+      "name": "ROLE_DRIVER"
+    }
+  },
+  {
+    "_class": "com.example.serbUber.model.user.LoginUserInfo",
+    "email": "miki1@gmail.com",
+    "password": "123",
+    "role": {
+      "name": "ROLE_DRIVER"
+    }
+  }
+]

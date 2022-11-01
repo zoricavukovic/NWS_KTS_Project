@@ -15,6 +15,9 @@ public class Notification {
     private User receiver;
     private boolean report;
 
+    public Notification(){
+
+    }
     public Notification(
         final String message,
         final User sender,

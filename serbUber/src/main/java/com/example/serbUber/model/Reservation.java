@@ -14,6 +14,9 @@ public class Reservation {
     private Route route;
     private List<String> users;
 
+    public Reservation(){
+
+    }
     public Reservation(
         final LocalDateTime timeStamp,
         final Route route,

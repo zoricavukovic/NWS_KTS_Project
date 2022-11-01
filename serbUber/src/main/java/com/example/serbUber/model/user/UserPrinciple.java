@@ -12,7 +12,6 @@ import java.util.List;
 public class UserPrinciple implements UserDetails {
 
     private final UserDTO userDTO;
-
     public UserPrinciple(UserDTO userDTO) {
         this.userDTO = userDTO;
     }

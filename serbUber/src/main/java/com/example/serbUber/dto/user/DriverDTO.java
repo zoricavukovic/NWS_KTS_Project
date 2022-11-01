@@ -34,7 +34,7 @@ public class DriverDTO extends UserDTO {
         this.blocked = driver.isBlocked();
         this.rate = driver.getRate();
         this.currentLocation = driver.getCurrentLocation();
-        this.drives = driver.getDrives();
+        this.drives = driver.getDrivings();
         this.active = driver.isActive();
         this.workingMinutes = driver.getWorkingMinutes();
         LocalDateTime lastActive = driver.getLastActive();

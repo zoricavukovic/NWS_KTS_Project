@@ -19,9 +19,7 @@ public abstract class User {
     private String profilePicture;
     private Role role;
 
-    public User() {
-
-    }
+    public User() {}
 
     public User(
             final String id,

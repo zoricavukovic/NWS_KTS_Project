@@ -22,7 +22,6 @@ public class Driving {
     private double price;
 
     public Driving() {
-
     }
 
     public Driving(

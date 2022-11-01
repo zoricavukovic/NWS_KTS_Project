@@ -14,6 +14,10 @@ public class Route {
     private List<Location> destinations = new LinkedList<>();
     private double kilometers;
 
+    public Route(){
+        
+    }
+
     public Route(
         final Location startPoint,
         final List<Location> destinations,
