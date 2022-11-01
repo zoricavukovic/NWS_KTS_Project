@@ -1,0 +1,25 @@
+version: "6.0"
+
+services:
+  springboot-mongodb:
+    image: springboot-mongodb:1.0
+    container_name: springboot-mongodb
+    restart: unless-stopped
+    ports:
+      - 8080:8080
+    links:
+      - serbUberMongodb
+  serbUberMongodb:
+    image: mongo:latest
+    container_name: "serbUberMongodb"
+    ports:
+      - 27017:27017
+
+  angular-app:
+    image: angular-app
+    build: "angular-app/."
+    container_name: "angular-app"
+    ports:
+      - 4200:4200
+    links:
+      - springboot-mongodb

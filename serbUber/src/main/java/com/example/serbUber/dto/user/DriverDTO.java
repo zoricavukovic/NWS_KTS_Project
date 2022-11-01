@@ -9,15 +9,7 @@ import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
-public class DriverDTO {
-
-    private String id;
-    private String email;
-    private String name;
-    private String surname;
-    private String phoneNumber;
-    private String city;
-    private String profilePicture;
+public class DriverDTO extends UserDTO {
     private boolean blocked;
     private boolean active;
     private double rate;
@@ -25,28 +17,30 @@ public class DriverDTO {
     private List<Driving> drives = new LinkedList<>();
     private int workingMinutes;
     private Vehicle vehicle;
-    private LocalDateTime lastActive;
     private LocalDateTime startShift;
     private LocalDateTime endShift;
 
     public DriverDTO(final Driver driver) {
-        this.id = driver.getId();
-        this.email = driver.getEmail();
-        this.name = driver.getName();
-        this.surname = driver.getSurname();
-        this.phoneNumber = driver.getPhoneNumber();
-        this.city = driver.getCity();
-        this.profilePicture = driver.getProfilePicture();
+        super(
+            driver.getEmail(),
+            driver.getName(),
+            driver.getSurname(),
+            driver.getPhoneNumber(),
+            driver.getCity(),
+            driver.getProfilePicture(),
+            driver.getRole(),
+            driver.getPassword()
+        );
         this.blocked = driver.isBlocked();
         this.rate = driver.getRate();
-        this.currentLocation = currentLocation;
-        this.drives = drives;
-        this.active = active;
-        this.workingMinutes = workingMinutes;
-        this.lastActive = lastActive;
-        this.vehicle = vehicle;
-        this.startShift = startShift;
-        this.endShift = endShift;
+        this.currentLocation = driver.getCurrentLocation();
+        this.drives = driver.getDrivings();
+        this.active = driver.isActive();
+        this.workingMinutes = driver.getWorkingMinutes();
+        LocalDateTime lastActive = driver.getLastActive();
+        this.vehicle = driver.getVehicle();
+        this.startShift = driver.getStartShift();
+        this.endShift = driver.getEndShift();
     }
 
     public static List<DriverDTO> fromDrivers(final List<Driver> drivers){
@@ -56,33 +50,5 @@ public class DriverDTO {
         );
 
         return driverDTOs;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public String getProfilePicture() {
-        return profilePicture;
-    }
-
-    public String getId() {
-        return id;
     }
 }

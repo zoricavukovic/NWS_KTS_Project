@@ -13,4 +13,5 @@ public class JwtProperties {
         final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         return passwordEncoder.encode(password);
     }
+
 }

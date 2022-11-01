@@ -1,7 +1,5 @@
 package com.example.serbUber.request;
 
-import com.example.serbUber.util.Constants;
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -25,7 +23,7 @@ public class NotificationRequest {
     @Size(max = 60, message = TOO_LONG_EMAIL)
     private String receiver;
 
-    @NotNull(message = "Report option must be selected!")
+    @NotNull(message = "Report option must be selected")
     private boolean report;
 
     public NotificationRequest(

@@ -1,5 +1,6 @@
 package com.example.serbUber.model;
 
+import com.example.serbUber.util.Constants;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -11,7 +12,7 @@ public class Vehicle {
     private boolean petFriendly;
     private boolean babySeat;
     private VehicleTypeInfo vehicleTypeInfo;
-    private double rate;
+    private double rate = Constants.START_RATE;
 
     public Vehicle() {
 

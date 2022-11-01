@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators, FormGroup } from '@angular/forms';
+
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { LoginRequest } from 'src/app/model/login-request';
 import { AuthService } from 'src/app/service/auth.service';
+import { FacebookLoginProvider, GoogleLoginProvider, SocialAuthService } from "@abacritt/angularx-social-login";
+import { SocialUser } from "@abacritt/angularx-social-login";
 
 @Component({
   selector: 'app-login',
@@ -17,13 +20,53 @@ export class LoginComponent implements OnInit {
   });
 
   hide: boolean =true;
-
+  subscriptionLoginWithGmail: Subscription;
   authSubscription: Subscription;
-  constructor(
-    private authService: AuthService
-  ) { }
+
+  user: SocialUser;
+  isLogin: boolean;
+  constructor(private authService: SocialAuthService,
+              private social: AuthService) { }
 
   ngOnInit(): void {
+  }
+
+  signInWithGoogle(): void {
+    this.authService.signIn(GoogleLoginProvider.PROVIDER_ID).then(
+      data => {
+        this.social.loginWithGoogle(data.idToken).subscribe(
+          res => {
+            console.log(res);
+          }
+        );
+      }
+    );
+    this.authService.authState.subscribe(
+      data => {
+        this.isLogin = (data != null);
+      }
+    );
+  }
+
+  signInWithFB(): void {
+    this.authService.signIn(FacebookLoginProvider.PROVIDER_ID).then(
+      data => {
+        this.social.loginWithFacebook(data.authToken).subscribe(
+          res => {
+            console.log(res);
+          }
+        );
+      }
+    );
+
+    this.authService.authState.subscribe(
+      data => {
+        this.isLogin = (data != null);
+      }
+    );
+  }
+  signOut(): void {
+    this.authService.signOut();
   }
 
   getErrorMessage() {
@@ -36,7 +79,7 @@ export class LoginComponent implements OnInit {
 
   logIn(){
 
-    this.authSubscription = this.authService.login(new LoginRequest(
+    this.authSubscription = this.social.login(new LoginRequest(
       this.loginForm.get('email').value,
       this.loginForm.get('password').value
     )).subscribe();
@@ -44,5 +87,6 @@ export class LoginComponent implements OnInit {
 
   ngOnDestroy(): void {
     this.authSubscription.unsubscribe();
+    this.subscriptionLoginWithGmail.unsubscribe();
   }
 }

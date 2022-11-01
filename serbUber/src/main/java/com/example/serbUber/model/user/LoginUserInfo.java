@@ -13,6 +13,9 @@ public class LoginUserInfo {
     private String password;
     private Role role;
 
+    public LoginUserInfo(){
+
+    }
     public LoginUserInfo(String email, String password, Role role) {
         this.email = email;
         this.password = password;

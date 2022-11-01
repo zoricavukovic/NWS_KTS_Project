@@ -7,6 +7,8 @@ import {MatDividerModule} from '@angular/material/divider';
 import {MatIconModule} from '@angular/material/icon';
 import { MatOptionModule } from '@angular/material/core';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSelectModule } from '@angular/material/select';
 
 const MaterialConstants = [
   MatButtonModule,
@@ -16,7 +18,9 @@ const MaterialConstants = [
   MatDividerModule,
   MatIconModule,
   MatOptionModule,
-  MatAutocompleteModule
+  MatAutocompleteModule,
+  MatCheckboxModule,
+  MatSelectModule
 ]
 
 @NgModule({

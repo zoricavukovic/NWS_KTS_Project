@@ -14,6 +14,10 @@ public class Review {
     private String message;
     private Driving driving;
 
+
+    public Review(){
+
+    }
     public Review(
         final double vehicleRate,
         final double driverRate,

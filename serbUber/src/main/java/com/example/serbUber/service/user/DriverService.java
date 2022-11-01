@@ -2,6 +2,7 @@ package com.example.serbUber.service.user;
 
 import com.example.serbUber.dto.user.DriverDTO;
 import com.example.serbUber.exception.*;
+import com.example.serbUber.model.Location;
 import com.example.serbUber.model.Vehicle;
 import com.example.serbUber.model.VehicleType;
 import com.example.serbUber.model.Verify;
@@ -90,7 +91,7 @@ public class DriverService {
             throw new PasswordsDoNotMatchException();
         }
         Vehicle vehicle = toVehicle(vehicleService.create(petFriendly, babySeat, vehicleType));
-
+        Location currentLocation = new Location("Novi Sad", "Lasla Gala", "1", "21000", 40,50);
         Driver driver = saveDriver(email, password, name, surname, phoneNumber, city, profilePicture, vehicle);
         return new DriverDTO(driver);
     }

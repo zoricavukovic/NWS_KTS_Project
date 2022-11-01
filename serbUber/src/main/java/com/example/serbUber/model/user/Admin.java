@@ -6,6 +6,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "admins")
 public class Admin extends User{
 
+    public Admin() {
+        super();
+    }
+
     public Admin(
         final String email,
         final String password,

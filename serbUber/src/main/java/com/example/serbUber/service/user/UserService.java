@@ -17,15 +17,21 @@ public class UserService {
     private final UserRepository userRepository;
     private final LoginUserInfoService loginUserInfoService;
     private final AdminService adminService;
+    private final DriverService driverService;
+    private final RegularUserService regularUserService;
 
     public UserService(
         final UserRepository userRepository,
         final LoginUserInfoService loginUserInfoService,
-        final AdminService adminService
+        final AdminService adminService,
+        final DriverService driverService,
+        final RegularUserService regularUserService
     ) {
         this.userRepository = userRepository;
         this.loginUserInfoService = loginUserInfoService;
         this.adminService = adminService;
+        this.driverService = driverService;
+        this.regularUserService = regularUserService;
     }
 
     public List<UserDTO> getAll() {
@@ -36,9 +42,12 @@ public class UserService {
 
     public UserDTO get(String email) throws EntityNotFoundException {
         LoginUserInfoDTO loginUserInfoDTO = loginUserInfoService.get(email);
-        if (loginUserInfoDTO.getRole().getName().equals("ROLE_ADMIN")){
-            return adminService.get(email);
-        }
-        return null;
+
+        return switch (loginUserInfoDTO.getRole().getName()) {
+            case "ROLE_ADMIN" -> adminService.get(email);
+            case "ROLE_DRIVER" -> driverService.get(email);
+            default -> regularUserService.get(email);
+        };
+
     }
 }

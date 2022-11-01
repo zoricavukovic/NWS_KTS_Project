@@ -1,8 +1,6 @@
 package com.example.serbUber.model.user;
 
-import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.model.Driving;
-import com.example.serbUber.model.Location;
 import com.example.serbUber.model.Route;
 
 import java.util.LinkedList;
@@ -12,35 +10,11 @@ public class RegularUser extends User{
 
     private boolean blocked = false;
     private boolean verified = false;
-    private List<Driving> drives = new LinkedList<>();
+    private List<Driving> drivings = new LinkedList<>();
     private List<Route> favourites = new LinkedList<>();
 
     public RegularUser() {
         super();
-    }
-
-    public RegularUser(
-        final String email,
-        final String password,
-        final String name,
-        final String surname,
-        final String phoneNumber,
-        final String city,
-        final String profilePicture,
-        final List<Driving> drives,
-        final List<Route> favourites
-    ) {
-        super(email, password, name, surname, phoneNumber, city, profilePicture, new Role("ROLE_REGULAR_USER"));
-        this.drives = drives;
-        this.favourites = favourites;
-    }
-
-    public RegularUser(
-            final RegularUser regularUser
-    ) {
-        super(regularUser.getEmail(), regularUser.getPassword(), regularUser.getName(),
-                regularUser.getSurname(), regularUser.getPhoneNumber(), regularUser.getCity(),
-                regularUser.getProfilePicture(), new Role("ROLE_REGULAR_USER"));
     }
 
     public RegularUser(
@@ -55,6 +29,9 @@ public class RegularUser extends User{
         super(email, password, name, surname, phoneNumber, city, profilePicture, new Role("ROLE_REGULAR_USER"));
     }
 
+    public RegularUser(RegularUser regularUser) {
+    }
+
     public boolean isBlocked() {
         return blocked;
     }
@@ -63,8 +40,8 @@ public class RegularUser extends User{
         return verified;
     }
 
-    public List<Driving> getDrives() {
-        return drives;
+    public List<Driving> getDrivings() {
+        return drivings;
     }
 
     public List<Route> getFavourites() {

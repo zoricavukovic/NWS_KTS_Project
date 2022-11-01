@@ -31,6 +31,9 @@ public class Location {
         this.lat = lat;
     }
 
+    public Location() {
+    }
+
     public String getId() {
         return id;
     }
