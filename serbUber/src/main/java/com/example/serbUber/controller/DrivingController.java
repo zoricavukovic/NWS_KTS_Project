@@ -29,7 +29,7 @@ public class DrivingController {
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public DrivingDTO create(@Valid @RequestBody DrivingRequest drivingRequest) {
-
+        /*
         return this.drivingService.create(
               drivingRequest.isActive(),
                 drivingRequest.getDuration(),
@@ -40,6 +40,7 @@ public class DrivingController {
                 drivingRequest.getDriverEmail(),
                 drivingRequest.getUsersPaid(),
                 drivingRequest.getPrice()
-        );
+        ); */
+        return null;
     }
 }
