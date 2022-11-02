@@ -8,7 +8,7 @@ import java.util.List;
 
 public class VehicleTypeInfoDTO {
 
-    private String id;
+    private Long id;
     private VehicleType vehicleType;
     private double startPrice;
     private int numOfSeats;
@@ -38,7 +38,7 @@ public class VehicleTypeInfoDTO {
         return vtiDTOs;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 

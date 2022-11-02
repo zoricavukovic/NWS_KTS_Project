@@ -34,7 +34,7 @@ public class ReservationService {
         Reservation reservation = reservationRepository.save(new Reservation(
                 timeStamp,
                 route,
-                users
+                null
         ));
 
         return new ReservationDTO(reservation);

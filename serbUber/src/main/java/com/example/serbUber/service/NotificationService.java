@@ -40,7 +40,7 @@ public class NotificationService {
         return fromNotifications(notifications);
     }
 
-    public void delete(String id) {
+    public void delete(Long id) {
 
         notificationRepository.deleteById(id);
     }

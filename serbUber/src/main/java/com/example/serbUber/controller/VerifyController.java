@@ -34,7 +34,7 @@ public class VerifyController {
 
     @PostMapping("/send-code-again")
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody String verifyId)
+    public void create(@RequestBody Long verifyId)
             throws EntityNotFoundException, MailCannotBeSentException {
 
         this.verifyService.generateNewSecurityCode(verifyId);

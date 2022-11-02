@@ -4,25 +4,52 @@ import com.example.serbUber.model.Driving;
 import com.example.serbUber.model.Location;
 import com.example.serbUber.model.Vehicle;
 import com.example.serbUber.util.Constants;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
-@Document(collection = "drivers")
+@Entity
+@Table(name="drivers")
 public class Driver extends User {
 
+    @OneToOne()
+    @JoinColumn(name = "location_id", referencedColumnName = "id")
     private Location currentLocation;
+
+    @OneToMany()
+    @JoinColumn(name = "driving_id", referencedColumnName = "id")
     private List<Driving> drivings = new LinkedList<>();
+
+    @OneToOne()
+    @JoinColumn(name = "vehicle_id", referencedColumnName = "id")
     private Vehicle vehicle;
+
+    @Column(name="last_active")
     private LocalDateTime lastActive = null;
+
+    @Column(name="start_shift")
     private LocalDateTime startShift = null;
+
+    @Column(name="end_shift")
     private LocalDateTime endShift = null;
+
+    @Column(name="blocked")
     private boolean blocked = false;
+
+    @Column(name="active")
     private boolean active = false;
+
+    @Column(name="verified")
     private boolean verified = false;
+
+    @Column(name="rate")
     private double rate = Constants.START_RATE;
+
+    @Column(name="working_minutes")
     private int workingMinutes = Constants.START_WORKING_MINUTES;
 
     public Driver() {
@@ -30,7 +57,7 @@ public class Driver extends User {
     }
 
     public Driver(
-            final String id,
+            final Long id,
             final String email,
             final String password,
             final String name,
@@ -42,7 +69,6 @@ public class Driver extends User {
         super(id,email, password, name, surname, phoneNumber, city, profilePicture, new Role("ROLE_DRIVER"));
 
     }
-
 
     public Driver(
         final String email,

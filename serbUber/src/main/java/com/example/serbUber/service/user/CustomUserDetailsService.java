@@ -2,7 +2,6 @@ package com.example.serbUber.service.user;
 
 import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
-import com.example.serbUber.model.user.RegularUser;
 import com.example.serbUber.model.user.UserPrinciple;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

@@ -4,6 +4,7 @@ import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.request.user.UserEmailRequest;
 import com.example.serbUber.service.user.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +17,7 @@ public class UserController {
 
     private final UserService userService;
 
+    @Autowired
     public UserController(final UserService userService) {
         this.userService = userService;
     }

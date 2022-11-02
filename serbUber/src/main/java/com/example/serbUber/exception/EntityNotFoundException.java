@@ -5,4 +5,8 @@ public class EntityNotFoundException extends AppException {
         super(id, entityType);
     }
 
+    public EntityNotFoundException(Long id, EntityType entityType) {
+        super(id.toString(), entityType);
+    }
+
 }

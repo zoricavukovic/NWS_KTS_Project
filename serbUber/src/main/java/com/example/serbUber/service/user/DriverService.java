@@ -2,7 +2,6 @@ package com.example.serbUber.service.user;
 
 import com.example.serbUber.dto.user.DriverDTO;
 import com.example.serbUber.exception.*;
-import com.example.serbUber.model.Location;
 import com.example.serbUber.model.Vehicle;
 import com.example.serbUber.model.VehicleType;
 import com.example.serbUber.model.Verify;
@@ -60,7 +59,7 @@ public class DriverService {
             .orElseThrow(() ->  new EntityNotFoundException(email, EntityType.USER));
     }
 
-    public Driver getById(String id) throws EntityNotFoundException {
+    public Driver getById(Long id) throws EntityNotFoundException {
         Optional<Driver> optionalDriver = driverRepository.getDriverById(id);
 
         if (optionalDriver.isPresent()){
@@ -91,8 +90,8 @@ public class DriverService {
             throw new PasswordsDoNotMatchException();
         }
         Vehicle vehicle = toVehicle(vehicleService.create(petFriendly, babySeat, vehicleType));
-        Location currentLocation = new Location("Novi Sad", "Lasla Gala", "1", "21000", 40,50);
         Driver driver = saveDriver(email, password, name, surname, phoneNumber, city, profilePicture, vehicle);
+
         return new DriverDTO(driver);
     }
 
@@ -131,7 +130,7 @@ public class DriverService {
     }
 
 
-    public void activate(final String verifyId, final int securityCode)
+    public void activate(final Long verifyId, final int securityCode)
             throws EntityNotFoundException, WrongVerifyTryException
     {
         try {

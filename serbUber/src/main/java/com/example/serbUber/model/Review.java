@@ -1,19 +1,26 @@
 package com.example.serbUber.model;
+import javax.persistence.*;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "reviews")
+@Entity
+@Table(name="reviews")
 public class Review {
-
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
+    @Column(name="vehicle_rate", nullable = false)
     private double vehicleRate;
-    private double driverRate;
-    private String message;
-    private Driving driving;
 
+    @Column(name="driver_rate", nullable = false)
+    private double driverRate;
+
+    @Column(name="message")
+    private String message;
+
+    @OneToOne()
+    @JoinColumn(name = "driving_id", referencedColumnName = "id")
+    private Driving driving;
 
     public Review(){
 
@@ -30,23 +37,39 @@ public class Review {
         this.driving = driving;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public double getVehicleRate() {
         return vehicleRate;
+    }
+
+    public void setVehicleRate(double vehicleRate) {
+        this.vehicleRate = vehicleRate;
     }
 
     public double getDriverRate() {
         return driverRate;
     }
 
+    public void setDriverRate(double driverRate) {
+        this.driverRate = driverRate;
+    }
+
     public String getMessage() {
         return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public Driving getDriving() {
         return driving;
     }
 
-    public String getId() {
-        return id;
+    public void setDriving(Driving driving) {
+        this.driving = driving;
     }
 }

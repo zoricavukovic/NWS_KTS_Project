@@ -1,8 +1,8 @@
 package com.example.serbUber.dto;
 
-import com.example.serbUber.model.Driving;
 import com.example.serbUber.model.Reservation;
 import com.example.serbUber.model.Route;
+import com.example.serbUber.model.user.RegularUser;
 
 import java.time.LocalDateTime;
 import java.util.LinkedList;
@@ -11,7 +11,7 @@ import java.util.List;
 public class ReservationDTO {
     private LocalDateTime timeStamp;
     private Route route;
-    private List<String> users;
+    private List<RegularUser> users;
 
     public ReservationDTO(final Reservation reservation) {
         this.timeStamp = reservation.getTimeStamp();
@@ -36,7 +36,7 @@ public class ReservationDTO {
         return route;
     }
 
-    public List<String> getUsers() {
+    public List<RegularUser> getUsers() {
         return users;
     }
 }

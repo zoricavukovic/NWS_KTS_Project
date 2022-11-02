@@ -48,7 +48,7 @@ public class VehicleService {
         return fromVehicles(vehicles);
     }
 
-    public void delete(String id) {
+    public void delete(Long id) {
 
         vehicleRepository.deleteById(id);
     }

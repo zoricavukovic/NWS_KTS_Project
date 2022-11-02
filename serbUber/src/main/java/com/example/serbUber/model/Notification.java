@@ -1,18 +1,28 @@
 package com.example.serbUber.model;
 
 import com.example.serbUber.model.user.User;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "notifications")
+import javax.persistence.*;
+
+@Entity
+@Table(name="notifications")
 public class Notification {
-
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
+    @Column(name="message", nullable = false)
     private String message;
+
+    @OneToOne()
+    @JoinColumn(name = "sender_id", referencedColumnName = "id")
     private User sender;
+
+    @OneToOne()
+    @JoinColumn(name = "receiver_id", referencedColumnName = "id")
     private User receiver;
+
+    @Column(name="report", nullable = false)
     private boolean report;
 
     public Notification(){
@@ -30,23 +40,39 @@ public class Notification {
         this.report = report;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public String getMessage() {
         return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public User getSender() {
         return sender;
     }
 
+    public void setSender(User sender) {
+        this.sender = sender;
+    }
+
     public User getReceiver() {
         return receiver;
+    }
+
+    public void setReceiver(User receiver) {
+        this.receiver = receiver;
     }
 
     public boolean isReport() {
         return report;
     }
 
-    public String getId() {
-        return id;
+    public void setReport(boolean report) {
+        this.report = report;
     }
 }

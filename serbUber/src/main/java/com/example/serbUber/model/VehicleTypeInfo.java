@@ -1,19 +1,24 @@
 package com.example.serbUber.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import javax.persistence.*;
 
-@Document(collection = "vehicleTypeInfos")
+@Entity
+@Table(name="vehicle_type_infos")
 public class VehicleTypeInfo {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
+    @Column(name="vehicle_type", nullable = false)
     private VehicleType vehicleType;
+
+    @Column(name="start_price", nullable = false)
     private double startPrice;
+
+    @Column(name="num_of_seats", nullable = false)
     private int numOfSeats;
 
     public VehicleTypeInfo() {
-
     }
 
     public VehicleTypeInfo(
@@ -26,17 +31,31 @@ public class VehicleTypeInfo {
         this.numOfSeats = numOfSeats;
     }
 
-    public String getId() { return id; }
+    public Long getId() {
+        return id;
+    }
 
     public VehicleType getVehicleType() {
         return vehicleType;
+    }
+
+    public void setVehicleType(VehicleType vehicleType) {
+        this.vehicleType = vehicleType;
     }
 
     public double getStartPrice() {
         return startPrice;
     }
 
+    public void setStartPrice(double startPrice) {
+        this.startPrice = startPrice;
+    }
+
     public int getNumOfSeats() {
         return numOfSeats;
+    }
+
+    public void setNumOfSeats(int numOfSeats) {
+        this.numOfSeats = numOfSeats;
     }
 }

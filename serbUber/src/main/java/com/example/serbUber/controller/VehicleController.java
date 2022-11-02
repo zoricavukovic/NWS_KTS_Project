@@ -41,7 +41,7 @@ public class VehicleController {
 
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable String id) {
+    public void delete(@PathVariable Long id) {
 
         this.vehicleService.delete(id);
     }

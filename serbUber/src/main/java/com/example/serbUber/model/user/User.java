@@ -1,28 +1,46 @@
 package com.example.serbUber.model.user;
+import javax.persistence.*;
 
-import com.example.serbUber.model.Location;
-import org.checkerframework.common.aliasing.qual.Unique;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
+import static javax.persistence.InheritanceType.TABLE_PER_CLASS;
 
+@Entity
+@Inheritance(strategy=TABLE_PER_CLASS)
 public abstract class User {
 
     @Id
-    private String id;
-    @Indexed(unique = true)
+    @SequenceGenerator(name = "generator1", sequenceName = "usersIdGen", initialValue = 1, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generator1")
+    private Long id;
+
+    @Column(name="email", nullable = false, unique = true)
     private String email;
+
+    @Column(name="password")
     private String password;
+
+    @Column(name="name", nullable = false)
     private String name;
+
+    @Column(name="surname", nullable = false)
     private String surname;
+
+    @Column(name="phone_number", nullable = false)
     private String phoneNumber;
+
+    @Column(name="city", nullable = false)
     private String city;
+
+    @Column(name="profile_picture")
     private String profilePicture;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="role_id", nullable = false)
     private Role role;
 
     public User() {}
 
     public User(
-            final String id,
+            final Long id,
             final String email,
             final String password,
             final String name,
@@ -63,12 +81,8 @@ public abstract class User {
         this.role = role;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getEmail() {

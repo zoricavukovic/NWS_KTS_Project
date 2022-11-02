@@ -8,7 +8,7 @@ import java.util.List;
 
 public class NotificationDTO {
 
-    private String id;
+    private Long id;
     private String message;
     private User sender;
     private User receiver;
@@ -47,7 +47,7 @@ public class NotificationDTO {
         return report;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 

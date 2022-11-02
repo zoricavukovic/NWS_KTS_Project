@@ -1,25 +1,34 @@
 package com.example.serbUber.model;
 
 import com.example.serbUber.util.Constants;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "vehicle")
+import javax.persistence.*;
+
+@Entity
+@Table(name="vehicles")
 public class Vehicle {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
+    @Column(name="pet_friendly", nullable = false)
     private boolean petFriendly;
+
+    @Column(name="baby_seat", nullable = false)
     private boolean babySeat;
+
+    @OneToOne()
+    @JoinColumn(name = "vehicle_type_id", referencedColumnName = "id")
     private VehicleTypeInfo vehicleTypeInfo;
+
+    @Column(name="rate", nullable = false)
     private double rate = Constants.START_RATE;
 
     public Vehicle() {
-
     }
 
     public Vehicle(
-            final String id,
+            final Long id,
             final boolean petFriendly,
             final boolean babySeat,
             final VehicleTypeInfo vehicleTypeInfo,
@@ -43,12 +52,8 @@ public class Vehicle {
         this.rate = rate;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public boolean isPetFriendly() {

@@ -1,11 +1,13 @@
 package com.example.serbUber.repository;
 
 import com.example.serbUber.model.Verify;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-public interface VerifyRepository extends MongoRepository<Verify,String> {
-    Optional<Verify> findById(String id);
-    Optional<Verify> getVerifyById(String id);
+@Repository
+public interface VerifyRepository extends JpaRepository<Verify,Long> {
+
+    Optional<Verify> getVerifyById(Long id);
 }

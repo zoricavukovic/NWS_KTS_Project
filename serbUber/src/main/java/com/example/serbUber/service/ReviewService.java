@@ -40,7 +40,7 @@ public class ReviewService {
         return fromReviews(reviews);
     }
 
-    public void delete(String id) {
+    public void delete(Long id) {
 
         reviewRepository.deleteById(id);
     }

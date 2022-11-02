@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class DrivingDTO {
 
@@ -18,7 +19,7 @@ public class DrivingDTO {
     private Route route;
     private DrivingStatus drivingStatus;
     private String driverEmail;
-    private HashMap<String, Boolean> usersPaid = new HashMap<String, Boolean>();
+    private Map<String, Boolean> usersPaid = new HashMap<String, Boolean>();
     private double price;
 
     public DrivingDTO(final Driving driving){
@@ -70,7 +71,7 @@ public class DrivingDTO {
         return driverEmail;
     }
 
-    public HashMap<String, Boolean> getUsersPaid() {
+    public Map<String, Boolean> getUsersPaid() {
         return usersPaid;
     }
 

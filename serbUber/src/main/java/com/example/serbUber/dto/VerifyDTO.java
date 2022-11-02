@@ -4,12 +4,12 @@ import com.example.serbUber.model.Verify;
 
 public class VerifyDTO {
 
-    private String id;
-    private String userId;
+    private Long id;
+    private Long userId;
     private String email;
     private int securityCode;
 
-    public VerifyDTO(String id, String userId, String email, int securityCode) {
+    public VerifyDTO(Long id, Long userId, String email, int securityCode) {
         this.id = id;
         this.userId = userId;
         this.email = email;
@@ -23,7 +23,7 @@ public class VerifyDTO {
         this.securityCode = verify.getSecurityCode();
     }
 
-    public String getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
@@ -35,7 +35,7 @@ public class VerifyDTO {
         return securityCode;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 }
