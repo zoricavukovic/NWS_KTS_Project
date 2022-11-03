@@ -1,26 +1,34 @@
 package com.example.serbUber.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import javax.persistence.*;
 
 import static com.example.serbUber.util.Constants.MAX_NUM_VERIFY_TRIES;
 
-@Document(collection = "verifies")
+@Entity
+@Table(name="verifies")
 public class Verify {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    private String userId;
+    @Column(name="user_id", nullable = false, unique = true)
+    private Long userId;
+
+    @Column(name="email", nullable = false, unique = true)
     private String email;
+
+    @Column(name="security_code", nullable = false)
     private int securityCode;
+
+    @Column(name="used", nullable = false)
     private boolean used = false;
+
+    @Column(name="num_of_tries", nullable = false)
     private int numOfTries = 0;
 
-    public Verify() {
+    public Verify() {}
 
-    }
-
-    public Verify(String userId, String email, int securityCode, boolean used, int numOfTries) {
+    public Verify(Long userId, String email, int securityCode, boolean used, int numOfTries) {
         this.userId = userId;
         this.email = email;
         this.securityCode = securityCode;
@@ -28,7 +36,7 @@ public class Verify {
         this.numOfTries = numOfTries;
     }
 
-    public Verify(String id, String userId, String email, int securityCode, boolean used, int numOfTries) {
+    public Verify(Long id, Long userId, String email, int securityCode, boolean used, int numOfTries) {
         this.id = id;
         this.userId = userId;
         this.email = email;
@@ -37,48 +45,44 @@ public class Verify {
         this.numOfTries = numOfTries;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public String getUserId() {
+    public Long getUserId() {
         return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public int getSecurityCode() {
-        return securityCode;
-    }
-
-    public boolean isUsed() {
-        return used;
-    }
-
-    public int getNumOfTries() {
-        return numOfTries;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public int getSecurityCode() {
+        return securityCode;
     }
 
     public void setSecurityCode(int securityCode) {
         this.securityCode = securityCode;
     }
 
+    public boolean isUsed() {
+        return used;
+    }
+
     public void setUsed(boolean used) {
         this.used = used;
+    }
+
+    public int getNumOfTries() {
+        return numOfTries;
     }
 
     public void setNumOfTries(int numOfTries) {

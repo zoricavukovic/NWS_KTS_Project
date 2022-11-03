@@ -30,7 +30,7 @@ public class VerifyService {
         this.emailService = emailService;
     }
 
-    public Verify get(String id) throws EntityNotFoundException {
+    public Verify get(Long id) throws EntityNotFoundException {
         Optional<Verify> optionalVerify = verifyRepository.getVerifyById(id);
 
         if (optionalVerify.isPresent()){
@@ -42,7 +42,7 @@ public class VerifyService {
     }
 
     public void sendEmail(
-            final String userId,
+            final Long userId,
             final String email
     ) throws MailCannotBeSentException {
         try {
@@ -59,7 +59,7 @@ public class VerifyService {
     }
 
     public VerifyDTO create(
-            final String userId,
+            final Long userId,
             final String email
     ) {
 
@@ -72,9 +72,9 @@ public class VerifyService {
         )));
     }
 
-    public Verify update(final String id, final int securityCode)
-            throws EntityNotFoundException, WrongVerifyTryException {
-
+    public Verify update(final Long id, final int securityCode)
+            throws EntityNotFoundException, WrongVerifyTryException
+    {
         Verify verify = get(id);
         if (verify.canVerify(securityCode)) {
             verify.incrementNumOfTries();
@@ -97,7 +97,7 @@ public class VerifyService {
         verifyRepository.save(verify);
     }
 
-    public void generateNewSecurityCode(final String verifyId)
+    public void generateNewSecurityCode(final Long verifyId)
             throws EntityNotFoundException, MailCannotBeSentException {
         Verify verify = get(verifyId);
         this.sendEmail(verify.getUserId(), verify.getEmail());

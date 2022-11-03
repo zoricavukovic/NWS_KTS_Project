@@ -1,41 +1,69 @@
 package com.example.serbUber.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import com.example.serbUber.model.user.RegularUser;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
 
-@Document(collection = "reservations")
+@Entity
+@Table(name="reservations")
 public class Reservation {
+
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name="time_stamp", nullable = false)
     private LocalDateTime timeStamp;
+
+    @OneToOne()
+    @JoinColumn(name = "route_id", referencedColumnName = "id")
     private Route route;
-    private List<String> users;
+
+    @ManyToMany(mappedBy = "reservations", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<RegularUser> users = new LinkedList<>();
 
     public Reservation(){
-
     }
     public Reservation(
         final LocalDateTime timeStamp,
         final Route route,
-        final List<String> users
+        final List<RegularUser> users
     ) {
         this.timeStamp = timeStamp;
         this.route = route;
         this.users = users;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public LocalDateTime getTimeStamp() {
         return timeStamp;
+    }
+
+    public void setTimeStamp(LocalDateTime timeStamp) {
+        this.timeStamp = timeStamp;
     }
 
     public Route getRoute() {
         return route;
     }
 
-    public List<String> getUsers() {
+    public void setRoute(Route route) {
+        this.route = route;
+    }
+
+    public List<RegularUser> getUsers() {
         return users;
+    }
+
+    public void setUsers(List<RegularUser> users) {
+        this.users = users;
     }
 }

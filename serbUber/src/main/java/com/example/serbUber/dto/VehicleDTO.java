@@ -8,7 +8,7 @@ import java.util.List;
 
 public class VehicleDTO {
 
-    private String id;
+    private Long id;
     private boolean petFriendly;
     private boolean babySeat;
     private VehicleTypeInfo vehicleTypeInfo;
@@ -74,7 +74,7 @@ public class VehicleDTO {
         this.rate = rate;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 }

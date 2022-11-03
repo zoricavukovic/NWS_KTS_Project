@@ -61,7 +61,8 @@ public class AdminService {
             surname,
             phoneNumber,
             city,
-            getProfilePicture(profilePicture)
+            getProfilePicture(profilePicture),
+            new Role("ROLE_ADMIN")
         ));
         loginUserInfoRepository.save(new LoginUserInfo(email, hashedPassword, new Role("ROLE_ADMIN")));
 

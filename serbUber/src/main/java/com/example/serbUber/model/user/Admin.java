@@ -1,9 +1,9 @@
 package com.example.serbUber.model.user;
 
-import com.example.serbUber.model.Location;
-import org.springframework.data.mongodb.core.mapping.Document;
+import javax.persistence.*;
 
-@Document(collection = "admins")
+@Entity
+@Table(name="admins")
 public class Admin extends User{
 
     public Admin() {
@@ -17,9 +17,10 @@ public class Admin extends User{
         final String surname,
         final String phoneNumber,
         final String city,
-        final String profilePicture
+        final String profilePicture,
+        final Role role
     ) {
-        super(email, password, name, surname, phoneNumber, city, profilePicture, new Role("ROLE_ADMIN"));
+        super(email, password, name, surname, phoneNumber, city, profilePicture, role);
     }
 
 }

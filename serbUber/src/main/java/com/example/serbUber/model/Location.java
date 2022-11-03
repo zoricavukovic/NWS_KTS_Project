@@ -1,18 +1,30 @@
 package com.example.serbUber.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import javax.persistence.*;
 
-@Document(collection = "locations")
+@Entity
+@Table(name="locations")
 public class Location {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
+    @Column(name="city", nullable = false)
     private String city;
+
+    @Column(name="street", nullable = false)
     private String street;
+
+    @Column(name="number", nullable = false)
     private String number;
+
+    @Column(name="zip_code", nullable = false)
     private String zipCode;
+
+    @Column(name="lon")
     private double lon;
+
+    @Column(name="lat")
     private double lat;
 
     public Location(
@@ -34,7 +46,7 @@ public class Location {
     public Location() {
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
@@ -42,23 +54,47 @@ public class Location {
         return city;
     }
 
+    public void setCity(String city) {
+        this.city = city;
+    }
+
     public String getStreet() {
         return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
     }
 
     public String getNumber() {
         return number;
     }
 
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
     public String getZipCode() {
         return zipCode;
+    }
+
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
     }
 
     public double getLon() {
         return lon;
     }
 
+    public void setLon(double lon) {
+        this.lon = lon;
+    }
+
     public double getLat() {
         return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
     }
 }

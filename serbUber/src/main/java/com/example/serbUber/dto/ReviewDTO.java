@@ -9,7 +9,7 @@ import java.util.List;
 
 public class ReviewDTO {
 
-    private String id;
+    private Long id;
     private double vehicleRate;
     private double driverRate;
     private String message;
@@ -48,7 +48,7 @@ public class ReviewDTO {
         return driving;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 

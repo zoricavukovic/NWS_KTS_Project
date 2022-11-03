@@ -24,7 +24,7 @@ public class RegularUserDTO extends UserDTO{
         );
         this.blocked = regularUser.isBlocked();
         this.verified = regularUser.isVerified();
-        this.favourites = regularUser.getFavourites();
+        this.favourites = regularUser.getFavouriteRoutes();
     }
 
     public static List<RegularUserDTO> fromRegularUsers(final List<RegularUser> regularUsers){

@@ -50,7 +50,7 @@ public class RegularUserService {
             .orElseThrow(() ->  new EntityNotFoundException(email, EntityType.USER));
     }
 
-    public RegularUser getRegularById(String id) throws EntityNotFoundException {
+    public RegularUser getRegularById(Long id) throws EntityNotFoundException {
         Optional<RegularUser> optionalRegularUser = regularUserRepository.findById(id);
 
         return optionalRegularUser.map(RegularUser::new)
@@ -108,7 +108,7 @@ public class RegularUserService {
         }
     }
 
-    public void activate(final String verifyId, final int securityCode)
+    public void activate(final Long verifyId, final int securityCode)
             throws EntityNotFoundException, WrongVerifyTryException
     {
         try {
