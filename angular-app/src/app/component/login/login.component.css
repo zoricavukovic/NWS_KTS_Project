@@ -1,45 +1,35 @@
-.mat-grid-list {
-    font-size: 18px;
-    background-color: lightblue;
-    margin-top: 5%;
-    margin-bottom: 40%;
-    margin-right: 35%;
-    margin-left: 35%;
-    padding:2%
+.form-container {
+    display: block;
+    max-width: 18rem;
+    margin: auto;
+    margin-top: 6rem;
+    background-color: rgb(245,233,222);
+    padding: 5%;
+    border-radius: 15px;
+    overflow:hidden;
+    clear: both;
 }
 
-.mat-grid-tile {
-    height: 100%;
+.form-container mat-form-field {
+    width: 100%;
 }
 
-.title {
+.center {
+    display: flex;
+    justify-content: center;
+}
+
+.margin-top {
+    margin-top: 16px;
+}
+
+.text-center {
     text-align: center;
-    font-weight: bold;
-    font-size: 30px;
 }
 
-.login-form {
-    min-width: 150px;
-    max-width: 500px;
-    height: 100%;
-    width: 100%;
-    margin-top:10%;
-    margin-left: 15%;
-    margin-right: 15%;
-  }
-  
-.full-width {
-    width: 100%;
-    margin-bottom:5%;
-}
-
-.mat-button {
-    background-color: azure;
-    margin-right: 15%;
-    margin-left: 15%;
-    width: 70%;
-    padding: 2%;
-    font-size: 20px;
+.sign-up-link {
+    font-size: 1.2rem;
+    margin-left: 8px;
 }
 
 .devider-container {
@@ -53,19 +43,24 @@
   
 .devider-line {
     flex: 1;
-    background-color: grey;
+    background-color: #2c4b61;
 }
 
 .devider-text {
-    color: gray;
+    color: #2c4b61;
     padding-left: 10px;
     padding-right: 10px;
 }
 
 .google-button {
-    margin:10%;
-    margin-left: 50%;
-    margin-right: 50%;
+    margin-top:1rem;
+    margin-left: 5rem;
+    margin-right: 2.8rem;
+    display: inline-block;
 }
 
+.facebook-button {
+    margin-top:1rem;
+    display: inline-block;
+}
 

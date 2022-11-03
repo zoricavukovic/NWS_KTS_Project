@@ -12,13 +12,15 @@ import { GoogleLoginProvider, FacebookLoginProvider } from '@abacritt/angularx-s
 import { environment } from 'src/environments/environment';
 import { RegistrationComponent } from './component/registration/registration.component';
 import { VerifyComponent } from './component/verify/verify.component';
+import { DriverVehicleComponent } from './component/create-vehicle/driver-vehicle.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     RegistrationComponent,
-    VerifyComponent
+    VerifyComponent,
+    DriverVehicleComponent
   ],
   imports: [
     BrowserModule,

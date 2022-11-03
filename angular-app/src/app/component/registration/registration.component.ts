@@ -32,17 +32,13 @@ export class RegistrationComponent implements OnInit{
   matcher = new MyErrorStateMatcher();
   cities: string[] = ['Belgrade', 'Novi Sad', 'Kraljevo', 'Sabac'];
   registrationSubscription: Subscription;
-  petFriendly: boolean = false;
-  babySeat: boolean = false;
-  selectedVehicleType: string;
-  vehicleTypes: Observable<VehicleTypeInfo[]>;
+  
   //showDriverForm: boolean = this.authService.userIsAdmin();
   showDriverForm: boolean = true;
+  hidePassword: boolean =true;
+  hideConfirmPassword: boolean =true;
 
-  ngOnInit(): void {
-    this.vehicleTypes = this.registrationService.getVehicleTypeInfos();
-    console.log(this.vehicleTypes)
-  }
+  ngOnInit(): void {}
 
   constructor(
     private registrationService: RegistrationService,
@@ -61,11 +57,6 @@ export class RegistrationComponent implements OnInit{
     return this.cities.filter(city => city.toLowerCase().includes(filterValue));
   }
 
-  changeSelectedVehicleType(value) {
-    console.log(value);
-    this.selectedVehicleType = value;
-  }
-
   register(){
     if (this.showDriverForm) {
       this.registrationSubscription = this.registrationService.registerDriver(
@@ -78,9 +69,11 @@ export class RegistrationComponent implements OnInit{
           this.registrationForm.get('phoneNumberFormControl').value,
           this.registrationForm.get('cityFormControl').value,
           new VehicleRequest(
-            this.petFriendly,
-            this.babySeat,
-            this.selectedVehicleType
+            true, true, ""
+          //   this.petFriendly,
+          //   this.babySeat,
+          //   this.selectedVehicleType
+          // )
           )
         )
       ).subscribe();

@@ -26,7 +26,8 @@ export class LoginComponent implements OnInit {
   user: SocialUser;
   isLogin: boolean;
   constructor(private authService: SocialAuthService,
-              private social: AuthService) { }
+              private social: AuthService
+  ) { }
 
   ngOnInit(): void {
   }
@@ -71,7 +72,7 @@ export class LoginComponent implements OnInit {
 
   getErrorMessage() {
     if (this.loginForm.get('email').hasError('required')) {
-      return 'You must enter a value';
+      return 'Email is required';
     }
 
     return this.loginForm.get('email').hasError('email') ? 'Not a valid email' : '';
