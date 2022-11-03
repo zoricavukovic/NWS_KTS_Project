@@ -1,3 +1,4 @@
-@import "~bootstrap/dist/css/bootstrap.css";
+/* @import "~bootstrap/dist/css/bootstrap.css"; */
 html, body { height: 100%}
-body { margin: 0; font-family: serif, "Serif" }
+body { margin: 0; font-size: 1.rem; background-color: #2c4b61; color: #2c4b61;}
+

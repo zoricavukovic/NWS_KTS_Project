@@ -1,0 +1,16 @@
+    <mat-checkbox [aria-label]="" (click)="petFriendly = !petFriendly">
+        Pet friendly
+    </mat-checkbox>
+
+    <mat-checkbox [aria-label]="" (click)="babySeat = !babySeat">
+        Pet friendly
+    </mat-checkbox>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Vehicle types</mat-label>
+        <mat-select (selectionChange)="changeSelectedVehicleType($event.value)" required>
+            <mat-option *ngFor="let vehicle of vehicleTypes | async" [value]="vehicle.vehicleType">
+                {{vehicle.vehicleType}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
