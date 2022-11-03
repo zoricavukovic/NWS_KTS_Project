@@ -15,7 +15,10 @@ public class Route {
     private Location startPoint;
 
     @OneToMany()
-    @JoinColumn(name = "destination_id", referencedColumnName = "id")
+    @JoinTable(name = "route_destinations",
+            joinColumns = {@JoinColumn(name = "route_id")},
+            inverseJoinColumns = {@JoinColumn(name = "location_id")}
+    )
     private List<Location> destinations = new LinkedList<>();
 
     @Column(name="kilometers", nullable = false)
