@@ -22,10 +22,10 @@ public class Driving {
     @Column(name="duration", nullable = false)
     private int duration;
 
-    @Column(name="started", nullable = false)
+    @Column(name="started")
     private LocalDateTime started;
 
-    @Column(name="paying_limit", nullable = false)
+    @Column(name="paying_limit")
     private LocalDateTime payingLimit;
 
     @OneToOne()

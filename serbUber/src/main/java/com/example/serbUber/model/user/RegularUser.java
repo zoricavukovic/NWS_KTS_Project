@@ -24,7 +24,7 @@ public class RegularUser extends User {
     private List<Driving> drivings = new LinkedList<>();
 
     @OneToMany()
-    @JoinColumn(name = "route_id", referencedColumnName = "id")
+    @JoinTable(name = "favourite_routes", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "route_id", referencedColumnName = "id"))
     private List<Route> favouriteRoutes = new LinkedList<>();
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
