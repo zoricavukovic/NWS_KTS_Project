@@ -6,7 +6,9 @@ import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.EntityType;
 import com.example.serbUber.exception.PasswordsDoNotMatchException;
 import com.example.serbUber.exception.UsersUpdateException;
+import com.example.serbUber.model.user.DriverUpdateApproval;
 import com.example.serbUber.model.user.User;
+import com.example.serbUber.repository.user.DriverUpdateApprovalRepository;
 import com.example.serbUber.repository.user.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -27,19 +29,22 @@ public class UserService {
     private final AdminService adminService;
     private final DriverService driverService;
     private final RegularUserService regularUserService;
+    private final DriverUpdateApprovalRepository driverUpdateApprovalRepository;
 
     public UserService(
         final UserRepository userRepository,
         final LoginUserInfoService loginUserInfoService,
         final AdminService adminService,
         final DriverService driverService,
-        final RegularUserService regularUserService
+        final RegularUserService regularUserService,
+        final DriverUpdateApprovalRepository driverUpdateApprovalRepository
     ) {
         this.userRepository = userRepository;
         this.loginUserInfoService = loginUserInfoService;
         this.adminService = adminService;
         this.driverService = driverService;
         this.regularUserService = regularUserService;
+        this.driverUpdateApprovalRepository = driverUpdateApprovalRepository;
     }
 
     public List<UserDTO> getAll() {
@@ -69,6 +74,43 @@ public class UserService {
 
     }
 
+    public UserDTO updateDriver(
+            final String email,
+            final String name,
+            final String surname,
+            final String phoneNumber,
+            final String city
+    ) throws EntityNotFoundException {
+        User user = getUserByEmail(email);
+        DriverUpdateApproval update = new DriverUpdateApproval(
+                email,
+                name,
+                surname,
+                phoneNumber,
+                city
+        );
+        driverUpdateApprovalRepository.save(update);
+
+        return new UserDTO(user);
+    }
+
+    public UserDTO updateRegularOrAdmin(
+            final String email,
+            final String name,
+            final String surname,
+            final String phoneNumber,
+            final String city
+    ) throws EntityNotFoundException {
+        User user = getUserByEmail(email);
+        user.setName(name);
+        user.setSurname(surname);
+        user.setPhoneNumber(phoneNumber);
+        user.setCity(city);
+        userRepository.save(user);
+
+        return new UserDTO(user);
+    }
+
     public UserDTO update(
             final String email,
             final String name,
@@ -78,13 +120,23 @@ public class UserService {
     ) throws EntityNotFoundException, UsersUpdateException {
         try {
             User user = getUserByEmail(email);
-            user.setName(name);
-            user.setSurname(surname);
-            user.setPhoneNumber(phoneNumber);
-            user.setCity(city);
-            userRepository.save(user);
-
-            return new UserDTO(user);
+            if (user.getRole().getName().equalsIgnoreCase("ROLE_DRIVER")) {
+                return updateDriver(
+                        email,
+                        name,
+                        surname,
+                        phoneNumber,
+                        city
+                );
+            } else {
+                return updateRegularOrAdmin(
+                        email,
+                        name,
+                        surname,
+                        phoneNumber,
+                        city
+                );
+            }
         } catch (EntityNotFoundException e) {
             throw new EntityNotFoundException(email, EntityType.USER);
         } catch (Exception e) {
@@ -92,8 +144,8 @@ public class UserService {
         }
     }
 
-    public UserDTO updateProfilePicture(final String email, final String profilePicture)
-            throws UsersUpdateException, EntityNotFoundException {
+    public UserDTO updateProfilePicture(final String email, final String profilePicture
+    ) throws UsersUpdateException, EntityNotFoundException {
         try {
             User user = getUserByEmail(email);
             String newPictureName = checkPictureValidity(profilePicture, user.getId());
@@ -112,9 +164,8 @@ public class UserService {
             final String email,
             final String currentPassword,
             final String newPassword,
-            final String confirmPassword)
-            throws EntityNotFoundException, PasswordsDoNotMatchException
-    {
+            final String confirmPassword
+    ) throws EntityNotFoundException, PasswordsDoNotMatchException {
         User user = getUserByEmail(email);
         if (!passwordsMatch(newPassword, confirmPassword) ) {
             throw new PasswordsDoNotMatchException("New password and confirm password are not the same.");
