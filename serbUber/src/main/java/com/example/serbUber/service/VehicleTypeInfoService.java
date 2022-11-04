@@ -23,9 +23,9 @@ public class VehicleTypeInfoService {
     }
 
     public List<VehicleTypeInfoDTO> getAll() {
-        List<VehicleTypeInfo> vtis = vehicleTypeInfoRepository.findAll();
+        List<VehicleTypeInfo> vehicleTypeInfos = vehicleTypeInfoRepository.findAll();
 
-        return fromVehicleTypeInfos(vtis);
+        return fromVehicleTypeInfos(vehicleTypeInfos);
     }
 
     public void create(

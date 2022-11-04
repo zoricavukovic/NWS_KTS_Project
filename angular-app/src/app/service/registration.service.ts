@@ -4,7 +4,6 @@ import { RegistrationResponse } from '../model/registration-reponse';
 import { RegistrationRequest } from '../model/registration-request';
 import { ConfigService } from './config.service';
 import { map } from 'rxjs/operators';
-import { VehicleTypeInfo } from '../model/vehicle-type-info-response';
 import { DriverRegistrationRequest } from '../model/driver-registration-request';
 
 @Injectable({
@@ -39,11 +38,6 @@ export class RegistrationService {
         }
       )
     );
-  }
-
-  getVehicleTypeInfos() {
-
-    return this.http.get<[VehicleTypeInfo]>(this.configService.vehicle_type_infos);
   }
 
 }

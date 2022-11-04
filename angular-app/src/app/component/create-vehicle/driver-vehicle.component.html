@@ -1,0 +1,28 @@
+<div class="form-container mat-elevation-z1">
+    <h1 style="font-size: 1.4rem;">Vehicle info</h1>
+    <div style="display: flex;">
+        <mat-checkbox [aria-label]="" (click)="petFriendly = !petFriendly">
+            Pet friendly
+        </mat-checkbox>
+        
+        <mat-checkbox [aria-label]="" (click)="babySeat = !babySeat">
+            Baby seat
+        </mat-checkbox>
+    </div>
+
+    <p-carousel [value]="vehicleTypes" styleClass="custom-carousel" [numVisible]="3" [numScroll]="1" [circular]="true" [responsiveOptions]="responsiveOptions">
+        <ng-template let-vehicleType pTemplate="item">
+            <div class="product-item">
+                <div class="product-item-content" [style.borderColor]="styleArray[vehicleType.index] ? '#b73e3e':'#2c4b61'" (click)="changeSelectedVehicleType(vehicleType)">
+                    <div style="display:block">
+                        <img style="display:block" src="../../../assets/images/{{vehicleType.img}}" alt="no photo"/>
+                        <span style="position: absolute; bottom:0.5rem; font-size: 1rem;">{{vehicleType.vehicleType}}</span>
+                    </div>
+                </div>
+            </div>
+            
+        
+        </ng-template>
+    </p-carousel>
+     
+</div>

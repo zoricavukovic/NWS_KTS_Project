@@ -16,6 +16,7 @@ import java.util.Optional;
 
 import static com.example.serbUber.dto.user.RegularUserDTO.fromRegularUsers;
 import static com.example.serbUber.model.user.User.passwordsMatch;
+import static com.example.serbUber.util.Constants.getProfilePicture;
 import static com.example.serbUber.util.JwtProperties.getHashedNewUserPassword;
 
 @Service
@@ -55,6 +56,13 @@ public class RegularUserService {
 
         return optionalRegularUser.map(RegularUser::new)
                 .orElseThrow(() ->  new EntityNotFoundException(id, EntityType.USER));
+    }
+
+    public RegularUser getRegularByEmail(String email) throws EntityNotFoundException {
+        Optional<RegularUser> optionalRegularUser = regularUserRepository.getRegularUserByEmail(email);
+
+        return optionalRegularUser.map(RegularUser::new)
+             .orElseThrow(() ->  new EntityNotFoundException(email, EntityType.USER));
     }
 
     public RegularUserDTO create(
@@ -120,4 +128,5 @@ public class RegularUserService {
             throw new WrongVerifyTryException(e.getMessage());
         }
     }
+
 }

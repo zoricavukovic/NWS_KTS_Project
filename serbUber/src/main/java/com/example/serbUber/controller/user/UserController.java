@@ -1,8 +1,14 @@
 package com.example.serbUber.controller.user;
 
+import com.example.serbUber.dto.user.RegularUserDTO;
 import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
+import com.example.serbUber.exception.PasswordsDoNotMatchException;
+import com.example.serbUber.exception.UsersUpdateException;
 import com.example.serbUber.request.user.UserEmailRequest;
+import com.example.serbUber.request.user.UserPasswordUpdateRequest;
+import com.example.serbUber.request.user.UserProfilePictureRequest;
+import com.example.serbUber.request.user.UsersProfileUpdateRequest;
 import com.example.serbUber.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,4 +43,43 @@ public class UserController {
 
         return userService.get(userEmailRequest.getEmail());
     }
+
+    @PutMapping()
+    @ResponseStatus(HttpStatus.OK)
+    public UserDTO update(@Valid @RequestBody UsersProfileUpdateRequest userData)
+            throws EntityNotFoundException, UsersUpdateException {
+
+        return userService.update(
+                userData.getEmail(),
+                userData.getName(),
+                userData.getSurname(),
+                userData.getPhoneNumber(),
+                userData.getCity()
+        );
+    }
+
+    @PutMapping("profile-picture")
+    @ResponseStatus(HttpStatus.OK)
+    public UserDTO update(@Valid @RequestBody UserProfilePictureRequest userData)
+            throws EntityNotFoundException, UsersUpdateException {
+
+        return userService.updateProfilePicture(
+                userData.getEmail(),
+                userData.getProfilePicture()
+        );
+    }
+
+    @PutMapping("password")
+    @ResponseStatus(HttpStatus.OK)
+    public UserDTO update(@Valid @RequestBody UserPasswordUpdateRequest userData)
+            throws EntityNotFoundException, PasswordsDoNotMatchException {
+
+        return userService.updatePassword(
+                userData.getEmail(),
+                userData.getCurrentPassword(),
+                userData.getNewPassword(),
+                userData.getConfirmPassword()
+        );
+    }
+
 }

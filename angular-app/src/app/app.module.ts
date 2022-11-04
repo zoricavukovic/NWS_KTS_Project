@@ -12,13 +12,16 @@ import { GoogleLoginProvider, FacebookLoginProvider } from '@abacritt/angularx-s
 import { environment } from 'src/environments/environment';
 import { RegistrationComponent } from './component/registration/registration.component';
 import { VerifyComponent } from './component/verify/verify.component';
+import { DriverVehicleComponent } from './component/create-vehicle/driver-vehicle.component';
+import {CarouselModule} from 'primeng/carousel';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     RegistrationComponent,
-    VerifyComponent
+    VerifyComponent,
+    DriverVehicleComponent
   ],
   imports: [
     BrowserModule,
@@ -28,7 +31,8 @@ import { VerifyComponent } from './component/verify/verify.component';
     MaterialModule,
     FormsModule,
     ReactiveFormsModule,
-    SocialLoginModule
+    SocialLoginModule,
+    CarouselModule
   ],
   providers: [
     {

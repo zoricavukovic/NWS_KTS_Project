@@ -3,6 +3,7 @@ package com.example.serbUber.util;
 public class Constants {
 
     public static final String FRONT_VERIFY_URL = "http://localhost:4200/verify/";
+    public static final String PHOTOS_FILE_PATH = "./serbUber/src/main/resources/images/";
     public static final double STARTING_RATE = 0.0;
     public static final int MIN_LENGTH_OF_MESSAGE = 20;
     public static final int MAX_LENGTH_OF_MESSAGE = 100;
@@ -16,7 +17,7 @@ public class Constants {
     public static final int MAX_SECURITY_NUM = 9999;
     public static final double START_RATE = 0.0;
     public static final int START_WORKING_MINUTES = 0;
-    public static final String DEFAULT_PICTURE = "default.jpg";
+    public static final String DEFAULT_PICTURE = "default-user.png";
     public static final int YAHOO_PORT_NUM = 587;
     public static final String EMAIL_ADDRESS = "mail_za_isa_mrs@yahoo.com";
     public static final String EMAIL_PASSWORD = "qmnbsxeitomdwqmg";
@@ -27,6 +28,7 @@ public class Constants {
     }
 
     public static String getProfilePicture(String profilePicture) {
-        return (profilePicture == null) ? DEFAULT_PICTURE : profilePicture;
+        return (profilePicture == null || profilePicture.equalsIgnoreCase(DEFAULT_PICTURE)) ? DEFAULT_PICTURE : profilePicture;
     }
+
 }
