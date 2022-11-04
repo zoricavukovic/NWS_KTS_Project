@@ -1,10 +1,14 @@
 package com.example.serbUber.exception;
 
-public class PasswordsDoNotMatchException extends AppException {
+import static com.example.serbUber.exception.ErrorMessagesConstants.PASSWORDS_DO_NOT_MATCH_MESSAGE;
 
-    public static final String PASSWORDS_DO_NOT_MATCH_MESSAGE = "Passwords don't match. Try again.";
+public class PasswordsDoNotMatchException extends AppException {
 
     public PasswordsDoNotMatchException() {
         super(PASSWORDS_DO_NOT_MATCH_MESSAGE);
+    }
+
+    public PasswordsDoNotMatchException(String message) {
+        super(message);
     }
 }

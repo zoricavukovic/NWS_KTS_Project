@@ -7,6 +7,7 @@ import com.example.serbUber.exception.MailCannotBeSentException;
 import com.example.serbUber.exception.PasswordsDoNotMatchException;
 import com.example.serbUber.request.user.RegularUserRequest;
 import com.example.serbUber.request.user.UserEmailRequest;
+import com.example.serbUber.request.user.UsersProfileUpdateRequest;
 import com.example.serbUber.service.user.RegularUserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -38,22 +39,5 @@ public class RegularUserController {
     ) throws EntityNotFoundException {
 
         return regularUserService.get(emailRequest.getEmail());
-    }
-
-    @PostMapping("/register")
-    @ResponseStatus(HttpStatus.CREATED)
-    public RegularUserDTO create(@Valid @RequestBody RegularUserRequest regularUserRequest)
-        throws PasswordsDoNotMatchException, EntityAlreadyExistsException, MailCannotBeSentException {
-
-        return regularUserService.create(
-            regularUserRequest.getEmail(),
-            regularUserRequest.getPassword(),
-            regularUserRequest.getConfirmationPassword(),
-            regularUserRequest.getName(),
-            regularUserRequest.getSurname(),
-            regularUserRequest.getPhoneNumber(),
-            regularUserRequest.getCity(),
-            regularUserRequest.getProfilePicture()
-        );
     }
 }
