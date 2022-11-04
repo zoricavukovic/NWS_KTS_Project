@@ -14,4 +14,9 @@ public class JwtProperties {
         return passwordEncoder.encode(password);
     }
 
+    public static boolean oldPasswordsMatch(String password, String hashPassword) {
+        final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        return passwordEncoder.matches(password, hashPassword);
+    }
+
 }

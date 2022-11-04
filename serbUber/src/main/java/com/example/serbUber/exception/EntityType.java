@@ -4,5 +4,6 @@ public enum EntityType {
     USER ,
     LOCATION,
     VEHICLE_TYPE_INFO,
-    VERIFY
+    VERIFY,
+    PHOTO
 }

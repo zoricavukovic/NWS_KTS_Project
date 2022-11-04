@@ -15,4 +15,8 @@ public class ErrorMessagesConstants {
     public static final String WRONG_MESSAGE_LENGTH = "Message must have between 20-100 characters!";
     public static final String WRONG_RATE = "Rate must be value between 1 and 5!";
     public static final String WRONG_KM_NUM = "Kilometers must be greater than 0.";
+    public static final String PASSWORDS_DO_NOT_MATCH_MESSAGE = "Passwords don't match. Try again.";
+    public static final String USER_UPDATE_MESSAGE = "User cannot be updated due to server error.";
+
+
 }
