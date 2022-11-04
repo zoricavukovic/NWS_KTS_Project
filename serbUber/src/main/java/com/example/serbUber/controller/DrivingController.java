@@ -1,12 +1,14 @@
 package com.example.serbUber.controller;
 
 import com.example.serbUber.dto.DrivingDTO;
+import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.model.Driving;
 import com.example.serbUber.request.DrivingRequest;
 import com.example.serbUber.service.DrivingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
+import java.util.LinkedList;
 import java.util.List;
 
 @RestController
@@ -42,5 +44,11 @@ public class DrivingController {
                 drivingRequest.getPrice()
         ); */
         return null;
+    }
+
+    @GetMapping("/{email}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<DrivingDTO> getAllDrivingsForUser(@PathVariable String email) throws EntityNotFoundException {
+        return drivingService.getDrivingsForUser(email);
     }
 }

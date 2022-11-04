@@ -64,6 +64,8 @@ public class SpringConfig extends WebSecurityConfigurerAdapter {
             .permitAll()
             .antMatchers("/verify/send-code-again")
             .permitAll()
+            .antMatchers("/drivings/{email}")
+            .permitAll()
             .anyRequest()
             .authenticated()
             .and()

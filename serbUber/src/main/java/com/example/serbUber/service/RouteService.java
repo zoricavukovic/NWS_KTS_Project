@@ -7,6 +7,7 @@ import com.example.serbUber.repository.RouteRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 import static com.example.serbUber.dto.RouteDTO.fromRoutes;
 
@@ -27,7 +28,7 @@ public class RouteService {
 
     public RouteDTO create(
             final Location startPoint,
-            final List<Location> destinations,
+            final Set<Location> destinations,
             final double kilometers
     ) {
 

@@ -4,10 +4,7 @@ import com.example.serbUber.model.user.RegularUser;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Entity
 @Table(name="drivings")
@@ -38,9 +35,9 @@ public class Driving {
     @Column(name="driver_email", nullable = false)
     private String driverEmail;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "drivings_users", joinColumns = @JoinColumn(name = "driving_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
-    private List<RegularUser> users = new LinkedList<>();
+    private Set<RegularUser> users;
 
     @ElementCollection
     private Map<String, Boolean> usersPaid = new HashMap<String, Boolean>();
@@ -133,11 +130,11 @@ public class Driving {
         this.driverEmail = driverEmail;
     }
 
-    public List<RegularUser> getUsers() {
+    public Set<RegularUser> getUsers() {
         return users;
     }
 
-    public void setUsers(List<RegularUser> users) {
+    public void setUsers(Set<RegularUser> users) {
         this.users = users;
     }
 
