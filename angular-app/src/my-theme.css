@@ -13,6 +13,10 @@
     clear: both;
 }
 
+.link {
+    color: #2c4b61;
+}
+
 .form-container mat-form-field {
     width: 100%;
 }

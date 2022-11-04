@@ -22,7 +22,8 @@ const MaterialConstants = [
   MatAutocompleteModule,
   MatCheckboxModule,
   MatSelectModule,
-  MatCardModule
+  MatCardModule,
+  MatIconModule
 ]
 
 @NgModule({

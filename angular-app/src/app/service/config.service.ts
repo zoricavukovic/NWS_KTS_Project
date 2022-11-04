@@ -19,6 +19,9 @@ export class ConfigService {
   private _send_verify_code_again = this._api_url + "/verify/send-code-again";
   private _vehicle_type_infos = this._api_url + "/vehicle-type-infos";
 
+  private _send_reset_password_email = this._api_url + "/users/send-rest-password-link";
+  private _reset_password = this._api_url + "/users/reset-password";
+
   get login_url(): string {
     return this._login_user;
   }
@@ -51,5 +54,14 @@ export class ConfigService {
   get register_driver() : string {
     return this._register_driver;
   }
+
+  get reset_password() : string {
+    return this._reset_password;
+  }
+
+  send_reset_password_email(email: string): string {
+    return this._send_reset_password_email + "/" + email;
+  }
+
 
 }

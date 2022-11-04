@@ -8,8 +8,9 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import static com.example.serbUber.exception.ErrorMessagesConstants.*;
+import static com.example.serbUber.exception.ErrorMessagesConstants.WRONG_PASSWORD;
 
-public class UserPasswordUpdateRequest {
+public class PasswordResetRequest {
 
     @Email(message = WRONG_EMAIL)
     @NotBlank(message = EMPTY_EMAIL)
@@ -18,27 +19,20 @@ public class UserPasswordUpdateRequest {
 
     @NotBlank(message = WRONG_PASSWORD)
     @Pattern(regexp = Constants.LEGIT_PASSWORD_REG,
-            message = WRONG_PASSWORD)
-    private final String currentPassword;
-
-    @NotBlank(message = WRONG_PASSWORD)
-    @Pattern(regexp = Constants.LEGIT_PASSWORD_REG,
-            message = WRONG_PASSWORD)
+        message = WRONG_PASSWORD)
     private final String newPassword;
 
     @NotBlank(message = WRONG_PASSWORD)
     @Pattern(regexp = Constants.LEGIT_PASSWORD_REG,
-            message = WRONG_PASSWORD)
+        message = WRONG_PASSWORD)
     private final String confirmPassword;
 
-    public UserPasswordUpdateRequest(
-            final String email,
-            final String currentPassword,
-            final String newPassword,
-            final String confirmPassword
+    public PasswordResetRequest(
+        final String email,
+        final String newPassword,
+        final String confirmPassword
     ) {
         this.email = email;
-        this.currentPassword = currentPassword;
         this.newPassword = newPassword;
         this.confirmPassword = confirmPassword;
     }
@@ -49,10 +43,6 @@ public class UserPasswordUpdateRequest {
 
     public String getConfirmPassword() {
         return confirmPassword;
-    }
-
-    public String getCurrentPassword() {
-        return currentPassword;
     }
 
     public String getNewPassword() {

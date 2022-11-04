@@ -3,10 +3,7 @@ package com.example.serbUber.service.user;
 import com.example.serbUber.dto.user.RegularUserDTO;
 import com.example.serbUber.exception.*;
 import com.example.serbUber.model.Verify;
-import com.example.serbUber.model.user.LoginUserInfo;
 import com.example.serbUber.model.user.RegularUser;
-import com.example.serbUber.model.user.Role;
-import com.example.serbUber.repository.user.LoginUserInfoRepository;
 import com.example.serbUber.repository.user.RegularUserRepository;
 import com.example.serbUber.service.VerifyService;
 import org.springframework.stereotype.Service;
@@ -16,25 +13,19 @@ import java.util.Optional;
 
 import static com.example.serbUber.dto.user.RegularUserDTO.fromRegularUsers;
 import static com.example.serbUber.model.user.User.passwordsMatch;
-import static com.example.serbUber.util.Constants.getProfilePicture;
 import static com.example.serbUber.util.JwtProperties.getHashedNewUserPassword;
 
 @Service
 public class RegularUserService {
 
     private final RegularUserRepository regularUserRepository;
-
-    private final LoginUserInfoRepository loginUserInfoRepository;
-
     private final VerifyService verifyService;
 
     public RegularUserService(
             final RegularUserRepository regularUserRepository,
-            final LoginUserInfoRepository loginUserInfoRepository,
             final VerifyService verifyService
     ) {
         this.regularUserRepository = regularUserRepository;
-        this.loginUserInfoRepository = loginUserInfoRepository;
         this.verifyService = verifyService;
     }
 
@@ -105,8 +96,6 @@ public class RegularUserService {
                     profilePicture
             ));
             verifyService.sendEmail(regularUser.getId(), regularUser.getEmail());
-            LoginUserInfo loginUserInfo = new LoginUserInfo(email, hashedPassword, new Role("ROLE_REGULAR_USER"));
-            loginUserInfoRepository.save(loginUserInfo);
 
             return regularUser;
         } catch (MailCannotBeSentException e) {

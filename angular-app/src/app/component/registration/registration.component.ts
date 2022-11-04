@@ -3,13 +3,13 @@ import { FormControl, FormGroup, FormGroupDirective, NgForm, Validators, Validat
 import {ErrorStateMatcher} from '@angular/material/core';
 import { Observable, Subscription } from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
-import { RegistrationService } from 'src/app/service/registration.service';
+import { UserService } from 'src/app/service/user.service';
 import { RegistrationRequest } from 'src/app/model/registration-request';
 import { matchPasswordsValidator } from './confirm-password.validator';
-import { VehicleTypeInfo } from 'src/app/model/vehicle-type-info-response';
 import { AuthService } from 'src/app/service/auth.service';
 import { DriverRegistrationRequest } from 'src/app/model/driver-registration-request';
 import { VehicleRequest } from 'src/app/model/vehicle-request';
+import { isFormValid } from 'src/app/util/validation-function';
 
 @Component({
   selector: 'app-registration',
@@ -41,7 +41,7 @@ export class RegistrationComponent implements OnInit{
   ngOnInit(): void {}
 
   constructor(
-    private registrationService: RegistrationService,
+    private userService: UserService,
     private authService: AuthService
     ) {
     this.filteredCities = this.registrationForm.get('cityFormControl').valueChanges.pipe(
@@ -58,9 +58,28 @@ export class RegistrationComponent implements OnInit{
   }
 
   register(){
-    if (this.showDriverForm) {
-      this.registrationSubscription = this.registrationService.registerDriver(
-        new DriverRegistrationRequest(
+    if (isFormValid(this.registrationForm)){
+      if (this.showDriverForm) {
+        this.registrationSubscription = this.userService.registerDriver(
+          new DriverRegistrationRequest(
+            this.registrationForm.get('emailFormControl').value,
+            this.registrationForm.get('passwordFormControl').value,
+            this.registrationForm.get('passwordAgainFormControl').value,
+            this.registrationForm.get('nameFormControl').value,
+            this.registrationForm.get('surnameFormControl').value,
+            this.registrationForm.get('phoneNumberFormControl').value,
+            this.registrationForm.get('cityFormControl').value,
+            new VehicleRequest(
+              true, true, ""
+            //   this.petFriendly,
+            //   this.babySeat,
+            //   this.selectedVehicleType
+            // )
+            )
+          )
+        ).subscribe();
+      } else {
+        this.registrationSubscription = this.userService.registerRegularUser(new RegistrationRequest(
           this.registrationForm.get('emailFormControl').value,
           this.registrationForm.get('passwordFormControl').value,
           this.registrationForm.get('passwordAgainFormControl').value,
@@ -68,25 +87,8 @@ export class RegistrationComponent implements OnInit{
           this.registrationForm.get('surnameFormControl').value,
           this.registrationForm.get('phoneNumberFormControl').value,
           this.registrationForm.get('cityFormControl').value,
-          new VehicleRequest(
-            true, true, ""
-          //   this.petFriendly,
-          //   this.babySeat,
-          //   this.selectedVehicleType
-          // )
-          )
-        )
-      ).subscribe();
-    } else {
-      this.registrationSubscription = this.registrationService.registerRegularUser(new RegistrationRequest(
-        this.registrationForm.get('emailFormControl').value,
-        this.registrationForm.get('passwordFormControl').value,
-        this.registrationForm.get('passwordAgainFormControl').value,
-        this.registrationForm.get('nameFormControl').value,
-        this.registrationForm.get('surnameFormControl').value,
-        this.registrationForm.get('phoneNumberFormControl').value,
-        this.registrationForm.get('cityFormControl').value,
-      )).subscribe();
+        )).subscribe();
+      }
     }
   }
 
