@@ -6,10 +6,7 @@ import com.example.serbUber.model.Vehicle;
 import com.example.serbUber.model.VehicleType;
 import com.example.serbUber.model.Verify;
 import com.example.serbUber.model.user.Driver;
-import com.example.serbUber.model.user.LoginUserInfo;
-import com.example.serbUber.model.user.Role;
 import com.example.serbUber.repository.user.DriverRepository;
-import com.example.serbUber.repository.user.LoginUserInfoRepository;
 import com.example.serbUber.service.VehicleService;
 import com.example.serbUber.service.VerifyService;
 import org.springframework.stereotype.Service;
@@ -27,23 +24,17 @@ import static com.example.serbUber.util.JwtProperties.getHashedNewUserPassword;
 public class DriverService {
 
     private final DriverRepository driverRepository;
-
     private final VehicleService vehicleService;
-
     private final VerifyService verifyService;
-
-    private final LoginUserInfoRepository loginUserInfoRepository;
 
     public DriverService(
             final DriverRepository driverRepository,
             final VehicleService vehicleService,
-            final VerifyService verifyService,
-            final LoginUserInfoRepository loginUserInfoRepository
+            final VerifyService verifyService
     ) {
         this.driverRepository = driverRepository;
         this.vehicleService = vehicleService;
         this.verifyService = verifyService;
-        this.loginUserInfoRepository = loginUserInfoRepository;
     }
 
     public List<DriverDTO> getAll() {
@@ -118,8 +109,6 @@ public class DriverService {
                     vehicle
             ));
             verifyService.sendEmail(driver.getId(), driver.getEmail());
-            LoginUserInfo loginUserInfo = new LoginUserInfo(email, hashedPassword, new Role("ROLE_DRIVER"));
-            loginUserInfoRepository.save(loginUserInfo);
 
             return driver;
         }catch (MailCannotBeSentException e) {

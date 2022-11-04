@@ -14,6 +14,9 @@ import { RegistrationComponent } from './component/registration/registration.com
 import { VerifyComponent } from './component/verify/verify.component';
 import { DriverVehicleComponent } from './component/create-vehicle/driver-vehicle.component';
 import {CarouselModule} from 'primeng/carousel';
+import { SendResetPasswordEmailComponent } from './component/send-reset-password-link/send-reset-password-link.component';
+import { ResetPasswordComponent } from './component/reset-password/reset-password.component';
+
 
 @NgModule({
   declarations: [
@@ -21,7 +24,9 @@ import {CarouselModule} from 'primeng/carousel';
     LoginComponent,
     RegistrationComponent,
     VerifyComponent,
-    DriverVehicleComponent
+    DriverVehicleComponent,
+    SendResetPasswordEmailComponent,
+    ResetPasswordComponent
   ],
   imports: [
     BrowserModule,

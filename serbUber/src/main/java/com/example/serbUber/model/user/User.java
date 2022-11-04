@@ -153,4 +153,9 @@ public abstract class User {
 
         return password.equals(confirmationPassword);
     }
+
+    public static boolean passwordsDontMatch(String password, String confirmationPassword){
+
+        return !password.equals(confirmationPassword);
+    }
 }
