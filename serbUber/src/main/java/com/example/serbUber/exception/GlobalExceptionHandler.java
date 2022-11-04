@@ -32,4 +32,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> wrongVerifyTryException(WrongVerifyTryException wrongVerifyTryException) {
         return new ResponseEntity<>(wrongVerifyTryException.getMessage(), HttpStatus.EXPECTATION_FAILED);
     }
+
+    @ExceptionHandler(value = UsersUpdateException.class)
+    public ResponseEntity<String> usersUpdateException(UsersUpdateException usersUpdateException) {
+        return new ResponseEntity<>(usersUpdateException.getMessage(), HttpStatus.EXPECTATION_FAILED);
+    }
 }

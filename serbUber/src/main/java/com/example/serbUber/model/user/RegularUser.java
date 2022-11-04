@@ -23,7 +23,7 @@ public class RegularUser extends User {
     @JsonIgnore
     private List<Driving> drivings = new LinkedList<>();
 
-    @OneToMany()
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "favourite_routes", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "route_id", referencedColumnName = "id"))
     private List<Route> favouriteRoutes = new LinkedList<>();
 
@@ -47,7 +47,18 @@ public class RegularUser extends User {
         super(email, password, name, surname, phoneNumber, city, profilePicture, new Role("ROLE_REGULAR_USER"));
     }
 
+
     public RegularUser(RegularUser regularUser) {
+        super(
+                regularUser.getId(),
+                regularUser.getEmail(),
+                regularUser.getPassword(),
+                regularUser.getName(),
+                regularUser.getSurname(),
+                regularUser.getPhoneNumber(),
+                regularUser.getCity(),
+                regularUser.getProfilePicture(),
+                regularUser.getRole());
     }
 
     public boolean isBlocked() {
