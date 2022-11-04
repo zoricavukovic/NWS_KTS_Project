@@ -2,6 +2,8 @@ export class VehicleTypeInfo {
     vehicleType: string;
     startPrice: string;
     numOfSeats: string;
+    img?: string;
+    index?: number;
 
     constructor(
         vehicleType: string,
