@@ -1,114 +1,112 @@
-<div>
-    <div class="container">
-        <div class="row registration-content">
-            <div class="center-items">
-                <h1 class="title">SerbUber</h1>
-                <h2 class="subtitle">Registration</h2>
-                <form class="example-form" [formGroup]="registrationForm">
-                    <div class="col-6 align-self-center">
-                        <mat-form-field appearance="fill">
-                            <mat-label class="form-label">Email</mat-label>
-                            <input type="email" matInput formControlName="emailFormControl" [errorStateMatcher]="matcher">
-                            <mat-error
-                                *ngIf="registrationForm.get('emailFormControl').hasError('email') && !registrationForm.get('emailFormControl').hasError('required')">
-                                Please enter a valid email address
-                            </mat-error>
-                            <mat-error *ngIf="registrationForm.get('emailFormControl').hasError('required')">
-                                Email is <strong>required</strong>
-                            </mat-error>
-                        </mat-form-field>
-                
-                        <mat-form-field appearance="fill">
-                            <mat-label>Phone number</mat-label>
-                            <input type="tel" matInput formControlName="phoneNumberFormControl" [errorStateMatcher]="matcher">
-                            <mat-error *ngIf="registrationForm.get('phoneNumberFormControl').hasError('required')">
-                                Phone number is <strong>required</strong>
-                            </mat-error>
-                            <mat-error *ngIf="registrationForm.get('phoneNumberFormControl').hasError('pattern')">
-                                Please enter a valid phone number
-                            </mat-error>
-                        </mat-form-field>
-                        
-                        <mat-form-field appearance="fill">
-                            <mat-label>Name</mat-label>
-                            <input type="text" matInput formControlName="nameFormControl" [errorStateMatcher]="matcher">
-                            <mat-error *ngIf="registrationForm.get('nameFormControl').hasError('required')">
-                                Name is <strong>required</strong>
-                            </mat-error>
-                            <mat-error *ngIf="registrationForm.get('nameFormControl').hasError('pattern')">
-                                Please enter a valid name
-                            </mat-error>
-                        </mat-form-field>
+<div class="form-container mat-elevation-z2">
+    <h1 class="text-center">Registration</h1>
+    <form color="primary" [formGroup]="registrationForm">
+        <div style="display: flex;">
 
-                        <mat-form-field appearance="fill">
-                            <mat-label>Surname</mat-label>
-                            <input type="text" matInput formControlName="surnameFormControl" [errorStateMatcher]="matcher">
-                            <mat-error *ngIf="registrationForm.get('surnameFormControl').hasError('required')">
-                                Surname is <strong>required</strong>
-                            </mat-error>
-                            <mat-error *ngIf="registrationForm.get('surnameFormControl').hasError('pattern')">
-                                Please enter a valid surname
-                            </mat-error>
-                        </mat-form-field>
-                    </div>
-                    <div class="col-6 align-self-center">
+            <mat-form-field class="colomn" appearance="fill">
+                <mat-label>Email</mat-label>
+                <input type="email" matInput formControlName="emailFormControl" [errorStateMatcher]="matcher" placeholder="email@domain.com">
+                <mat-error
+                    *ngIf="registrationForm.get('emailFormControl').hasError('email') && !registrationForm.get('emailFormControl').hasError('required')">
+                    Please enter a valid email address
+                </mat-error>
+                <mat-error *ngIf="registrationForm.get('emailFormControl').hasError('required')">
+                    Email is <strong>required</strong>
+                </mat-error>
+            </mat-form-field>
 
-                        <mat-form-field appearance="fill">
-                            <mat-label>Password</mat-label>
-                            <input type="password" matInput formControlName="passwordFormControl" [errorStateMatcher]="matcher">
-                            <mat-error *ngIf="registrationForm.get('passwordFormControl').hasError('required')">
-                                Password is <strong>required</strong>
-                            </mat-error>
-                        </mat-form-field>
-                
-                        <mat-form-field appearance="fill">
-                            <mat-label>Confirm password</mat-label>
-                            <input type="password" matInput formControlName="passwordAgainFormControl" [errorStateMatcher]="matcher">
-                            <mat-error *ngIf="registrationForm.get('passwordAgainFormControl').hasError('required')">
-                                Confirm password is <strong>required</strong>
-                            </mat-error>
-                            <mat-error *ngIf="registrationForm.get('passwordAgainFormControl').hasError('mismatch')">
-                                Passwords are not match
-                            </mat-error>
-                        </mat-form-field>
-                
-                        <mat-form-field appearance="fill">
-                            <mat-label>City</mat-label>
-                            <input type="text" matInput [errorStateMatcher]="matcher" aria-label="State" [matAutocomplete]="auto"
-                                formControlName="cityFormControl">
-                            <mat-autocomplete #auto="matAutocomplete">
-                                <mat-option *ngFor="let city of filteredCities | async" [value]="city">
-                                    <span>{{city}}</span>
-                                </mat-option>
-                            </mat-autocomplete>
-                            <mat-error *ngIf="registrationForm.get('cityFormControl').hasError('required')">
-                                City is <strong>required</strong>
-                            </mat-error>
-                        </mat-form-field>
-                        
-                        <div *ngIf="showDriverForm">
-                            <mat-checkbox [aria-label]="" (click)="petFriendly = !petFriendly">
-                                Pet friendly
-                            </mat-checkbox>
-
-                            <mat-checkbox [aria-label]="" (click)="babySeat = !babySeat">
-                                Pet friendly
-                            </mat-checkbox>
-
-                            <mat-form-field appearance="fill">
-                                <mat-label>Vehicle types</mat-label>
-                                <mat-select (selectionChange)="changeSelectedVehicleType($event.value)" required>
-                                    <mat-option *ngFor="let vehicle of vehicleTypes | async" [value]="vehicle.vehicleType">
-                                        {{vehicle.vehicleType}}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </div>
-
-                    </div>
-                        <button mat-raised-button (click)="register()">Register</button>
-                    </form>
-            </div>
+            <mat-form-field class="colomn" appearance="fill">
+                <mat-label>Phone number</mat-label>
+                <input type="tel" matInput formControlName="phoneNumberFormControl" [errorStateMatcher]="matcher" placeholder="Enter phone number">
+                <mat-error *ngIf="registrationForm.get('phoneNumberFormControl').hasError('required')">
+                    Phone number is <strong>required</strong>
+                </mat-error>
+                <mat-error *ngIf="registrationForm.get('phoneNumberFormControl').hasError('pattern')">
+                    Please enter a valid phone number
+                </mat-error>
+            </mat-form-field>
+        </div> 
+        <div style="display: flex;">
+            <mat-form-field class="colomn" appearance="fill">
+                <mat-label>Name</mat-label>
+                <input type="text" matInput formControlName="nameFormControl" [errorStateMatcher]="matcher" placeholder="Enter name">
+                <mat-error *ngIf="registrationForm.get('nameFormControl').hasError('required')">
+                    Name is <strong>required</strong>
+                </mat-error>
+                <mat-error *ngIf="registrationForm.get('nameFormControl').hasError('pattern')">
+                    Please enter a valid name
+                </mat-error>
+            </mat-form-field>
+    
+    
+            <mat-form-field class="colomn" appearance="fill">
+                <mat-label>Surname</mat-label>
+                <input type="text" matInput formControlName="surnameFormControl" [errorStateMatcher]="matcher" placeholder="Enter surname">
+                <mat-error *ngIf="registrationForm.get('surnameFormControl').hasError('required')">
+                    Surname is <strong>required</strong>
+                </mat-error>
+                <mat-error *ngIf="registrationForm.get('surnameFormControl').hasError('pattern')">
+                    Please enter a valid surname
+                </mat-error>
+            </mat-form-field>        
         </div>
-    </div>
-</div>
+
+        <div style="display: flex;">
+            <mat-form-field class="password-colomn" appearance="fill">
+                <mat-label>Password</mat-label>
+                <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="passwordFormControl" [errorStateMatcher]="matcher" placeholder="Enter password">
+                <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword">
+                    <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+                <mat-error *ngIf="registrationForm.get('passwordFormControl').hasError('required')">
+                    Password is <strong>required</strong>
+                </mat-error>
+            </mat-form-field>
+    
+            <mat-form-field class="password-colomn" appearance="fill">
+                <mat-label>Password</mat-label>
+                <input matInput [type]="hideConfirmPassword ? 'password' : 'text'" formControlName="passwordAgainFormControl" [errorStateMatcher]="matcher" placeholder="Enter confirm password">
+                <button mat-icon-button matSuffix (click)="hideConfirmPassword = !hideConfirmPassword" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hideConfirmPassword">
+                <mat-icon>{{hideConfirmPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+                <mat-error *ngIf="registrationForm.get('passwordAgainFormControl').hasError('required')">
+                    Confirm password is <strong>required</strong>
+                </mat-error>
+                <mat-error *ngIf="registrationForm.get('passwordAgainFormControl').hasError('mismatch')">
+                    Passwords are not match
+                </mat-error>
+            </mat-form-field>
+        </div>
+        
+        <div style="display: flex;">
+            <mat-form-field appearance="fill">
+                <mat-label>City</mat-label>
+                <input type="text" matInput [errorStateMatcher]="matcher" aria-label="State" [matAutocomplete]="auto"
+                    formControlName="cityFormControl" placeholder="Choose city"
+                >
+                <mat-autocomplete #auto="matAutocomplete">
+                    <mat-option *ngFor="let city of filteredCities | async" [value]="city">
+                        <span>{{city}}</span>
+                    </mat-option>
+                </mat-autocomplete>
+                <mat-error *ngIf="registrationForm.get('cityFormControl').hasError('required')">
+                    City is <strong>required</strong>
+                </mat-error>
+            </mat-form-field>
+        </div>
+        
+        <div *ngIf="showDriverForm">
+            <driver-vehicle></driver-vehicle>
+        </div>
+
+        <div class="center margin-top">
+            <button mat-raised-button (click)="register()" style="background-color: #abbbae; font-size: 1.4rem; color: #2c4b61;">
+                Register
+            </button>
+        </div>
+
+        <span class="center margin-top">Already a member?  
+            <a href="/login" style="margin-left: 5px;">Log in</a>
+        </span>
+    </form>
+  </div>
