@@ -103,6 +103,6 @@ export class AuthService {
   }
 
   getToken() {
-    return localStorage.getItem('jwt');
+    return localStorage.getItem('token');
   }
 }

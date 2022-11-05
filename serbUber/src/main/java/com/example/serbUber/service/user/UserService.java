@@ -1,6 +1,5 @@
 package com.example.serbUber.service.user;
 
-import com.example.serbUber.dto.user.LoginUserInfoDTO;
 import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.EntityType;
@@ -10,13 +9,16 @@ import com.example.serbUber.model.user.DriverUpdateApproval;
 import com.example.serbUber.model.user.User;
 import com.example.serbUber.repository.user.DriverUpdateApprovalRepository;
 import com.example.serbUber.repository.user.UserRepository;
+import com.example.serbUber.service.EmailService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 import static com.example.serbUber.dto.user.UserDTO.fromUsers;
-import static com.example.serbUber.model.user.User.passwordsMatch;
+import static com.example.serbUber.model.user.User.passwordsDontMatch;
+import static com.example.serbUber.util.EmailConstants.FRONT_RESET_PASSWORD_URL;
+import static com.example.serbUber.util.EmailConstants.RESET_PASSWORD_SUBJECT;
 import static com.example.serbUber.util.JwtProperties.getHashedNewUserPassword;
 import static com.example.serbUber.util.JwtProperties.oldPasswordsMatch;
 import static com.example.serbUber.util.PictureHandler.checkPictureValidity;
@@ -25,26 +27,26 @@ import static com.example.serbUber.util.PictureHandler.checkPictureValidity;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final LoginUserInfoService loginUserInfoService;
     private final AdminService adminService;
     private final DriverService driverService;
     private final RegularUserService regularUserService;
     private final DriverUpdateApprovalRepository driverUpdateApprovalRepository;
+    private final EmailService emailService;
 
     public UserService(
         final UserRepository userRepository,
-        final LoginUserInfoService loginUserInfoService,
         final AdminService adminService,
         final DriverService driverService,
         final RegularUserService regularUserService,
-        final DriverUpdateApprovalRepository driverUpdateApprovalRepository
+        final DriverUpdateApprovalRepository driverUpdateApprovalRepository,
+        final EmailService emailService
     ) {
         this.userRepository = userRepository;
-        this.loginUserInfoService = loginUserInfoService;
         this.adminService = adminService;
         this.driverService = driverService;
         this.regularUserService = regularUserService;
         this.driverUpdateApprovalRepository = driverUpdateApprovalRepository;
+        this.emailService = emailService;
     }
 
     public List<UserDTO> getAll() {
@@ -64,14 +66,8 @@ public class UserService {
     }
 
     public UserDTO get(String email) throws EntityNotFoundException {
-        LoginUserInfoDTO loginUserInfoDTO = loginUserInfoService.get(email);
 
-        return switch (loginUserInfoDTO.getRole().getName()) {
-            case "ROLE_ADMIN" -> adminService.get(email);
-            case "ROLE_DRIVER" -> driverService.get(email);
-            default -> regularUserService.get(email);
-        };
-
+        return new UserDTO(getUserByEmail(email));
     }
 
     public UserDTO updateDriver(
@@ -167,14 +163,51 @@ public class UserService {
             final String confirmPassword
     ) throws EntityNotFoundException, PasswordsDoNotMatchException {
         User user = getUserByEmail(email);
-        if (!passwordsMatch(newPassword, confirmPassword) ) {
-            throw new PasswordsDoNotMatchException("New password and confirm password are not the same.");
-        } else if (!oldPasswordsMatch(currentPassword, user.getPassword())) {
-            throw new PasswordsDoNotMatchException("Your old password is not correct.");
-        }
-        user.setPassword(getHashedNewUserPassword(newPassword));
-        userRepository.save(user);
+        checkPasswordCondition(currentPassword, newPassword, confirmPassword, user);
+
+        updateAndSavePassword(newPassword, user);
 
         return new UserDTO(user);
+    }
+
+    public boolean sendEmailForResetPassword(String email) throws EntityNotFoundException {
+        User user = getUserByEmail(email);
+
+        emailService.sendMail(user.getEmail(), RESET_PASSWORD_SUBJECT,
+            String.format("Click here to reset your password: %s%s",
+                FRONT_RESET_PASSWORD_URL, email));
+        return true;
+    }
+
+    public UserDTO resetPassword(String email, String newPassword, String confirmPassword)
+        throws EntityNotFoundException, PasswordsDoNotMatchException
+    {
+        User user = getUserByEmail(email);
+        if (passwordsDontMatch(newPassword, confirmPassword) ) {
+            throw new PasswordsDoNotMatchException("New password and confirm password are not the same.");
+        }
+
+        updateAndSavePassword(newPassword, user);
+
+        return new UserDTO(user);
+    }
+
+    private void updateAndSavePassword(String newPassword, User user) {
+        user.setPassword(getHashedNewUserPassword(newPassword));
+        userRepository.save(user);
+    }
+
+    private void checkPasswordCondition(
+        String currentPassword,
+        String newPassword,
+        String confirmPassword,
+        User user
+    ) throws PasswordsDoNotMatchException {
+        if (passwordsDontMatch(newPassword, confirmPassword)) {
+            throw new PasswordsDoNotMatchException("New password and confirm password are not the same.");
+        }
+        if (!oldPasswordsMatch(currentPassword, user.getPassword())) {
+            throw new PasswordsDoNotMatchException("Your old password is not correct.");
+        }
     }
 }

@@ -6,6 +6,8 @@ import { LoginRequest } from 'src/app/model/login-request';
 import { AuthService } from 'src/app/service/auth.service';
 import { FacebookLoginProvider, GoogleLoginProvider, SocialAuthService } from "@abacritt/angularx-social-login";
 import { SocialUser } from "@abacritt/angularx-social-login";
+import { isFormValid } from 'src/app/util/validation-function';
+import { User } from 'src/app/model/user';
 
 @Component({
   selector: 'app-login',
@@ -26,31 +28,29 @@ export class LoginComponent implements OnInit {
   user: SocialUser;
   isLogin: boolean;
   constructor(private authService: SocialAuthService,
-              private social: AuthService) { }
+              private social: AuthService
+  ) { }
 
   ngOnInit(): void {
+    this.signInWithGoogle();
   }
 
   signInWithGoogle(): void {
-    this.authService.signIn(GoogleLoginProvider.PROVIDER_ID).then(
-      data => {
-        this.social.loginWithGoogle(data.idToken).subscribe(
-          res => {
-            console.log(res);
+    this.authService.authState.subscribe((user) => {
+        this.social.loginWithGoogle(user.idToken).subscribe(
+          (res: User) => {
+            this.user = user;
           }
-        );
+        ), (error) => {console.log(error)};
       }
-    );
-    this.authService.authState.subscribe(
-      data => {
-        this.isLogin = (data != null);
-      }
-    );
+    ), (error) => {console.log("greak")};;
   }
 
   signInWithFB(): void {
     this.authService.signIn(FacebookLoginProvider.PROVIDER_ID).then(
+      
       data => {
+        console.log("sadad")
         this.social.loginWithFacebook(data.authToken).subscribe(
           res => {
             console.log(res);
@@ -71,18 +71,19 @@ export class LoginComponent implements OnInit {
 
   getErrorMessage() {
     if (this.loginForm.get('email').hasError('required')) {
-      return 'You must enter a value';
+      return 'Email is required';
     }
 
     return this.loginForm.get('email').hasError('email') ? 'Not a valid email' : '';
   }
 
   logIn(){
-
-    this.authSubscription = this.social.login(new LoginRequest(
-      this.loginForm.get('email').value,
-      this.loginForm.get('password').value
-    )).subscribe();
+    if (isFormValid(this.loginForm)){
+      this.authSubscription = this.social.login(new LoginRequest(
+        this.loginForm.get('email').value,
+        this.loginForm.get('password').value
+      )).subscribe();
+    }
   }
 
   ngOnDestroy(): void {

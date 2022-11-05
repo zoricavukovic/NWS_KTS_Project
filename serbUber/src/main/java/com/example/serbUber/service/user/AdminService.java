@@ -4,10 +4,8 @@ import com.example.serbUber.dto.user.AdminDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.EntityType;
 import com.example.serbUber.model.user.Admin;
-import com.example.serbUber.model.user.LoginUserInfo;
 import com.example.serbUber.model.user.Role;
 import com.example.serbUber.repository.user.AdminRepository;
-import com.example.serbUber.repository.user.LoginUserInfoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,14 +19,11 @@ import static com.example.serbUber.util.JwtProperties.getHashedNewUserPassword;
 public class AdminService {
 
     private final AdminRepository adminRepository;
-    private final LoginUserInfoRepository loginUserInfoRepository;
 
     public AdminService(
-        final AdminRepository adminRepository,
-        final LoginUserInfoRepository loginUserInfoRepository
+        final AdminRepository adminRepository
     ) {
         this.adminRepository = adminRepository;
-        this.loginUserInfoRepository = loginUserInfoRepository;
     }
 
     public List<AdminDTO> getAll() {
@@ -64,7 +59,6 @@ public class AdminService {
             getProfilePicture(profilePicture),
             new Role("ROLE_ADMIN")
         ));
-        loginUserInfoRepository.save(new LoginUserInfo(email, hashedPassword, new Role("ROLE_ADMIN")));
 
         return new AdminDTO(admin);
     }
