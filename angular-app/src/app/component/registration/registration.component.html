@@ -64,7 +64,7 @@
             </mat-form-field>
     
             <mat-form-field class="password-colomn" appearance="fill">
-                <mat-label>Password</mat-label>
+                <mat-label>Confirm password</mat-label>
                 <input matInput [type]="hideConfirmPassword ? 'password' : 'text'" formControlName="passwordAgainFormControl" [errorStateMatcher]="matcher" placeholder="Enter confirm password">
                 <button mat-icon-button matSuffix (click)="hideConfirmPassword = !hideConfirmPassword" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hideConfirmPassword">
                 <mat-icon>{{hideConfirmPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
@@ -106,7 +106,7 @@
         </div>
 
         <span class="center margin-top">Already a member?  
-            <a href="/login" style="margin-left: 5px;">Log in</a>
+            <a href="/login" style="margin-left: 5px;" class="link">Log in</a>
         </span>
     </form>
   </div>

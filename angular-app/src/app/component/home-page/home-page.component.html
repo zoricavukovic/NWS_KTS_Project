@@ -1,0 +1,28 @@
+<div class="form-container mat-elevation-z1">
+    <h1><strong>Request a ride now</strong></h1>
+    <mat-form-field appearance="fill">
+        <mat-label>Enter pickup location</mat-label>
+        <input type="text" matInput aria-label="State" [matAutocomplete]="auto" placeholder="Enter pickup location">
+        <mat-icon matSuffix>location_on</mat-icon>
+        <mat-autocomplete #auto="matAutocomplete">
+            <!-- <mat-option *ngFor="let city of filteredCities | async" [value]="city">
+                <span>{{city}}</span>
+            </mat-option> -->
+        </mat-autocomplete>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Enter destination</mat-label>
+        <input type="text" matInput aria-label="State" [matAutocomplete]="auto" placeholder="Enter destination">
+        <mat-icon matSuffix>location_on</mat-icon>
+        <mat-autocomplete #auto="matAutocomplete">
+            <!-- <mat-option *ngFor="let city of filteredCities | async" [value]="city">
+                <span>{{city}}</span>
+            </mat-option> -->
+        </mat-autocomplete>
+    </mat-form-field>
+    
+    <div class="margin-top">
+        <button mat-raised-button  style="background-color: #abbbae; font-size: 1.4rem; color: #2c4b61;">Request now</button>
+    </div>
+</div>

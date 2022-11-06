@@ -21,6 +21,9 @@ export class ConfigService {
   private _drivings_url = this._api_url + "/drivings";
   private _drivings_details_url = this._api_url + "/drivings/details/";
 
+  private _send_reset_password_email = this._api_url + "/users/send-rest-password-link";
+  private _reset_password = this._api_url + "/users/reset-password";
+
   get login_url(): string {
     return this._login_user;
   }
@@ -61,4 +64,11 @@ export class ConfigService {
     return this._drivings_details_url;
   }
 
+  get reset_password() : string {
+    return this._reset_password;
+  }
+
+  send_reset_password_email(email: string): string {
+    return this._send_reset_password_email + "/" + email;
+  }
 }

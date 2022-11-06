@@ -19,6 +19,11 @@ import { ShowDrivingsComponent } from './component/show-drivings/show-drivings.c
 import { DrivingDetailsComponent } from './component/driving-details/driving-details.component';
 import { RatingDialogComponent } from './component/rating-dialog/rating-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { SendResetPasswordEmailComponent } from './component/send-reset-password-link/send-reset-password-link.component';
+import { ResetPasswordComponent } from './component/reset-password/reset-password.component';
+import { HomePageComponent } from './component/home-page/home-page.component';
+import { NavBarComponent } from './component/nav-bar/nav-bar.component';
+
 
 @NgModule({
   declarations: [
@@ -29,7 +34,11 @@ import { MatDialogModule } from '@angular/material/dialog';
     DriverVehicleComponent,
     ShowDrivingsComponent,
     DrivingDetailsComponent,
-    RatingDialogComponent
+    RatingDialogComponent,
+    SendResetPasswordEmailComponent,
+    ResetPasswordComponent,
+    HomePageComponent,
+    NavBarComponent
   ],
   imports: [
     BrowserModule,

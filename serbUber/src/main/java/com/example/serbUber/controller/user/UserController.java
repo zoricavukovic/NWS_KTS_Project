@@ -1,14 +1,10 @@
 package com.example.serbUber.controller.user;
 
-import com.example.serbUber.dto.user.RegularUserDTO;
 import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.PasswordsDoNotMatchException;
 import com.example.serbUber.exception.UsersUpdateException;
-import com.example.serbUber.request.user.UserEmailRequest;
-import com.example.serbUber.request.user.UserPasswordUpdateRequest;
-import com.example.serbUber.request.user.UserProfilePictureRequest;
-import com.example.serbUber.request.user.UsersProfileUpdateRequest;
+import com.example.serbUber.request.user.*;
 import com.example.serbUber.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -82,4 +78,23 @@ public class UserController {
         );
     }
 
+    @PutMapping("reset-password")
+    @ResponseStatus(HttpStatus.OK)
+    public UserDTO resetPassword(@Valid @RequestBody PasswordResetRequest passwordResetRequest)
+        throws EntityNotFoundException, PasswordsDoNotMatchException {
+
+        return userService.resetPassword(
+            passwordResetRequest.getEmail(),
+            passwordResetRequest.getNewPassword(),
+            passwordResetRequest.getConfirmPassword()
+        );
+    }
+
+    @GetMapping("/send-rest-password-link/{email}")
+    @ResponseStatus(HttpStatus.OK)
+    public boolean sendResetPasswordLink(@Valid @PathVariable("email") UserEmailRequest userEmailRequest
+    ) throws EntityNotFoundException {
+
+        return userService.sendEmailForResetPassword(userEmailRequest.getEmail());
+    }
 }

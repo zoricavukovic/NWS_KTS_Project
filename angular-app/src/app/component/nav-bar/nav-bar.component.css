@@ -1,0 +1,36 @@
+.spacer {
+    flex: 1 1 auto;
+}
+
+.img-circle-small {
+    width: 2.7rem;
+    height: 2.7rem;
+    border-top-left-radius: 50% 50%;
+    border-top-right-radius: 50% 50%;
+    border-bottom-right-radius: 50% 50%;
+    border-bottom-left-radius: 50% 50%;
+    margin-bottom: 2px;
+    margin-top: 0.7rem;
+}
+
+.status{
+    width: 0.8rem;
+    height:0.8rem;
+    border-top-left-radius: 50% 50%;
+    border-top-right-radius: 50% 50%;
+    border-bottom-right-radius: 50% 50%;
+    border-bottom-left-radius: 50% 50%;
+    margin-bottom: 0.75rem;
+    background-color: green;
+    position: absolute;
+}
+
+.temp{
+  position: relative;
+  display: inline-block;
+}
+
+.bottomRight{
+   bottom: 0;
+   right: 0;
+}

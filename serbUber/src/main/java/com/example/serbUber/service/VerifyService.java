@@ -11,9 +11,8 @@ import com.example.serbUber.util.Constants;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-
-import static com.example.serbUber.util.Constants.FRONT_VERIFY_URL;
 import static com.example.serbUber.util.Constants.MAX_NUM_VERIFY_TRIES;
+import static com.example.serbUber.util.EmailConstants.FRONT_VERIFY_URL;
 
 @Service
 public class VerifyService {

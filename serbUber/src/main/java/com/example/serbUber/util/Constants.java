@@ -2,7 +2,6 @@ package com.example.serbUber.util;
 
 public class Constants {
 
-    public static final String FRONT_VERIFY_URL = "http://localhost:4200/verify/";
     public static final String PHOTOS_FILE_PATH = "./serbUber/src/main/resources/images/";
     public static final double STARTING_RATE = 0.0;
     public static final int MIN_LENGTH_OF_MESSAGE = 20;
