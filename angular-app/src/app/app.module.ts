@@ -16,6 +16,8 @@ import { DriverVehicleComponent } from './component/create-vehicle/driver-vehicl
 import {CarouselModule} from 'primeng/carousel';
 import { SendResetPasswordEmailComponent } from './component/send-reset-password-link/send-reset-password-link.component';
 import { ResetPasswordComponent } from './component/reset-password/reset-password.component';
+import { HomePageComponent } from './component/home-page/home-page.component';
+import { NavBarComponent } from './component/nav-bar/nav-bar.component';
 
 
 @NgModule({
@@ -26,7 +28,9 @@ import { ResetPasswordComponent } from './component/reset-password/reset-passwor
     VerifyComponent,
     DriverVehicleComponent,
     SendResetPasswordEmailComponent,
-    ResetPasswordComponent
+    ResetPasswordComponent,
+    HomePageComponent,
+    NavBarComponent
   ],
   imports: [
     BrowserModule,
