@@ -5,13 +5,13 @@ import { LoginResponse } from '../model/login-response';
 import { User } from '../model/user';
 import { ConfigService } from './config.service';
 import { map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  currentUser: User;
+  currentUser$ = new BehaviorSubject<User>(null);
   roleAdmin: String = "ROLE_ADMIN";
 
   constructor(
@@ -20,14 +20,13 @@ export class AuthService {
   ) { }
 
     login(loginRequest: LoginRequest) {
-      console.log(loginRequest);
 
       return this.http.post<LoginResponse>(this.configService.login_url, loginRequest)
       .pipe(
           map((response) => { 
               const loggedUser = response as LoginResponse;
               this.setLocalStorage(loggedUser); 
-              this.currentUser = loggedUser.userDTO;
+              this.currentUser$.next(loggedUser.userDTO);
 
               return loggedUser.userDTO;
             }
@@ -42,7 +41,7 @@ export class AuthService {
         map((response) => { 
             const loggedUser = response as LoginResponse;
             this.setLocalStorage(loggedUser); 
-            this.currentUser = loggedUser.userDTO;
+            this.currentUser$.next(loggedUser.userDTO);
 
             return loggedUser.userDTO;
           }
@@ -57,7 +56,7 @@ export class AuthService {
         map((response) => { 
             const loggedUser = response as LoginResponse;
             this.setLocalStorage(loggedUser); 
-            this.currentUser = loggedUser.userDTO;
+            this.currentUser$.next(loggedUser.userDTO);
 
             return loggedUser.userDTO;
           }
@@ -70,21 +69,24 @@ export class AuthService {
     localStorage.setItem('user', JSON.stringify(loginResponse.userDTO));
   }
 
-  logout(){
+  logOut(){
+    this.currentUser$.next(null);
     localStorage.clear();
   }
 
-  getCurrentUser(){
+  getCurrentUser(): BehaviorSubject<User> {
     let user = localStorage.getItem('user');
     if (user !== null){
 
-        return JSON.parse(user); 
-    }   
+        this.currentUser$.next(JSON.parse(user));
+    }else{
 
-    return null;
+      this.currentUser$.next(null);
+    }
+    return this.currentUser$;
   }
 
-  userIsAdmin(): boolean{
+  userIsAdmin(): boolean {
     const userString = localStorage.getItem('user');
     if (userString !== null){
       const user = JSON.parse(userString);

@@ -1,0 +1,21 @@
+<mat-toolbar color="accent" class="mat-elevation-z3"> 
+    <a [routerLink]="['']" routerLinkActive='active'>
+        <img src="../../../assets/images/uber-icon.png" alt="SerbUber" style="height: 6rem; width: 6rem;"/>
+    </a>
+    
+    <div class="spacer"></div>
+    
+    <a *ngIf="!currentUser" [routerLink]="['/login']" routerLinkActive='active' mat-button color="primary">Log in</a>
+    <a *ngIf="!currentUser" [routerLink]="['/registration']" routerLinkActive='active' mat-raised-button style="background-color: #f5e9de; margin-left: 0.5rem; color:#2c4b61">Sign up</a>
+
+    <div *ngIf="currentUser" class="temp">
+        <img mat-button [matMenuTriggerFor]="menu" src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img (31).webp" alt="avatar" loading="lazy"  class="img-circle-small">
+        <span class="status bottomRight"></span>
+    </div>
+   
+    <mat-menu #menu="matMenu">
+        <button mat-menu-item><mat-icon color="primary">account_circle</mat-icon><span>My profile</span></button>
+        <button mat-menu-item><mat-icon color="primary">edit</mat-icon><span>Edit profile</span></button>
+        <button mat-menu-item (click)="logOut()"><mat-icon color="primary">logout</mat-icon><span>Log out</span></button>
+    </mat-menu>
+</mat-toolbar>
