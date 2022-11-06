@@ -1,4 +1,9 @@
 /* @import "~bootstrap/dist/css/bootstrap.css"; */
 html, body { height: 100%}
-body { margin: 0; font-size: 1.rem; background-color: #2c4b61; color: #2c4b61;}
+body { margin: 0; font-size: 1rem; background-color: var(--blue); color: var(--blue);}
+
+:root {
+    --mint: rgba(171, 187, 174, 0.411);
+    --blue: #2c4b61;
+}
 

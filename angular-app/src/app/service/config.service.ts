@@ -9,6 +9,9 @@ export class ConfigService {
 
   header = new HttpHeaders().set("Authorization", localStorage.getItem('token'));
 
+  public role_driver = "ROLE_DRIVER";
+  public role_regular_user = "ROLE_REGULAR_USER";
+
   private _api_url = environment.apiUrl;
   private _login_user = this._api_url + "/auth/login";
   private _login_with_gmail_user = this._api_url + "/auth/login/google";
@@ -18,6 +21,8 @@ export class ConfigService {
   private _verify_url = this._api_url + "/verify";
   private _send_verify_code_again = this._api_url + "/verify/send-code-again";
   private _vehicle_type_infos = this._api_url + "/vehicle-type-infos";
+  private _base64_show_photo_prefix = 'data:image/png;base64,';
+  private _users_url = this._api_url + "/users";
 
   private _send_reset_password_email = this._api_url + "/users/send-rest-password-link";
   private _reset_password = this._api_url + "/users/reset-password";
@@ -63,5 +68,20 @@ export class ConfigService {
     return this._send_reset_password_email + "/" + email;
   }
 
+  get base64_show_photo_prefix(): string {
+    return this._base64_show_photo_prefix;
+  }
+
+  get users_url() : string {
+    return this._users_url;
+  }
+
+  get users_update_profile_pic(): string {
+    return this._users_url + "/profile-picture";
+  }
+
+  get users_update_password(): string {
+    return this._users_url + "/password";
+  }
 
 }

@@ -6,6 +6,9 @@ import { ConfigService } from './config.service';
 import { map } from 'rxjs/operators';
 import { DriverRegistrationRequest } from '../model/driver-registration-request';
 import { PasswordUpdateRequest } from '../model/password-update-request';
+import { UserProfilePictureRequest } from '../model/user-profile-picture-request';
+import { UsersProfileUpdateRequest } from '../model/users-profile-update-request';
+import { UserPasswordUpdateRequest } from '../model/user-password-update-request';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +31,30 @@ export class UserService {
 
   resetPassword(passwordUpdateRequest: PasswordUpdateRequest) {
     this.http.put(this.configService.reset_password, passwordUpdateRequest)
+        .subscribe(
+            data => console.log('success', data),
+            error => console.log('oops', error)
+        );
+  }
+
+  updateProfileData(data: UsersProfileUpdateRequest) {
+    this.http.put(this.configService.users_url, data)
+        .subscribe(
+            data => console.log('success', data),
+            error => console.log('oops', error)
+        );
+  }
+
+  updateProfilePicture(data: UserProfilePictureRequest) {
+    this.http.put(this.configService.users_update_profile_pic, data)
+        .subscribe(
+            data => console.log('success', data),
+            error => console.log('oops', error)
+        );
+  }
+
+  updatePassword(data: UserPasswordUpdateRequest) {
+    this.http.put(this.configService.users_update_password, data)
         .subscribe(
             data => console.log('success', data),
             error => console.log('oops', error)

@@ -10,6 +10,8 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSelectModule } from '@angular/material/select';
 import {MatCardModule} from '@angular/material/card';
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatDialogModule} from '@angular/material/dialog';
 
 const MaterialConstants = [
   MatButtonModule,
@@ -23,7 +25,9 @@ const MaterialConstants = [
   MatCheckboxModule,
   MatSelectModule,
   MatCardModule,
-  MatIconModule
+  MatIconModule,
+  MatTabsModule,
+  MatDialogModule
 ]
 
 @NgModule({

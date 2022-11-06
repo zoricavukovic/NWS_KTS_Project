@@ -70,6 +70,10 @@ export class AuthService {
     localStorage.setItem('user', JSON.stringify(loginResponse.userDTO));
   }
 
+  setUSerInLocalStorage(user: User): void {
+    localStorage.setItem('user', JSON.stringify(user));
+  }
+
   logout(){
     localStorage.clear();
   }

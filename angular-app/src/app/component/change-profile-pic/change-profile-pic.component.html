@@ -1,0 +1,35 @@
+<div class="change-photo-container">
+    <h1 mat-dialog-title style="display: flex;" class="center"><b>Change profile picture</b></h1>
+    <mat-dialog-content>
+        <br>
+        <h2 class="center"><b>Upload your new profile<br> picture right here!</b></h2>
+        
+        <div class="image-container center" *ngIf="imageChanged">
+            <div class="center image-wrap">
+                <img [src]="getBase64Prefix() + base64Var" alt="Selected photo">
+            </div>
+        </div>
+
+        <div class="center margin-top" *ngIf="!imageChanged; else reset_template">
+            <label for="file-upload" class="custom-file-upload">
+                Upload
+            </label>
+            <input id="file-upload" (change)="onFileSelected($event)" accept="image/*" type="file" />
+        </div>
+
+        <ng-template #reset_template>
+            <div class="center" style="overflow: hidden;">
+                <label for="reset-btn" class="custom-file-upload">
+                    Reset
+                </label>
+                <input id="reset-btn" type="button" (click)="reset()"/>
+            </div>
+        </ng-template>
+
+    </mat-dialog-content>
+
+    <mat-dialog-actions class="activity-buttons" align="center">
+        <button mat-button class="green-secondary-button" [mat-dialog-close]="null">Close</button>
+        <button mat-raised-button class="green-button" (click)="saveChanges()" [disabled]="!imageChanged" [mat-dialog-close]="base64Var">Save</button>
+    </mat-dialog-actions>
+</div>

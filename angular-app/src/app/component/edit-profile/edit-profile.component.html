@@ -1,0 +1,67 @@
+<div>
+    <h1 mat-dialog-title style="display: flex;" class="center"><b>Edit data</b></h1>
+    <mat-dialog-content>
+        <form color="primary" [formGroup]="editDataForm">
+            <div style="display: flex;">
+                <mat-form-field class="colomn" appearance="fill">
+                    <mat-label>Name</mat-label>
+                    <input type="text" matInput formControlName="nameFormControl" [errorStateMatcher]="matcher"
+                        [(ngModel)]="userCopy.name">
+                    <mat-error *ngIf="editDataForm.get('nameFormControl').hasError('required')">
+                        Name is <strong>required</strong>
+                    </mat-error>
+                    <mat-error *ngIf="editDataForm.get('nameFormControl').hasError('pattern')">
+                        Please enter a valid name
+                    </mat-error>
+                </mat-form-field>
+        
+        
+                <mat-form-field class="colomn" appearance="fill">
+                    <mat-label>Surname</mat-label>
+                    <input type="text" matInput formControlName="surnameFormControl" [errorStateMatcher]="matcher"
+                        [(ngModel)]="userCopy.surname">
+                    <mat-error *ngIf="editDataForm.get('surnameFormControl').hasError('required')">
+                        Surname is <strong>required</strong>
+                    </mat-error>
+                    <mat-error *ngIf="editDataForm.get('surnameFormControl').hasError('pattern')">
+                        Please enter a valid surname
+                    </mat-error>
+                </mat-form-field>
+            </div>
+        
+            <div style="display: flex;">
+                <mat-form-field class="colomn" appearance="fill">
+                    <mat-label>Phone number</mat-label>
+                    <input type="tel" matInput formControlName="phoneNumberFormControl" [errorStateMatcher]="matcher"
+                        [(ngModel)]="userCopy.phoneNumber" placeholder="Enter phone number">
+                    <mat-error *ngIf="editDataForm.get('phoneNumberFormControl').hasError('required')">
+                        Phone number is <strong>required</strong>
+                    </mat-error>
+                    <mat-error *ngIf="editDataForm.get('phoneNumberFormControl').hasError('pattern')">
+                        Please enter a valid phone number
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field class="colomn" appearance="fill">
+                    <mat-label>City</mat-label>
+                    <input type="text" matInput [errorStateMatcher]="matcher" aria-label="State" [matAutocomplete]="auto"
+                        [(ngModel)]="userCopy.city" formControlName="cityFormControl" placeholder="Choose city">
+                    <mat-autocomplete #auto="matAutocomplete">
+                        <mat-option *ngFor="let city of filteredCities | async" [value]="city">
+                            <span>{{city}}</span>
+                        </mat-option>
+                    </mat-autocomplete>
+                    <mat-error *ngIf="editDataForm.get('cityFormControl').hasError('required')">
+                        City is <strong>required</strong>
+                    </mat-error>
+                </mat-form-field>
+            </div>
+        </form>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="center">
+        <button mat-button class="green-secondary-button" [mat-dialog-close]="null">Close</button>
+        <button mat-raised-button class="green-button" (click)="saveChanges()" [mat-dialog-close]="userCopy" [disabled]="checkValidForm()">Save</button>
+    </mat-dialog-actions>
+    
+</div>

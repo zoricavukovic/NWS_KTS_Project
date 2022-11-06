@@ -16,6 +16,10 @@ import { DriverVehicleComponent } from './component/create-vehicle/driver-vehicl
 import {CarouselModule} from 'primeng/carousel';
 import { SendResetPasswordEmailComponent } from './component/send-reset-password-link/send-reset-password-link.component';
 import { ResetPasswordComponent } from './component/reset-password/reset-password.component';
+import { ProfilePageComponent } from './component/profile-page/profile-page.component';
+import { EditProfileComponent } from './component/edit-profile/edit-profile.component';
+import { ChangeProfilePicComponent } from './component/change-profile-pic/change-profile-pic.component';
+import { ChangePasswordComponent } from './component/change-password/change-password.component';
 
 
 @NgModule({
@@ -26,7 +30,11 @@ import { ResetPasswordComponent } from './component/reset-password/reset-passwor
     VerifyComponent,
     DriverVehicleComponent,
     SendResetPasswordEmailComponent,
-    ResetPasswordComponent
+    ResetPasswordComponent,
+    ProfilePageComponent,
+    EditProfileComponent,
+    ChangeProfilePicComponent,
+    ChangePasswordComponent
   ],
   imports: [
     BrowserModule,
@@ -39,6 +47,7 @@ import { ResetPasswordComponent } from './component/reset-password/reset-passwor
     SocialLoginModule,
     CarouselModule
   ],
+  entryComponents:[EditProfileComponent],
   providers: [
     {
       provide: 'SocialAuthServiceConfig',
