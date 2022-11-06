@@ -12,6 +12,7 @@ import java.util.Map;
 
 public class DrivingDTO {
 
+    private Long id;
     private boolean active;
     private int duration;
     private LocalDateTime started;
@@ -23,6 +24,7 @@ public class DrivingDTO {
     private double price;
 
     public DrivingDTO(final Driving driving){
+        this.id = driving.getId();
         this.active = driving.isActive();
         this.duration = driving.getDuration();
         this.started = driving.getStarted();
@@ -77,5 +79,9 @@ public class DrivingDTO {
 
     public double getPrice() {
         return price;
+    }
+
+    public Long getId() {
+        return id;
     }
 }

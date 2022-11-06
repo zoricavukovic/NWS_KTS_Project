@@ -1,7 +1,10 @@
 package com.example.serbUber.service;
 
 import com.example.serbUber.dto.VehicleDTO;
+import com.example.serbUber.dto.user.DriverDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
+import com.example.serbUber.model.user.Driver;
+import com.example.serbUber.service.user.DriverService;
 import com.example.serbUber.util.Constants;
 import com.example.serbUber.model.Vehicle;
 import com.example.serbUber.model.VehicleType;
@@ -46,6 +49,10 @@ public class VehicleService {
         List<Vehicle> vehicles = vehicleRepository.findAll();
 
         return fromVehicles(vehicles);
+    }
+
+    public double getRatingForVehicle(Long id) {;
+        return vehicleRepository.getVehicleRatingById(id);
     }
 
     public void delete(Long id) {

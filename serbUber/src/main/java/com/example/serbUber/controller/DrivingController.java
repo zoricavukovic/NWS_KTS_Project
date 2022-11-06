@@ -51,4 +51,10 @@ public class DrivingController {
     public List<DrivingDTO> getAllDrivingsForUser(@PathVariable String email) throws EntityNotFoundException {
         return drivingService.getDrivingsForUser(email);
     }
+
+    @GetMapping("/details/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public DrivingDTO getDriving(@PathVariable Long id) throws EntityNotFoundException {
+        return drivingService.getDriving(id);
+    }
 }

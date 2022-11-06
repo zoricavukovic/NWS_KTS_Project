@@ -22,11 +22,9 @@ import static com.example.serbUber.dto.DrivingDTO.fromDrivings;
 public class DrivingService {
 
     private final DrivingRepository drivingRepository;
-    private final UserRepository userRepository;
 
-    public DrivingService(final DrivingRepository drivingRepository, final UserRepository userRepository) {
+    public DrivingService(final DrivingRepository drivingRepository) {
         this.drivingRepository = drivingRepository;
-        this.userRepository = userRepository;
     }
 
     public DrivingDTO create(
@@ -62,9 +60,21 @@ public class DrivingService {
         return fromDrivings(drivings);
     }
 
-    public List<DrivingDTO> getDrivingsForUser(String email) throws EntityNotFoundException {
+    public List<DrivingDTO> getDrivingsForUser(String email) {
 
             List<Driving> drivings = drivingRepository.findByUserEmail(email);
             return fromDrivings(drivings);
+    }
+
+    public DrivingDTO getDriving(Long id) throws EntityNotFoundException {
+//        Optional<Driving> driving = drivingRepository.getDrivingById(id);
+//        if (driving.isPresent()) {
+//            return new DrivingDTO(driving.get());
+//        }
+//        else {
+//            throw new EntityNotFoundException(id, EntityType.USER);
+//        }
+        Driving driving = drivingRepository.getDrivingById(id);
+        return new DrivingDTO(driving);
     }
 }

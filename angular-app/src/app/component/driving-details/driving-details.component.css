@@ -1,0 +1,8 @@
+.list{
+    background-color: #f5e9de;
+    border-radius: 10px;
+}
+
+.ui-rating a {
+    color: yellow !important;
+}

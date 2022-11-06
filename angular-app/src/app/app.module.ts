@@ -14,6 +14,11 @@ import { RegistrationComponent } from './component/registration/registration.com
 import { VerifyComponent } from './component/verify/verify.component';
 import { DriverVehicleComponent } from './component/create-vehicle/driver-vehicle.component';
 import {CarouselModule} from 'primeng/carousel';
+import {RatingModule} from 'primeng/rating';
+import { ShowDrivingsComponent } from './component/show-drivings/show-drivings.component';
+import { DrivingDetailsComponent } from './component/driving-details/driving-details.component';
+import { RatingDialogComponent } from './component/rating-dialog/rating-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -21,7 +26,10 @@ import {CarouselModule} from 'primeng/carousel';
     LoginComponent,
     RegistrationComponent,
     VerifyComponent,
-    DriverVehicleComponent
+    DriverVehicleComponent,
+    ShowDrivingsComponent,
+    DrivingDetailsComponent,
+    RatingDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -32,7 +40,9 @@ import {CarouselModule} from 'primeng/carousel';
     FormsModule,
     ReactiveFormsModule,
     SocialLoginModule,
-    CarouselModule
+    CarouselModule, 
+    RatingModule,
+    MatDialogModule
   ],
   providers: [
     {

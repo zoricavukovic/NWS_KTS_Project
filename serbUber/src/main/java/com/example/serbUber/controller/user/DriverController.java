@@ -59,5 +59,11 @@ public class DriverController {
             driverRegistrationRequest.getVehicleRequest().getVehicleType()
         );
     }
+
+    @GetMapping("/rating/{email}")
+    @ResponseStatus(HttpStatus.OK)
+    public double getRating(@PathVariable String email) throws EntityNotFoundException{
+        return driverService.getDriverRating(email);
+    }
 }
 

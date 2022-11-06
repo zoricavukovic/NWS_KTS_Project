@@ -8,6 +8,7 @@ import com.example.serbUber.model.Verify;
 import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.model.user.LoginUserInfo;
 import com.example.serbUber.model.user.Role;
+import com.example.serbUber.model.user.User;
 import com.example.serbUber.repository.user.DriverRepository;
 import com.example.serbUber.repository.user.LoginUserInfoRepository;
 import com.example.serbUber.service.VehicleService;
@@ -31,7 +32,6 @@ public class DriverService {
     private final VehicleService vehicleService;
 
     private final VerifyService verifyService;
-
     private final LoginUserInfoRepository loginUserInfoRepository;
 
     public DriverService(
@@ -129,6 +129,11 @@ public class DriverService {
         }
     }
 
+
+    public Double getDriverRating(String email) throws EntityNotFoundException{
+        DriverDTO dto = get(email);
+        return driverRepository.getRatingForDriver(dto.getId());
+    }
 
     public void activate(final Long verifyId, final int securityCode)
             throws EntityNotFoundException, WrongVerifyTryException

@@ -22,7 +22,6 @@ export class LoginComponent implements OnInit {
   hide: boolean =true;
   subscriptionLoginWithGmail: Subscription;
   authSubscription: Subscription;
-
   user: SocialUser;
   isLogin: boolean;
   constructor(private authService: SocialAuthService,

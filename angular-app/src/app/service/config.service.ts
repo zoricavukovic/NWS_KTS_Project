@@ -18,6 +18,8 @@ export class ConfigService {
   private _verify_url = this._api_url + "/verify";
   private _send_verify_code_again = this._api_url + "/verify/send-code-again";
   private _vehicle_type_infos = this._api_url + "/vehicle-type-infos";
+  private _drivings_url = this._api_url + "/drivings";
+  private _drivings_details_url = this._api_url + "/drivings/details/";
 
   get login_url(): string {
     return this._login_user;
@@ -30,7 +32,6 @@ export class ConfigService {
   get login_with_facebook_url(): string {
     return this._login_with_facebook_user;
   }
-
 
   get registration_url(): string{
     return this._register_user;
@@ -50,6 +51,14 @@ export class ConfigService {
 
   get register_driver() : string {
     return this._register_driver;
+  }
+
+  get drivings_url(): string {
+    return this._drivings_url;
+  }
+
+  get driving_details_url(): string{
+    return this._drivings_details_url;
   }
 
 }

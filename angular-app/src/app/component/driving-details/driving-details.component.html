@@ -1,0 +1,29 @@
+<div>
+    <mat-grid-list cols="2" rowHeight="2:1">
+        <mat-grid-tile>
+          <div style="color:white">mapaaa</div>
+        </mat-grid-tile>
+        <mat-grid-tile>
+          <mat-list class="list">
+            <div mat-subheader>Ruta</div>
+            <mat-list-item *ngFor="let dest of destinations">
+              <mat-icon mat-list-icon>location_on</mat-icon>
+              <div mat-line>{{dest}}</div>
+            </mat-list-item>
+          </mat-list>
+        </mat-grid-tile>
+        <mat-grid-tile>
+          <div style="background-color: white;">
+            peeraaaaaaaaaaaaa
+          <p-rating [ngModel]="val" [readonly]="true" [stars]="10"></p-rating>
+          </div>
+        </mat-grid-tile>
+        <mat-grid-tile>
+          <button mat-raised-button class="routebtn" [matMenuTriggerFor]="menu">Poruči ovu vožnju</button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item>Odmah</button>
+            <button mat-menu-item>Kasnije</button>
+          </mat-menu>
+        </mat-grid-tile>
+      </mat-grid-list>
+</div>
