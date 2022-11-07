@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MyErrorStateMatcher } from '../registration/registration.component';
 import { map, Observable, startWith, Subscription } from 'rxjs';
@@ -15,9 +15,11 @@ import { Router } from '@angular/router';
   templateUrl: './edit-profile.component.html',
   styleUrls: ['./edit-profile.component.css']
 })
-export class EditProfileComponent implements OnInit {
-  
-  public user: User = this.authService.getCurrentUser();
+export class EditProfileComponent implements OnInit, OnDestroy {
+
+  user: User;
+
+  authSubrscription: Subscription;
 
   editDataForm = new FormGroup({
     'phoneNumberFormControl' : new FormControl('', [Validators.required, Validators.pattern("[0-9]*")]),
@@ -40,10 +42,18 @@ export class EditProfileComponent implements OnInit {
       map(city=> (city ? this._filterCities(city) : this.cities.slice())),
     );
   }
-
+  
   ngOnInit(): void {
+      this.authSubrscription = this.authService.getCurrentUser().subscribe(
+        user => this.user = user
+      );    
   }
-
+    
+  ngOnDestroy(): void {
+    if (this.authSubrscription) {
+      this.authSubrscription.unsubscribe();
+    }
+  }
   saveChanges() {
     this.userService.updateProfileData(
       new UsersProfileUpdateRequest(

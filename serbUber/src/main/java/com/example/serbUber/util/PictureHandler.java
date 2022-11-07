@@ -65,14 +65,20 @@ public class PictureHandler {
     public static String checkPictureValidity(final String base64Opt, final Long id)
             throws UsersUpdateException
     {
-        String pictureName = getProfilePicture(base64Opt);
-        if (pictureName.equals(DEFAULT_PICTURE)) {
-            return DEFAULT_PICTURE;
-        }
-        pictureName = generatePhotoName(id);
+
+        return getProfilePicture(base64Opt).equalsIgnoreCase(DEFAULT_PICTURE) ? DEFAULT_PICTURE :
+                savePicture(base64Opt, id);
+    }
+
+    public static String savePicture(final String base64Opt, final Long id)
+            throws UsersUpdateException
+    {
+        String pictureName = generatePhotoName(id);
         savePictureFromBase64(pictureName, base64Opt);
 
         return pictureName;
     }
+
+
 
 }

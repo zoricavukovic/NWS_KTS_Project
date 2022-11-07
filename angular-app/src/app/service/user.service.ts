@@ -11,6 +11,7 @@ import { UsersProfileUpdateRequest } from '../model/users-profile-update-request
 import { UserPasswordUpdateRequest } from '../model/user-password-update-request';
 import { Router } from '@angular/router';
 import { AuthService } from './auth.service';
+import { User } from '../model/user';
 
 @Injectable({
   providedIn: 'root'
@@ -44,8 +45,11 @@ export class UserService {
   updateProfileData(data: UsersProfileUpdateRequest) {
     this.http.put(this.configService.users_url, data)
         .subscribe(
-            data => {
+            res => {
+              //this.router.navigate(['/profile-page'], {state: {user: res}});
               this.router.navigate(['/profile-page']);
+              const parsedUser = res as User;
+              this.authService.setUserInLocalStorage(parsedUser);
             },
             error => console.log('oops', error)
         );
@@ -63,7 +67,7 @@ export class UserService {
     this.http.put(this.configService.users_update_password, data)
         .subscribe(
             data => {
-              this.authService.logout()
+              this.authService.logOut()
               this.router.navigate(['/login']);
               console.log('success', data);},
             error => console.log('oops', error)

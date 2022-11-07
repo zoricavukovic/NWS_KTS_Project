@@ -74,6 +74,11 @@ export class AuthService {
     localStorage.clear();
   }
 
+  setUserInLocalStorage(user: User): void {
+    localStorage.setItem('user', JSON.stringify(user));
+    this.currentUser$.next(user);
+  }
+
   getCurrentUser(): BehaviorSubject<User> {
     let user = localStorage.getItem('user');
     console.log(user);

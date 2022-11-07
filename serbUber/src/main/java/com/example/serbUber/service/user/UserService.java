@@ -16,7 +16,6 @@ import java.util.Optional;
 
 import static com.example.serbUber.dto.user.UserDTO.fromUsers;
 import static com.example.serbUber.model.user.User.passwordsDontMatch;
-import static com.example.serbUber.util.Constants.ROLE_DRIVER;
 import static com.example.serbUber.util.EmailConstants.FRONT_RESET_PASSWORD_URL;
 import static com.example.serbUber.util.EmailConstants.RESET_PASSWORD_SUBJECT;
 import static com.example.serbUber.util.JwtProperties.getHashedNewUserPassword;
@@ -27,24 +26,15 @@ import static com.example.serbUber.util.PictureHandler.checkPictureValidity;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final AdminService adminService;
-    private final DriverService driverService;
-    private final RegularUserService regularUserService;
     private final DriverUpdateApprovalService driverUpdateApprovalService;
     private final EmailService emailService;
 
     public UserService(
         final UserRepository userRepository,
-        final AdminService adminService,
-        final DriverService driverService,
-        final RegularUserService regularUserService,
         final DriverUpdateApprovalService driverUpdateApprovalService,
         final EmailService emailService
     ) {
         this.userRepository = userRepository;
-        this.adminService = adminService;
-        this.driverService = driverService;
-        this.regularUserService = regularUserService;
         this.driverUpdateApprovalService = driverUpdateApprovalService;
         this.emailService = emailService;
     }
@@ -60,9 +50,9 @@ public class UserService {
 
         if (optionalInfo.isPresent()){
             return optionalInfo.get();
-        } else {
-            throw new EntityNotFoundException(email, EntityType.USER);
         }
+
+        throw new EntityNotFoundException(email, EntityType.USER);
     }
 
     public UserDTO getUserDTOByEmail(String email) throws EntityNotFoundException {
@@ -110,26 +100,16 @@ public class UserService {
             final String surname,
             final String phoneNumber,
             final String city
-    ) throws EntityNotFoundException, UsersUpdateException {
+    )
+            throws EntityNotFoundException, UsersUpdateException
+    {
         try {
             User user = getUserByEmail(email);
-            if (user.getRole().isDriver()) {
-                return updateDriver(
-                        email,
-                        name,
-                        surname,
-                        phoneNumber,
-                        city
-                );
-            } else {
-                return updateRegularOrAdmin(
-                        email,
-                        name,
-                        surname,
-                        phoneNumber,
-                        city
-                );
-            }
+
+            return user.getRole().isDriver() ?
+                    updateDriver(email, name, surname, phoneNumber, city) :
+                    updateRegularOrAdmin(email, name, surname, phoneNumber, city);
+
         } catch (EntityNotFoundException e) {
             throw new EntityNotFoundException(email, EntityType.USER);
         } catch (Exception e) {
@@ -137,8 +117,9 @@ public class UserService {
         }
     }
 
-    public UserDTO updateProfilePicture(final String email, final String profilePicture
-    ) throws UsersUpdateException, EntityNotFoundException {
+    public UserDTO updateProfilePicture(final String email, final String profilePicture)
+            throws UsersUpdateException, EntityNotFoundException
+    {
         try {
             User user = getUserByEmail(email);
             String newPictureName = checkPictureValidity(profilePicture, user.getId());

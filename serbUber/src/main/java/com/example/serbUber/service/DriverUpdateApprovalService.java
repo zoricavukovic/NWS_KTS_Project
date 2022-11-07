@@ -22,13 +22,8 @@ public class DriverUpdateApprovalService {
             final String phoneNumber,
             final String city
     ) {
-        return driverUpdateApprovalRepository.save(new DriverUpdateApproval(
-                email,
-                name,
-                surname,
-                phoneNumber,
-                city
-        ));
+        return driverUpdateApprovalRepository.save(
+                new DriverUpdateApproval(email, name, surname, phoneNumber, city));
     }
 
 }

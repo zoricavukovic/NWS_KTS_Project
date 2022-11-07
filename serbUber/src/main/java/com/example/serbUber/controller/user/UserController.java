@@ -43,7 +43,8 @@ public class UserController {
     @PutMapping()
     @ResponseStatus(HttpStatus.OK)
     public UserDTO update(@Valid @RequestBody UsersProfileUpdateRequest userData)
-            throws EntityNotFoundException, UsersUpdateException {
+            throws EntityNotFoundException, UsersUpdateException
+    {
 
         return userService.update(
                 userData.getEmail(),

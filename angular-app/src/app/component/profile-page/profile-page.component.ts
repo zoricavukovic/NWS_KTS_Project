@@ -1,6 +1,7 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
+import { Navigation, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { User } from 'src/app/model/user';
 import { AuthService } from 'src/app/service/auth.service';
 import { ConfigService } from 'src/app/service/config.service';
@@ -11,8 +12,10 @@ import { ChangeProfilePicComponent } from '../change-profile-pic/change-profile-
   templateUrl: './profile-page.component.html',
   styleUrls: ['./profile-page.component.css']
 })
-export class ProfilePageComponent implements OnInit {
-  loggedUser: User = this.authService.getCurrentUser();
+export class ProfilePageComponent implements OnInit, OnDestroy {
+  
+  loggedUser: User;
+  authSubscription: Subscription;
   
   showPayments: boolean = !this.authService.userIsAdmin();
   hidePassword: boolean =true;
@@ -29,18 +32,30 @@ export class ProfilePageComponent implements OnInit {
     ) {
     
   }
-  
+
+  ngOnInit(): void {
+    const nav: Navigation | null= this.router.getCurrentNavigation();
+    this.loggedUser = (nav?.extras?.state?.['user']) ? nav.extras.state['user'] as User : null;
+    console.log("PREEEE AUTH:" + this.loggedUser)
+
+    if (!this.loggedUser) {
+      this.authSubscription = this.authService.getCurrentUser().subscribe(
+        user => this.loggedUser = user
+      );
+    }
+  }
+
   showEditProfile(): void {
-    this.router.navigate(['/edit-profile-data']);
+    this.router.navigate(['/edit-profile-data'], {state: {user: this.loggedUser}});
   }
 
   showChangePhotoDialog(): void {
     let dialogRef = this.dialogEditPicture.open(ChangeProfilePicComponent, {data: this.loggedUser.email});
 
     dialogRef.afterClosed().subscribe(base64 => {
-      if (base64 !== null && base64 !== undefined) {
+      if (base64) {
         this.loggedUser.profilePicture = base64;
-        this.authService.setUSerInLocalStorage(this.loggedUser);
+        this.authService.setUserInLocalStorage(this.loggedUser);
       }
     });
   }
@@ -63,7 +78,11 @@ export class ProfilePageComponent implements OnInit {
     return this.configService.base64_show_photo_prefix
   }
 
-  ngOnInit(): void {
+   ngOnDestroy(): void {
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
+    }
   }
+
 
 }

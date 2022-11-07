@@ -33,7 +33,11 @@ public class Constants {
     }
 
     public static String getProfilePicture(String profilePicture) {
-        return (profilePicture == null || profilePicture.equalsIgnoreCase(DEFAULT_PICTURE)) ? DEFAULT_PICTURE : profilePicture;
+        return (isDefaultPicture(profilePicture)) ? DEFAULT_PICTURE : profilePicture;
+    }
+
+    private static boolean isDefaultPicture(String profilePicture) {
+        return profilePicture == null || profilePicture.equalsIgnoreCase(DEFAULT_PICTURE);
     }
 
 }
