@@ -38,7 +38,7 @@ export class ResetPasswordComponent implements OnInit {
 
   ngOnInit(): void {
     this.email = this.route.snapshot.paramMap.get('email');
-    if ((this.email === null || this.email === undefined) && this.userIsLogged()) {
+    if ((!this.email) && this.userIsLogged()) {
       this.email = this.user.email;
     }
   }
