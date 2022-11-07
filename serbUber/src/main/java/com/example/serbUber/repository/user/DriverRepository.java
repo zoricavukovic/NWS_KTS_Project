@@ -10,6 +10,7 @@ import java.util.Optional;
 @Repository
 public interface DriverRepository extends JpaRepository<Driver, Long> {
 
+    @Query("select d from Driver d left join fetch d.drivings dr left join fetch d.vehicle v left join fetch d.currentLocation l where d.email=?1")
     Optional<Driver> getDriverByEmail(String email);
 
     Optional<Driver> getDriverById(Long id);

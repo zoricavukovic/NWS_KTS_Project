@@ -55,6 +55,6 @@ public class DrivingController {
     @GetMapping("/details/{id}")
     @ResponseStatus(HttpStatus.OK)
     public DrivingDTO getDriving(@PathVariable Long id) throws EntityNotFoundException {
-        return drivingService.getDriving(id);
+        return drivingService.getDrivingDto(id);
     }
 }

@@ -12,6 +12,7 @@ import com.example.serbUber.repository.user.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -63,10 +64,11 @@ public class DrivingService {
     public List<DrivingDTO> getDrivingsForUser(String email) {
 
             List<Driving> drivings = drivingRepository.findByUserEmail(email);
+            drivings.sort(Comparator.comparing(Driving::getStarted));
             return fromDrivings(drivings);
     }
 
-    public DrivingDTO getDriving(Long id) throws EntityNotFoundException {
+    public DrivingDTO getDrivingDto(Long id) throws EntityNotFoundException {
 //        Optional<Driving> driving = drivingRepository.getDrivingById(id);
 //        if (driving.isPresent()) {
 //            return new DrivingDTO(driving.get());
@@ -74,7 +76,10 @@ public class DrivingService {
 //        else {
 //            throw new EntityNotFoundException(id, EntityType.USER);
 //        }
-        Driving driving = drivingRepository.getDrivingById(id);
-        return new DrivingDTO(driving);
+        return new DrivingDTO(getDriving(id));
+    }
+
+    public Driving getDriving(Long id){
+        return drivingRepository.getDrivingById(id);
     }
 }

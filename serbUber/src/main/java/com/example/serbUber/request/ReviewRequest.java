@@ -21,18 +21,18 @@ public class ReviewRequest {
     @Range(min = Constants.MIN_RATE, max = Constants.MAX_RATE, message = WRONG_RATE)
     private double driverRate;
 
-    @NotBlank(message = WRONG_MESSAGE_LENGTH)
-    @Size(min = Constants.MIN_LENGTH_OF_MESSAGE, max = Constants.MAX_LENGTH_OF_MESSAGE, message = WRONG_MESSAGE_LENGTH)
+//    @NotBlank(message = WRONG_MESSAGE_LENGTH)
+//    @Size(min = Constants.MIN_LENGTH_OF_MESSAGE, max = Constants.MAX_LENGTH_OF_MESSAGE, message = WRONG_MESSAGE_LENGTH)
     private String message;
 
-    @NotBlank(message = "Driving must be selected!")
-    private String driving;
+//    @NotBlank(message = "Driving must be selected!")
+    private Long driving;
 
     public ReviewRequest(
             final double vehicleRate,
             final double driverRate,
             final String message,
-            final String driving
+            final Long driving
     ) {
         this.vehicleRate = vehicleRate;
         this.driverRate = driverRate;
@@ -52,7 +52,7 @@ public class ReviewRequest {
         return message;
     }
 
-    public String getDriving() {
+    public Long getDriving() {
         return driving;
     }
 

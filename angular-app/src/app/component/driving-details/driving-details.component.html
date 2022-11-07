@@ -1,29 +1,63 @@
 <div>
-    <mat-grid-list cols="2" rowHeight="2:1">
-        <mat-grid-tile>
-          <div style="color:white">mapaaa</div>
+    <mat-grid-list cols="3" rowHeight="3:1">
+        <mat-grid-tile colspan="2" rowspan="2">
+          <div style="background-color:green;max-width:700px; min-width:600px;min-height:300px;">mapaaa</div>
         </mat-grid-tile>
-        <mat-grid-tile>
+        <mat-grid-tile rowspan="2">
           <mat-list class="list">
-            <div mat-subheader>Ruta</div>
+            <div mat-subheader>Route</div>
             <mat-list-item *ngFor="let dest of destinations">
               <mat-icon mat-list-icon>location_on</mat-icon>
               <div mat-line>{{dest}}</div>
             </mat-list-item>
           </mat-list>
         </mat-grid-tile>
-        <mat-grid-tile>
-          <div style="background-color: white;">
-            peeraaaaaaaaaaaaa
-          <p-rating [ngModel]="val" [readonly]="true" [stars]="10"></p-rating>
+        <mat-grid-tile rowspan="2">
+      
+          <div *ngIf="currentUser.role.name == 'ROLE_DRIVER'">
           </div>
+          <div *ngIf="currentUser.role.name == 'ROLE_REGULAR_USER'" style="vertical-align: top;">
+            <div class="driverInfo" style="float:left"> 
+              <h2>Driver</h2>
+              <h3 style="display:flex;">
+                <mat-icon  style="display:inline-flex">person</mat-icon> 
+                <span>{{driver.name}}  {{driver.surname}}</span>
+              </h3>
+              <h3 style="display:flex">
+                <mat-icon  style="display:inline-flex">email</mat-icon> 
+                <span>{{driver.email}}</span>
+              </h3>
+              <h3 style="display:flex">
+                <mat-icon  style="display:inline-flex">phone</mat-icon> 
+                <span>{{driver.phoneNumber}}</span>
+              </h3>
+            </div>
+          </div>
+     
         </mat-grid-tile>
-        <mat-grid-tile>
-          <button mat-raised-button class="routebtn" [matMenuTriggerFor]="menu">Poruči ovu vožnju</button>
-          <mat-menu #menu="matMenu">
-            <button mat-menu-item>Odmah</button>
-            <button mat-menu-item>Kasnije</button>
-          </mat-menu>
+        <mat-grid-tile rowspan="2">
+          <div class="rating">
+            <h2>Rating</h2>
+            <h3 style="display:flex;">
+              <mat-icon  style="display:inline-flex">person</mat-icon> 
+              <span>Driver&nbsp;&nbsp;{{driver.rate}}</span>
+            </h3>
+            <h3 style="display:flex;">
+              <mat-icon  style="display:inline-flex">directions_car</mat-icon> 
+              <span>Vehicle&nbsp;&nbsp;{{vehicleRating}}</span>
+            </h3>
+          </div>
+
+        </mat-grid-tile>
+       
+        <mat-grid-tile rowspan="2">
+       
+            <button mat-raised-button class="routebtn" [matMenuTriggerFor]="menu" style="float:left">Poruči ovu vožnju</button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item>Odmah</button>
+              <button mat-menu-item>Kasnije</button>
+            </mat-menu>
+      
         </mat-grid-tile>
       </mat-grid-list>
 </div>

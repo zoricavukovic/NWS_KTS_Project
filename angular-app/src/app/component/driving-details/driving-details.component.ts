@@ -1,39 +1,67 @@
 import { HttpClient } from '@angular/common/http';
 import { Driving } from 'src/app/model/driving';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ConfigService } from 'src/app/service/config.service';
+import { AuthService } from 'src/app/service/auth.service';
+import { Subscription } from 'rxjs';
+import { User } from 'src/app/model/user';
+import { Driver } from 'src/app/model/driver';
 
 @Component({
   selector: 'app-driving-details',
   templateUrl: './driving-details.component.html',
   styleUrls: ['./driving-details.component.css']
 })
-export class DrivingDetailsComponent implements OnInit {
+export class DrivingDetailsComponent implements OnInit, OnDestroy {
 
   id:string;
-  driving:Driving;
+  vehicleRating: number;
+  driving:Driving = new Driving();
+  driver: Driver = new Driver();
+  currentUser: User;
   destinations: string[] = [];
   startPoint: string;
-  val:number = 5;
-  constructor( private route: ActivatedRoute, private http: HttpClient, private configService: ConfigService) { }
+  val:number = 3;
+
+  currentUserSubscription: Subscription;
+  drivingsSubscription: Subscription;
+  driverSubscription: Subscription;
+  vehicleRatingSubscription: Subscription;
+
+  constructor( private route: ActivatedRoute, private http: HttpClient, private configService: ConfigService, private authService: AuthService) { }
 
   ngOnInit(): void {
+    this.currentUserSubscription = this.authService.getCurrentUser().subscribe((data) => this.currentUser=data);
+
     this.id = this.route.snapshot.paramMap.get('id');
-     
-  
-  
-    this.http.get(this.configService.driving_details_url + this.id).subscribe((response:any) => {
+    this.drivingsSubscription = this.http.get(this.configService.driving_details_url + this.id).subscribe((response: Driving) => {
       this.driving = response;
+      console.log(this.driving);
       this.startPoint = this.driving.route.startPoint.street + " " + this.driving.route.startPoint.number;
       this.destinations.push(this.startPoint);
-      console.log(this.destinations)
       for (let destination of this.driving.route.destinations) {
         this.destinations.push(destination.street + " " + destination.number);
       }
 
-   }
-   )
+      this.driverSubscription = this.http.get(this.configService.driver_info_url + this.driving.driverEmail).subscribe((response: Driver) => {
+        this.driver = response;
+        console.log(this.driver);
+        this.vehicleRatingSubscription = this.http.get(this.configService.vehicle_rating_url + this.driver.vehicle.id).subscribe((response: number) => {
+          this.vehicleRating = response;
+          console.log(response);
+        })
+       })
+
+   })
+
+  }
+
+  ngOnDestroy(): void {
+    this.currentUserSubscription.unsubscribe();
+    this.drivingsSubscription.unsubscribe();
+    this.driverSubscription.unsubscribe();
+    this.vehicleRatingSubscription.unsubscribe();
   }
 
 }
