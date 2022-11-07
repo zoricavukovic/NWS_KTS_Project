@@ -19,7 +19,6 @@ import { ResetPasswordComponent } from './component/reset-password/reset-passwor
 import { ProfilePageComponent } from './component/profile-page/profile-page.component';
 import { EditProfileComponent } from './component/edit-profile/edit-profile.component';
 import { ChangeProfilePicComponent } from './component/change-profile-pic/change-profile-pic.component';
-import { ChangePasswordComponent } from './component/change-password/change-password.component';
 
 
 @NgModule({
@@ -34,7 +33,6 @@ import { ChangePasswordComponent } from './component/change-password/change-pass
     ProfilePageComponent,
     EditProfileComponent,
     ChangeProfilePicComponent,
-    ChangePasswordComponent
   ],
   imports: [
     BrowserModule,

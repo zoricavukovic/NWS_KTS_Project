@@ -28,7 +28,7 @@ input[type="file"] {
     border-radius: 1rem;
 }
 
-.custom-file-upload, label {
+.custom-file-upload, label, .no-scroll {
     overflow: hidden !important;
     overflow-y: hidden;
     overflow-x: hidden;

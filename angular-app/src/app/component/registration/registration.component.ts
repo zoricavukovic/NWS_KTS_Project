@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormGroupDirective, NgForm, Validators, ValidatorFn, ValidationErrors, AbstractControl } from '@angular/forms';
 import {ErrorStateMatcher} from '@angular/material/core';
 import { Observable, Subscription } from 'rxjs';
@@ -16,7 +16,7 @@ import { isFormValid } from 'src/app/util/validation-function';
   styleUrls: ['./registration.component.css'],
   templateUrl:'./registration.component.html'
 })
-export class RegistrationComponent implements OnInit{
+export class RegistrationComponent implements OnInit, OnDestroy{
 
   filteredCities: Observable<string[]>;
   registrationForm = new FormGroup({
@@ -24,8 +24,8 @@ export class RegistrationComponent implements OnInit{
     'phoneNumberFormControl' : new FormControl('', [Validators.required, Validators.pattern("[0-9]*")]),
     'nameFormControl' : new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]),
     'surnameFormControl' : new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]),
-    'passwordAgainFormControl' : new FormControl('', [Validators.required, matchPasswordsValidator]),
-    'passwordFormControl' : new FormControl('',[Validators.required]),
+    'passwordAgainFormControl' : new FormControl('', [Validators.required, matchPasswordsValidator, Validators.minLength(8)]),
+    'passwordFormControl' : new FormControl('',[Validators.required, Validators.minLength(8)]),
     'cityFormControl' : new FormControl('',[Validators.required],),
   });
   

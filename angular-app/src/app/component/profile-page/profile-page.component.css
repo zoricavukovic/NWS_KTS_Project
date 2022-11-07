@@ -6,12 +6,32 @@
     min-height: 20rem;
 }       
 
+.password-payments-content {
+    margin-top: 5%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+div.col {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 100%;
+    flex: 1;
+}
+
 .image-wrap {
     width: 150px;
     height: 150px;
 }
 
-img {
+div.profile-data h1 {
+    font-size: 1.8rem;
+    margin-top: 10%;
+    margin-bottom: 10%;
+}
+
+img.profile-img {
     margin-top: 20%;
     display: block;
     border-radius: 50%;
@@ -21,7 +41,7 @@ img {
     border: 2px solid var(--mint);
 }
 
-img:hover {
+img.profile-img:hover {
     border: 5px solid var(--mint);
 }
 
@@ -39,9 +59,8 @@ button {
     margin-bottom: 5%;
 }
 
-label{
-    margin-top: 7% !important;
-    max-width: fit-content;
+label {
+    margin-top: 10% !important;
 }
 
 div.image-container {
@@ -54,5 +73,10 @@ div.profile-data {
 
 div.profile-data label {
     display: block;
-    font-size: 1.3rem;
+    font-size: 1.5rem;
+}
+
+.icon-size {
+    width: 1.3rem;
+    height: 1.3rem;
 }

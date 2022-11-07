@@ -16,8 +16,9 @@
         <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
           <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
         </button>
-        <mat-error *ngIf="loginForm.get('password').hasError('required')">
-          Password is <strong>required</strong>
+        <mat-error
+          *ngIf="loginForm.get('password').hasError('minlength') && !loginForm.get('password').hasError('required')">
+          Password should contains at least 8 characters
         </mat-error>
     </mat-form-field>
     <a href="/forgot-password" class="link">Forgot password?</a>

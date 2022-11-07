@@ -1,10 +1,10 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { User } from 'src/app/model/user';
 import { AuthService } from 'src/app/service/auth.service';
 import { ConfigService } from 'src/app/service/config.service';
 import { ChangeProfilePicComponent } from '../change-profile-pic/change-profile-pic.component';
-import { EditProfileComponent } from '../edit-profile/edit-profile.component';
 
 @Component({
   selector: 'app-profile-page',
@@ -24,21 +24,14 @@ export class ProfilePageComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private configService: ConfigService,
-    private dialogEditProfile: MatDialog,
-    private dialogEditPicture: MatDialog   
+    private dialogEditPicture: MatDialog,
+    private router: Router   
     ) {
     
   }
   
-  showEditProfileDialog(): void {
-    let dialogRef = this.dialogEditProfile.open(EditProfileComponent, {data: this.loggedUser});
-
-    dialogRef.afterClosed().subscribe(res => {
-      if (this.checkValidDialogChange(res)) {
-        this.loggedUser = res;
-        this.authService.setUSerInLocalStorage(res);
-      }
-    });
+  showEditProfile(): void {
+    this.router.navigate(['/edit-profile-data']);
   }
 
   showChangePhotoDialog(): void {

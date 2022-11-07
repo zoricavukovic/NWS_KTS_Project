@@ -10,21 +10,12 @@
             </div>
         </div>
 
-        <div class="center margin-top" *ngIf="!imageChanged; else reset_template">
+        <div class="center margin-top no-scroll">
             <label for="file-upload" class="custom-file-upload">
                 Upload
             </label>
             <input id="file-upload" (change)="onFileSelected($event)" accept="image/*" type="file" />
         </div>
-
-        <ng-template #reset_template>
-            <div class="center" style="overflow: hidden;">
-                <label for="reset-btn" class="custom-file-upload">
-                    Reset
-                </label>
-                <input id="reset-btn" type="button" (click)="reset()"/>
-            </div>
-        </ng-template>
 
     </mat-dialog-content>
 

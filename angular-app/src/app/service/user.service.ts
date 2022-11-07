@@ -9,6 +9,8 @@ import { PasswordUpdateRequest } from '../model/password-update-request';
 import { UserProfilePictureRequest } from '../model/user-profile-picture-request';
 import { UsersProfileUpdateRequest } from '../model/users-profile-update-request';
 import { UserPasswordUpdateRequest } from '../model/user-password-update-request';
+import { Router } from '@angular/router';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +19,9 @@ export class UserService {
 
   constructor(
     private http: HttpClient,
-    private configService: ConfigService
+    private configService: ConfigService,
+    private router: Router,
+    private authService: AuthService
   ) { }
 
   sendResetPasswordEmail(email: string): void {
@@ -40,7 +44,9 @@ export class UserService {
   updateProfileData(data: UsersProfileUpdateRequest) {
     this.http.put(this.configService.users_url, data)
         .subscribe(
-            data => console.log('success', data),
+            data => {
+              this.router.navigate(['/profile-page']);
+            },
             error => console.log('oops', error)
         );
   }
@@ -56,7 +62,10 @@ export class UserService {
   updatePassword(data: UserPasswordUpdateRequest) {
     this.http.put(this.configService.users_update_password, data)
         .subscribe(
-            data => console.log('success', data),
+            data => {
+              this.authService.logout()
+              this.router.navigate(['/login']);
+              console.log('success', data);},
             error => console.log('oops', error)
         );
   }

@@ -58,8 +58,9 @@
                 <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword">
                     <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
                 </button>
-                <mat-error *ngIf="registrationForm.get('passwordFormControl').hasError('required')">
-                    Password is <strong>required</strong>
+                <mat-error
+                    *ngIf="registrationForm.get('passwordFormControl').hasError('minlength') && !registrationForm.get('passwordFormControl').hasError('required')">
+                    Password should contains at least 8 characters
                 </mat-error>
             </mat-form-field>
     
@@ -69,8 +70,8 @@
                 <button mat-icon-button matSuffix (click)="hideConfirmPassword = !hideConfirmPassword" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hideConfirmPassword">
                 <mat-icon>{{hideConfirmPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
                 </button>
-                <mat-error *ngIf="registrationForm.get('passwordAgainFormControl').hasError('required')">
-                    Confirm password is <strong>required</strong>
+                <mat-error *ngIf="registrationForm.get('passwordAgainFormControl').hasError('minlength') && !registrationForm.get('passwordAgainFormControl').hasError('required')">
+                    Password should contains at least 8 characters
                 </mat-error>
                 <mat-error *ngIf="registrationForm.get('passwordAgainFormControl').hasError('mismatch')">
                     Passwords are not match

@@ -45,15 +45,6 @@ export class ChangeProfilePicComponent implements OnInit {
     );
   }
 
-  reset(): void {
-    if (this.imageChanged) {
-      this.base64Var = "";
-      this.imageChanged = false;
-    } else {
-      this.imageChanged = true;
-    }
-  }
-
   ngOnInit(): void {
   }
 

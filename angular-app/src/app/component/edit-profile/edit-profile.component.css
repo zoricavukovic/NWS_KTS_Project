@@ -4,11 +4,34 @@
     padding-bottom: 2%;
 }
 
+h1 {
+    font-size: 2rem;
+}
+
 .colomn {
     margin-top: 1rem;
     margin-right: 2rem;
 }
 
-h1 {
-    color: var(--blue);
+.data-colomn {
+    margin-top: 1rem;
+    margin-right: 2rem;
+    max-width: 46.4%;
+}
+
+button {
+    margin: 5%;
+}
+
+.email-container {
+    margin-top: 5%;
+    margin-bottom: 5%;
+    display: flex;
+    justify-content: center;
+    border: 1px solid;
+    border-radius: 15px;
+    padding-top: 1rem;
+    margin-left: 3.2rem;
+    margin-right: 3.2rem;
+    background-color: #abbbae7e;
 }
