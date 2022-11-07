@@ -9,3 +9,30 @@
     overflow:hidden;
     clear: both;
 }
+
+
+.form-container-map {
+    display: block;
+    max-width: 50rem;
+    margin-top: 1.5rem;
+    margin-right: 6.5rem;
+    background-color: #2c4b61;
+    padding: 1%;
+    border-radius: 15px;
+    overflow:hidden;
+    clear: both;
+}
+
+.map-container {
+    position: absolute;
+}
+
+.map-frame {
+    border: 2px solid black;
+    height: 100%;
+}
+
+#map { 
+    height: 23rem;
+    width: 35rem;
+}

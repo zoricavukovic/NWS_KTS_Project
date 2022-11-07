@@ -17,8 +17,8 @@ import {CarouselModule} from 'primeng/carousel';
 import { SendResetPasswordEmailComponent } from './component/send-reset-password-link/send-reset-password-link.component';
 import { ResetPasswordComponent } from './component/reset-password/reset-password.component';
 import { HomePageComponent } from './component/home-page/home-page.component';
-import { NavBarComponent } from './component/nav-bar/nav-bar.component';
-
+import { TimelineModule } from 'primeng/timeline';
+import { NavBarComponent} from './component/nav-bar/nav-bar.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +41,8 @@ import { NavBarComponent } from './component/nav-bar/nav-bar.component';
     FormsModule,
     ReactiveFormsModule,
     SocialLoginModule,
-    CarouselModule
+    CarouselModule,
+    TimelineModule
   ],
   providers: [
     {
