@@ -76,6 +76,7 @@ export class AuthService {
 
   getCurrentUser(): BehaviorSubject<User> {
     let user = localStorage.getItem('user');
+    console.log(user);
     if (user !== null){
 
         this.currentUser$.next(JSON.parse(user));

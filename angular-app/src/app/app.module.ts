@@ -14,11 +14,16 @@ import { RegistrationComponent } from './component/registration/registration.com
 import { VerifyComponent } from './component/verify/verify.component';
 import { DriverVehicleComponent } from './component/create-vehicle/driver-vehicle.component';
 import {CarouselModule} from 'primeng/carousel';
+import { ShowDrivingsComponent } from './component/show-drivings/show-drivings.component';
+import { DrivingDetailsComponent } from './component/driving-details/driving-details.component';
+import { RatingDialogComponent } from './component/rating-dialog/rating-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
 import { SendResetPasswordEmailComponent } from './component/send-reset-password-link/send-reset-password-link.component';
 import { ResetPasswordComponent } from './component/reset-password/reset-password.component';
 import { HomePageComponent } from './component/home-page/home-page.component';
 import { TimelineModule } from 'primeng/timeline';
 import { NavBarComponent} from './component/nav-bar/nav-bar.component';
+import {RatingModule} from 'primeng/rating';
 
 @NgModule({
   declarations: [
@@ -27,6 +32,9 @@ import { NavBarComponent} from './component/nav-bar/nav-bar.component';
     RegistrationComponent,
     VerifyComponent,
     DriverVehicleComponent,
+    ShowDrivingsComponent,
+    DrivingDetailsComponent,
+    RatingDialogComponent,
     SendResetPasswordEmailComponent,
     ResetPasswordComponent,
     HomePageComponent,
@@ -41,7 +49,9 @@ import { NavBarComponent} from './component/nav-bar/nav-bar.component';
     FormsModule,
     ReactiveFormsModule,
     SocialLoginModule,
-    CarouselModule,
+    CarouselModule, 
+    MatDialogModule,
+    RatingModule,
     TimelineModule
   ],
   providers: [

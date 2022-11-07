@@ -65,6 +65,10 @@ public class UserService {
         }
     }
 
+    public UserDTO getUserDTOByEmail(String email) throws EntityNotFoundException {
+        return new UserDTO(getUserByEmail(email));
+    }
+
     public UserDTO get(String email) throws EntityNotFoundException {
 
         return new UserDTO(getUserByEmail(email));

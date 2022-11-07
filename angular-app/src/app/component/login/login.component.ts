@@ -26,7 +26,6 @@ export class LoginComponent implements OnInit, OnDestroy {
   hide: boolean =true;
   subscriptionLoginWithGmail: Subscription;
   authSubscription: Subscription;
-
   user: SocialUser;
   constructor(private authService: SocialAuthService,
               private social: AuthService,
@@ -81,7 +80,11 @@ export class LoginComponent implements OnInit, OnDestroy {
         this.loginForm.get('email').value,
         this.loginForm.get('password').value
       )).subscribe(
-        res => this.router.navigate(['/home-page'])
+
+        res => {
+          this.router.navigate(['/home-page'])
+          console.log(res);
+        }
       );
     }
   }

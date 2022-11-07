@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class DriverDTO extends UserDTO {
+    private Long id;
     private boolean blocked;
     private boolean active;
     private double rate;
@@ -36,11 +37,52 @@ public class DriverDTO extends UserDTO {
         this.currentLocation = driver.getCurrentLocation();
         this.drives = driver.getDrivings();
         this.active = driver.isActive();
+        this.id = driver.getId();
         this.workingMinutes = driver.getWorkingMinutes();
         LocalDateTime lastActive = driver.getLastActive();
         this.vehicle = driver.getVehicle();
         this.startShift = driver.getStartShift();
         this.endShift = driver.getEndShift();
+    }
+
+    public boolean isBlocked() {
+        return blocked;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public double getRate() {
+        return rate;
+    }
+
+    public Location getCurrentLocation() {
+        return currentLocation;
+    }
+
+    public List<Driving> getDrives() {
+        return drives;
+    }
+
+    public int getWorkingMinutes() {
+        return workingMinutes;
+    }
+
+    public Vehicle getVehicle() {
+        return vehicle;
+    }
+
+    public LocalDateTime getStartShift() {
+        return startShift;
+    }
+
+    public LocalDateTime getEndShift() {
+        return endShift;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public static List<DriverDTO> fromDrivers(final List<Driver> drivers){
@@ -51,4 +93,6 @@ public class DriverDTO extends UserDTO {
 
         return driverDTOs;
     }
+
+
 }

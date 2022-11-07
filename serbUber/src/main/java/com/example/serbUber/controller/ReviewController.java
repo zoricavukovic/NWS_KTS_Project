@@ -1,6 +1,8 @@
 package com.example.serbUber.controller;
 
 import com.example.serbUber.dto.ReviewDTO;
+import com.example.serbUber.exception.EntityNotFoundException;
+import com.example.serbUber.model.Review;
 import com.example.serbUber.request.ReviewRequest;
 import com.example.serbUber.service.ReviewService;
 import org.springframework.http.HttpStatus;
@@ -29,14 +31,16 @@ public class ReviewController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@Valid @RequestBody ReviewRequest reviewRequest) {
+    public ReviewDTO create(@Valid @RequestBody ReviewRequest reviewRequest) throws EntityNotFoundException {
 
-        this.reviewService.create(
+        Review review = this.reviewService.create(
             reviewRequest.getVehicleRate(),
             reviewRequest.getDriverRate(),
             reviewRequest.getMessage(),
             reviewRequest.getDriving()
         );
+
+        return new ReviewDTO(review);
     }
 
     @DeleteMapping(value = "/{id}")
@@ -44,6 +48,12 @@ public class ReviewController {
     public void delete(@PathVariable Long id) {
 
         this.reviewService.delete(id);
+    }
+
+    @GetMapping(value="/haveDrivingRate/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public boolean haveDrivingRate(@PathVariable Long id){
+        return reviewService.haveDrivingRate(id);
     }
 
 }

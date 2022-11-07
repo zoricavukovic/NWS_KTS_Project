@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface VerifyRepository extends JpaRepository<Verify,Long> {
 
     Optional<Verify> getVerifyById(Long id);
+
 }

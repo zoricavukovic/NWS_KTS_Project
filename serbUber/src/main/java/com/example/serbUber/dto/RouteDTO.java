@@ -5,11 +5,12 @@ import com.example.serbUber.model.Route;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 public class RouteDTO {
 
     private Location startPoint;
-    private List<Location> destinations = new LinkedList<>();
+    private Set<Location> destinations;
     private double kilometers;
 
     public RouteDTO(final Route route) {
@@ -31,7 +32,7 @@ public class RouteDTO {
         return startPoint;
     }
 
-    public List<Location> getDestinations() {
+    public Set<Location> getDestinations() {
         return destinations;
     }
 

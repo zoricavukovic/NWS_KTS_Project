@@ -3,7 +3,10 @@
         <img src="../../../assets/images/uber-icon.png" alt="SerbUber" style="height: 6rem; width: 6rem;"/>
     </a>
     
-    <div class="spacer"></div>
+    <div class="spacer">
+        &nbsp;&nbsp;
+        <a *ngIf="currentUser.role.name!='ROLE_ADMIN'" [routerLink]="['/drivings']" routerLinkActive='active' mat-button color="primary">Drivings</a>
+    </div>
     
     <a *ngIf="!currentUser" [routerLink]="['/login']" routerLinkActive='active' mat-button color="primary">Log in</a>
     <a *ngIf="!currentUser" [routerLink]="['/registration']" routerLinkActive='active' mat-raised-button style="background-color: #f5e9de; margin-left: 0.5rem; color:#2c4b61">Sign up</a>

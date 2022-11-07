@@ -2,6 +2,7 @@ package com.example.serbUber.service.user;
 
 import com.example.serbUber.dto.user.DriverDTO;
 import com.example.serbUber.exception.*;
+import com.example.serbUber.model.Driving;
 import com.example.serbUber.model.Vehicle;
 import com.example.serbUber.model.VehicleType;
 import com.example.serbUber.model.Verify;
@@ -45,6 +46,7 @@ public class DriverService {
 
     public DriverDTO get(String email) throws EntityNotFoundException {
         Optional<Driver> optionalDriver = driverRepository.getDriverByEmail(email);
+        System.out.println("driverrrrrrrrrrrrrrrrr" + optionalDriver.get().getName());
 
         return optionalDriver.map(DriverDTO::new)
             .orElseThrow(() ->  new EntityNotFoundException(email, EntityType.USER));
@@ -118,6 +120,17 @@ public class DriverService {
         }
     }
 
+    public Driver updateRate(Long id, double rate) throws EntityNotFoundException {
+        Driver driver = getById(id);
+        driver.setRate(rate);
+        return driverRepository.save(driver);
+    }
+
+
+    public Double getDriverRating(String email) throws EntityNotFoundException{
+        DriverDTO dto = get(email);
+        return driverRepository.getRatingForDriver(dto.getId());
+    }
 
     public void activate(final Long verifyId, final int securityCode)
             throws EntityNotFoundException, WrongVerifyTryException

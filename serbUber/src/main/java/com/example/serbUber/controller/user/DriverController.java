@@ -1,6 +1,7 @@
 package com.example.serbUber.controller.user;
 
 import com.example.serbUber.dto.user.DriverDTO;
+import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.EntityAlreadyExistsException;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.MailCannotBeSentException;
@@ -31,6 +32,12 @@ public class DriverController {
         return driverService.getAll();
     }
 
+    @GetMapping("/{email}")
+    @ResponseStatus(HttpStatus.OK)
+    public DriverDTO getUserByEmail(@PathVariable String email) throws EntityNotFoundException {
+        return driverService.get(email);
+    }
+
     @GetMapping("/byEmail")
     @ResponseStatus(HttpStatus.OK)
     public DriverDTO get(
@@ -58,6 +65,12 @@ public class DriverController {
             driverRegistrationRequest.getVehicleRequest().isBabySeat(),
             driverRegistrationRequest.getVehicleRequest().getVehicleType()
         );
+    }
+
+    @GetMapping("/rating/{email}")
+    @ResponseStatus(HttpStatus.OK)
+    public double getRating(@PathVariable String email) throws EntityNotFoundException{
+        return driverService.getDriverRating(email);
     }
 }
 

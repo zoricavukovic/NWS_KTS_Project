@@ -1,5 +1,7 @@
 import { Role } from "./role";
-export class User {
+import { Vehicle } from "./vehicle";
+
+export class Driver {
     name: string;
     surname: string;
     email: string;
@@ -8,4 +10,6 @@ export class User {
     city: string;
     profilePicture: string;
     role: Role;
+    rate: number;
+    vehicle: Vehicle;
 }

@@ -46,5 +46,11 @@ public class VehicleController {
         this.vehicleService.delete(id);
     }
 
+    @GetMapping("/rating/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public double getRatingForVehicle(@PathVariable  Long id) {
+        return vehicleService.getRatingForVehicle(id);
+    }
+
 
 }

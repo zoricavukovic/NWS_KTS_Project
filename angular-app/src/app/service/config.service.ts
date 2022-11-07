@@ -18,6 +18,12 @@ export class ConfigService {
   private _verify_url = this._api_url + "/verify";
   private _send_verify_code_again = this._api_url + "/verify/send-code-again";
   private _vehicle_type_infos = this._api_url + "/vehicle-type-infos";
+  private _drivings_url = this._api_url + "/drivings/";
+  private _drivings_details_url = this._api_url + "/drivings/details/";
+  private _driver_info_url = this._api_url + "/drivers/";
+  private _vehicle_rate_url = this._api_url + "/vehicles/rating/";
+  private _rate_vehicle_driver_url = this._api_url + "/reviews";
+  private _have_driving_rate_url = this._api_url + "/reviews/haveDrivingRate/";
 
   private _send_reset_password_email = this._api_url + "/users/send-rest-password-link";
   private _reset_password = this._api_url + "/users/reset-password";
@@ -33,7 +39,6 @@ export class ConfigService {
   get login_with_facebook_url(): string {
     return this._login_with_facebook_user;
   }
-
 
   get registration_url(): string{
     return this._register_user;
@@ -55,13 +60,35 @@ export class ConfigService {
     return this._register_driver;
   }
 
+  get drivings_url(): string {
+    return this._drivings_url;
+  }
+
+  get driving_details_url(): string{
+    return this._drivings_details_url;
+  }
+
   get reset_password() : string {
     return this._reset_password;
+  }
+
+  get driver_info_url(): string{
+    return this._driver_info_url;
+  }
+
+  get vehicle_rating_url(): string{
+    return this._vehicle_rate_url;
+  }
+
+  get rate_driver_vehicle_url(): string{
+    return this._rate_vehicle_driver_url;
+  }
+
+  get have_driving_rate_url(): string{
+    return this._have_driving_rate_url;
   }
 
   send_reset_password_email(email: string): string {
     return this._send_reset_password_email + "/" + email;
   }
-
-
 }

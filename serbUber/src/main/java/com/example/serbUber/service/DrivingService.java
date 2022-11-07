@@ -1,15 +1,21 @@
 package com.example.serbUber.service;
 
 import com.example.serbUber.dto.DrivingDTO;
+import com.example.serbUber.exception.EntityNotFoundException;
+import com.example.serbUber.exception.EntityType;
 import com.example.serbUber.model.Driving;
 import com.example.serbUber.model.DrivingStatus;
 import com.example.serbUber.model.Route;
+import com.example.serbUber.model.user.User;
 import com.example.serbUber.repository.DrivingRepository;
+import com.example.serbUber.repository.user.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 import static com.example.serbUber.dto.DrivingDTO.fromDrivings;
 
@@ -53,5 +59,27 @@ public class DrivingService {
         List<Driving> drivings = drivingRepository.findAll();
 
         return fromDrivings(drivings);
+    }
+
+    public List<DrivingDTO> getDrivingsForUser(String email) {
+
+            List<Driving> drivings = drivingRepository.findByUserEmail(email);
+            drivings.sort(Comparator.comparing(Driving::getStarted));
+            return fromDrivings(drivings);
+    }
+
+    public DrivingDTO getDrivingDto(Long id) throws EntityNotFoundException {
+//        Optional<Driving> driving = drivingRepository.getDrivingById(id);
+//        if (driving.isPresent()) {
+//            return new DrivingDTO(driving.get());
+//        }
+//        else {
+//            throw new EntityNotFoundException(id, EntityType.USER);
+//        }
+        return new DrivingDTO(getDriving(id));
+    }
+
+    public Driving getDriving(Long id){
+        return drivingRepository.getDrivingById(id);
     }
 }
