@@ -17,6 +17,7 @@ import java.util.Optional;
 
 import static com.example.serbUber.dto.user.UserDTO.fromUsers;
 import static com.example.serbUber.model.user.User.passwordsDontMatch;
+import static com.example.serbUber.util.Constants.ROLE_DRIVER;
 import static com.example.serbUber.util.EmailConstants.FRONT_RESET_PASSWORD_URL;
 import static com.example.serbUber.util.EmailConstants.RESET_PASSWORD_SUBJECT;
 import static com.example.serbUber.util.JwtProperties.getHashedNewUserPassword;
@@ -120,7 +121,7 @@ public class UserService {
     ) throws EntityNotFoundException, UsersUpdateException {
         try {
             User user = getUserByEmail(email);
-            if (user.getRole().getName().equalsIgnoreCase("ROLE_DRIVER")) {
+            if (user.getRole().isDriver()) {
                 return updateDriver(
                         email,
                         name,

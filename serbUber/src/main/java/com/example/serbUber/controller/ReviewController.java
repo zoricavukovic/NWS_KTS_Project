@@ -33,14 +33,12 @@ public class ReviewController {
     @ResponseStatus(HttpStatus.CREATED)
     public ReviewDTO create(@Valid @RequestBody ReviewRequest reviewRequest) throws EntityNotFoundException {
 
-        Review review = this.reviewService.create(
+        return this.reviewService.create(
             reviewRequest.getVehicleRate(),
             reviewRequest.getDriverRate(),
             reviewRequest.getMessage(),
             reviewRequest.getDriving()
         );
-
-        return new ReviewDTO(review);
     }
 
     @DeleteMapping(value = "/{id}")
@@ -50,10 +48,5 @@ public class ReviewController {
         this.reviewService.delete(id);
     }
 
-    @GetMapping(value="/haveDrivingRate/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public boolean haveDrivingRate(@PathVariable Long id){
-        return reviewService.haveDrivingRate(id);
-    }
 
 }

@@ -2,7 +2,6 @@ package com.example.serbUber.service.user;
 
 import com.example.serbUber.dto.user.DriverDTO;
 import com.example.serbUber.exception.*;
-import com.example.serbUber.model.Driving;
 import com.example.serbUber.model.Vehicle;
 import com.example.serbUber.model.VehicleType;
 import com.example.serbUber.model.Verify;
@@ -46,20 +45,18 @@ public class DriverService {
 
     public DriverDTO get(String email) throws EntityNotFoundException {
         Optional<Driver> optionalDriver = driverRepository.getDriverByEmail(email);
-        System.out.println("driverrrrrrrrrrrrrrrrr" + optionalDriver.get().getName());
 
         return optionalDriver.map(DriverDTO::new)
             .orElseThrow(() ->  new EntityNotFoundException(email, EntityType.USER));
     }
 
-    public Driver getById(Long id) throws EntityNotFoundException {
+    public Driver get(Long id) throws EntityNotFoundException {
         Optional<Driver> optionalDriver = driverRepository.getDriverById(id);
 
-        if (optionalDriver.isPresent()){
+        if (optionalDriver.isPresent()) {
             return optionalDriver.get();
-        } else {
-            throw new EntityNotFoundException(id, EntityType.USER);
         }
+        throw new EntityNotFoundException(id, EntityType.USER);
     }
 
     public DriverDTO create(
@@ -121,15 +118,16 @@ public class DriverService {
     }
 
     public Driver updateRate(Long id, double rate) throws EntityNotFoundException {
-        Driver driver = getById(id);
+        Driver driver = get(id);
         driver.setRate(rate);
         return driverRepository.save(driver);
     }
 
 
     public Double getDriverRating(String email) throws EntityNotFoundException{
-        DriverDTO dto = get(email);
-        return driverRepository.getRatingForDriver(dto.getId());
+        DriverDTO driverDTO = get(email);
+
+        return driverRepository.getRatingForDriver(driverDTO.getId());
     }
 
     public void activate(final Long verifyId, final int securityCode)
@@ -137,7 +135,7 @@ public class DriverService {
     {
         try {
             Verify verify = verifyService.update(verifyId, securityCode);
-            Driver driver = getById(verify.getUserId());
+            Driver driver = get(verify.getUserId());
             driver.setVerified(true);
             driverRepository.save(driver);
         } catch (WrongVerifyTryException e) {

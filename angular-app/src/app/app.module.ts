@@ -24,6 +24,8 @@ import { HomePageComponent } from './component/home-page/home-page.component';
 import { TimelineModule } from 'primeng/timeline';
 import { NavBarComponent} from './component/nav-bar/nav-bar.component';
 import {RatingModule} from 'primeng/rating';
+import { NgxStarRatingModule } from 'ngx-star-rating';
+import { DrivingRowComponent } from './component/driving-row/driving-row.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +40,8 @@ import {RatingModule} from 'primeng/rating';
     SendResetPasswordEmailComponent,
     ResetPasswordComponent,
     HomePageComponent,
-    NavBarComponent
+    NavBarComponent,
+    DrivingRowComponent
   ],
   imports: [
     BrowserModule,
@@ -52,7 +55,8 @@ import {RatingModule} from 'primeng/rating';
     CarouselModule, 
     MatDialogModule,
     RatingModule,
-    TimelineModule
+    TimelineModule,
+    NgxStarRatingModule
   ],
   providers: [
     {

@@ -12,6 +12,8 @@ import { AuthService } from 'src/app/service/auth.service';
 export class NavBarComponent implements OnInit, OnDestroy {
 
   currentUser: User;
+  isAdmin: boolean = false;
+  isUser: boolean = false;
   currentUserSubscription: Subscription;
   
   constructor(
@@ -20,7 +22,22 @@ export class NavBarComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.currentUserSubscription = this.authService.getCurrentUser().subscribe((data) => this.currentUser=data);
+    this.currentUserSubscription = this.authService.getCurrentUser().subscribe((data) => {
+      this.currentUser=data; 
+      if(this.currentUser){
+        if(this.currentUser.role.name == "ROLE_ADMIN"){
+          this.isAdmin = true;
+        }
+        else{
+          this.isUser = true;
+        }
+      }
+      else{
+        this.isAdmin = false;
+        this.isUser = false;
+      }
+    
+    });
   }
 
   logOut(){

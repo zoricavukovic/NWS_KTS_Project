@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.example.serbUber.dto.user.AdminDTO.fromAdmins;
+import static com.example.serbUber.util.Constants.ROLE_ADMIN;
 import static com.example.serbUber.util.Constants.getProfilePicture;
 import static com.example.serbUber.util.JwtProperties.getHashedNewUserPassword;
 
@@ -57,7 +58,7 @@ public class AdminService {
             phoneNumber,
             city,
             getProfilePicture(profilePicture),
-            new Role("ROLE_ADMIN")
+            new Role(ROLE_ADMIN)
         ));
 
         return new AdminDTO(admin);

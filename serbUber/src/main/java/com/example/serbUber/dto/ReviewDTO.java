@@ -52,4 +52,8 @@ public class ReviewDTO {
         return id;
     }
 
+    public static int getNumberOfReviewsBeforeUpdate(List<ReviewDTO> reviews){
+        return reviews.size() - 1;
+    }
+
 }

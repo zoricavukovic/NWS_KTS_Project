@@ -69,7 +69,7 @@ insert into drivers (id, email, password, name, surname, phone_number, city, pro
 insert into drivings (active, driver_email, driving_status, duration, paying_limit, price, started, route_id) values
     (false, 'mile@gmail.com', 1, 10, null, 400, to_timestamp('06.11.2022 14:00', 'DD.MM.YYYY HH24:MI'), 1);
 insert into drivings (active, driver_email, driving_status, duration, paying_limit, price, started, route_id) values
-    (false, 'mile@gmail.com', 1, 10, null, 500,to_timestamp('24.08.2022 14:00', 'DD.MM.YYYY HH24:MI'), 3);
+    (false, 'milan@gmail.com', 1, 10, null, 500,to_timestamp('24.08.2022 14:00', 'DD.MM.YYYY HH24:MI'), 3);
 
 insert into drivings_users(driving_id, user_id) values
     (1, 2);

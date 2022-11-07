@@ -1,12 +1,10 @@
 package com.example.serbUber.service;
 
-import com.example.serbUber.dto.DrivingDTO;
 import com.example.serbUber.dto.ReviewDTO;
 import com.example.serbUber.dto.user.DriverDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.model.Driving;
 import com.example.serbUber.model.Review;
-import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.repository.ReviewRepository;
 import com.example.serbUber.service.user.DriverService;
 import org.springframework.stereotype.Service;
@@ -14,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static com.example.serbUber.dto.ReviewDTO.fromReviews;
+import static com.example.serbUber.dto.ReviewDTO.getNumberOfReviewsBeforeUpdate;
 
 @Service
 public class ReviewService {
@@ -33,12 +32,12 @@ public class ReviewService {
     }
 
 
-    public Review create(
+    public ReviewDTO create(
             final double vehicleRate,
             final double driverRate,
             final String message,
-            final Long drivingId) throws EntityNotFoundException {
-
+            final Long drivingId
+    ) throws EntityNotFoundException {
         Driving driving = drivingService.getDriving(drivingId);
 
         Review review = reviewRepository.save((new Review(
@@ -47,28 +46,35 @@ public class ReviewService {
             message,
             driving
         )));
-        updateRate(driving);
+        updateRate(driving, vehicleRate, driverRate);
 
-        return review;
+        return new ReviewDTO(review);
     }
 
-    private void updateRate(Driving driving) throws EntityNotFoundException {
+    private void updateRate(Driving driving, double vehicleRate, double driverRate)
+            throws EntityNotFoundException
+    {
         DriverDTO driverDTO = driverService.get(driving.getDriverEmail());
         List<ReviewDTO> reviews = getAllForDriver(driving.getDriverEmail());
-        double rateVehicle = 0;
-        double rateDriver = 0;
-        int numberReview = reviews.size();
-        for(ReviewDTO review : reviews){
-            rateVehicle += review.getVehicleRate();
-            rateDriver += review.getDriverRate();
-        }
-        rateVehicle = rateVehicle / numberReview;
-        rateDriver = rateDriver / numberReview;
-
-        driverService.updateRate(driverDTO.getId(), rateDriver);
-        vehicleService.updateRate(driverDTO.getVehicle().getId(), rateVehicle);
-
+        int numberOfReviewsBeforeUpdate = getNumberOfReviewsBeforeUpdate(reviews);
+        calculateRateDriver(driverDTO, numberOfReviewsBeforeUpdate, driverRate);
+        calculateRateVehicle(vehicleRate, driverDTO, numberOfReviewsBeforeUpdate);
     }
+
+    private void calculateRateVehicle(double vehicleRate, DriverDTO driverDTO, int numberOfReviewsBeforeUpdate)
+            throws EntityNotFoundException
+    {
+        double updatedRateVehicle = driverDTO.getVehicle().getRate() * numberOfReviewsBeforeUpdate + vehicleRate;
+        vehicleService.updateRate(driverDTO.getVehicle().getId(), updatedRateVehicle);
+    }
+
+    public void calculateRateDriver(DriverDTO driverDTO, int numberOfReviews, double driverRate)
+            throws EntityNotFoundException
+    {
+        double updatedRateDriver = driverDTO.getRate() * numberOfReviews + driverRate;
+        driverService.updateRate(driverDTO.getId(), updatedRateDriver);
+    }
+
 
     public List<ReviewDTO> getAllForDriver(String email) {
         List<Review> reviews = reviewRepository.findAllByDriverEmail(email);
@@ -87,13 +93,4 @@ public class ReviewService {
         reviewRepository.deleteById(id);
     }
 
-    public boolean haveDrivingRate(Long id){
-        Review review = reviewRepository.findByDrivingId(id);
-        //da li sa onim notfoundexception??
-        if(reviewRepository.findByDrivingId(id) != null){
-            return true;
-        }
-
-        return false;
-    }
 }

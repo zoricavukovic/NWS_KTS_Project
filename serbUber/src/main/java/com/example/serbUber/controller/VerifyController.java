@@ -45,12 +45,12 @@ public class VerifyController {
     public void update(@Valid @RequestBody VerifyRequest verifyRequest)
             throws EntityNotFoundException, WrongVerifyTryException {
 
-        if (verifyRequest.getUserRole().equalsIgnoreCase("ROLE_DRIVER")){
+        if (verifyRequest.getUserRole().isDriver()){
             driverService.activate(
                 verifyRequest.getVerifyId(),
                 verifyRequest.getSecurityCode()
             );
-        } else if (verifyRequest.getUserRole().equalsIgnoreCase("ROLE_REGULAR_USER")) {
+        } else if (verifyRequest.getUserRole().isRegularUser()) {
             regularUserService.activate(
                 verifyRequest.getVerifyId(),
                 verifyRequest.getSecurityCode()

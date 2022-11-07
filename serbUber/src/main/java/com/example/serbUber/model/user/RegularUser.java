@@ -9,6 +9,8 @@ import javax.persistence.*;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.example.serbUber.util.Constants.ROLE_REGULAR_USER;
+
 @Entity
 @Table(name="regular_users")
 public class RegularUser extends User {
@@ -44,7 +46,7 @@ public class RegularUser extends User {
         final String city,
         final String profilePicture
     ) {
-        super(email, password, name, surname, phoneNumber, city, profilePicture, new Role("ROLE_REGULAR_USER"));
+        super(email, password, name, surname, phoneNumber, city, profilePicture, new Role(ROLE_REGULAR_USER));
     }
 
 

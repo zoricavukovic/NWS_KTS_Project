@@ -22,6 +22,12 @@ public class Constants {
     public static final String EMAIL_PASSWORD = "qmnbsxeitomdwqmg";
     public static final int MAX_NUM_VERIFY_TRIES = 3;
 
+    public static final String ROLE_DRIVER = "ROLE_DRIVER";
+
+    public static final String ROLE_REGULAR_USER = "ROLE_REGULAR_USER";
+
+    public static final String ROLE_ADMIN = "ROLE_ADMIN";
+
     public static int generateSecurityCode() {
         return (int)(Math.random() * (Constants.MAX_SECURITY_NUM - Constants.MIN_SECURITY_NUM + 1) + Constants.MIN_SECURITY_NUM);
     }

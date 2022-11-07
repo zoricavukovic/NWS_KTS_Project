@@ -8,8 +8,11 @@ import com.example.serbUber.service.DrivingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
+import javax.validation.constraints.Email;
 import java.util.LinkedList;
 import java.util.List;
+
+import static com.example.serbUber.exception.ErrorMessagesConstants.WRONG_EMAIL;
 
 @RestController
 @RequestMapping("/drivings")
@@ -48,7 +51,10 @@ public class DrivingController {
 
     @GetMapping("/{email}")
     @ResponseStatus(HttpStatus.OK)
-    public List<DrivingDTO> getAllDrivingsForUser(@PathVariable String email) throws EntityNotFoundException {
+    public List<DrivingDTO> getAllDrivingsForUser(@Valid @Email(message = WRONG_EMAIL) @PathVariable String email)
+            throws EntityNotFoundException
+    {
+
         return drivingService.getDrivingsForUser(email);
     }
 

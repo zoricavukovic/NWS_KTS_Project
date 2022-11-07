@@ -13,7 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Email;
 import java.util.List;
+
+import static com.example.serbUber.exception.ErrorMessagesConstants.WRONG_EMAIL;
 
 @RestController
 @RequestMapping("/drivers")
@@ -69,7 +72,7 @@ public class DriverController {
 
     @GetMapping("/rating/{email}")
     @ResponseStatus(HttpStatus.OK)
-    public double getRating(@PathVariable String email) throws EntityNotFoundException{
+    public double getRating(@Valid @Email(message=WRONG_EMAIL) @PathVariable String email) throws EntityNotFoundException{
         return driverService.getDriverRating(email);
     }
 }

@@ -11,10 +11,12 @@ import { Driver } from 'src/app/model/driver';
 @Component({
   selector: 'app-driving-details',
   templateUrl: './driving-details.component.html',
-  styleUrls: ['./driving-details.component.css']
+  styleUrls: ['./driving-details.component.css','./driving-details.component.scss']
 })
 export class DrivingDetailsComponent implements OnInit, OnDestroy {
 
+  panelOpenState:boolean = false;
+  events: any[];
   id:string;
   vehicleRating: number;
   driving:Driving = new Driving();
@@ -22,7 +24,7 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
   currentUser: User;
   destinations: string[] = [];
   startPoint: string;
-  val:number = 3;
+  val:number = 2;
 
   currentUserSubscription: Subscription;
   drivingsSubscription: Subscription;
@@ -32,6 +34,14 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
   constructor( private route: ActivatedRoute, private http: HttpClient, private configService: ConfigService, private authService: AuthService) { }
 
   ngOnInit(): void {
+
+    this.events = [
+      {status: 'Ordered', date: '15/10/2020 10:30'},
+      {status: 'Processing', date: '15/10/2020 14:00'},
+      {status: 'Shipped', date: '15/10/2020 16:15'},
+      {status: 'Delivered', date: '16/10/2020 10:00'}
+  ];
+
     this.currentUserSubscription = this.authService.getCurrentUser().subscribe((data) => this.currentUser=data);
 
     this.id = this.route.snapshot.paramMap.get('id');

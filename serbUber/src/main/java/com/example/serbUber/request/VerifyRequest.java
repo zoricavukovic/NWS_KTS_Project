@@ -1,5 +1,7 @@
 package com.example.serbUber.request;
 
+import com.example.serbUber.model.user.Role;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -17,9 +19,9 @@ public class VerifyRequest {
     private int securityCode;
 
     @NotBlank(message = "User role must be selected.")
-    private String userRole;
+    private Role userRole;
 
-    public VerifyRequest(Long id, int securityCode, String userRole) {
+    public VerifyRequest(Long id, int securityCode, Role userRole) {
         this.verifyId = id;
         this.securityCode = securityCode;
         this.userRole = userRole;
@@ -33,7 +35,7 @@ public class VerifyRequest {
         return securityCode;
     }
 
-    public String getUserRole() {
+    public Role getUserRole() {
         return userRole;
     }
 }

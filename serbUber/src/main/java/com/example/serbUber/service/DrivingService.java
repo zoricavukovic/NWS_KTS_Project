@@ -9,6 +9,7 @@ import com.example.serbUber.model.Route;
 import com.example.serbUber.model.user.User;
 import com.example.serbUber.repository.DrivingRepository;
 import com.example.serbUber.repository.user.UserRepository;
+import com.example.serbUber.service.user.UserService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -18,14 +19,17 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.example.serbUber.dto.DrivingDTO.fromDrivings;
+import static com.example.serbUber.util.Constants.ROLE_DRIVER;
 
 @Service
 public class DrivingService {
 
     private final DrivingRepository drivingRepository;
+    private final UserService userService;
 
-    public DrivingService(final DrivingRepository drivingRepository) {
+    public DrivingService(final DrivingRepository drivingRepository, final UserService userService) {
         this.drivingRepository = drivingRepository;
+        this.userService = userService;
     }
 
     public DrivingDTO create(
@@ -61,25 +65,26 @@ public class DrivingService {
         return fromDrivings(drivings);
     }
 
-    public List<DrivingDTO> getDrivingsForUser(String email) {
+    public List<DrivingDTO> getDrivingsForUser(String email) throws EntityNotFoundException {
+        User user = userService.getUserByEmail(email);
 
-            List<Driving> drivings = drivingRepository.findByUserEmail(email);
-            drivings.sort(Comparator.comparing(Driving::getStarted));
-            return fromDrivings(drivings);
+        return user.getRole().isDriver() ?
+                fromDrivings(drivingRepository.findByDriverEmail(email)) :
+                fromDrivings(drivingRepository.findByUserEmail(email));
     }
 
     public DrivingDTO getDrivingDto(Long id) throws EntityNotFoundException {
-//        Optional<Driving> driving = drivingRepository.getDrivingById(id);
-//        if (driving.isPresent()) {
-//            return new DrivingDTO(driving.get());
-//        }
-//        else {
-//            throw new EntityNotFoundException(id, EntityType.USER);
-//        }
+
         return new DrivingDTO(getDriving(id));
     }
 
-    public Driving getDriving(Long id){
-        return drivingRepository.getDrivingById(id);
+    public Driving getDriving(Long id) throws EntityNotFoundException {
+        Optional<Driving> driving = drivingRepository.getDrivingById(id);
+        if (driving.isPresent()) {
+
+            return driving.get();
+        }
+
+        throw new EntityNotFoundException(id, EntityType.DRIVING);
     }
 }

@@ -5,6 +5,8 @@ import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 
+import static com.example.serbUber.util.Constants.*;
+
 @Entity
 @Table(name="ROLE")
 public class Role implements GrantedAuthority {
@@ -36,4 +38,21 @@ public class Role implements GrantedAuthority {
     public void setName(String name) {
         this.name = name;
     }
+
+    public boolean isDriver(){
+
+        return this.name.equalsIgnoreCase(ROLE_DRIVER);
+    }
+
+    public boolean isAdmin(){
+
+        return this.name.equalsIgnoreCase(ROLE_ADMIN);
+    }
+
+    public boolean isRegularUser(){
+
+        return this.name.equalsIgnoreCase(ROLE_REGULAR_USER);
+    }
+
+
 }

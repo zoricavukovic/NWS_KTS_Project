@@ -5,11 +5,14 @@
     
     <div class="spacer">
         &nbsp;&nbsp;
-        <a *ngIf="currentUser.role.name!='ROLE_ADMIN'" [routerLink]="['/drivings']" routerLinkActive='active' mat-button color="primary">Drivings</a>
+        <a *ngIf="isUser" [routerLink]="['/drivings']" routerLinkActive='active' mat-button color="primary">Drivings</a>
+        <a *ngIf="isAdmin" [routerLink]="['/drivings']" routerLinkActive='active' mat-button color="primary">Drivers</a>
+        <a *ngIf="isAdmin" [routerLink]="['/drivings']" routerLinkActive='active' mat-button color="primary">Users</a>
     </div>
     
     <a *ngIf="!currentUser" [routerLink]="['/login']" routerLinkActive='active' mat-button color="primary">Log in</a>
     <a *ngIf="!currentUser" [routerLink]="['/registration']" routerLinkActive='active' mat-raised-button style="background-color: #f5e9de; margin-left: 0.5rem; color:#2c4b61">Sign up</a>
+
 
     <div *ngIf="currentUser" class="temp">
         <img mat-button [matMenuTriggerFor]="menu" src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img (31).webp" alt="avatar" loading="lazy"  class="img-circle-small">

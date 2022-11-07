@@ -1,0 +1,8 @@
+::ng-deep label.star {
+    padding: 0 5px !important;
+    font-size: 22px !important;
+
+    &:hover {
+        transform: rotate(0deg) scale(1.2) !important;
+    }
+}

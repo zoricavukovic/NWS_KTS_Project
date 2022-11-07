@@ -61,7 +61,8 @@ public class VehicleService {
         }
     }
 
-    public double getRatingForVehicle(Long id) {;
+    public double getRatingForVehicle(Long id) {
+
         return vehicleRepository.getVehicleRatingById(id);
     }
 

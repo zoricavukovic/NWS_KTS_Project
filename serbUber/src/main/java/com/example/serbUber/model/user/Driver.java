@@ -12,6 +12,8 @@ import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.example.serbUber.util.Constants.ROLE_DRIVER;
+
 @Entity
 @Table(name="drivers")
 public class Driver extends User {
@@ -66,7 +68,7 @@ public class Driver extends User {
             final String city,
             final String profilePicture
     ) {
-        super(id,email, password, name, surname, phoneNumber, city, profilePicture, new Role("ROLE_DRIVER"));
+        super(id,email, password, name, surname, phoneNumber, city, profilePicture, new Role(ROLE_DRIVER));
 
     }
 
@@ -80,7 +82,7 @@ public class Driver extends User {
         final String profilePicture,
         final Vehicle vehicle
     ) {
-        super(email, password, name, surname, phoneNumber, city, profilePicture, new Role("ROLE_DRIVER"));
+        super(email, password, name, surname, phoneNumber, city, profilePicture, new Role(ROLE_DRIVER));
         this.vehicle = vehicle;
     }
 

@@ -82,6 +82,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       )).subscribe(
 
         res => {
+          console.log(res);
           this.router.navigate(['/home-page'])
           console.log(res);
         }

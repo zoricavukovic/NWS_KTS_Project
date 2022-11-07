@@ -19,7 +19,7 @@ import { map } from 'rxjs';
     return this.http.post<any>(this.configService.rate_driver_vehicle_url, reviewRequest)
     .pipe(
       map((response) => { 
-          console.log(response);
+          return response;
         }
       )
     );
