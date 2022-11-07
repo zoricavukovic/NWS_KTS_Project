@@ -1,28 +1,71 @@
-<div class="form-container mat-elevation-z1">
-    <h1><strong>Request a ride now</strong></h1>
-    <mat-form-field appearance="fill">
-        <mat-label>Enter pickup location</mat-label>
-        <input type="text" matInput aria-label="State" [matAutocomplete]="auto" placeholder="Enter pickup location">
-        <mat-icon matSuffix>location_on</mat-icon>
-        <mat-autocomplete #auto="matAutocomplete">
-            <!-- <mat-option *ngFor="let city of filteredCities | async" [value]="city">
-                <span>{{city}}</span>
-            </mat-option> -->
-        </mat-autocomplete>
-    </mat-form-field>
+<div style="display: flex;">
 
-    <mat-form-field appearance="fill">
-        <mat-label>Enter destination</mat-label>
-        <input type="text" matInput aria-label="State" [matAutocomplete]="auto" placeholder="Enter destination">
-        <mat-icon matSuffix>location_on</mat-icon>
-        <mat-autocomplete #auto="matAutocomplete">
-            <!-- <mat-option *ngFor="let city of filteredCities | async" [value]="city">
-                <span>{{city}}</span>
-            </mat-option> -->
-        </mat-autocomplete>
-    </mat-form-field>
-    
-    <div class="margin-top">
-        <button mat-raised-button  style="background-color: #abbbae; font-size: 1.4rem; color: #2c4b61;">Request now</button>
+    <div class="form-container mat-elevation-z1">
+        <h1><strong>Request a ride now</strong></h1>
+        <form [formGroup]="autocompleteForm">
+            <mat-form-field appearance="fill">
+                <mat-label>Enter pickup location</mat-label>
+                <input type="text" matInput aria-label="State" 
+                
+                        (keyup)="filterStartPlace()"  
+                        [matAutocomplete]="startPlaces"
+                        placeholder="Enter pickup location"
+                        formControlName="startDest"
+                >
+                <mat-icon matSuffix>location_on</mat-icon>
+                <mat-autocomplete #startPlaces="matAutocomplete" optionSelected>
+                    <mat-option *ngFor="let startPlace of filteredStartPlaces | async" [value]="startPlace.label" (click)="onBlurStart(startPlace)">
+                        <span>{{startPlace.label}}</span>
+                    </mat-option> 
+                </mat-autocomplete>
+
+                <mat-error *ngIf="autocompleteForm.get('startDest').hasError('forbiddenNames')">
+                    You should enter value from suggested one only. Other <strong>input values</strong> is not allowed.
+                </mat-error>
+                <mat-error *ngIf="autocompleteForm.hasError('required')">
+                    This is <strong>required</strong>
+                </mat-error>
+
+            </mat-form-field>
+        
+            <mat-form-field appearance="fill">
+                <mat-label>Enter destination</mat-label>
+                <input type="text" matInput aria-label="State"
+                        
+                        (keyup)="filterDestination()" 
+                        [matAutocomplete]="destinations" 
+                        placeholder="Enter destination"
+                        formControlName="endDest"
+                >
+                <mat-icon matSuffix>location_on</mat-icon>
+                <mat-autocomplete #destinations="matAutocomplete">
+                    <mat-option *ngFor="let destination of filteredDestinations | async" [value]="destination.label" (click)="onBlurDestination(destination)">
+                    <span>{{destination.label}}</span>
+                </mat-option> 
+                </mat-autocomplete>
+            </mat-form-field>
+            
+            <div class="margin-top">
+                <button mat-raised-button  style="background-color: #abbbae; font-size: 1.4rem; color: #2c4b61;">Request now</button>
+            </div>
+        </form>
     </div>
+
+
+    <div class="form-container-map">
+        <h1><strong>Request a ride now</strong></h1>
+    
+        
+    
+        
+        <div class="container">
+            <div class="map-frame">
+                <div id="map">
+    
+                </div>
+            </div>
+        </div>
+       
+    </div>
+    
 </div>
