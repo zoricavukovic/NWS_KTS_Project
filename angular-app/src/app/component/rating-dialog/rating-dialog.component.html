@@ -1,5 +1,8 @@
 <h1 mat-dialog-title>Rate driver and vehicle</h1>
-<div mat-dialog-content>
+<div mat-dialog-content class="content">
+  <!--zvezdice-->
+  <textarea matInput
+  rows="4" placeholder="Enter a comment..." [(ngModel)]="message"></textarea>
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="cancelBtn()">Cancel</button>

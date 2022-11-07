@@ -100,9 +100,11 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(RatingDialogComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(
-      data => 
-        this.reviewSubscription = this.reviewService.saveReview( new ReviewRequest(data.ratingVehicle, data.ratingDriver, "", data.id)).subscribe());
-    } 
+      data => {
+        console.log(data.message);
+        this.reviewSubscription = this.reviewService.saveReview( new ReviewRequest(data.ratingVehicle, data.ratingDriver, data.message, data.id)).subscribe();
+      });
+      } 
 
 
   ngOnDestroy(): void {
