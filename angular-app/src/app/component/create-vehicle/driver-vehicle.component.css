@@ -26,19 +26,19 @@
 
 
 
-    .product-item-content {
-        height: 5.5rem;
-        width: 6rem;
-        border: 2px solid;
-        border-radius: 15px;
-        background-color: #f5e9de;
-        margin: .3rem;
-        padding: 0.1rem;
-        padding-left: 0.9rem;
-    }
+.product-item-content {
+    height: 5.5rem;
+    width: 6rem;
+    border: 2px solid;
+    border-radius: 15px;
+    background-color: #f5e9de;
+    margin: .3rem;
+    padding: 0.1rem;
+    padding-left: 0.9rem;
+}
 
-    .product-image {
-        width: 50%;
-        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23)
-    }
+.product-image {
+    width: 50%;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23)
+}
 

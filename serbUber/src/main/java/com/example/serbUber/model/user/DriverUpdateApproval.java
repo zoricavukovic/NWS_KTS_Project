@@ -9,7 +9,7 @@ public class DriverUpdateApproval {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="email", nullable = false, unique = true)
+    @Column(name="email", nullable = false)
     private String userEmail;
 
     @Column(name="name", nullable = false)

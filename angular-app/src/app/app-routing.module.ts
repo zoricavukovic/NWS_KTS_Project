@@ -8,6 +8,8 @@ import { VerifyComponent } from './component/verify/verify.component';
 import { SendResetPasswordEmailComponent } from './component/send-reset-password-link/send-reset-password-link.component';
 import { ResetPasswordComponent } from './component/reset-password/reset-password.component';
 import { HomePageComponent } from './component/home-page/home-page.component';
+import { ProfilePageComponent } from './component/profile-page/profile-page.component';
+import { EditProfileComponent } from './component/edit-profile/edit-profile.component';
 
 const routes: Routes = [
   {path:'', redirectTo:'home-page', pathMatch:'full'},
@@ -18,7 +20,13 @@ const routes: Routes = [
   {path: 'verify/:id', component: VerifyComponent},
   {path: 'drivings', component: ShowDrivingsComponent},
   {path: 'details/:id', component: DrivingDetailsComponent},
-  {path: 'reset-password/:email', component: ResetPasswordComponent}
+  {path: 'reset-password/:email', component: ResetPasswordComponent},
+  {path: 'profile-page', component: ProfilePageComponent},
+  {path: 'verify/:id', component: VerifyComponent},
+  {path: 'reset-password/:email', component: ResetPasswordComponent},
+  {path: 'profile-page', component: ProfilePageComponent},
+  {path: 'edit-profile-data', component: EditProfileComponent},
+  {path:'', redirectTo:'login', pathMatch:'full'}
 ];
 
 

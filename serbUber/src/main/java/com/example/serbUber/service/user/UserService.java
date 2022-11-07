@@ -5,10 +5,9 @@ import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.EntityType;
 import com.example.serbUber.exception.PasswordsDoNotMatchException;
 import com.example.serbUber.exception.UsersUpdateException;
-import com.example.serbUber.model.user.DriverUpdateApproval;
 import com.example.serbUber.model.user.User;
-import com.example.serbUber.repository.user.DriverUpdateApprovalRepository;
 import com.example.serbUber.repository.user.UserRepository;
+import com.example.serbUber.service.DriverUpdateApprovalService;
 import com.example.serbUber.service.EmailService;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +30,7 @@ public class UserService {
     private final AdminService adminService;
     private final DriverService driverService;
     private final RegularUserService regularUserService;
-    private final DriverUpdateApprovalRepository driverUpdateApprovalRepository;
+    private final DriverUpdateApprovalService driverUpdateApprovalService;
     private final EmailService emailService;
 
     public UserService(
@@ -39,14 +38,14 @@ public class UserService {
         final AdminService adminService,
         final DriverService driverService,
         final RegularUserService regularUserService,
-        final DriverUpdateApprovalRepository driverUpdateApprovalRepository,
+        final DriverUpdateApprovalService driverUpdateApprovalService,
         final EmailService emailService
     ) {
         this.userRepository = userRepository;
         this.adminService = adminService;
         this.driverService = driverService;
         this.regularUserService = regularUserService;
-        this.driverUpdateApprovalRepository = driverUpdateApprovalRepository;
+        this.driverUpdateApprovalService = driverUpdateApprovalService;
         this.emailService = emailService;
     }
 
@@ -83,14 +82,7 @@ public class UserService {
             final String city
     ) throws EntityNotFoundException {
         User user = getUserByEmail(email);
-        DriverUpdateApproval update = new DriverUpdateApproval(
-                email,
-                name,
-                surname,
-                phoneNumber,
-                city
-        );
-        driverUpdateApprovalRepository.save(update);
+        driverUpdateApprovalService.save(email, name, surname, phoneNumber, city);
 
         return new UserDTO(user);
     }

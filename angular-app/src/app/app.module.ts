@@ -26,6 +26,9 @@ import { NavBarComponent} from './component/nav-bar/nav-bar.component';
 import {RatingModule} from 'primeng/rating';
 import { NgxStarRatingModule } from 'ngx-star-rating';
 import { DrivingRowComponent } from './component/driving-row/driving-row.component';
+import { ProfilePageComponent } from './component/profile-page/profile-page.component';
+import { EditProfileComponent } from './component/edit-profile/edit-profile.component';
+import { ChangeProfilePicComponent } from './component/change-profile-pic/change-profile-pic.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +44,10 @@ import { DrivingRowComponent } from './component/driving-row/driving-row.compone
     ResetPasswordComponent,
     HomePageComponent,
     NavBarComponent,
-    DrivingRowComponent
+    DrivingRowComponent,
+    ProfilePageComponent,
+    EditProfileComponent,
+    ChangeProfilePicComponent
   ],
   imports: [
     BrowserModule,
@@ -58,6 +64,7 @@ import { DrivingRowComponent } from './component/driving-row/driving-row.compone
     TimelineModule,
     NgxStarRatingModule
   ],
+  entryComponents:[EditProfileComponent],
   providers: [
     {
       provide: 'SocialAuthServiceConfig',

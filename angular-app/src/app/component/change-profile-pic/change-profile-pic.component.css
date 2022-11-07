@@ -1,0 +1,51 @@
+
+h1, h2 {
+    color: var(--blue);
+}
+
+input[type="file"] {
+    display: none;
+}
+
+.custom-file-upload:hover {
+    background-color: var(--mint);
+    transition: .5s;
+}
+
+.change-photo-container {
+    min-width: 20rem;
+    min-height: 20rem;
+}
+
+.custom-file-upload {
+    border: 3px solid var(--blue);
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: var(--blue);
+    margin-top: 7%;
+    border-radius: 1rem;
+}
+
+.custom-file-upload, label, .no-scroll {
+    overflow: hidden !important;
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
+
+.custom-file-upload::-webkit-scrollbar, label::-webkit-scrollbar {
+    display: none;
+}
+
+.activity-buttons {
+    margin-top: 15%;
+}
+
+img {
+    display: block;
+    border-radius: 50%;
+    width: 120px;
+    max-height: 120px;
+    height: auto;
+}

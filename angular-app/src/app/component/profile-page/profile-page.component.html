@@ -1,0 +1,48 @@
+<div class="form-container mat-elevation-z2">
+    <h1 class="text-center">Profile page</h1>
+        <mat-tab-group mat-align-tabs="center" animationDuration="0ms">
+            <mat-tab label="Profile">
+                <div class="center" style="display: flex;">
+                    <div class="image-container">
+                        <div class="center image-wrap">
+                            <img class="profile-img" (click)="showChangePhotoDialog()" [src]="getBase64Prefix() + loggedUser.profilePicture" alt="User's photo">
+                        </div>
+                        <p class="role-badge center"><b>{{getRole()}}</b></p>
+                    </div>
+                    <div class="profile-data">
+                        <h1><b>{{loggedUser.name}} {{loggedUser.surname}}</b></h1>
+                        <label>
+                            <mat-icon class="icon-size">mail_outline</mat-icon>
+                            <b> {{loggedUser.email}}</b>
+                        </label>
+                        <label>
+                            <mat-icon>call</mat-icon>
+                            <b> {{loggedUser.phoneNumber}}</b>
+                        </label>
+                        <label>
+                            <mat-icon>home</mat-icon>
+                            <span><b> {{loggedUser.city}}</b></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="center margin-top">
+                    <button mat-raised-button (click)="showEditProfile()"
+                        class="green-button">
+                        Edit <mat-icon>edit</mat-icon>
+                    </button>
+                </div>
+
+            </mat-tab>
+            <mat-tab [label]="showPayments ? 'Password & payments' : 'Password'">
+                <div class="password-payments-content">
+                    <div class="password-col col">
+                        <app-reset-password [user]="loggedUser"></app-reset-password>
+                    </div>
+                    <div class="payment-col col">
+                        This works
+                    </div>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+</div>

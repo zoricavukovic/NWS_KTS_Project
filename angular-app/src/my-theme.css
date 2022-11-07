@@ -47,3 +47,15 @@
     color: #2c4b61;
     background-color: #f5e9de;
 }
+
+.green-button {
+    background-color: #abbbae; 
+    font-size: 1.4rem; 
+    color: #2c4b61;
+}
+
+.green-secondary-button {
+    border: 1.5px solid #abbbae !important;
+    font-size: 1.4rem;
+    color: #2c4b61;
+}
