@@ -1,67 +1,40 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { LoginRequest } from '../model/login-request';
-import { LoginResponse } from '../model/login-response';
-import { User } from '../model/user';
+import { LoginRequest } from '../model/request/user/login-request';
+import { LoginResponse } from '../model/response/user/login';
+import { User } from '../model/response/user/user';
 import { ConfigService } from './config.service';
 import { map } from 'rxjs/operators';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { Router } from '@angular/router';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   currentUser$ = new BehaviorSubject<User>(null);
-  roleAdmin: String = "ROLE_ADMIN";
+  ROLE_ADMIN: string = "ROLE_ADMIN";
 
   constructor(
     private http: HttpClient, 
-    private configService: ConfigService
+    private configService: ConfigService,
+    private router: Router
   ) { }
 
-    login(loginRequest: LoginRequest) {
+    login(loginRequest: LoginRequest): Observable<LoginResponse> {
 
-      return this.http.post<LoginResponse>(this.configService.login_url, loginRequest)
-      .pipe(
-          map((response) => { 
-              const loggedUser = response as LoginResponse;
-              this.setLocalStorage(loggedUser); 
-              this.currentUser$.next(loggedUser.userDTO);
-
-              return loggedUser.userDTO;
-            }
-          )
-      );
+      return this.http.post<LoginResponse>(this.configService.login_url, loginRequest);
     }
 
-  loginWithGoogle(token:String):Observable<User> {
+  loginWithGoogle(token:String): Observable<LoginResponse> {
     
-    return this.http.post<LoginResponse>(this.configService.login_with_gmail_url, {token})
-    .pipe(
-        map((response) => { 
-            const loggedUser = response as LoginResponse;
-            this.setLocalStorage(loggedUser); 
-            this.currentUser$.next(loggedUser.userDTO);
-
-            return loggedUser.userDTO;
-          }
-        )
-    );
+    return this.http.post<LoginResponse>(this.configService.login_with_gmail_url, {token});
   }
 
-  loginWithFacebook(token:String):Observable<User> {
+  loginWithFacebook(token:String): Observable<LoginResponse> {
     
-    return this.http.post<LoginResponse>(this.configService.login_with_facebook_url, {token})
-    .pipe(
-        map((response) => { 
-            const loggedUser = response as LoginResponse;
-            this.setLocalStorage(loggedUser); 
-            this.currentUser$.next(loggedUser.userDTO);
-
-            return loggedUser.userDTO;
-          }
-        )
-    );
+    return this.http.post<LoginResponse>(this.configService.login_with_facebook_url, {token});
   }
 
   setLocalStorage(loginResponse: LoginResponse): void {
@@ -72,6 +45,7 @@ export class AuthService {
   logOut(){
     this.currentUser$.next(null);
     localStorage.clear();
+    this.router.navigate(['/login']);
   }
 
   setUserInLocalStorage(user: User): void {
@@ -82,7 +56,7 @@ export class AuthService {
   getCurrentUser(): BehaviorSubject<User> {
     let user = localStorage.getItem('user');
     console.log(user);
-    if (user !== null){
+    if (user !== null && user !== undefined){
 
         this.currentUser$.next(JSON.parse(user));
     }else{
@@ -94,9 +68,9 @@ export class AuthService {
 
   userIsAdmin(): boolean {
     const userString = localStorage.getItem('user');
-    if (userString !== null){
+    if (userString !== null && userString !== undefined){
       const user = JSON.parse(userString);
-      if (user.role.name === this.roleAdmin){
+      if (user.role.name === this.ROLE_ADMIN){
 
         return true;
       }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ConfigService } from './config.service';
-import { VerifyRequest } from '../model/verify-request';
+import { VerifyRequest } from '../model/request/verify-request';
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 

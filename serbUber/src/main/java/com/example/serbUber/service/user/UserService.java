@@ -182,7 +182,7 @@ public class UserService {
         User user
     ) throws PasswordsDoNotMatchException {
         if (passwordsDontMatch(newPassword, confirmPassword)) {
-            throw new PasswordsDoNotMatchException("New password and confirm password are not the same.");
+            throw new PasswordsDoNotMatchException("New and confirm password aren't same.");
         }
         if (!oldPasswordsMatch(currentPassword, user.getPassword())) {
             throw new PasswordsDoNotMatchException("Your old password is not correct.");

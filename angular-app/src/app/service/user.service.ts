@@ -1,17 +1,19 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { RegistrationResponse } from '../model/registration-reponse';
-import { RegistrationRequest } from '../model/registration-request';
+import { RegistrationResponse } from '../model/response/user/registration';
+import { RegistrationRequest } from '../model/request/user/registration-request';
 import { ConfigService } from './config.service';
 import { map } from 'rxjs/operators';
-import { DriverRegistrationRequest } from '../model/driver-registration-request';
-import { PasswordUpdateRequest } from '../model/password-update-request';
-import { UserProfilePictureRequest } from '../model/user-profile-picture-request';
-import { UsersProfileUpdateRequest } from '../model/users-profile-update-request';
-import { UserPasswordUpdateRequest } from '../model/user-password-update-request';
+import { DriverRegistrationRequest } from '../model/request/user/driver-registration-request';
+import { PasswordUpdateRequest } from 'src/app/model/request/user/user-profile-update';
+import { UserProfilePictureRequest } from '../model/request/user/user-profile-update';
+import { UsersProfileUpdateRequest } from '../model/request/user/user-profile-update';
+import { UserPasswordUpdateRequest } from '../model/request/user/user-profile-update';
 import { Router } from '@angular/router';
 import { AuthService } from './auth.service';
-import { User } from '../model/user';
+import { User } from '../model/response/user/user';
+import { Observable } from 'rxjs';
+
 
 @Injectable({
   providedIn: 'root'
@@ -22,60 +24,36 @@ export class UserService {
     private http: HttpClient,
     private configService: ConfigService,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
   ) { }
 
-  sendResetPasswordEmail(email: string): void {
+  sendResetPasswordEmail(email: string): Observable<boolean> {
     
-    this.http.get(this.configService.send_reset_password_email(email))
-        .subscribe(
-            data => console.log('success', data),
-            error => console.log('oops', error)
-        );
+    return this.http.get<boolean>(this.configService.send_reset_password_email(email));
   }
 
-  resetPassword(passwordUpdateRequest: PasswordUpdateRequest) {
-    this.http.put(this.configService.reset_password, passwordUpdateRequest)
-        .subscribe(
-            data => console.log('success', data),
-            error => console.log('oops', error)
-        );
+  resetPassword(passwordUpdateRequest: PasswordUpdateRequest): Observable<User> {
+
+    return this.http.put<User>(this.configService.reset_password, passwordUpdateRequest);
   }
 
-  updateProfileData(data: UsersProfileUpdateRequest) {
-    this.http.put(this.configService.users_url, data)
-        .subscribe(
-            res => {
-              //this.router.navigate(['/profile-page'], {state: {user: res}});
-              this.router.navigate(['/profile-page']);
-              const parsedUser = res as User;
-              this.authService.setUserInLocalStorage(parsedUser);
-            },
-            error => console.log('oops', error)
-        );
+  updateProfileData(data: UsersProfileUpdateRequest): Observable<User> {
+
+    return this.http.put<User>(this.configService.users_url, data);
   }
 
-  updateProfilePicture(data: UserProfilePictureRequest) {
-    this.http.put(this.configService.users_update_profile_pic, data)
-        .subscribe(
-            data => console.log('success', data),
-            error => console.log('oops', error)
-        );
+  updateProfilePicture(data: UserProfilePictureRequest): Observable<User> {
+
+    return this.http.put<User>(this.configService.users_update_profile_pic, data);
   }
 
-  updatePassword(data: UserPasswordUpdateRequest) {
-    this.http.put(this.configService.users_update_password, data)
-        .subscribe(
-            data => {
-              this.authService.logOut()
-              this.router.navigate(['/login']);
-              console.log('success', data);},
-            error => console.log('oops', error)
-        );
+  updatePassword(data: UserPasswordUpdateRequest): Observable<User> {
+
+    return this.http.put<User>(this.configService.users_update_password, data)
   }
 
+  //TODO KAD SE SREDI REGISTRACIJA, NEMA ZA REGULAR IZ NEKOG RAZLOGA?????
   registerRegularUser(registrationRequest: RegistrationRequest){
-    console.log(registrationRequest);
 
     return this.http.post<RegistrationResponse>(this.configService.registration_url, registrationRequest)
     .pipe(
@@ -86,16 +64,11 @@ export class UserService {
     );
   }
 
-  registerDriver(driverRequest: DriverRegistrationRequest){
+  registerDriver(driverRequest: DriverRegistrationRequest) {
     console.log(driverRequest);
 
     return this.http.post<any>(this.configService.register_driver, driverRequest)
-    .pipe(
-      map((response) => { 
-          console.log(response);
-        }
-      )
-    );
+    
   }
 
 }

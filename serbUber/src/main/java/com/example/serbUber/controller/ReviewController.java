@@ -29,6 +29,14 @@ public class ReviewController {
         return this.reviewService.getAll();
     }
 
+
+    @DeleteMapping(value = "/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void delete(@PathVariable Long id) {
+
+        this.reviewService.delete(id);
+    }
+
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public ReviewDTO create(@Valid @RequestBody ReviewRequest reviewRequest) throws EntityNotFoundException {
@@ -40,13 +48,5 @@ public class ReviewController {
             reviewRequest.getDriving()
         );
     }
-
-    @DeleteMapping(value = "/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void delete(@PathVariable Long id) {
-
-        this.reviewService.delete(id);
-    }
-
 
 }

@@ -1,8 +1,9 @@
 import { Injectable } from "@angular/core";
-import { ReviewRequest } from "../model/review-request";
+import { ReviewRequest } from "../model/request/review-request";
 import { HttpClient } from "@angular/common/http";
 import { ConfigService } from "./config.service";
-import { map } from 'rxjs';
+import { map, Observable } from 'rxjs';
+import { Review } from "../model/response/review";
 
 @Injectable({
     providedIn: 'root'
@@ -13,18 +14,12 @@ import { map } from 'rxjs';
         private configService: ConfigService
       ) { }
 
-  saveReview(reviewRequest: ReviewRequest){
-    console.log(reviewRequest);
+  saveReview(reviewRequest: ReviewRequest) : Observable<Review> {
 
-    return this.http.post<any>(this.configService.rate_driver_vehicle_url, reviewRequest)
-    .pipe(
-      map((response) => { 
-          return response;
-        }
-      )
-    );
+    return this.http.post<Review>(this.configService.rate_driver_vehicle_url, reviewRequest)
   }
 
+  //TODO NEMA OVE METODE NA BACK-u????
   haveReview(drivingId: number){
     this.http.get(this.configService.have_driving_rate_url + drivingId)
     .pipe(

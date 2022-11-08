@@ -5,7 +5,7 @@
     
     <div class="spacer">
         &nbsp;&nbsp;
-        <a *ngIf="isUser" [routerLink]="['/drivings']" routerLinkActive='active' mat-button color="primary">Drivings</a>
+        <a *ngIf="currentUser" [routerLink]="['/drivings']" routerLinkActive='active' mat-button color="primary">Drivings</a>
         <a *ngIf="isAdmin" [routerLink]="['/drivings']" routerLinkActive='active' mat-button color="primary">Drivers</a>
         <a *ngIf="isAdmin" [routerLink]="['/drivings']" routerLinkActive='active' mat-button color="primary">Users</a>
     </div>
@@ -20,8 +20,8 @@
     </div>
    
     <mat-menu #menu="matMenu">
-        <button mat-menu-item><mat-icon color="primary">account_circle</mat-icon><span>My profile</span></button>
-        <button mat-menu-item><mat-icon color="primary">edit</mat-icon><span>Edit profile</span></button>
+        <button mat-menu-item (click)="redirectToProfilePage()"><mat-icon color="primary">account_circle</mat-icon><span>My profile</span></button>
+        <button mat-menu-item (click)="redirectToEditPage()"><mat-icon color="primary">edit</mat-icon><span>Edit profile</span></button>
         <button mat-menu-item (click)="logOut()"><mat-icon color="primary">logout</mat-icon><span>Log out</span></button>
     </mat-menu>
 </mat-toolbar>

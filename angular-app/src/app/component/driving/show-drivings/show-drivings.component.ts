@@ -1,0 +1,58 @@
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Subscription } from 'rxjs';
+import { ConfigService } from 'src/app/service/config.service';
+import { AuthService } from 'src/app/service/auth.service';
+import { Driving } from 'src/app/model/response/driving';
+import { User } from 'src/app/model/response/user/user';
+
+@Component({
+  selector: 'app-show-drivings',
+  templateUrl: './show-drivings.component.html',
+  styleUrls: ['./show-drivings.component.css']
+})
+export class ShowDrivingsComponent implements OnInit, OnDestroy {
+  currentUserSubscription: Subscription;
+  reviewSubscription: Subscription;
+
+  constructor( private http: HttpClient, private authService: AuthService,private configService: ConfigService) { }
+
+  drivings: Driving[] = [];
+  currentUser: User;
+  
+  ngOnInit(): void {
+    this.currentUserSubscription = this.authService.getCurrentUser().subscribe((data) => this.currentUser=data);
+    this.http.get(this.configService.drivings_url + this.currentUser.email).subscribe((response:any) => {
+        this.drivings = response;
+    })
+   }
+
+   sortByPrice(){
+    const sorted = this.drivings.sort(
+      (objA, objB) => objA.price - objB.price,
+    );
+    console.log(sorted);
+   }
+
+   
+
+   haveDrivingRate(id: number){
+      if(this.configService.have_driving_rate_url + id){
+        return true;
+      }
+      return false;
+   }
+
+
+
+  
+
+
+  ngOnDestroy(): void {
+    if(this.currentUserSubscription){
+      this.currentUserSubscription.unsubscribe();
+    }
+  }
+   }
+
+
