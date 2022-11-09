@@ -14,6 +14,8 @@ import {MatMenuModule} from '@angular/material/menu';
 import {MatListModule} from '@angular/material/list';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatToolbarModule} from '@angular/material/toolbar';
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatDialogModule} from '@angular/material/dialog';
 
 const MaterialConstants = [
   MatButtonModule,
@@ -32,6 +34,9 @@ const MaterialConstants = [
   MatExpansionModule,
   MatIconModule,
   MatToolbarModule, 
+  MatIconModule,
+  MatTabsModule,
+  MatDialogModule
 ]
 
 @NgModule({

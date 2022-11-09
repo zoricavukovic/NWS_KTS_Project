@@ -5,6 +5,7 @@ import com.example.serbUber.exception.EntityType;
 import com.example.serbUber.exception.UsersUpdateException;
 
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -29,22 +30,20 @@ public class PictureHandler {
         return String.format("user-%s.png", id.toString());
     }
 
-    public static byte[] getPictureDataByName(final String name)
-            throws EntityNotFoundException {
-        try {
-
-            return Files.readAllBytes(Paths.get(generatePhotoPath(name)));
-        } catch (Exception e) {
-            throw new EntityNotFoundException(name, EntityType.PHOTO);
-        }
+    public static byte[] getPictureDataByName(final String name) throws IOException
+    {
+        return Files.readAllBytes(Paths.get(generatePhotoPath(name)));
     }
 
-    public static String convertPictureToBase64ByName(final String name)
-            throws EntityNotFoundException
-    {
-        byte[] pictureData = getPictureDataByName(name);
+    public static String convertPictureToBase64ByName(final String name) {
+        try {
+            byte[] pictureData = new byte[0];
+            pictureData = getPictureDataByName(name);
 
-        return generateBase64String(pictureData);
+            return generateBase64String(pictureData);
+        } catch (IOException e) {
+            return "";
+        }
     }
 
     private static boolean savePictureFromBase64(final String pictureName, final String base64)
@@ -66,14 +65,20 @@ public class PictureHandler {
     public static String checkPictureValidity(final String base64Opt, final Long id)
             throws UsersUpdateException
     {
-        String pictureName = getProfilePicture(base64Opt);
-        if (pictureName.equals(DEFAULT_PICTURE)) {
-            return DEFAULT_PICTURE;
-        }
-        pictureName = generatePhotoName(id);
+
+        return getProfilePicture(base64Opt).equalsIgnoreCase(DEFAULT_PICTURE) ? DEFAULT_PICTURE :
+                savePicture(base64Opt, id);
+    }
+
+    public static String savePicture(final String base64Opt, final Long id)
+            throws UsersUpdateException
+    {
+        String pictureName = generatePhotoName(id);
         savePictureFromBase64(pictureName, base64Opt);
 
         return pictureName;
     }
+
+
 
 }

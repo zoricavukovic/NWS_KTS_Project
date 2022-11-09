@@ -6,6 +6,8 @@ import com.example.serbUber.model.user.User;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.example.serbUber.util.PictureHandler.convertPictureToBase64ByName;
+
 public class UserDTO{
 
     private final String email;
@@ -23,7 +25,7 @@ public class UserDTO{
         this.surname = user.getSurname();
         this.phoneNumber = user.getPhoneNumber();
         this.city = user.getCity();
-        this.profilePicture = user.getProfilePicture();
+        this.profilePicture = convertPictureToBase64ByName(user.getProfilePicture());
         this.role = user.getRole();
         this.password = user.getPassword();
     }

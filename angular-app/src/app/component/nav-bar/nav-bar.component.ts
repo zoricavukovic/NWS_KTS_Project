@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { User } from 'src/app/model/user';
+import { User } from 'src/app/model/response/user/user';
 import { AuthService } from 'src/app/service/auth.service';
 
 @Component({
@@ -12,8 +12,7 @@ import { AuthService } from 'src/app/service/auth.service';
 export class NavBarComponent implements OnInit, OnDestroy {
 
   currentUser: User;
-  isAdmin: boolean = false;
-  isUser: boolean = false;
+  isAdmin: boolean = this.authService.userIsAdmin();
   currentUserSubscription: Subscription;
   
   constructor(
@@ -24,20 +23,15 @@ export class NavBarComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.currentUserSubscription = this.authService.getCurrentUser().subscribe((data) => {
       this.currentUser=data; 
-      if(this.currentUser){
-        if(this.currentUser.role.name == "ROLE_ADMIN"){
-          this.isAdmin = true;
-        }
-        else{
-          this.isUser = true;
-        }
-      }
-      else{
-        this.isAdmin = false;
-        this.isUser = false;
-      }
-    
     });
+  }
+
+  redirectToEditPage() {
+    this.router.navigate(['/edit-profile-data']);
+  }
+
+  redirectToProfilePage() {
+    this.router.navigate(['/profile-page']);
   }
 
   logOut(){
