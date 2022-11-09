@@ -1,8 +1,13 @@
 package com.example.serbUber.request.user;
 
+import com.example.serbUber.util.Constants;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+
+import static com.example.serbUber.exception.ErrorMessagesConstants.WRONG_PASSWORD;
 
 public class LoginRequest {
 
@@ -11,7 +16,9 @@ public class LoginRequest {
     @Email(message = "Email is in wrong format.")
     private String email;
 
-    @NotBlank(message = "Password must exist.")
+    @NotBlank(message = WRONG_PASSWORD)
+    @Pattern(regexp = Constants.LEGIT_PASSWORD_REG,
+        message = WRONG_PASSWORD)
     private String password;
 
     public LoginRequest(final String email, final String password) {

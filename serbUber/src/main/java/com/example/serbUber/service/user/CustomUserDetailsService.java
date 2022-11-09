@@ -18,13 +18,16 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(final String email) {
-        try {
-            UserDTO userDTO = userService.get(email);
 
-            return new UserPrinciple(userDTO);
+        UserDTO userDTO;
+        try {
+            userDTO = userService.get(email);
         } catch (EntityNotFoundException e) {
-            e.printStackTrace();
+
+            return null;
         }
-        return null;
+
+        return new UserPrinciple(userDTO);
+
     }
 }

@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.example.serbUber.dto.user.DriverDTO.fromDrivers;
-import static com.example.serbUber.model.user.User.passwordsMatch;
+import static com.example.serbUber.model.user.User.passwordsDontMatch;
 import static com.example.serbUber.util.Constants.ROLE_DRIVER;
 import static com.example.serbUber.util.Constants.getProfilePicture;
 import static com.example.serbUber.util.JwtProperties.getHashedNewUserPassword;
@@ -56,12 +56,9 @@ public class DriverService {
     }
 
     public Driver get(Long id) throws EntityNotFoundException {
-        Optional<Driver> optionalDriver = driverRepository.getDriverById(id);
 
-        if (optionalDriver.isPresent()) {
-            return optionalDriver.get();
-        }
-        throw new EntityNotFoundException(id, EntityType.USER);
+        return driverRepository.getDriverById(id)
+            .orElseThrow(() -> new EntityNotFoundException(id, EntityType.USER));
     }
 
     public UserDTO create(
@@ -76,12 +73,8 @@ public class DriverService {
             final boolean petFriendly,
             final boolean babySeat,
             final VehicleType vehicleType
-    ) throws EntityNotFoundException,
-            PasswordsDoNotMatchException,
-            EntityAlreadyExistsException,
-            MailCannotBeSentException
-    {
-        if (!passwordsMatch(password, confirmPassword)) {
+    ) throws PasswordsDoNotMatchException, EntityNotFoundException, EntityAlreadyExistsException, MailCannotBeSentException {
+        if (passwordsDontMatch(password, confirmPassword)) {
             throw new PasswordsDoNotMatchException();
         }
         Vehicle vehicle = vehicleService.create(petFriendly, babySeat, vehicleType);
@@ -99,7 +92,7 @@ public class DriverService {
             final String city,
             final String profilePicture,
             final Vehicle vehicle
-    ) throws MailCannotBeSentException, EntityAlreadyExistsException {
+    ) throws MailCannotBeSentException, EntityAlreadyExistsException, EntityNotFoundException {
         try {
             String hashedPassword = getHashedNewUserPassword(password);
             Driver driver = driverRepository.save(new Driver(
@@ -116,10 +109,10 @@ public class DriverService {
             verifyService.sendEmail(driver.getId(), driver.getEmail());
 
             return driver;
-        }catch (MailCannotBeSentException e) {
-            throw new MailCannotBeSentException(e.getMessage());
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
             throw new EntityAlreadyExistsException(String.format("User with %s already exists.", email));
+        } catch (EntityNotFoundException e) {
+            throw new EntityNotFoundException(ROLE_DRIVER, EntityType.ROLE);
         }
     }
 

@@ -7,12 +7,9 @@ import com.example.serbUber.exception.MailCannotBeSentException;
 import com.example.serbUber.exception.WrongVerifyTryException;
 import com.example.serbUber.model.Verify;
 import com.example.serbUber.repository.VerifyRepository;
-import com.example.serbUber.service.user.DriverService;
-import com.example.serbUber.service.user.RegularUserService;
 import com.example.serbUber.util.Constants;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import static com.example.serbUber.util.Constants.MAX_NUM_VERIFY_TRIES;
 import static com.example.serbUber.util.EmailConstants.FRONT_VERIFY_URL;
 
@@ -32,14 +29,9 @@ public class VerifyService {
     }
 
     public Verify get(Long id) throws EntityNotFoundException {
-        Optional<Verify> optionalVerify = verifyRepository.getVerifyById(id);
 
-        if (optionalVerify.isPresent()){
-
-            return optionalVerify.get();
-        }
-
-        throw new EntityNotFoundException(id, EntityType.VERIFY);
+        return verifyRepository.getVerifyById(id)
+            .orElseThrow(() -> new EntityNotFoundException(id, EntityType.VERIFY));
     }
 
     public void sendEmail(
@@ -54,8 +46,7 @@ public class VerifyService {
             );
 
         } catch (Exception e) {
-            throw new MailCannotBeSentException(String.format("Something went wrong. Email to %s" +
-                    " cannot be sent.", email));
+            throw new MailCannotBeSentException(email);
         }
     }
 

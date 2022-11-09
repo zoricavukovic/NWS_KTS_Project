@@ -4,8 +4,7 @@ import { Subscription } from 'rxjs';
 import { VerifyRequest } from 'src/app/model/request/verify-request';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth.service';
-import { NgToastService } from 'ng-angular-popup';
-
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-verify',
@@ -29,7 +28,7 @@ export class VerifyComponent implements OnInit, OnDestroy {
     private verifyService: VerifyService,
     private authService: AuthService,
     private route: ActivatedRoute,
-    private toast: NgToastService,
+    private toast: ToastrService,
     private router: Router
   ) {}
 
@@ -54,18 +53,15 @@ export class VerifyComponent implements OnInit, OnDestroy {
   checkValidationCode(): boolean {
     let securityCode: string = this.firstDigit + this.secondDigit + this.thirdDigit + this.fourthDigit;
     if (securityCode.length !== this.MAX_DIGIT_LENGTH) {
-      this.toast.error({detail:"Error", summary:"You need to add 4 digits.", 
-              duration:4000, position:'bl'})
+      this.toast.error("You need to add 4 digits.", "Error")
 
-      return false
+      return false;
     } else if (!this.containsOnlyNumbers(securityCode)) {
-      this.toast.error({detail:"Error", summary:"You can input only digits!", 
-              duration:4000, position:'bl'})
+      this.toast.error("You can input only digits!", "Error")
 
       return false;
     } else if (!this.containsOnlyNumbers(this.verifyId)) {
-      this.toast.error({detail:"Error", summary:"You changed url!", 
-              duration:4000, position:'bl'})
+      this.toast.error("Something happened with URL. Check again URL on email.", "Error")
 
       return false;
     }
@@ -76,19 +72,17 @@ export class VerifyComponent implements OnInit, OnDestroy {
   verify() {
     if (this.checkValidationCode()) {
       let securityCode: string = this.firstDigit + this.secondDigit + this.thirdDigit + this.fourthDigit;
-      
+
       this.verifySubscription = this.verifyService.verify(new VerifyRequest(
         Number(this.verifyId),
         Number(securityCode),
         this.getVerifyUserType()
       )).subscribe(
         res => {
-          this.toast.success({detail:"Verification successfull", summary:"You are verified!", 
-              duration:4000, position:'bl'})
-          this.router.navigate(['/login'])
-        }, 
-        error => this.toast.error({detail:"Verification failed", summary:error.error, 
-              duration:4000, position:'bl'})
+          this.toast.success("You are verified!", "Verification successfully")
+          this.router.navigate(['/login']);
+        },
+        error => this.toast.error(error.error, "Verification failed")
       );
     }
   }
@@ -96,13 +90,11 @@ export class VerifyComponent implements OnInit, OnDestroy {
   sendCodeAgain() {
     if (this.containsOnlyNumbers(this.verifyId)){
       this.sendCodeAgainSubscription = this.verifyService.sendCodeAgain(Number(this.verifyId)).subscribe(
-        res => this.showForm = !this.showForm, 
-        error => this.toast.error({detail:"Code cannot be sent", summary:"Email cannot be sent.", 
-              duration:4000, position:'bl'})
+        res => this.showForm = !this.showForm,
+        error => this.toast.error("Email cannot be sent.", "Code cannot be sent")
     );
     } else {
-      this.toast.error({detail:"Code cannot be sent", summary:"You changed url, verify id is wrong.", 
-              duration:4000, position:'bl'})
+      this.toast.error("Something happened with URL. Check again URL on email.","Code cannot be sent")
     }
   }
 

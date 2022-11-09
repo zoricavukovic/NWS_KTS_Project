@@ -4,10 +4,8 @@ import { LoginRequest } from '../model/request/user/login-request';
 import { LoginResponse } from '../model/response/user/login';
 import { User } from '../model/response/user/user';
 import { ConfigService } from './config.service';
-import { map } from 'rxjs/operators';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { Router } from '@angular/router';
-
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +15,7 @@ export class AuthService {
   ROLE_ADMIN: string = "ROLE_ADMIN";
 
   constructor(
-    private http: HttpClient, 
+    private http: HttpClient,
     private configService: ConfigService,
     private router: Router
   ) { }
@@ -28,12 +26,12 @@ export class AuthService {
     }
 
   loginWithGoogle(token:String): Observable<LoginResponse> {
-    
+
     return this.http.post<LoginResponse>(this.configService.login_with_gmail_url, {token});
   }
 
   loginWithFacebook(token:String): Observable<LoginResponse> {
-    
+
     return this.http.post<LoginResponse>(this.configService.login_with_facebook_url, {token});
   }
 
@@ -74,7 +72,7 @@ export class AuthService {
 
         return true;
       }
-    }  
+    }
 
     return false;
   }

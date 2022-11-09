@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Driving } from 'src/app/model/response/driving';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -8,8 +8,7 @@ import { ReviewService } from 'src/app/service/review.service';
 import { ReviewRequest } from 'src/app/model/request/review-request';
 import { Subscription } from 'rxjs';
 import { User } from 'src/app/model/response/user/user';
-import { NgToastService } from 'ng-angular-popup';
-
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'driving-row',
@@ -18,17 +17,17 @@ import { NgToastService } from 'ng-angular-popup';
 })
 export class DrivingRowComponent implements OnInit, OnDestroy {
 
-  @Input() driving: Driving; 
+  @Input() driving: Driving;
   @Input() index: number;
   @Input() user: User;
 
   reviewSubscription: Subscription;
 
-  constructor(private router: Router,  
-              private dialog: MatDialog, 
-              private reviewService: ReviewService, 
+  constructor(private router: Router,
+              private dialog: MatDialog,
+              private reviewService: ReviewService,
               private configService: ConfigService,
-              private toast: NgToastService
+              private toast: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -80,17 +79,15 @@ export class DrivingRowComponent implements OnInit, OnDestroy {
         this.reviewSubscription = this.reviewService.saveReview(
           new ReviewRequest(data.ratingVehicle, data.ratingDriver, data.message, data.id)
         ).subscribe(
-          res => this.toast.success({detail:"Review created", summary:"Review is successfully created!", 
-                  duration:4000, position:'bl'}), 
-          error => this.toast.error({detail:"Review creation failed", summary:error.error, 
-                  duration:4000, position:'bl'})
+          res => this.toast.success("Review is successfully created!", "Review created"),
+          error => this.toast.error(error.error, "Review creation failed")
         );
       });
   }
 
 
   ngOnDestroy(): void {
-   
+
     if(this.reviewSubscription){
       this.reviewSubscription.unsubscribe();
     }

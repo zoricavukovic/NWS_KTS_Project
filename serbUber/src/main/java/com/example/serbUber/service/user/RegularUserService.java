@@ -4,7 +4,6 @@ import com.example.serbUber.dto.user.RegularUserDTO;
 import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.*;
 import com.example.serbUber.model.Verify;
-import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.model.user.RegularUser;
 import com.example.serbUber.repository.user.RegularUserRepository;
 import com.example.serbUber.service.VerifyService;
@@ -14,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.example.serbUber.dto.user.RegularUserDTO.fromRegularUsers;
-import static com.example.serbUber.model.user.User.passwordsMatch;
+import static com.example.serbUber.model.user.User.passwordsDontMatch;
 import static com.example.serbUber.util.Constants.ROLE_REGULAR_USER;
 import static com.example.serbUber.util.Constants.getProfilePicture;
 import static com.example.serbUber.util.JwtProperties.getHashedNewUserPassword;
@@ -50,14 +49,9 @@ public class RegularUserService {
     }
 
     public RegularUser getRegularById(Long id) throws EntityNotFoundException {
-        Optional<RegularUser> optionalUser = regularUserRepository.getRegularUserById(id);
 
-        if (optionalUser.isPresent()) {
-
-            return optionalUser.get();
-        }
-
-        throw new EntityNotFoundException(id, EntityType.USER);
+        return regularUserRepository.getRegularUserById(id)
+            .orElseThrow(() -> new EntityNotFoundException(id, EntityType.USER));
     }
 
     public RegularUser getRegularByEmail(String email) throws EntityNotFoundException {
@@ -76,9 +70,8 @@ public class RegularUserService {
         final String phoneNumber,
         final String city,
         final String profilePicture
-    ) throws PasswordsDoNotMatchException, EntityAlreadyExistsException, MailCannotBeSentException {
-
-        if (!passwordsMatch(password, confirmationPassword)) {
+    ) throws PasswordsDoNotMatchException, EntityAlreadyExistsException, MailCannotBeSentException, EntityNotFoundException {
+        if (passwordsDontMatch(password, confirmationPassword)) {
             throw new PasswordsDoNotMatchException();
         }
         RegularUser regularUser = saveRegularUser(email, password, name, surname, phoneNumber, city, profilePicture);
@@ -94,25 +87,25 @@ public class RegularUserService {
             final String phoneNumber,
             final String city,
             final String profilePicture
-    ) throws MailCannotBeSentException, EntityAlreadyExistsException {
+    ) throws MailCannotBeSentException, EntityAlreadyExistsException, EntityNotFoundException {
         try {
             String hashedPassword = getHashedNewUserPassword(password);
             RegularUser regularUser = regularUserRepository.save(new RegularUser(
-                    email,
-                    hashedPassword,
-                    name,
-                    surname,
-                    phoneNumber,
-                    city,
-                    getProfilePicture(profilePicture),
-                    roleService.get(ROLE_REGULAR_USER)
+                email,
+                hashedPassword,
+                name,
+                surname,
+                phoneNumber,
+                city,
+                getProfilePicture(profilePicture),
+                roleService.get(ROLE_REGULAR_USER)
             ));
             verifyService.sendEmail(regularUser.getId(), regularUser.getEmail());
 
             return regularUser;
-        } catch (MailCannotBeSentException e) {
-            throw new MailCannotBeSentException(e.getMessage());
-        } catch (Exception e) {
+        } catch (EntityNotFoundException ex) {
+            throw new EntityNotFoundException(ROLE_REGULAR_USER, EntityType.ROLE);
+        } catch (IllegalArgumentException e) {
             throw new EntityAlreadyExistsException(String.format("User with %s already exists.", email));
         }
     }

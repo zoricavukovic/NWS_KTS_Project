@@ -52,13 +52,9 @@ public class VehicleService {
     }
 
     public Vehicle getVehicleById(Long id) throws EntityNotFoundException {
-        Optional<Vehicle> optionalVehicle = vehicleRepository.findById(id);
 
-        if (optionalVehicle.isPresent()){
-            return optionalVehicle.get();
-        } else {
-            throw new EntityNotFoundException(id, EntityType.USER);
-        }
+        return vehicleRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(id, EntityType.VEHICLE));
     }
 
     public double getRatingForVehicle(Long id) {

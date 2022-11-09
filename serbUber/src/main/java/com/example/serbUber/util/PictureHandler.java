@@ -1,8 +1,6 @@
 package com.example.serbUber.util;
 
-import com.example.serbUber.exception.EntityNotFoundException;
-import com.example.serbUber.exception.EntityType;
-import com.example.serbUber.exception.UsersUpdateException;
+import com.example.serbUber.exception.EntityUpdateException;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -46,9 +44,7 @@ public class PictureHandler {
         }
     }
 
-    private static boolean savePictureFromBase64(final String pictureName, final String base64)
-            throws UsersUpdateException
-    {
+    private static void savePictureFromBase64(final String pictureName, final String base64) throws EntityUpdateException {
         try{
             byte[] image = Base64.getDecoder().decode(base64);
             OutputStream out = new FileOutputStream(generatePhotoPath(pictureName));
@@ -56,29 +52,23 @@ public class PictureHandler {
             out.flush();
             out.close();
 
-            return true;
         } catch (Exception e) {
-            throw new UsersUpdateException("Profile picture update failed, try again later.");
+            throw new EntityUpdateException("Profile picture update failed, try again later.");
         }
     }
 
     public static String checkPictureValidity(final String base64Opt, final Long id)
-            throws UsersUpdateException
+        throws EntityUpdateException
     {
 
         return getProfilePicture(base64Opt).equalsIgnoreCase(DEFAULT_PICTURE) ? DEFAULT_PICTURE :
                 savePicture(base64Opt, id);
     }
 
-    public static String savePicture(final String base64Opt, final Long id)
-            throws UsersUpdateException
-    {
+    public static String savePicture(final String base64Opt, final Long id) throws EntityUpdateException {
         String pictureName = generatePhotoName(id);
         savePictureFromBase64(pictureName, base64Opt);
 
         return pictureName;
     }
-
-
-
 }

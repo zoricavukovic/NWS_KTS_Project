@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -7,8 +7,8 @@ import { AuthService } from 'src/app/service/auth.service';
 import { FacebookLoginProvider, SocialAuthService } from "@abacritt/angularx-social-login";
 import { isFormValid } from 'src/app/util/validation-function';
 import { Router } from '@angular/router';
-import { NgToastService } from 'ng-angular-popup';
 import { LoginResponse } from 'src/app/model/response/user/login';
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-login',
@@ -17,7 +17,7 @@ import { LoginResponse } from 'src/app/model/response/user/login';
 })
 
 export class LoginComponent implements OnInit, OnDestroy {
-  
+
   loginForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required, Validators.minLength(8)])
@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   constructor(private authService: SocialAuthService,
               private social: AuthService,
               private router: Router,
-              private toast: NgToastService
+              private toast: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -38,44 +38,46 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   signInWithGoogle(): void {
+    let router = this.router;
+    let toast = this.toast;
     this.authService.authState.subscribe(
+
       (user) => {
-        this.social.loginWithGoogle(user.idToken).subscribe(
-          res => {
-            const loggedUser = res as LoginResponse;
-            this.social.setLocalStorage(loggedUser); 
-            this.social.currentUser$.next(loggedUser.userDTO);
-            this.router.navigate(['/home-page']);
-        }, 
-        error => this.toast.error({detail:"Login failed", summary:"Email or password is not correct!", 
-              duration:4000, position:'bl'})
-    )}, 
-      error => this.toast.error({detail:"Login failed", summary:"Email or password is not correct!", 
-              duration:4000, position:'bl'})
+        let authService = this.social;
+        authService.loginWithGoogle(user.idToken)
+          .subscribe({
+            next(loggedUser:LoginResponse): void {
+              authService.setLocalStorage(loggedUser);
+              authService.currentUser$.next(loggedUser.userDTO);
+              router.navigate(['/home-page'])
+            },
+            error(): void {
+              toast.error('Email or password is not correct!', 'Login failed')
+            }
+          });
+      }
     )
   }
 
   signInWithFB(): void {
+    let router = this.router;
+    let toast = this.toast;
     this.authService.signIn(FacebookLoginProvider.PROVIDER_ID).then(
-      
       data => {
-        this.social.loginWithFacebook(data.authToken).subscribe(
-          res => {
-            const loggedUser = res as LoginResponse;
-            this.social.setLocalStorage(loggedUser); 
-            this.social.currentUser$.next(loggedUser.userDTO);
-            this.router.navigate(['/home-page']);
-          }, 
-            error => this.toast.error({detail:"Login failed", summary:"Email or password is not correct!", 
-              duration:4000, position:'bl'})
-        );
+        let authService = this.social;
+        this.social.loginWithFacebook(data.authToken)
+          .subscribe({
+            next(loggedUser:LoginResponse): void {
+              authService.setLocalStorage(loggedUser);
+              authService.currentUser$.next(loggedUser.userDTO);
+              router.navigate(['/home-page'])
+            },
+            error(): void {
+              toast.error('Email or password is not correct!', 'Login failed')
+            }
+          })
       }
     );
-  }
-
-  signOut(): void {
-    this.authService.signOut();
-    this.router.navigate(['/home-page']);
   }
 
   getErrorMessage() {
@@ -87,21 +89,29 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   logIn(){
-    if (isFormValid(this.loginForm)){
+    if (isFormValid(this.loginForm)) {
+      let router = this.router;
+      let toast = this.toast;
+      let authService = this.social;
       this.authSubscription = this.social.login(new LoginRequest(
         this.loginForm.get('email').value,
         this.loginForm.get('password').value
       )).subscribe(
-        res => {
-          const loggedUser = res as LoginResponse;
-          this.social.setLocalStorage(loggedUser); 
-          this.social.currentUser$.next(loggedUser.userDTO);
-          this.router.navigate(['/home-page'])
-        }, 
-        error => this.toast.error({detail:"Login failed", summary:"Email or password is not correct!", 
-        duration:4000, position:'bl'})
-      )}
+        {
+          next(loggedUser:LoginResponse): void {
+            authService.setLocalStorage(loggedUser);
+            authService.currentUser$.next(loggedUser.userDTO);
+            router.navigate(['/home-page'])
+          },
+          error(): void {
+            toast.error('Email or password is not correct!', 'Login failed')
+          }
+        }
+      )
+    }
   }
+
+
 
   ngOnDestroy(): void {
     if (this.authSubscription){
