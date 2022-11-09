@@ -1,5 +1,6 @@
 package com.example.serbUber.controller;
 
+import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.MailCannotBeSentException;
 import com.example.serbUber.exception.WrongVerifyTryException;
@@ -11,30 +12,38 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Positive;
+
+import static com.example.serbUber.exception.ErrorMessagesConstants.WRONG_VERIFY_ID;
+import static com.example.serbUber.util.Constants.POSITIVE_INT_NUM_REG;
+import static com.example.serbUber.util.Constants.ROLE_DRIVER;
 
 @RestController
 @RequestMapping("/verify")
 public class VerifyController {
 
-    public final DriverService driverService;
+    private final VerifyService verifyService;
 
-    public final RegularUserService regularUserService;
+    private final RegularUserService regularUserService;
 
-    public final VerifyService verifyService;
+    private final DriverService driverService;
 
     public VerifyController(
-            final DriverService driverService,
+            final VerifyService verifyService,
             final RegularUserService regularUserService,
-            final VerifyService verifyService
+            final DriverService driverService
         ) {
-        this.driverService = driverService;
-        this.regularUserService = regularUserService;
         this.verifyService = verifyService;
+        this.regularUserService = regularUserService;
+        this.driverService = driverService;
     }
 
     @PostMapping("/send-code-again")
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody Long verifyId)
+    public void create(@Valid @NotNull(message = WRONG_VERIFY_ID) @Positive(message = WRONG_VERIFY_ID)
+                           @RequestBody Long verifyId)
             throws EntityNotFoundException, MailCannotBeSentException {
 
         this.verifyService.generateNewSecurityCode(verifyId);
@@ -42,20 +51,15 @@ public class VerifyController {
 
     @PutMapping()
     @ResponseStatus(HttpStatus.OK)
-    public void update(@Valid @RequestBody VerifyRequest verifyRequest)
+    public UserDTO update(@Valid @RequestBody VerifyRequest verifyRequest)
             throws EntityNotFoundException, WrongVerifyTryException {
 
-        if (verifyRequest.getUserRole().isDriver()){
-            driverService.activate(
+        return (verifyRequest.getUserRole().equalsIgnoreCase(ROLE_DRIVER)) ? driverService.activate(
+                verifyRequest.getVerifyId(),
+                verifyRequest.getSecurityCode()) : regularUserService.activate(
                 verifyRequest.getVerifyId(),
                 verifyRequest.getSecurityCode()
-            );
-        } else if (verifyRequest.getUserRole().isRegularUser()) {
-            regularUserService.activate(
-                verifyRequest.getVerifyId(),
-                verifyRequest.getSecurityCode()
-            );
-        }
+        );
     }
 
 }

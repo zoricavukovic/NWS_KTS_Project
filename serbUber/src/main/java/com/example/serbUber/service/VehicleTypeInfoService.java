@@ -5,6 +5,7 @@ import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.EntityType;
 import com.example.serbUber.model.VehicleType;
 import com.example.serbUber.model.VehicleTypeInfo;
+import com.example.serbUber.model.user.Role;
 import com.example.serbUber.repository.VehicleTypeInfoRepository;
 import org.springframework.stereotype.Service;
 
@@ -47,4 +48,14 @@ public class VehicleTypeInfoService {
         return vehicleTypeInfoOpt.map(VehicleTypeInfoDTO::new).orElseThrow(() ->
                 new EntityNotFoundException(vehicleType.toString(), EntityType.VEHICLE_TYPE_INFO));
     }
+
+    public VehicleTypeInfo get(VehicleType vehicleType) throws EntityNotFoundException {
+        Optional<VehicleTypeInfo> optionalVehicleTypeInfo = vehicleTypeInfoRepository.getVehicleTypeInfoByName(vehicleType);
+
+        if (optionalVehicleTypeInfo.isPresent()) {
+            return optionalVehicleTypeInfo.get();
+        }
+        throw new EntityNotFoundException(vehicleType.toString(), EntityType.VEHICLE_TYPE_INFO);
+    }
+
 }

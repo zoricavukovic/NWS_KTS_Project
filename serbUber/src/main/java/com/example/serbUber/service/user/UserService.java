@@ -1,10 +1,9 @@
 package com.example.serbUber.service.user;
 
 import com.example.serbUber.dto.user.UserDTO;
-import com.example.serbUber.exception.EntityNotFoundException;
-import com.example.serbUber.exception.EntityType;
-import com.example.serbUber.exception.PasswordsDoNotMatchException;
-import com.example.serbUber.exception.UsersUpdateException;
+import com.example.serbUber.exception.*;
+import com.example.serbUber.model.Verify;
+import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.model.user.User;
 import com.example.serbUber.repository.user.UserRepository;
 import com.example.serbUber.service.DriverUpdateApprovalService;

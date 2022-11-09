@@ -1,6 +1,7 @@
 package com.example.serbUber.service.user;
 
 import com.example.serbUber.dto.user.DriverDTO;
+import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.*;
 import com.example.serbUber.model.Vehicle;
 import com.example.serbUber.model.VehicleType;
@@ -11,12 +12,13 @@ import com.example.serbUber.service.VehicleService;
 import com.example.serbUber.service.VerifyService;
 import org.springframework.stereotype.Service;
 
+
 import java.util.List;
 import java.util.Optional;
 
-import static com.example.serbUber.dto.VehicleDTO.toVehicle;
 import static com.example.serbUber.dto.user.DriverDTO.fromDrivers;
 import static com.example.serbUber.model.user.User.passwordsMatch;
+import static com.example.serbUber.util.Constants.ROLE_DRIVER;
 import static com.example.serbUber.util.Constants.getProfilePicture;
 import static com.example.serbUber.util.JwtProperties.getHashedNewUserPassword;
 
@@ -25,16 +27,19 @@ public class DriverService {
 
     private final DriverRepository driverRepository;
     private final VehicleService vehicleService;
+    private final RoleService roleService;
     private final VerifyService verifyService;
 
     public DriverService(
             final DriverRepository driverRepository,
             final VehicleService vehicleService,
-            final VerifyService verifyService
+            final VerifyService verifyService,
+            final RoleService roleService
     ) {
         this.driverRepository = driverRepository;
         this.vehicleService = vehicleService;
         this.verifyService = verifyService;
+        this.roleService = roleService;
     }
 
     public List<DriverDTO> getAll() {
@@ -59,7 +64,7 @@ public class DriverService {
         throw new EntityNotFoundException(id, EntityType.USER);
     }
 
-    public DriverDTO create(
+    public UserDTO create(
             final String email,
             final String password,
             final String confirmPassword,
@@ -79,10 +84,10 @@ public class DriverService {
         if (!passwordsMatch(password, confirmPassword)) {
             throw new PasswordsDoNotMatchException();
         }
-        Vehicle vehicle = toVehicle(vehicleService.create(petFriendly, babySeat, vehicleType));
+        Vehicle vehicle = vehicleService.create(petFriendly, babySeat, vehicleType);
         Driver driver = saveDriver(email, password, name, surname, phoneNumber, city, profilePicture, vehicle);
 
-        return new DriverDTO(driver);
+        return new UserDTO(driver);
     }
 
     private Driver saveDriver(
@@ -105,7 +110,8 @@ public class DriverService {
                     phoneNumber,
                     city,
                     getProfilePicture(profilePicture),
-                    vehicle
+                    vehicle,
+                    roleService.get(ROLE_DRIVER)
             ));
             verifyService.sendEmail(driver.getId(), driver.getEmail());
 
@@ -130,17 +136,12 @@ public class DriverService {
         return driverRepository.getRatingForDriver(driverDTO.getId());
     }
 
-    public void activate(final Long verifyId, final int securityCode)
-            throws EntityNotFoundException, WrongVerifyTryException
-    {
-        try {
-            Verify verify = verifyService.update(verifyId, securityCode);
-            Driver driver = get(verify.getUserId());
-            driver.setVerified(true);
-            driverRepository.save(driver);
-        } catch (WrongVerifyTryException e) {
-            throw new WrongVerifyTryException(e.getMessage());
-        }
+    public UserDTO activate(final Long verifyId, final int securityCode)
+            throws EntityNotFoundException, WrongVerifyTryException {
+        Verify verify = verifyService.update(verifyId, securityCode);
+        Driver driver = get(verify.getUserId());
+        driver.setVerified(true);
 
+        return new UserDTO(driverRepository.save(driver));
     }
 }

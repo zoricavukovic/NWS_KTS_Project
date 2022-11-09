@@ -17,6 +17,8 @@ public class ErrorMessagesConstants {
     public static final String WRONG_KM_NUM = "Kilometers must be greater than 0.";
     public static final String PASSWORDS_DO_NOT_MATCH_MESSAGE = "Passwords don't match. Try again.";
     public static final String USER_UPDATE_MESSAGE = "User cannot be updated due to server error.";
+    public static final String WRONG_SECURITY_CODE = "Security code is number greater than 0.";
+    public static final String WRONG_VERIFY_ID = "Verify id must be added.";
 
 
 }

@@ -1,9 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { RegistrationResponse } from '../model/response/user/registration';
 import { RegistrationRequest } from '../model/request/user/registration-request';
 import { ConfigService } from './config.service';
-import { map } from 'rxjs/operators';
 import { DriverRegistrationRequest } from '../model/request/user/driver-registration-request';
 import { PasswordUpdateRequest } from 'src/app/model/request/user/user-profile-update';
 import { UserProfilePictureRequest } from '../model/request/user/user-profile-update';
@@ -52,23 +50,14 @@ export class UserService {
     return this.http.put<User>(this.configService.users_update_password, data)
   }
 
-  //TODO KAD SE SREDI REGISTRACIJA, NEMA ZA REGULAR IZ NEKOG RAZLOGA?????
-  registerRegularUser(registrationRequest: RegistrationRequest){
+  registerRegularUser(registrationRequest: RegistrationRequest): Observable<User>{
 
-    return this.http.post<RegistrationResponse>(this.configService.registration_url, registrationRequest)
-    .pipe(
-      map((response) => { 
-          console.log(response);
-        }
-      )
-    );
+    return this.http.post<User>(this.configService.registration_url, registrationRequest)
   }
 
-  registerDriver(driverRequest: DriverRegistrationRequest) {
-    console.log(driverRequest);
+  registerDriver(driverRequest: DriverRegistrationRequest): Observable<User> {
 
-    return this.http.post<any>(this.configService.register_driver, driverRequest)
-    
+    return this.http.post<User>(this.configService.register_driver, driverRequest)
   }
 
 }

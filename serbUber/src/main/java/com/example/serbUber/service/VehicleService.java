@@ -30,7 +30,7 @@ public class VehicleService {
         this.vehicleTypeInfoService = vehicleTypeInfoService;
     }
 
-    public VehicleDTO create(
+    public Vehicle create(
             final boolean petFriendly,
             final boolean babySeat,
             final VehicleType vehicleType
@@ -38,11 +38,11 @@ public class VehicleService {
         Vehicle vehicle = vehicleRepository.save(new Vehicle(
                 petFriendly,
                 babySeat,
-                toVehicleTypeInfo(vehicleTypeInfoService.findBy(vehicleType)),
+                vehicleTypeInfoService.get(vehicleType),
                 Constants.STARTING_RATE
         ));
 
-        return new VehicleDTO(vehicle);
+        return vehicle;
     }
 
     public List<VehicleDTO> getAll() {

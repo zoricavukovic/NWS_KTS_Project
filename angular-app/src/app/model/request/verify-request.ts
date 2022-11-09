@@ -1,10 +1,10 @@
 export class VerifyRequest {
-    verifyId: string;
+    verifyId: number;
     securityCode: number;
     userRole: string;
 
     constructor(
-        verifyId: string,
+        verifyId: number,
         securityCode: number,
         userRole: string
     ) {

@@ -1,28 +1,27 @@
 package com.example.serbUber.request;
 
-import com.example.serbUber.model.user.Role;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
 
-import static com.example.serbUber.util.Constants.POSITIVE_INT_NUM_REG;
+import static com.example.serbUber.exception.ErrorMessagesConstants.WRONG_SECURITY_CODE;
 
 public class VerifyRequest {
 
-    @NotNull(message = "Verify id must be selected.")
-    @Pattern(regexp = POSITIVE_INT_NUM_REG, message = "Id must be positive integer.")
+    @NotNull(message = WRONG_SECURITY_CODE)
+    @Positive(message = WRONG_SECURITY_CODE)
     private Long verifyId;
 
-    @Pattern(regexp = POSITIVE_INT_NUM_REG, message = "Security code is number greater than 0.")
+    @NotNull(message = WRONG_SECURITY_CODE)
+    @Positive(message = WRONG_SECURITY_CODE)
     private int securityCode;
 
     @NotBlank(message = "User role must be selected.")
-    private Role userRole;
+    private String userRole;
 
-    public VerifyRequest(Long id, int securityCode, Role userRole) {
-        this.verifyId = id;
+    public VerifyRequest(Long verifyId, int securityCode, String userRole) {
+        this.verifyId = verifyId;
         this.securityCode = securityCode;
         this.userRole = userRole;
     }
@@ -35,7 +34,7 @@ public class VerifyRequest {
         return securityCode;
     }
 
-    public Role getUserRole() {
+    public String getUserRole() {
         return userRole;
     }
 }
