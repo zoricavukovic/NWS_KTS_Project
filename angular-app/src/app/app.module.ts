@@ -25,11 +25,13 @@ import { TimelineModule } from 'primeng/timeline';
 import { NavBarComponent} from './component/nav-bar/nav-bar.component';
 import {RatingModule} from 'primeng/rating';
 import { NgxStarsModule } from 'ngx-stars';
+import { MglTimelineModule } from 'angular-mgl-timeline';
 import { DrivingRowComponent } from './component/driving/driving-row/driving-row.component';
 import { ProfilePageComponent } from './component/user/profile-page/profile-page.component';
 import { EditProfileComponent } from './component/user/edit-profile/edit-profile.component';
 import { ChangeProfilePicComponent } from './component/user/change-profile-pic/change-profile-pic.component';
 import { NgToastModule } from 'ng-angular-popup';
+import { MatTooltipModule} from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -64,7 +66,9 @@ import { NgToastModule } from 'ng-angular-popup';
     RatingModule,
     TimelineModule,
     NgxStarsModule,
-    NgToastModule
+    NgToastModule,
+    MglTimelineModule,
+    MatTooltipModule
   ],
   entryComponents:[EditProfileComponent],
   providers: [

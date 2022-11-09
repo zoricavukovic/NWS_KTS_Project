@@ -2,7 +2,7 @@ import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { ReviewService } from 'src/app/service/review.service';
-import { ReviewRequest } from 'src/app/model/review-request';
+import { ReviewRequest } from 'src/app/model/request/review-request';
 
 @Component({
   selector: 'app-rating-dialog',

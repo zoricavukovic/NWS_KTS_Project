@@ -4,6 +4,6 @@ export class Vehicle{
     id: number;
     babySeat: boolean;
     petFriendly: boolean;
-    vehicle_type_info: VehicleTypeInfo;
+    vehicleTypeInfo: VehicleTypeInfo;
     rate: number;
 }

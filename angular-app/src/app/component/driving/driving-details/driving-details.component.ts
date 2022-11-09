@@ -1,22 +1,21 @@
 import { HttpClient } from '@angular/common/http';
 import { Driving } from 'src/app/model/response/driving';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ConfigService } from 'src/app/service/config.service';
 import { AuthService } from 'src/app/service/auth.service';
 import { Subscription } from 'rxjs';
 import { User } from 'src/app/model/response/user/user';
 import { Driver } from 'src/app/model/response/user/driver';
+import {TooltipPosition} from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-driving-details',
   templateUrl: './driving-details.component.html',
-  styleUrls: ['./driving-details.component.css','./driving-details.component.scss']
+  styleUrls: ['./driving-details.component.css','./driving-details.component.scss'],
 })
 export class DrivingDetailsComponent implements OnInit, OnDestroy {
 
-  panelOpenState:boolean = false;
-  events: any[];
   id:string;
   vehicleRating: number;
   driving:Driving = new Driving();
@@ -24,7 +23,15 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
   currentUser: User;
   destinations: string[] = [];
   startPoint: string;
-  val:number = 2;
+  favouriteRoute: boolean = false;
+  positionOption: TooltipPosition = 'above';
+
+
+  vehicle_image = {
+    "VAN": '/assets/images/van.png',
+    "SUV": '/assets/images/suv.png',
+    "CAR": '/assets/images/car.png'
+  };
 
   currentUserSubscription: Subscription;
   drivingsSubscription: Subscription;
@@ -35,12 +42,6 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    this.events = [
-      {status: 'Ordered', date: '15/10/2020 10:30'},
-      {status: 'Processing', date: '15/10/2020 14:00'},
-      {status: 'Shipped', date: '15/10/2020 16:15'},
-      {status: 'Delivered', date: '16/10/2020 10:00'}
-  ];
 
     this.currentUserSubscription = this.authService.getCurrentUser().subscribe((data) => this.currentUser=data);
 
@@ -57,21 +58,27 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
       this.driverSubscription = this.http.get(this.configService.driver_info_url + this.driving.driverEmail).subscribe((response: Driver) => {
         this.driver = response;
         console.log(this.driver);
-        this.vehicleRatingSubscription = this.http.get(this.configService.vehicle_rating_url + this.driver.vehicle.id).subscribe((response: number) => {
-          this.vehicleRating = response;
-          console.log(response);
-        })
+  
        })
 
    })
 
   }
 
+  setFavouriteRoute(){
+    if(this.favouriteRoute){
+      this.favouriteRoute = false;
+      //unfavourite
+    }
+    else{
+      this.favouriteRoute = true;
+    }
+  }
+
   ngOnDestroy(): void {
     this.currentUserSubscription.unsubscribe();
     this.drivingsSubscription.unsubscribe();
     this.driverSubscription.unsubscribe();
-    this.vehicleRatingSubscription.unsubscribe();
   }
 
 }
