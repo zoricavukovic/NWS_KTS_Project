@@ -11,5 +11,6 @@ export class Driving {
     driverEmail: string;
     usersPaid: {};
     price: number;
+    hasReviewForUser: boolean;
 
 }

@@ -23,6 +23,8 @@ public class DrivingDTO {
     private Map<String, Boolean> usersPaid = new HashMap<String, Boolean>();
     private double price;
 
+    private boolean hasReviewForUser = false;
+
     public DrivingDTO(final Driving driving){
         this.id = driving.getId();
         this.active = driving.isActive();
@@ -34,7 +36,9 @@ public class DrivingDTO {
         this.driverEmail = driving.getDriverEmail();
         this.usersPaid = driving.getUsersPaid();
         this.price = driving.getPrice();
+        this.hasReviewForUser = false;
     }
+
 
     public static List<DrivingDTO> fromDrivings(final List<Driving> drivings){
         List<DrivingDTO> drivingDTOs = new LinkedList<>();
@@ -83,5 +87,9 @@ public class DrivingDTO {
 
     public Long getId() {
         return id;
+    }
+
+    public boolean isHasReviewForUser() {
+        return hasReviewForUser;
     }
 }

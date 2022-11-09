@@ -16,9 +16,10 @@ import { map } from 'rxjs';
   saveReview(reviewRequest: ReviewRequest){
     console.log(reviewRequest);
 
-    return this.http.post<any>(this.configService.rate_driver_vehicle_url, reviewRequest)
+    return this.http.post<ReviewRequest>(this.configService.rate_driver_vehicle_url, reviewRequest)
     .pipe(
       map((response) => { 
+        console.log(response);
           return response;
         }
       )

@@ -20,6 +20,8 @@ export class DrivingRowComponent implements OnInit, OnDestroy {
   @Input() index: number;
   @Input() user: User;
 
+  dataRate;
+
   reviewSubscription: Subscription;
 
   constructor(public router: Router,  public dialog: MatDialog, public reviewService: ReviewService, public configService: ConfigService) { }
@@ -63,16 +65,15 @@ export class DrivingRowComponent implements OnInit, OnDestroy {
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
     dialogConfig.data ={
-      id: id
+      id: id,
+      userEmail: this.user.email
     }
     const dialogRef = this.dialog.open(RatingDialogComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(
-      data => {
-        console.log(data.message);
-        this.reviewSubscription = this.reviewService.saveReview(
-          new ReviewRequest(data.ratingVehicle, data.ratingDriver, data.message, data.id)
-        ).subscribe(result => {});
+      result => {
+        console.log(result);
+        this.driving.hasReviewForUser = true;
       });
   }
 

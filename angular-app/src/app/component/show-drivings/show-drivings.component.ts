@@ -24,6 +24,13 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
     this.currentUserSubscription = this.authService.getCurrentUser().subscribe((data) => this.currentUser=data);
     this.http.get(this.configService.drivings_url + this.currentUser.email).subscribe((response:any) => {
         this.drivings = response;
+        this.http.get(this.configService.reviewed_drivings_url + this.currentUser.email).subscribe((response: any) => {
+          for(let driving of this.drivings){
+            if(response.includes(driving.id)){
+              driving.hasReviewForUser = true;
+            }
+          }
+        })
     })
    }
 
@@ -33,19 +40,6 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
     );
     console.log(sorted);
    }
-
-   
-
-   haveDrivingRate(id: number){
-      if(this.configService.have_driving_rate_url + id){
-        return true;
-      }
-      return false;
-   }
-
-
-
-  
 
 
   ngOnDestroy(): void {

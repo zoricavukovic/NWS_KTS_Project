@@ -14,4 +14,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     @Query("select r from Review r left join fetch r.driving d where d.id=?1")
     Review findByDrivingId(Long id);
+
+    @Query("select r from Review r left join fetch r.driving d left join fetch r.sender u where u.email=?1")
+    List<Review> findAllReviewedDrivingIdForUser(String email);
 }

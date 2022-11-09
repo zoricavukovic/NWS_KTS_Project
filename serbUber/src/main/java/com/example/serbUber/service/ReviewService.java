@@ -5,10 +5,15 @@ import com.example.serbUber.dto.user.DriverDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.model.Driving;
 import com.example.serbUber.model.Review;
+import com.example.serbUber.model.user.RegularUser;
+import com.example.serbUber.model.user.User;
 import com.example.serbUber.repository.ReviewRepository;
 import com.example.serbUber.service.user.DriverService;
+import com.example.serbUber.service.user.RegularUserService;
+import com.example.serbUber.service.user.UserService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.serbUber.dto.ReviewDTO.fromReviews;
@@ -24,11 +29,14 @@ public class ReviewService {
 
     private final VehicleService vehicleService;
 
-    public ReviewService(final ReviewRepository reviewRepository, final DrivingService drivingService, final DriverService driverService, final VehicleService vehicleService) {
+    private final RegularUserService regularUserService;
+
+    public ReviewService(final ReviewRepository reviewRepository, final DrivingService drivingService, final DriverService driverService, final VehicleService vehicleService, final RegularUserService regularUserService) {
         this.reviewRepository = reviewRepository;
         this.drivingService = drivingService;
         this.driverService = driverService;
         this.vehicleService = vehicleService;
+        this.regularUserService = regularUserService;
     }
 
 
@@ -36,15 +44,18 @@ public class ReviewService {
             final double vehicleRate,
             final double driverRate,
             final String message,
-            final Long drivingId
+            final Long drivingId,
+            final String userEmail
     ) throws EntityNotFoundException {
         Driving driving = drivingService.getDriving(drivingId);
+        RegularUser regularUser = regularUserService.getRegularByEmail(userEmail);
 
         Review review = reviewRepository.save((new Review(
             vehicleRate,
             driverRate,
             message,
-            driving
+            driving,
+            regularUser
         )));
         updateRate(driving, vehicleRate, driverRate);
 
@@ -80,6 +91,15 @@ public class ReviewService {
         List<Review> reviews = reviewRepository.findAllByDriverEmail(email);
 
        return fromReviews(reviews);
+    }
+
+    public List<Long> getAllReviewedDrivingIdForUser(String email){
+        List<Long> reviewedDrivingsId = new ArrayList<>();
+        List<Review> allReviewsForUser = reviewRepository.findAllReviewedDrivingIdForUser(email);
+        for(Review review : allReviewsForUser){
+            reviewedDrivingsId.add(review.getDriving().getId());
+        }
+        return reviewedDrivingsId;
     }
 
     public List<ReviewDTO> getAll() {
