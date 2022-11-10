@@ -23,6 +23,11 @@ public class PictureHandler {
         return PHOTOS_FILE_PATH + name;
     }
 
+    public static String generateSavePhotoPath(final String name) {
+
+        return TARGET_PHOTO_FILE_PATH + name;
+    }
+
     public static String generatePhotoName(final Long id) {
 
         return String.format("user-%s.png", id.toString());
@@ -47,7 +52,7 @@ public class PictureHandler {
     private static void savePictureFromBase64(final String pictureName, final String base64) throws EntityUpdateException {
         try{
             byte[] image = Base64.getDecoder().decode(base64);
-            OutputStream out = new FileOutputStream(generatePhotoPath(pictureName));
+            OutputStream out = new FileOutputStream(generateSavePhotoPath(pictureName));
             out.write(image);
             out.flush();
             out.close();
