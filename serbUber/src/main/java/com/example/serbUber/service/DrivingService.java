@@ -98,12 +98,8 @@ public class DrivingService {
     }
 
     public Driving getDriving(Long id) throws EntityNotFoundException {
-        Optional<Driving> driving = drivingRepository.getDrivingById(id);
-        if (driving.isPresent()) {
 
-            return driving.get();
-        }
-
-        throw new EntityNotFoundException(id, EntityType.DRIVING);
+        return drivingRepository.getDrivingById(id)
+            .orElseThrow(() -> new EntityNotFoundException(id, EntityType.DRIVING));
     }
 }

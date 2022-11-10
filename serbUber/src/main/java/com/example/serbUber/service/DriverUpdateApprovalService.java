@@ -1,5 +1,6 @@
 package com.example.serbUber.service;
 
+import com.example.serbUber.exception.EntityUpdateException;
 import com.example.serbUber.model.user.DriverUpdateApproval;
 import com.example.serbUber.repository.user.DriverUpdateApprovalRepository;
 import org.springframework.stereotype.Service;
@@ -7,7 +8,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class DriverUpdateApprovalService {
 
-    private DriverUpdateApprovalRepository driverUpdateApprovalRepository;
+    private final DriverUpdateApprovalRepository driverUpdateApprovalRepository;
 
     public DriverUpdateApprovalService(
             final DriverUpdateApprovalRepository driverUpdateApprovalRepository
@@ -21,9 +22,15 @@ public class DriverUpdateApprovalService {
             final String surname,
             final String phoneNumber,
             final String city
-    ) {
-        return driverUpdateApprovalRepository.save(
+    ) throws EntityUpdateException {
+        try {
+
+            return driverUpdateApprovalRepository.save(
                 new DriverUpdateApproval(email, name, surname, phoneNumber, city));
+        }catch (IllegalArgumentException  ex){
+
+            throw new EntityUpdateException();
+        }
     }
 
 }

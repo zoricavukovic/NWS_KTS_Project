@@ -47,4 +47,12 @@ public class VehicleTypeInfoService {
         return vehicleTypeInfoOpt.map(VehicleTypeInfoDTO::new).orElseThrow(() ->
                 new EntityNotFoundException(vehicleType.toString(), EntityType.VEHICLE_TYPE_INFO));
     }
+
+    public VehicleTypeInfo get(VehicleType vehicleType) throws EntityNotFoundException {
+
+        return  vehicleTypeInfoRepository.getVehicleTypeInfoByName(vehicleType)
+            .orElseThrow(() -> new EntityNotFoundException(vehicleType.toString(), EntityType.VEHICLE_TYPE_INFO));
+
+    }
+
 }

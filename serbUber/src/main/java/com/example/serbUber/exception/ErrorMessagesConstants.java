@@ -6,7 +6,7 @@ public class ErrorMessagesConstants {
     public static final String EMPTY_EMAIL = "Email cannot be empty.";
     public static final String TOO_LONG_EMAIL = "Email length is too long. Email cannot contain more than 60 characters.";
     public static final String WRONG_PASSWORD =
-                    "Password must contain at least 5 characters. " +
+                    "Password must contain at least 8 characters. " +
                     "At least one number and one special character.";
     public static final String WRONG_NAME = "Name must contain only letters and cannot be too long.";
     public static final String WRONG_SURNAME = "Surname must contain only letters and cannot be too long.";
@@ -16,7 +16,9 @@ public class ErrorMessagesConstants {
     public static final String WRONG_RATE = "Rate must be value between 1 and 5!";
     public static final String WRONG_KM_NUM = "Kilometers must be greater than 0.";
     public static final String PASSWORDS_DO_NOT_MATCH_MESSAGE = "Passwords don't match. Try again.";
-    public static final String USER_UPDATE_MESSAGE = "User cannot be updated due to server error.";
+    public static final String UPDATE_ERROR_MESSAGE = "Entity cannot be updated due to server error.";
+    public static final String WRONG_SECURITY_CODE = "Security code is number greater than 0.";
+    public static final String WRONG_VERIFY_ID = "Verify id must be added.";
 
 
 }

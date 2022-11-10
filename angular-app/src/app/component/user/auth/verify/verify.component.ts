@@ -2,9 +2,9 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { VerifyService } from 'src/app/service/verify.service';
 import { Subscription } from 'rxjs';
 import { VerifyRequest } from 'src/app/model/request/verify-request';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth.service';
-
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-verify',
@@ -22,11 +22,14 @@ export class VerifyComponent implements OnInit, OnDestroy {
   MAX_DIGIT_LENGTH: number = 4;
 
   verifySubscription: Subscription;
+  sendCodeAgainSubscription: Subscription;
 
   constructor(
     private verifyService: VerifyService,
     private authService: AuthService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toast: ToastrService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -39,7 +42,7 @@ export class VerifyComponent implements OnInit, OnDestroy {
       return "ROLE_DRIVER";
     } else {
 
-      return "ROLE_DRIVER";
+      return "ROLE_REGULAR_USER";
     }
   }
 
@@ -50,12 +53,18 @@ export class VerifyComponent implements OnInit, OnDestroy {
   checkValidationCode(): boolean {
     let securityCode: string = this.firstDigit + this.secondDigit + this.thirdDigit + this.fourthDigit;
     if (securityCode.length !== this.MAX_DIGIT_LENGTH) {
-      alert("You need to input 4 digits");
-      return false
-    } else if (!this.containsOnlyNumbers(securityCode)) {
-      alert("You can input only digits!"); //ovo samo dok nema toastify
+      this.toast.error("You need to add 4 digits.", "Error")
+
       return false;
-    }  
+    } else if (!this.containsOnlyNumbers(securityCode)) {
+      this.toast.error("You can input only digits!", "Error")
+
+      return false;
+    } else if (!this.containsOnlyNumbers(this.verifyId)) {
+      this.toast.error("Something happened with URL. Check again URL on email.", "Error")
+
+      return false;
+    }
 
     return true;
   }
@@ -63,22 +72,39 @@ export class VerifyComponent implements OnInit, OnDestroy {
   verify() {
     if (this.checkValidationCode()) {
       let securityCode: string = this.firstDigit + this.secondDigit + this.thirdDigit + this.fourthDigit;
-      
+
       this.verifySubscription = this.verifyService.verify(new VerifyRequest(
-        this.verifyId,
+        Number(this.verifyId),
         Number(securityCode),
         this.getVerifyUserType()
-      )).subscribe();
+      )).subscribe(
+        res => {
+          this.toast.success("You are verified!", "Verification successfully")
+          this.router.navigate(['/login']);
+        },
+        error => this.toast.error(error.error, "Verification failed")
+      );
     }
   }
 
   sendCodeAgain() {
-    this.showForm = !this.showForm;
-    this.verifySubscription = this.verifyService.sendCodeAgain(this.verifyId).subscribe();
+    if (this.containsOnlyNumbers(this.verifyId)){
+      this.sendCodeAgainSubscription = this.verifyService.sendCodeAgain(Number(this.verifyId)).subscribe(
+        res => this.showForm = !this.showForm,
+        error => this.toast.error("Email cannot be sent.", "Code cannot be sent")
+    );
+    } else {
+      this.toast.error("Something happened with URL. Check again URL on email.","Code cannot be sent")
+    }
   }
 
   ngOnDestroy(): void {
-    this.verifySubscription.unsubscribe;
+    if (this.verifySubscription) {
+      this.verifySubscription.unsubscribe();
+    }
+
+    if (this.sendCodeAgainSubscription)
+    this.sendCodeAgainSubscription.unsubscribe();
   }
 
 }

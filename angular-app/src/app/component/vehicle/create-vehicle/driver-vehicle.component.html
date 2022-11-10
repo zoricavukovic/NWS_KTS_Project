@@ -1,11 +1,11 @@
 <div class="form-container mat-elevation-z1">
     <h1 style="font-size: 1.4rem;">Vehicle info</h1>
     <div style="display: flex;">
-        <mat-checkbox [aria-label]="" (click)="petFriendly = !petFriendly">
+        <mat-checkbox [aria-label]="" (click)="firePetFriendlyEvent()">
             Pet friendly
         </mat-checkbox>
         
-        <mat-checkbox [aria-label]="" (click)="babySeat = !babySeat">
+        <mat-checkbox [aria-label]="" (click)="fireBabySeatEvent()">
             Baby seat
         </mat-checkbox>
     </div>

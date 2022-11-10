@@ -20,6 +20,7 @@ public class DriverDTO extends UserDTO {
     private Vehicle vehicle;
     private LocalDateTime startShift;
     private LocalDateTime endShift;
+    private LocalDateTime lastActive;
 
     public DriverDTO(final Driver driver) {
         super(
@@ -39,7 +40,7 @@ public class DriverDTO extends UserDTO {
         this.active = driver.isActive();
         this.id = driver.getId();
         this.workingMinutes = driver.getWorkingMinutes();
-        LocalDateTime lastActive = driver.getLastActive();
+        this.lastActive = driver.getLastActive();
         this.vehicle = driver.getVehicle();
         this.startShift = driver.getStartShift();
         this.endShift = driver.getEndShift();
@@ -79,6 +80,10 @@ public class DriverDTO extends UserDTO {
 
     public LocalDateTime getEndShift() {
         return endShift;
+    }
+
+    public LocalDateTime getLastActive() {
+        return lastActive;
     }
 
     public Long getId() {

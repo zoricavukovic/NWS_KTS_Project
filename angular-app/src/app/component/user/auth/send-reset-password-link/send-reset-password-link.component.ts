@@ -3,7 +3,7 @@ import { FormControl, Validators, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { UserService } from 'src/app/service/user.service';
 import { isFormValid } from 'src/app/util/validation-function';
-import { NgToastService } from 'ng-angular-popup';
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-send-reset-password-link',
@@ -15,11 +15,11 @@ export class SendResetPasswordEmailComponent implements OnInit, OnDestroy {
   enterEmailForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email])
   });
-  
+
   sendResetPassEmailSubscription: Subscription;
 
   constructor(private userService: UserService,
-              private toast: NgToastService
+              private toast: ToastrService
     ) { }
 
   ngOnInit(): void {}
@@ -28,11 +28,10 @@ export class SendResetPasswordEmailComponent implements OnInit, OnDestroy {
     if (isFormValid(this.enterEmailForm)){
       this.sendResetPassEmailSubscription = this.userService.sendResetPasswordEmail(this.enterEmailForm.get('email').value)
       .subscribe(
-        res => this.toast.success({detail: "Reset link sent", summary: "Reset link is sent to email succesffully."}), 
-        error => this.toast.error({detail:"Reset link not sent", summary:"Email cannot be sent! Try again.", 
-        duration:4000, position:'bl'})
+        res => this.toast.success("Reset link is sent to email successfully.", "Reset link sent"),
+        error => this.toast.error(error.error, "Reset link not sent")
       )
-    } 
+    }
   }
 
   getErrorMessage() {

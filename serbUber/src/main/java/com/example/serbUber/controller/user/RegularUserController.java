@@ -1,11 +1,11 @@
 package com.example.serbUber.controller.user;
 
 import com.example.serbUber.dto.user.RegularUserDTO;
+import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.EntityAlreadyExistsException;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.MailCannotBeSentException;
 import com.example.serbUber.exception.PasswordsDoNotMatchException;
-import com.example.serbUber.model.Route;
 import com.example.serbUber.request.user.FavouriteRouteRequest;
 import com.example.serbUber.request.user.RegularUserRequest;
 import com.example.serbUber.request.user.UserEmailRequest;
@@ -18,7 +18,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/regularUsers")
+@RequestMapping("/regular-users")
 public class RegularUserController {
 
     private final RegularUserService regularUserService;
@@ -43,6 +43,7 @@ public class RegularUserController {
         return regularUserService.get(emailRequest.getEmail());
     }
 
+
     @PostMapping("/favourite")
     @ResponseStatus(HttpStatus.OK)
     public boolean addToFavouriteRoutes(@RequestBody FavouriteRouteRequest request) throws EntityNotFoundException {
@@ -61,5 +62,22 @@ public class RegularUserController {
     @ResponseStatus(HttpStatus.OK)
     public boolean isFavouriteRoute(@PathVariable Long id, @PathVariable String email){
         return regularUserService.isFavouriteRoute(id, email);
+    }
+
+    @PostMapping("/register")
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserDTO create(@Valid @RequestBody RegularUserRequest regularUserRequest)
+            throws EntityNotFoundException, PasswordsDoNotMatchException, EntityAlreadyExistsException, MailCannotBeSentException {
+
+        return regularUserService.create(
+                regularUserRequest.getEmail(),
+                regularUserRequest.getPassword(),
+                regularUserRequest.getConfirmationPassword(),
+                regularUserRequest.getName(),
+                regularUserRequest.getSurname(),
+                regularUserRequest.getPhoneNumber(),
+                regularUserRequest.getCity(),
+                regularUserRequest.getProfilePicture()
+        );
     }
 }

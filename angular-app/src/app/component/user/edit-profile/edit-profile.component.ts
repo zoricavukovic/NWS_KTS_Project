@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MyErrorStateMatcher } from '../auth/registration/registration.component';
 import { map, Observable, startWith, Subscription } from 'rxjs';
@@ -8,7 +8,7 @@ import { isFormValid } from 'src/app/util/validation-function';
 import { UsersProfileUpdateRequest } from 'src/app/model/request/user/user-profile-update';
 import { AuthService } from 'src/app/service/auth.service';
 import { Router } from '@angular/router';
-import { NgToastService } from 'ng-angular-popup';
+import {ToastrService} from "ngx-toastr";
 
 
 @Component({
@@ -20,7 +20,7 @@ export class EditProfileComponent implements OnInit, OnDestroy {
 
   user: User;
 
-  authSubrscription: Subscription;
+  authSubscription: Subscription;
   updateProfileSubscription: Subscription;
 
   editDataForm = new FormGroup({
@@ -38,20 +38,20 @@ export class EditProfileComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private authService: AuthService,
     private router: Router,
-    private toast: NgToastService
+    private toast: ToastrService
   ) {
     this.filteredCities = this.editDataForm.get('cityFormControl').valueChanges.pipe(
       startWith(''),
       map(city=> (city ? this._filterCities(city) : this.cities.slice())),
     );
   }
-  
+
   ngOnInit(): void {
-      this.authSubrscription = this.authService.getCurrentUser().subscribe(
+      this.authSubscription = this.authService.getCurrentUser().subscribe(
         user => this.user = user
-      );    
+      );
   }
-    
+
   saveChanges() {
     this.updateProfileSubscription = this.userService.updateProfileData(
       new UsersProfileUpdateRequest(
@@ -66,11 +66,9 @@ export class EditProfileComponent implements OnInit, OnDestroy {
         const parsedUser = res as User;
         this.authService.setUserInLocalStorage(parsedUser);
         this.router.navigate(['/profile-page']);
-        this.toast.success({detail:"Profile update comlited", summary:"Profile is updated successfully!", 
-        duration:4000, position:'bl'})
-      }, 
-      error => this.toast.error({detail:"Profile update failed", summary:error.error, 
-              duration:4000, position:'bl'})
+        this.toast.success("Profile is updated successfully!", "Profile update completed")
+      },
+      error => this.toast.error(error.error, "Profile update failed")
     );
   }
 
@@ -84,13 +82,13 @@ export class EditProfileComponent implements OnInit, OnDestroy {
 
   _filterCities(value: string): string[] {
     const filterValue = value.toLowerCase();
-    
+
     return this.cities.filter(city => city.toLowerCase().includes(filterValue));
   }
 
   ngOnDestroy(): void {
-    if (this.authSubrscription) {
-      this.authSubrscription.unsubscribe();
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
     }
 
     if (this.updateProfileSubscription) {

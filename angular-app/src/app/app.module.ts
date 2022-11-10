@@ -34,6 +34,7 @@ import { NgToastModule } from 'ng-angular-popup';
 import { MatTooltipModule} from '@angular/material/tooltip';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [
@@ -63,7 +64,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     FormsModule,
     ReactiveFormsModule,
     SocialLoginModule,
-    CarouselModule, 
+    CarouselModule,
     MatDialogModule,
     RatingModule,
     TimelineModule,
@@ -72,7 +73,13 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     MglTimelineModule,
     MatTooltipModule,
     MatRadioModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    ToastrModule.forRoot({
+      timeOut: 4000,
+      positionClass: 'toast-bottom-left',
+      preventDuplicates: true,
+      closeButton: true
+    }),
   ],
   entryComponents:[EditProfileComponent],
   providers: [

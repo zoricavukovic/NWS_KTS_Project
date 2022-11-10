@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Driving } from 'src/app/model/response/driving';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -7,8 +7,7 @@ import { ConfigService } from 'src/app/service/config.service';
 import { ReviewService } from 'src/app/service/review.service';
 import { Subscription } from 'rxjs';
 import { User } from 'src/app/model/response/user/user';
-import { NgToastService } from 'ng-angular-popup';
-
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'driving-row',
@@ -17,7 +16,7 @@ import { NgToastService } from 'ng-angular-popup';
 })
 export class DrivingRowComponent implements OnInit, OnDestroy {
 
-  @Input() driving: Driving; 
+  @Input() driving: Driving;
   @Input() index: number;
   @Input() user: User;
 
@@ -25,11 +24,11 @@ export class DrivingRowComponent implements OnInit, OnDestroy {
 
   reviewSubscription: Subscription;
 
-  constructor(private router: Router,  
-              private dialog: MatDialog, 
-              private reviewService: ReviewService, 
+  constructor(private router: Router,
+              private dialog: MatDialog,
+              private reviewService: ReviewService,
               private configService: ConfigService,
-              private toast: NgToastService
+              private toast: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -85,12 +84,11 @@ export class DrivingRowComponent implements OnInit, OnDestroy {
       error => this.toast.error({detail:"Review creation failed", summary:error.error, 
                 duration:4000, position:'bl'})
       );
-
   }
 
 
   ngOnDestroy(): void {
-   
+
     if(this.reviewSubscription){
       this.reviewSubscription.unsubscribe();
     }

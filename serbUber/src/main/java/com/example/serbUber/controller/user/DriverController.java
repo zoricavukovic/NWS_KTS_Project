@@ -52,7 +52,7 @@ public class DriverController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public DriverDTO create(@Valid @RequestBody DriverRegistrationRequest driverRegistrationRequest)
+    public UserDTO create(@Valid @RequestBody DriverRegistrationRequest driverRegistrationRequest)
             throws EntityNotFoundException, PasswordsDoNotMatchException, EntityAlreadyExistsException, MailCannotBeSentException {
 
         return driverService.create(
