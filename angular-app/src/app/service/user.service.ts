@@ -76,4 +76,8 @@ export class UserService {
     return this.http.get(this.configService.is_favourite_route(routeId,email));
   }
 
+  getAllRegularUsers(){
+    return this.http.get<User[]>(this.configService.all_users_url);
+  }
+
 }

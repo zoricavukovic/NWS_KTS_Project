@@ -10,6 +10,8 @@ import { ResetPasswordComponent } from './component/user/auth/reset-password/res
 import { HomePageComponent } from './component/home-page/home-page.component';
 import { ProfilePageComponent } from './component/user/profile-page/profile-page.component';
 import { EditProfileComponent } from './component/user/edit-profile/edit-profile.component';
+import { ShowDriversComponent } from './component/admin/show-drivers/show-drivers.component';
+import { ShowUsersComponent } from './component/admin/show-users/show-users.component';
 
 const routes: Routes = [
   {path:'', redirectTo:'home-page', pathMatch:'full'},
@@ -26,6 +28,8 @@ const routes: Routes = [
   {path: 'reset-password/:email', component: ResetPasswordComponent},
   {path: 'profile-page', component: ProfilePageComponent},
   {path: 'edit-profile-data', component: EditProfileComponent},
+  {path: 'drivers', component: ShowDriversComponent},
+  {path: 'users', component: ShowUsersComponent},
   {path:'', redirectTo:'login', pathMatch:'full'}
 ];
 

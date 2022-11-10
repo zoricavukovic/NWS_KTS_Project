@@ -24,6 +24,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
     this.currentUserSubscription = this.authService.getCurrentUser().subscribe((data) => {
       this.currentUser=data; 
     });
+    console.log(this.isAdmin);
   }
 
   redirectToEditPage() {

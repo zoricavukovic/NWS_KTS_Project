@@ -35,6 +35,10 @@ import { MatTooltipModule} from '@angular/material/tooltip';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { ToastrModule } from 'ngx-toastr';
+import { ShowDriversComponent } from './component/admin/show-drivers/show-drivers.component';
+import { DriverRowComponent } from './component/admin/driver-row/driver-row.component';
+import { ShowUsersComponent } from './component/admin/show-users/show-users.component';
+import { UserRowComponent } from './component/admin/user-row/user-row.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +57,11 @@ import { ToastrModule } from 'ngx-toastr';
     DrivingRowComponent,
     ProfilePageComponent,
     EditProfileComponent,
-    ChangeProfilePicComponent
+    ChangeProfilePicComponent,
+    ShowDriversComponent,
+    DriverRowComponent,
+    ShowUsersComponent,
+    UserRowComponent
   ],
   imports: [
     BrowserModule,
