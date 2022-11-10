@@ -20,6 +20,6 @@ public interface DrivingRepository extends JpaRepository<Driving, Long> {
     @Query(value = "select d from Driving d left join fetch d.route r left join fetch r.destinations dest left join fetch d.usersPaid up left join fetch d.users u where d.driverEmail = ?1")
     List<Driving> findByDriverEmail(String email, Pageable pageable);
 
-    @Query("select d from Driving d left join fetch d.route r left join fetch r.destinations dest left join fetch d.usersPaid up where d.id=?1")
+    @Query("select d from Driving d left join fetch d.route r left join fetch r.destinations dest left join fetch d.usersPaid up left join fetch d.users u where d.id=?1")
     Optional<Driving> getDrivingById(Long id);
 }

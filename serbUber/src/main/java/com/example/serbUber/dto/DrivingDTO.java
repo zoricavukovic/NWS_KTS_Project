@@ -3,12 +3,10 @@ package com.example.serbUber.dto;
 import com.example.serbUber.model.Driving;
 import com.example.serbUber.model.DrivingStatus;
 import com.example.serbUber.model.Route;
+import com.example.serbUber.model.user.RegularUser;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DrivingDTO {
 
@@ -20,6 +18,7 @@ public class DrivingDTO {
     private Route route;
     private DrivingStatus drivingStatus;
     private String driverEmail;
+    private Set<RegularUser> users;
     private Map<String, Boolean> usersPaid = new HashMap<String, Boolean>();
     private double price;
 
@@ -35,6 +34,7 @@ public class DrivingDTO {
         this.drivingStatus = driving.getDrivingStatus();
         this.driverEmail = driving.getDriverEmail();
         this.usersPaid = driving.getUsersPaid();
+        this.users = driving.getUsers();
         this.price = driving.getPrice();
         this.hasReviewForUser = false;
     }
@@ -91,5 +91,13 @@ public class DrivingDTO {
 
     public boolean isHasReviewForUser() {
         return hasReviewForUser;
+    }
+
+    public Set<RegularUser> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<RegularUser> users) {
+        this.users = users;
     }
 }

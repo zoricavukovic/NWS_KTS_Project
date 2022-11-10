@@ -1,8 +1,8 @@
 <div>     
     <div class="drivingInfo">
       <div class="route">
-        <mat-card>
-          <mat-card-header>
+        
+         <!-- <mat-card-header>
             <mat-card-title>Route</mat-card-title>
           </mat-card-header>
           <mat-card-content>
@@ -12,11 +12,27 @@
                 <div mat-line>{{dest}}</div>
               </div><br>
             </mat-list-item>
-      </mat-card-content>
-      </mat-card>
+      </mat-card-content>-->
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Route
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <mat-list-item *ngFor="let dest of destinations">
+          <div style="display:flex;font-size:15px;">
+            <mat-icon mat-list-icon class="icon">location_on</mat-icon>
+            <div mat-line>{{dest}}</div>
+          </div><br>
+        </mat-list-item>
+        
+      </mat-expansion-panel>
+
+    
     </div>
     <br>
-    <div class="button-container">
+    <div class="button-container" *ngIf="isRegularUser()">
       <button mat-raised-button>Request now</button>
       <button mat-raised-button>Request later</button>
       <button mat-icon-button color="warn" (click)="setFavouriteRoute()" >
@@ -38,12 +54,11 @@
         </mat-card-header>
         <mat-card-content>
             <ngx-star-rating class="stars"  [(ngModel)]="driver.vehicle.rate" [id]="'rating'" [disabled]="true"></ngx-star-rating>
-           
         </mat-card-content>
       </mat-card>
     </div>
     <br>
-    <div>
+    <div *ngIf="isRegularUser()">
       <mat-card>
         <mat-card-header>
           <img mat-card-avatar [src]="getBase64Prefix() + driver.profilePicture">
@@ -54,6 +69,30 @@
           
         </mat-card-content>
       </mat-card>
+    </div>
+
+    <div *ngIf="isDriver()">
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Passengers
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <div *ngFor="let user of this.driving.users">
+            <mat-card>
+              <mat-card-header>
+                <img mat-card-avatar [src]="getBase64Prefix() + user.profilePicture">
+                <mat-card-title>{{user.name}} {{user.surname}}</mat-card-title>
+                <mat-card-subtitle>{{user.email}} </mat-card-subtitle>
+              </mat-card-header>
+              <mat-card-content>
+                
+              </mat-card-content>
+            </mat-card>
+        </div>
+          
+        </mat-expansion-panel>
     </div>
     <br>
 

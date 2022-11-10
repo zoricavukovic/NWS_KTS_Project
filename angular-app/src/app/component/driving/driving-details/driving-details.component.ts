@@ -49,6 +49,7 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
     this.id = this.route.snapshot.paramMap.get('id');
     this.drivingsSubscription = this.http.get(this.configService.driving_details_url + this.id).subscribe((response: Driving) => {
       this.driving = response;
+      console.log(this.driving);
       this.startPoint = this.driving.route.startPoint.street + " " + this.driving.route.startPoint.number;
       this.destinations.push(this.startPoint);
       for (let destination of this.driving.route.destinations) {
@@ -95,6 +96,14 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
 
   getBase64Prefix(): string {
     return this.configService.base64_show_photo_prefix
+  }
+
+  isRegularUser(): boolean{
+    return this.currentUser.role.name === "ROLE_REGULAR_USER";
+  }
+
+  isDriver(): boolean{
+    return this.currentUser.role.name === "ROLE_DRIVER";
   }
 
   ngOnDestroy(): void {
