@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { VehicleTypeInfo } from 'src/app/model/response/vehicle-type-info';
 import { VehicleService } from 'src/app/service/vehicle.service';
@@ -9,6 +9,15 @@ import { VehicleService } from 'src/app/service/vehicle.service';
   styleUrls: ['./driver-vehicle.component.css']
 })
 export class DriverVehicleComponent implements OnInit, OnDestroy {
+
+  @Output()
+  petFriendlyEvent = new EventEmitter<boolean>();
+
+  @Output()
+  babySeatEvent = new EventEmitter<boolean>();
+  
+  @Output()
+  vehicleTypeEvent = new EventEmitter<string>();
 
   petFriendly: boolean = false;
   babySeat: boolean = false;
@@ -50,6 +59,17 @@ export class DriverVehicleComponent implements OnInit, OnDestroy {
       }
     ];
   }
+
+  firePetFriendlyEvent() {
+    this.petFriendly = !this.petFriendly;
+    this.petFriendlyEvent.emit(this.petFriendly);
+  }
+
+  fireBabySeatEvent() {
+    this.babySeat = !this.babySeat;
+    this.babySeatEvent.emit(this.babySeat);
+  }
+
   setAdditionalData(vehicleType: VehicleTypeInfo, index: number): VehicleTypeInfo {
     vehicleType.index = index;
     vehicleType.img = this.getPhoto(vehicleType);
@@ -71,10 +91,12 @@ export class DriverVehicleComponent implements OnInit, OnDestroy {
   }
 
   changeSelectedVehicleType(selectedVehicleType) {
-    this.selectedVehicleType = selectedVehicleType;
+    this.selectedVehicleType = selectedVehicleType.vehicleType;
     this.styleArray.forEach((value, index)=> 
             this.styleArray[index] = selectedVehicleType.index === index
     );
+
+    this.vehicleTypeEvent.emit(this.selectedVehicleType);
   }
 
   ngOnDestroy(): void {

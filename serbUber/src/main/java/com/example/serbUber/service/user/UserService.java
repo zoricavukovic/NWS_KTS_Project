@@ -1,10 +1,7 @@
 package com.example.serbUber.service.user;
 
 import com.example.serbUber.dto.user.UserDTO;
-import com.example.serbUber.exception.EntityNotFoundException;
-import com.example.serbUber.exception.EntityType;
-import com.example.serbUber.exception.PasswordsDoNotMatchException;
-import com.example.serbUber.exception.UsersUpdateException;
+import com.example.serbUber.exception.*;
 import com.example.serbUber.model.user.User;
 import com.example.serbUber.repository.user.UserRepository;
 import com.example.serbUber.service.DriverUpdateApprovalService;
@@ -12,7 +9,6 @@ import com.example.serbUber.service.EmailService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.example.serbUber.dto.user.UserDTO.fromUsers;
 import static com.example.serbUber.model.user.User.passwordsDontMatch;
@@ -46,13 +42,9 @@ public class UserService {
     }
 
     public User getUserByEmail(String email) throws EntityNotFoundException {
-        Optional<User> optionalInfo = userRepository.getUserByEmail(email);
 
-        if (optionalInfo.isPresent()){
-            return optionalInfo.get();
-        }
-
-        throw new EntityNotFoundException(email, EntityType.USER);
+        return userRepository.getUserByEmail(email)
+            .orElseThrow(() -> new EntityNotFoundException(email, EntityType.USER));
     }
 
     public UserDTO getUserDTOByEmail(String email) throws EntityNotFoundException {
@@ -65,26 +57,25 @@ public class UserService {
     }
 
     public UserDTO updateDriver(
+            final User user,
             final String email,
             final String name,
             final String surname,
             final String phoneNumber,
             final String city
-    ) throws EntityNotFoundException {
-        User user = getUserByEmail(email);
+    ) throws EntityUpdateException {
         driverUpdateApprovalService.save(email, name, surname, phoneNumber, city);
 
         return new UserDTO(user);
     }
 
     public UserDTO updateRegularOrAdmin(
-            final String email,
+            final User user,
             final String name,
             final String surname,
             final String phoneNumber,
             final String city
-    ) throws EntityNotFoundException {
-        User user = getUserByEmail(email);
+    ){
         user.setName(name);
         user.setSurname(surname);
         user.setPhoneNumber(phoneNumber);
@@ -100,37 +91,26 @@ public class UserService {
             final String surname,
             final String phoneNumber,
             final String city
-    )
-            throws EntityNotFoundException, UsersUpdateException
-    {
-        try {
-            User user = getUserByEmail(email);
+    ) throws EntityNotFoundException, EntityUpdateException {
+        User user = getUserByEmail(email);
 
-            return user.getRole().isDriver() ?
-                    updateDriver(email, name, surname, phoneNumber, city) :
-                    updateRegularOrAdmin(email, name, surname, phoneNumber, city);
-
-        } catch (EntityNotFoundException e) {
-            throw new EntityNotFoundException(email, EntityType.USER);
-        } catch (Exception e) {
-            throw new UsersUpdateException();
-        }
+        return user.getRole().isDriver() ?
+                updateDriver(user, email, name, surname, phoneNumber, city) :
+                updateRegularOrAdmin(user, name, surname, phoneNumber, city);
     }
 
     public UserDTO updateProfilePicture(final String email, final String profilePicture)
-            throws UsersUpdateException, EntityNotFoundException
+        throws EntityUpdateException
     {
-        try {
+        try{
             User user = getUserByEmail(email);
             String newPictureName = checkPictureValidity(profilePicture, user.getId());
             user.setProfilePicture(newPictureName);
             userRepository.save(user);
 
             return new UserDTO(user);
-        }  catch (EntityNotFoundException e) {
-            throw new EntityNotFoundException(email, EntityType.USER);
         } catch (Exception e) {
-            throw new UsersUpdateException(e.getMessage());
+            throw new EntityUpdateException(e.getMessage());
         }
     }
 
@@ -139,7 +119,7 @@ public class UserService {
             final String currentPassword,
             final String newPassword,
             final String confirmPassword
-    ) throws EntityNotFoundException, PasswordsDoNotMatchException {
+    ) throws PasswordsDoNotMatchException, EntityNotFoundException {
         User user = getUserByEmail(email);
         checkPasswordCondition(currentPassword, newPassword, confirmPassword, user);
 
@@ -154,6 +134,7 @@ public class UserService {
         emailService.sendMail(user.getEmail(), RESET_PASSWORD_SUBJECT,
             String.format("Click here to reset your password: %s%s",
                 FRONT_RESET_PASSWORD_URL, email));
+
         return true;
     }
 

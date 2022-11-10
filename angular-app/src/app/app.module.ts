@@ -29,7 +29,7 @@ import { DrivingRowComponent } from './component/driving/driving-row/driving-row
 import { ProfilePageComponent } from './component/user/profile-page/profile-page.component';
 import { EditProfileComponent } from './component/user/edit-profile/edit-profile.component';
 import { ChangeProfilePicComponent } from './component/user/change-profile-pic/change-profile-pic.component';
-import { NgToastModule } from 'ng-angular-popup';
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [
@@ -59,12 +59,17 @@ import { NgToastModule } from 'ng-angular-popup';
     FormsModule,
     ReactiveFormsModule,
     SocialLoginModule,
-    CarouselModule, 
+    CarouselModule,
     MatDialogModule,
     RatingModule,
     TimelineModule,
     NgxStarsModule,
-    NgToastModule
+    ToastrModule.forRoot({
+      timeOut: 4000,
+      positionClass: 'toast-bottom-left',
+      preventDuplicates: true,
+      closeButton: true
+    }),
   ],
   entryComponents:[EditProfileComponent],
   providers: [

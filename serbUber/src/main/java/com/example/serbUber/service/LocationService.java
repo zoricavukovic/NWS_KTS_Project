@@ -27,12 +27,12 @@ public class LocationService {
         return fromLocations(locations);
     }
 
-    public LocationDTO getByCity(String city) throws EntityNotFoundException {
-        Optional<Location> optionalLocation = locationRepository.findByCity(city);
-
-        return optionalLocation.map(LocationDTO::new)
-            .orElseThrow(() ->  new EntityNotFoundException(city, EntityType.LOCATION));
-    }
+//    public LocationDTO getByCity(String city) throws EntityNotFoundException {
+//        Optional<Location> optionalLocation = locationRepository.findByCity(city);
+//
+//        return optionalLocation.map(LocationDTO::new)
+//            .orElseThrow(() ->  new EntityNotFoundException(city, EntityType.LOCATION));
+//    }
 
     public void create(
         final String city,

@@ -4,7 +4,7 @@ import { Observable, ReplaySubject, Subscription } from 'rxjs';
 import { UserProfilePictureRequest } from 'src/app/model/request/user/user-profile-update';
 import { ConfigService } from 'src/app/service/config.service';
 import { UserService } from 'src/app/service/user.service';
-import { NgToastService } from 'ng-angular-popup';
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-change-profile-pic',
@@ -22,7 +22,7 @@ export class ChangeProfilePicComponent implements OnInit, OnDestroy {
     private configService: ConfigService,
     private userService: UserService,
     @Inject(MAT_DIALOG_DATA) public email: string,
-    private toast: NgToastService
+    private toast: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -51,10 +51,8 @@ export class ChangeProfilePicComponent implements OnInit, OnDestroy {
         this.base64Var
       )
     ).subscribe(
-      res => this.toast.success({detail:"Profile picture changed", summary:"Profile picture is changed successfully!", 
-              duration:4000, position:'bl'}), 
-      error => this.toast.error({detail:"Profile picture change failed", summary:"Update failed, please select image!", 
-              duration:4000, position:'bl'})
+      res => this.toast.success("Profile picture is changed successfully!", "Profile picture changed"),
+      error => this.toast.error("Update failed, please select image!", "Profile picture changing failed")
     );
   }
 

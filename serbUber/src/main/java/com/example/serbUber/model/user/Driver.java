@@ -80,9 +80,10 @@ public class Driver extends User {
         final String phoneNumber,
         final String city,
         final String profilePicture,
-        final Vehicle vehicle
+        final Vehicle vehicle,
+        final Role role
     ) {
-        super(email, password, name, surname, phoneNumber, city, profilePicture, new Role(ROLE_DRIVER));
+        super(email, password, name, surname, phoneNumber, city, profilePicture, role);
         this.vehicle = vehicle;
     }
 

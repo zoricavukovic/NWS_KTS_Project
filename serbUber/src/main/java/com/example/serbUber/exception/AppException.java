@@ -1,5 +1,7 @@
 package com.example.serbUber.exception;
 
+import static com.example.serbUber.exception.EntityType.getEntityErrorMessage;
+
 public class AppException extends Exception {
 
     private final String message;
@@ -15,12 +17,7 @@ public class AppException extends Exception {
     }
 
     private String createExceptionMessage(String id, EntityType entityType) {
-        if (entityType.equals(EntityType.USER)){
-
-            return "User with id: " + id + " is not found";
-        }
-
-        return "Data not found.";
+        return getEntityErrorMessage(id, entityType);
     }
 
     @Override

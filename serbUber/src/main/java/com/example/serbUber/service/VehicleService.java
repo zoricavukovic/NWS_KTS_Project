@@ -30,7 +30,7 @@ public class VehicleService {
         this.vehicleTypeInfoService = vehicleTypeInfoService;
     }
 
-    public VehicleDTO create(
+    public Vehicle create(
             final boolean petFriendly,
             final boolean babySeat,
             final VehicleType vehicleType
@@ -38,11 +38,11 @@ public class VehicleService {
         Vehicle vehicle = vehicleRepository.save(new Vehicle(
                 petFriendly,
                 babySeat,
-                toVehicleTypeInfo(vehicleTypeInfoService.findBy(vehicleType)),
+                vehicleTypeInfoService.get(vehicleType),
                 Constants.STARTING_RATE
         ));
 
-        return new VehicleDTO(vehicle);
+        return vehicle;
     }
 
     public List<VehicleDTO> getAll() {
@@ -52,13 +52,9 @@ public class VehicleService {
     }
 
     public Vehicle getVehicleById(Long id) throws EntityNotFoundException {
-        Optional<Vehicle> optionalVehicle = vehicleRepository.findById(id);
 
-        if (optionalVehicle.isPresent()){
-            return optionalVehicle.get();
-        } else {
-            throw new EntityNotFoundException(id, EntityType.USER);
-        }
+        return vehicleRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(id, EntityType.VEHICLE));
     }
 
     public double getRatingForVehicle(Long id) {

@@ -28,17 +28,6 @@ public class VehicleController {
         return this.vehicleService.getAll();
     }
 
-    @PostMapping()
-    @ResponseStatus(HttpStatus.CREATED)
-    public VehicleDTO create(@Valid @RequestBody VehicleRequest vehicleRequest) throws EntityNotFoundException {
-
-        return this.vehicleService.create(
-          vehicleRequest.isPetFriendly(),
-          vehicleRequest.isBabySeat(),
-          vehicleRequest.getVehicleType()
-        );
-    }
-
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {

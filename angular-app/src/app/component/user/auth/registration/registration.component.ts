@@ -10,6 +10,8 @@ import { AuthService } from 'src/app/service/auth.service';
 import { DriverRegistrationRequest } from 'src/app/model/request/user/driver-registration-request';
 import { VehicleRequest } from 'src/app/model/request/vehicle-request';
 import { isFormValid } from 'src/app/util/validation-function';
+import {ToastrService} from "ngx-toastr";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-registration',
@@ -21,34 +23,39 @@ export class RegistrationComponent implements OnInit, OnDestroy{
   filteredCities: Observable<string[]>;
   registrationForm = new FormGroup({
     'emailFormControl' : new FormControl('', [Validators.required, Validators.email]),
-    'phoneNumberFormControl' : new FormControl('', [Validators.required, Validators.pattern("[0-9]*")]),
+    'phoneNumberFormControl' : new FormControl('', [Validators.required, Validators.pattern("[0-9]{9}")]),
     'nameFormControl' : new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]),
     'surnameFormControl' : new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]),
     'passwordAgainFormControl' : new FormControl('', [Validators.required, matchPasswordsValidator, Validators.minLength(8)]),
-    'passwordFormControl' : new FormControl('',[Validators.required, Validators.minLength(8)]),
-    'cityFormControl' : new FormControl('',[Validators.required],),
+    'passwordFormControl' : new FormControl('',[Validators.required, Validators.minLength(9)]),
+    'cityFormControl' : new FormControl('',[Validators.required, Validators.pattern('[a-zA-Z ]*')],),
   });
-  
+
   matcher = new MyErrorStateMatcher();
   cities: string[] = ['Belgrade', 'Novi Sad', 'Kraljevo', 'Sabac'];
   registrationSubscription: Subscription;
-  
-  //showDriverForm: boolean = this.authService.userIsAdmin();
-  showDriverForm: boolean = true;
+
+  showDriverForm: boolean = this.authService.userIsAdmin();
   hidePassword: boolean =true;
   hideConfirmPassword: boolean =true;
+
+  petFriendly: boolean = false;
+  babySeat: boolean = false;
+  vehicleType: string;
 
   ngOnInit(): void {}
 
   constructor(
     private userService: UserService,
-    private authService: AuthService
+    private authService: AuthService,
+    private toast: ToastrService,
+    private router: Router
     ) {
     this.filteredCities = this.registrationForm.get('cityFormControl').valueChanges.pipe(
       startWith(''),
       map(city=> (city ? this._filterCities(city) : this.cities.slice())),
     );
-  } 
+  }
 
 
   _filterCities(value: string): string[] {
@@ -70,14 +77,19 @@ export class RegistrationComponent implements OnInit, OnDestroy{
             this.registrationForm.get('phoneNumberFormControl').value,
             this.registrationForm.get('cityFormControl').value,
             new VehicleRequest(
-              true, true, ""
-            //   this.petFriendly,
-            //   this.babySeat,
-            //   this.selectedVehicleType
-            // )
+              this.petFriendly,
+              this.babySeat,
+              this.vehicleType
             )
           )
-        ).subscribe();
+        ).subscribe(
+          res => {
+            this.toast.success("Please go to " + res.email + " to verify account!",
+              "Registration successfully");
+            this.router.navigate(['/home-page']);
+        },
+          error => this.toast.error(error.error,"Registration failed")
+        );
       } else {
         this.registrationSubscription = this.userService.registerRegularUser(new RegistrationRequest(
           this.registrationForm.get('emailFormControl').value,
@@ -87,7 +99,13 @@ export class RegistrationComponent implements OnInit, OnDestroy{
           this.registrationForm.get('surnameFormControl').value,
           this.registrationForm.get('phoneNumberFormControl').value,
           this.registrationForm.get('cityFormControl').value,
-        )).subscribe();
+        )).subscribe(
+          res => {
+            this.toast.success("You become new member of SerbUber", "Registration successfully");
+            this.router.navigate(['/login'])
+        },
+          error => this.toast.error(error.error,"Registration failed")
+        );
       }
     }
   }

@@ -44,9 +44,10 @@ public class RegularUser extends User {
         final String surname,
         final String phoneNumber,
         final String city,
-        final String profilePicture
+        final String profilePicture,
+        final Role role
     ) {
-        super(email, password, name, surname, phoneNumber, city, profilePicture, new Role(ROLE_REGULAR_USER));
+        super(email, password, name, surname, phoneNumber, city, profilePicture, role);
     }
 
 

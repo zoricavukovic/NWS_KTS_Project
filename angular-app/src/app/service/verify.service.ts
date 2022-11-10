@@ -4,6 +4,8 @@ import { ConfigService } from './config.service';
 import { VerifyRequest } from '../model/request/verify-request';
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { User } from '../model/response/user/user';
 
 
 @Injectable({
@@ -17,26 +19,14 @@ export class VerifyService {
     private router: Router
   ) { }
 
-  verify(verifyRequest: VerifyRequest) {
-    return this.http.put<any>(this.configService.verify_url, verifyRequest)
-      .pipe(
-          map((response) => { 
-              console.log(response);
-              this.router.navigate(['/login'])
-            }
-          )
-      );
+  verify(verifyRequest: VerifyRequest) : Observable<User> {
+    
+    return this.http.put<User>(this.configService.verify_url, verifyRequest)
   }
 
-  sendCodeAgain(verifyId: string) {
-    console.log(verifyId);
-    return this.http.post<any>(this.configService.send_verify_code_url, verifyId)
-      .pipe(
-          map((response) => { 
-              console.log(response);
-            }
-          )
-      );
+  sendCodeAgain(verifyId: Number) : Observable<User> {
+
+    return this.http.post<User>(this.configService.send_verify_code_url, verifyId)
   }
 
 }

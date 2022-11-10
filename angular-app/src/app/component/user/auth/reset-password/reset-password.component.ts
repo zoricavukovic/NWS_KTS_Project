@@ -1,6 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { getMatFormFieldMissingControlError } from '@angular/material/form-field';
 import { ActivatedRoute } from '@angular/router';
 import { PasswordUpdateRequest } from 'src/app/model/request/user/user-profile-update';
 import { User } from 'src/app/model/response/user/user';
@@ -11,7 +10,7 @@ import { isFormValid } from 'src/app/util/validation-function';
 import { matchPasswordsValidator } from '../registration/confirm-password.validator';
 import { MyErrorStateMatcher } from '../registration/registration.component';
 import { Subscription } from 'rxjs';
-import { NgToastService } from 'ng-angular-popup';
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-reset-password',
@@ -26,10 +25,10 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
   hideConfirmPassword: boolean =true;
   hideOldPassword: boolean = true;
   matcher = new MyErrorStateMatcher();
-  
+
   resetSubscription: Subscription;
   changePassSubscription: Subscription;
-  
+
   oldPasswordForm: FormControl = new FormControl('', [Validators.required, Validators.minLength(8)]);
 
   passwordForm = new FormGroup({
@@ -38,10 +37,10 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
   });
 
   constructor(
-    private route: ActivatedRoute, 
+    private route: ActivatedRoute,
     private userService: UserService,
     private authService: AuthService,
-    private toast: NgToastService
+    private toast: ToastrService
     ) { }
 
   ngOnInit(): void {
@@ -60,12 +59,11 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
       this.resetSubscription = this.userService.resetPassword(new PasswordUpdateRequest(
         this.email,
         this.passwordForm.get('passwordFormControl').value,
-        this.passwordForm.get('passwordAgainFormControl').value 
+        this.passwordForm.get('passwordAgainFormControl').value
       )).subscribe(
-        res => this.authService.logOut(), 
+        res => this.authService.logOut(),
         error =>
-          this.toast.error({detail:"Reset password failed", summary:error.error, duration:4000,
-          position:'bl'})
+          this.toast.error(error.error, "Reset password failed")
         )
     }
   }
@@ -79,10 +77,9 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
         this.passwordForm.get('passwordAgainFormControl').value
       )
     ).subscribe(
-        res => this.authService.logOut(), 
-        error => 
-          this.toast.error({detail:"Reset password failed", summary:error.error, duration:4000,
-          position:'bl'})
+        res => this.authService.logOut(),
+        error =>
+          this.toast.error(error.error, "Reset password failed")
         )
     }
   }

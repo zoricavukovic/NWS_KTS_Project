@@ -1,5 +1,7 @@
 package com.example.serbUber.dto.user;
 
+import com.example.serbUber.model.user.Driver;
+import com.example.serbUber.model.user.RegularUser;
 import com.example.serbUber.model.user.Role;
 import com.example.serbUber.model.user.User;
 
@@ -48,6 +50,28 @@ public class UserDTO{
         this.profilePicture = profilePicture;
         this.role = role;
         this.password = password;
+    }
+
+    public UserDTO(final Driver driver) {
+        this.email = driver.getEmail();
+        this.name = driver.getName();
+        this.surname = driver.getSurname();
+        this.phoneNumber = driver.getPhoneNumber();
+        this.city = driver.getCity();
+        this.profilePicture = driver.getProfilePicture();
+        this.role = driver.getRole();
+        this.password = driver.getPassword();
+    }
+
+    public UserDTO(final RegularUser regularUser) {
+        this.email = regularUser.getEmail();
+        this.name = regularUser.getName();
+        this.surname = regularUser.getSurname();
+        this.phoneNumber = regularUser.getPhoneNumber();
+        this.city = regularUser.getCity();
+        this.profilePicture = regularUser.getProfilePicture();
+        this.role = regularUser.getRole();
+        this.password = regularUser.getPassword();
     }
 
     public static List<UserDTO> fromUsers(final List<User> users){

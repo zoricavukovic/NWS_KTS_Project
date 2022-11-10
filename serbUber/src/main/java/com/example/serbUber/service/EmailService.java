@@ -27,7 +27,6 @@ public class EmailService {
     public void sendMail(String email, String mailSubj, String mailText) throws MailException {
         SimpleMailMessage mail = new SimpleMailMessage();
         mail.setTo(Objects.requireNonNull(env.getProperty("spring.mail.username")));
-        //mail.setTo("zoka200015@gmail.com");
 
         mail.setFrom(Objects.requireNonNull(env.getProperty("spring.mail.username")));
         mail.setSubject(mailSubj);

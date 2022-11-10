@@ -1,16 +1,15 @@
 #wrapper {
-    font-size: 1rem;
+    font-size: 1.2rem;
     text-align: center;
     box-sizing: border-box;
-    color: #333;
-    margin-top: 8%;
+    color: #2c4b61 !important;
 }
 
 h3 {
     margin: 0 0 10px;
     padding: 0;
     line-height: 1.25;
-    font-size: 1.7rem;
+    font-size: 1.8rem;
 }
 
 span#explanation-text {
@@ -52,17 +51,11 @@ button.btn-verify {
     margin: 30px 0 50px;
     width: 100%;
     padding: 6px;
-    background-color: rgb(0, 2, 128);
     border: none;
     text-transform: uppercase;
-    color: white;
     font-weight: bold;
     border-radius: 10px;
     font-size: 1.5rem;
-}
-
-button.btn-verify:hover {
-    background-color:#069;
 }
 
 button#btn-link {
@@ -70,10 +63,10 @@ button#btn-link {
     border: none;
     padding: 0 !important;
     font-family: arial, sans-serif;
-    color: #069;
     text-decoration: underline;
     cursor: pointer;
-    font-size: 1rem;
+    color: var(--blue);
+    font-size: 1.2rem;
 }
 
 div {
