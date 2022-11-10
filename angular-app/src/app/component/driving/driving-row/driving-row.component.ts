@@ -77,14 +77,25 @@ export class DrivingRowComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(
 
-      res => {this.toast.success({detail:"Review created", summary:"Review is successfully created!", 
+      res => {
+        this.toast.success("Review created");
+        this.driving.hasReviewForUser = true;
+      },
+
+      err => {
+        this.toast.error("Review creation failed");
+      }
+      /*res => {this.toast.success({detail:"Review created", summary:"Review is successfully created!", 
                 duration:4000, position:'bl'});
                 this.driving.hasReviewForUser = true;
               },
       error => this.toast.error({detail:"Review creation failed", summary:error.error, 
-                duration:4000, position:'bl'})
+                duration:4000, position:'bl'})*/
       );
   }
+
+  
+
 
 
   ngOnDestroy(): void {

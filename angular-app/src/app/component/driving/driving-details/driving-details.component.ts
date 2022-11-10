@@ -57,6 +57,7 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
 
       this.driverSubscription = this.http.get(this.configService.driver_info_url + this.driving.driverEmail).subscribe((response: Driver) => {
         this.driver = response;
+        console.log(response);
        })
 
        this.currentUserSubscription = this.authService.getCurrentUser().subscribe(
@@ -90,6 +91,10 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
         res => {this.favouriteRoute = true; console.log(res);}
       );
     }
+  }
+
+  getBase64Prefix(): string {
+    return this.configService.base64_show_photo_prefix
   }
 
   ngOnDestroy(): void {
