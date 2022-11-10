@@ -32,6 +32,8 @@ import { EditProfileComponent } from './component/user/edit-profile/edit-profile
 import { ChangeProfilePicComponent } from './component/user/change-profile-pic/change-profile-pic.component';
 import { NgToastModule } from 'ng-angular-popup';
 import { MatTooltipModule} from '@angular/material/tooltip';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 @NgModule({
   declarations: [
@@ -68,7 +70,9 @@ import { MatTooltipModule} from '@angular/material/tooltip';
     NgxStarsModule,
     NgToastModule,
     MglTimelineModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatRadioModule,
+    MatPaginatorModule
   ],
   entryComponents:[EditProfileComponent],
   providers: [

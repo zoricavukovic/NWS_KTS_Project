@@ -45,11 +45,6 @@ insert into routes (kilometers, location_id) values
 insert into routes (kilometers, location_id) values
     (6, 3);
 
-insert into favourite_routes (user_id, route_id) values
-    (2, 1);
-insert into favourite_routes (user_id, route_id) values
-    (3, 1);
-
 insert into route_destinations (route_id, location_id) values
     (1, 2);
 insert into route_destinations (route_id, location_id) values
@@ -70,11 +65,16 @@ insert into drivings (active, driver_email, driving_status, duration, paying_lim
     (false, 'mile@gmail.com', 1, 10, null, 400, to_timestamp('06.11.2022 14:00', 'DD.MM.YYYY HH24:MI'), 1);
 insert into drivings (active, driver_email, driving_status, duration, paying_limit, price, started, route_id) values
     (false, 'milan@gmail.com', 1, 10, null, 500,to_timestamp('24.08.2022 14:00', 'DD.MM.YYYY HH24:MI'), 3);
+insert into drivings (active, driver_email, driving_status, duration, paying_limit, price, started, route_id) values
+    (false, 'milan@gmail.com', 1, 10, null, 500,to_timestamp('24.10.2022 14:00', 'DD.MM.YYYY HH24:MI'), 3);
+
 
 insert into drivings_users(driving_id, user_id) values
     (1, 2);
 insert into drivings_users(driving_id, user_id) values
     (2, 2);
+insert into drivings_users(driving_id, user_id) values
+    (3, 2);
 
 
 

@@ -30,6 +30,9 @@ export class ConfigService {
   private _reviewed_drivings_url = this._api_url + "/reviews/reviewedDrivings/";
   private _base64_show_photo_prefix = 'data:image/png;base64,';
   private _users_url = this._api_url + "/users";
+  private _add_favourite_route_url = this._api_url + "/regularUsers/favourite";
+  private _remove_favourite_route_url = this._api_url + "/regularUsers/removeFavourite";
+  private _is_favourite_route_url = this._api_url + "/regularUsers/favouriteRoute/";
 
   private _send_reset_password_email = this._api_url + "/users/send-rest-password-link";
   private _reset_password = this._api_url + "/users/reset-password";
@@ -66,8 +69,8 @@ export class ConfigService {
     return this._register_driver;
   }
 
-  get drivings_url(): string {
-    return this._drivings_url;
+  drivings_url(email: string, pageNumber:number, pageSize:number, parameter: string, sortOrder: string): string {
+    return this._drivings_url + email+"/" +pageNumber+"/"+pageSize + "/" + parameter + "/" + sortOrder;
   }
 
   get driving_details_url(): string{
@@ -117,6 +120,18 @@ export class ConfigService {
 
   get users_update_password(): string {
     return this._users_url + "/password";
+  }
+
+  get add_favourite_route_url(): string{
+    return this._add_favourite_route_url;
+  }
+
+  get remove_favourite_route_url(): string{
+    return this._remove_favourite_route_url;
+  }
+
+  is_favourite_route(id:number, email: string){
+    return this._is_favourite_route_url + id + "/" + email;
   }
 
 }

@@ -6,5 +6,6 @@ public enum EntityType {
     VEHICLE_TYPE_INFO,
     VERIFY,
     PHOTO,
-    DRIVING
+    DRIVING,
+    ROUTE
 }

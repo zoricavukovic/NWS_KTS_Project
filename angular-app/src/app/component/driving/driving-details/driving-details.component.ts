@@ -8,6 +8,8 @@ import { Subscription } from 'rxjs';
 import { User } from 'src/app/model/response/user/user';
 import { Driver } from 'src/app/model/response/user/driver';
 import {TooltipPosition} from '@angular/material/tooltip';
+import { FavouriteRouteRequest } from 'src/app/model/request/favourite-route-request';
+import { UserService } from 'src/app/service/user.service';
 
 @Component({
   selector: 'app-driving-details',
@@ -37,18 +39,16 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
   drivingsSubscription: Subscription;
   driverSubscription: Subscription;
   vehicleRatingSubscription: Subscription;
+  favouriteRouteSubscription: Subscription;
 
-  constructor( private route: ActivatedRoute, private http: HttpClient, private configService: ConfigService, private authService: AuthService) { }
+  constructor( private route: ActivatedRoute, private http: HttpClient, private configService: ConfigService, private authService: AuthService, private userService: UserService) { }
 
   ngOnInit(): void {
 
 
-    this.currentUserSubscription = this.authService.getCurrentUser().subscribe((data) => this.currentUser=data);
-
     this.id = this.route.snapshot.paramMap.get('id');
     this.drivingsSubscription = this.http.get(this.configService.driving_details_url + this.id).subscribe((response: Driving) => {
       this.driving = response;
-      console.log(this.driving);
       this.startPoint = this.driving.route.startPoint.street + " " + this.driving.route.startPoint.number;
       this.destinations.push(this.startPoint);
       for (let destination of this.driving.route.destinations) {
@@ -57,9 +57,22 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
 
       this.driverSubscription = this.http.get(this.configService.driver_info_url + this.driving.driverEmail).subscribe((response: Driver) => {
         this.driver = response;
-        console.log(this.driver);
-  
        })
+
+       this.currentUserSubscription = this.authService.getCurrentUser().subscribe(
+        (response) => 
+        {
+          this.currentUser=response;
+          this.favouriteRouteSubscription = this.userService.isFavouriteRouteForUser(this.driving.route.id, this.currentUser.email).subscribe(
+            (response) => 
+            {
+              if(response) 
+              {
+                this.favouriteRoute = true;
+              }
+            }
+          )
+        });
 
    })
 
@@ -67,18 +80,34 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
 
   setFavouriteRoute(){
     if(this.favouriteRoute){
-      this.favouriteRoute = false;
-      //unfavourite
+      this.userService.removeFromFavouriteRoutes(new FavouriteRouteRequest(this.currentUser.email, this.driving.route.id)).subscribe(
+        res => {this.favouriteRoute = false; console.log(res);}
+      );
     }
     else{
-      this.favouriteRoute = true;
+    
+      this.userService.addToFavouriteRoutes(new FavouriteRouteRequest(this.currentUser.email, this.driving.route.id)).subscribe(
+        res => {this.favouriteRoute = true; console.log(res);}
+      );
     }
   }
 
   ngOnDestroy(): void {
-    this.currentUserSubscription.unsubscribe();
-    this.drivingsSubscription.unsubscribe();
-    this.driverSubscription.unsubscribe();
+    if(this.currentUserSubscription){
+      this.currentUserSubscription.unsubscribe();
+    }
+    
+    if(this.drivingsSubscription){
+      this.drivingsSubscription.unsubscribe();
+    }
+
+    if(this.driverSubscription){
+      this.driverSubscription.unsubscribe();
+    }
+
+    if(this.favouriteRouteSubscription){
+      this.favouriteRouteSubscription.unsubscribe();
+    }
   }
 
 }

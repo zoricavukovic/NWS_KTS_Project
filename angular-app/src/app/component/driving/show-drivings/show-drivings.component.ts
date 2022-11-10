@@ -5,6 +5,7 @@ import { ConfigService } from 'src/app/service/config.service';
 import { AuthService } from 'src/app/service/auth.service';
 import { Driving } from 'src/app/model/response/driving';
 import { User } from 'src/app/model/response/user/user';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-show-drivings',
@@ -19,10 +20,28 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
 
   drivings: Driving[] = [];
   currentUser: User;
+  pageSize: number = 1;
+  pageNumber: number = 0;
+
+  selectedSortBy: string = "Date";
+  selectedSortOrder: string = "Descending";
+
+  sortOrder = [
+    {name:"Descending", checked: true}, 
+    {name:"Ascending", checked: false}
+  ]
+
+
+  sortBy = [
+    {name:"Date", checked: true},
+    {name:"Departure", checked: false},
+    {name:"Destination", checked: false},
+    {name:"Price", checked: false}
+  ]
   
   ngOnInit(): void {
     this.currentUserSubscription = this.authService.getCurrentUser().subscribe((data) => this.currentUser=data);
-    this.http.get(this.configService.drivings_url + this.currentUser.email).subscribe((response:any) => {
+    this.http.get(this.configService.drivings_url(this.currentUser.email, this.pageNumber, this.pageSize,this.selectedSortBy,this.selectedSortOrder)).subscribe((response:any) => {
         this.drivings = response;
         this.http.get(this.configService.reviewed_drivings_url + this.currentUser.email).subscribe((response: any) => {
           for(let driving of this.drivings){
@@ -34,12 +53,28 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
     })
    }
 
-   sortByPrice(){
-    const sorted = this.drivings.sort(
-      (objA, objB) => objA.price - objB.price,
-    );
-    console.log(sorted);
-   }
+  selectSortOrder(name: string){
+    this.selectedSortOrder = name;
+    this.http.get(this.configService.drivings_url(this.currentUser.email, this.pageNumber, this.pageSize,this.selectedSortBy,this.selectedSortOrder)).subscribe((response:any) => {
+      this.drivings = response;
+    });
+  }
+
+  selectSort(name: string){
+    this.selectedSortBy = name;
+    this.http.get(this.configService.drivings_url(this.currentUser.email, this.pageNumber, this.pageSize,this.selectedSortBy,this.selectedSortOrder)).subscribe((response:any) => {
+      this.drivings = response;
+    });
+  }
+
+  onPaginate(pageEvent: PageEvent) {
+    this.pageSize = +pageEvent.pageSize;
+    this.pageNumber = +pageEvent.pageIndex;
+    console.log(this.pageNumber, this.pageSize);
+    this.http.get(this.configService.drivings_url(this.currentUser.email, this.pageNumber, this.pageSize,this.selectedSortBy,this.selectedSortOrder)).subscribe((response:any) => {
+      this.drivings = response;
+    });
+    }
 
 
   ngOnDestroy(): void {
