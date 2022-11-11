@@ -36,10 +36,7 @@ export class RatingDialogComponent implements OnInit, OnDestroy {
       new ReviewRequest(this.ratingVehicle, this.ratingDriver, this.message, this.id, this.userEmail)
     ).subscribe(data => {
       this.dialogRef.close();
-    });
-   
-
-    
+    });  
   }
 
   ngOnInit(): void {

@@ -8,6 +8,7 @@ import { ReviewService } from 'src/app/service/review.service';
 import { Subscription } from 'rxjs';
 import { User } from 'src/app/model/response/user/user';
 import {ToastrService} from "ngx-toastr";
+import { DrivingService } from 'src/app/service/driving.service';
 
 @Component({
   selector: 'driving-row',
@@ -28,15 +29,15 @@ export class DrivingRowComponent implements OnInit, OnDestroy {
               private dialog: MatDialog,
               private reviewService: ReviewService,
               private configService: ConfigService,
+              private drivingService: DrivingService,
               private toast: ToastrService
   ) { }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   goToDetailsPage(id: number){
-
-    this.router.navigate(["/details", id]);
+    this.drivingService.setDrivingId = id;
+    this.router.navigate(["/details"]);
   }
 
   isDisabledBtnRate(date, id: number) : boolean{
@@ -57,12 +58,6 @@ export class DrivingRowComponent implements OnInit, OnDestroy {
     return new Date(start.getTime() + duration*60000)
    }
 
-  haveDrivingRate(id: number){
-    if(this.configService.have_driving_rate_url + id){
-      return true;
-    }
-    return false;
- }
 
   openDialog(id:number){
     const dialogConfig = new MatDialogConfig();
@@ -94,16 +89,12 @@ export class DrivingRowComponent implements OnInit, OnDestroy {
       );
   }
 
-  
-
-
 
   ngOnDestroy(): void {
 
     if(this.reviewSubscription){
       this.reviewSubscription.unsubscribe();
     }
-
    }
 
 }

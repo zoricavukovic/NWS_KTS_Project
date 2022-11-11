@@ -32,7 +32,7 @@
     
     </div>
     <br>
-    <div class="button-container" *ngIf="isRegularUser()">
+    <div class="button-container" *ngIf="isRegularUser">
       <button mat-raised-button>Request now</button>
       <button mat-raised-button>Request later</button>
       <button mat-icon-button color="warn" (click)="setFavouriteRoute()" >
@@ -58,7 +58,7 @@
       </mat-card>
     </div>
     <br>
-    <div *ngIf="isRegularUser()">
+    <div *ngIf="!isDriver">
       <mat-card>
         <mat-card-header>
           <img mat-card-avatar [src]="getBase64Prefix() + driver.profilePicture">
@@ -70,8 +70,9 @@
         </mat-card-content>
       </mat-card>
     </div>
+    <br>
 
-    <div *ngIf="isDriver()">
+    <div *ngIf="!isRegularUser">
         <mat-expansion-panel>
           <mat-expansion-panel-header>
             <mat-panel-title>

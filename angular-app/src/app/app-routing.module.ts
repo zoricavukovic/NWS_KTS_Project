@@ -21,7 +21,7 @@ const routes: Routes = [
   {path: 'forgot-password', component: SendResetPasswordEmailComponent},
   {path: 'verify/:id', component: VerifyComponent},
   {path: 'drivings', component: ShowDrivingsComponent},
-  {path: 'details/:id', component: DrivingDetailsComponent},
+  {path: 'details', component: DrivingDetailsComponent},
   {path: 'reset-password/:email', component: ResetPasswordComponent},
   {path: 'profile-page', component: ProfilePageComponent},
   {path: 'verify/:id', component: VerifyComponent},

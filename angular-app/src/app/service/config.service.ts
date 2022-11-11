@@ -30,7 +30,7 @@ export class ConfigService {
   private _reviewed_drivings_url = this._api_url + "/reviews/reviewedDrivings/";
   private _base64_show_photo_prefix = 'data:image/png;base64,';
   private _users_url = this._api_url + "/users";
-  private _add_favourite_route_url = this._api_url + "/regular-sers/favourite";
+  private _add_favourite_route_url = this._api_url + "/regular-users/favourite";
   private _remove_favourite_route_url = this._api_url + "/regular-users/removeFavourite";
   private _is_favourite_route_url = this._api_url + "/regular-users/favouriteRoute/";
   private _all_drivers_url = this._api_url + "/drivers";
@@ -75,16 +75,16 @@ export class ConfigService {
     return this._drivings_url + email+"/" +pageNumber+"/"+pageSize + "/" + parameter + "/" + sortOrder;
   }
 
-  get driving_details_url(): string{
-    return this._drivings_details_url;
+  driving_details_url(id: number): string{
+    return this._drivings_details_url + id;
   }
 
   get reset_password() : string {
     return this._reset_password;
   }
 
-  get driver_info_url(): string{
-    return this._driver_info_url;
+  driver_info_url(email: string): string{
+    return this._driver_info_url + email;
   }
 
   get vehicle_rating_url(): string{
@@ -99,8 +99,8 @@ export class ConfigService {
     return this._have_driving_rate_url;
   }
 
-  get reviewed_drivings_url(): string{
-    return this._reviewed_drivings_url;
+  reviewed_drivings_url(userEmail: string): string{
+    return this._reviewed_drivings_url + userEmail;
   };
 
   send_reset_password_email(email: string): string {

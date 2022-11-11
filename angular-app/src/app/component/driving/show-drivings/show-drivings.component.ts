@@ -6,6 +6,8 @@ import { AuthService } from 'src/app/service/auth.service';
 import { Driving } from 'src/app/model/response/driving';
 import { User } from 'src/app/model/response/user/user';
 import { PageEvent } from '@angular/material/paginator';
+import { DrivingService } from 'src/app/service/driving.service';
+import { ReviewService } from 'src/app/service/review.service';
 
 @Component({
   selector: 'app-show-drivings',
@@ -13,16 +15,10 @@ import { PageEvent } from '@angular/material/paginator';
   styleUrls: ['./show-drivings.component.css']
 })
 export class ShowDrivingsComponent implements OnInit, OnDestroy {
-  currentUserSubscription: Subscription;
-  reviewSubscription: Subscription;
-
-  constructor( private http: HttpClient, private authService: AuthService,private configService: ConfigService) { }
-
   drivings: Driving[] = [];
   currentUser: User;
   pageSize: number = 1;
   pageNumber: number = 0;
-
   selectedSortBy: string = "Date";
   selectedSortOrder: string = "Descending";
 
@@ -31,19 +27,32 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
     {name:"Ascending", checked: false}
   ]
 
-
   sortBy = [
     {name:"Date", checked: true},
     {name:"Departure", checked: false},
     {name:"Destination", checked: false},
     {name:"Price", checked: false}
   ]
+
+  currentUserSubscription: Subscription;
+  drivingsSubscription: Subscription;
+  reviewSubscription: Subscription;
+  reviewedDrivingsSubscription: Subscription;
+
+  constructor( private authService: AuthService, private drivingService: DrivingService, private reviewService: ReviewService) { }
   
   ngOnInit(): void {
-    this.currentUserSubscription = this.authService.getCurrentUser().subscribe((data) => this.currentUser=data);
-    this.http.get(this.configService.drivings_url(this.currentUser.email, this.pageNumber, this.pageSize,this.selectedSortBy,this.selectedSortOrder)).subscribe((response:any) => {
+    this.currentUserSubscription = this.authService.getCurrentUser().subscribe(
+      (data) => {
+        this.currentUser=data;
+        if(!this.authService.userIsAdmin(this.currentUser)){
+          this.drivingService.setUserEmail = this.currentUser.email;
+        }
+      });
+    
+    this.drivingsSubscription = this.drivingService.getDrivingsForUser(this.pageNumber, this.pageSize, this.selectedSortBy, this.selectedSortOrder).subscribe((response:any) => {
         this.drivings = response;
-        this.http.get(this.configService.reviewed_drivings_url + this.currentUser.email).subscribe((response: any) => {
+        this.reviewedDrivingsSubscription= this.reviewService.getReviewedDrivingsForUser(this.currentUser.email).subscribe((response: any) => {
           for(let driving of this.drivings){
             if(response.includes(driving.id)){
               driving.hasReviewForUser = true;
@@ -55,14 +64,14 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
 
   selectSortOrder(name: string){
     this.selectedSortOrder = name;
-    this.http.get(this.configService.drivings_url(this.currentUser.email, this.pageNumber, this.pageSize,this.selectedSortBy,this.selectedSortOrder)).subscribe((response:any) => {
+    this.drivingService.getDrivingsForUser(this.pageNumber, this.pageSize, this.selectedSortBy, this.selectedSortOrder).subscribe((response:any) => {
       this.drivings = response;
     });
   }
 
   selectSort(name: string){
     this.selectedSortBy = name;
-    this.http.get(this.configService.drivings_url(this.currentUser.email, this.pageNumber, this.pageSize,this.selectedSortBy,this.selectedSortOrder)).subscribe((response:any) => {
+    this.drivingService.getDrivingsForUser(this.pageNumber, this.pageSize, this.selectedSortBy, this.selectedSortOrder).subscribe((response:any) => {
       this.drivings = response;
     });
   }
@@ -70,8 +79,7 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
   onPaginate(pageEvent: PageEvent) {
     this.pageSize = +pageEvent.pageSize;
     this.pageNumber = +pageEvent.pageIndex;
-    console.log(this.pageNumber, this.pageSize);
-    this.http.get(this.configService.drivings_url(this.currentUser.email, this.pageNumber, this.pageSize,this.selectedSortBy,this.selectedSortOrder)).subscribe((response:any) => {
+    this.drivingService.getDrivingsForUser(this.pageNumber, this.pageSize, this.selectedSortBy, this.selectedSortOrder).subscribe((response:any) => {
       this.drivings = response;
     });
     }
@@ -81,7 +89,16 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
     if(this.currentUserSubscription){
       this.currentUserSubscription.unsubscribe();
     }
+    if(this.reviewSubscription){
+      this.reviewSubscription.unsubscribe();
+    }
+    if(this.drivingsSubscription){
+      this.drivingsSubscription.unsubscribe();
+    }
+    if(this.reviewedDrivingsSubscription){
+      this.reviewedDrivingsSubscription.unsubscribe();
+    }
   }
-   }
+}
 
 

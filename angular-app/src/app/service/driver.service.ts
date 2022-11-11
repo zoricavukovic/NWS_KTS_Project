@@ -16,4 +16,8 @@ import { Driver } from '../model/response/user/driver';
         return this.http.get<Driver[]>(this.configService.all_drivers_url);
     }
 
+    getDriver(driverEmail: string){
+      return this.http.get<Driver>(this.configService.driver_info_url(driverEmail));
+    }
+
 }

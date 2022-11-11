@@ -18,10 +18,12 @@ export class VerifyComponent implements OnInit, OnDestroy {
   thirdDigit: string;
   fourthDigit: string;
   verifyId: string;
+  verifyUserType: string;
   showForm: boolean = true;
   MAX_DIGIT_LENGTH: number = 4;
 
   verifySubscription: Subscription;
+  currentUserSubscription: Subscription;
   sendCodeAgainSubscription: Subscription;
 
   constructor(
@@ -34,16 +36,16 @@ export class VerifyComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.verifyId = this.route.snapshot.paramMap.get('id');
-  }
-
-  getVerifyUserType(): string {
-    if (this.authService.userIsAdmin()){
-
-      return "ROLE_DRIVER";
-    } else {
-
-      return "ROLE_REGULAR_USER";
-    }
+    this.currentUserSubscription = this.authService.getCurrentUser().subscribe(
+      (data) => {
+        if(this.authService.userIsAdmin(data)){
+          this.verifyUserType = "ROLE_DRIVER";
+        }
+        else{
+          this.verifyUserType = "ROLE_REGULAR_USER";
+        }
+      }
+    )
   }
 
   containsOnlyNumbers(str: string) {
@@ -76,7 +78,7 @@ export class VerifyComponent implements OnInit, OnDestroy {
       this.verifySubscription = this.verifyService.verify(new VerifyRequest(
         Number(this.verifyId),
         Number(securityCode),
-        this.getVerifyUserType()
+        this.verifyUserType
       )).subscribe(
         res => {
           this.toast.success("You are verified!", "Verification successfully")
