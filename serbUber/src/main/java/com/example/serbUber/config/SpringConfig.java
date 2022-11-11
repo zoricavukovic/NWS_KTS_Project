@@ -78,6 +78,8 @@ public class SpringConfig extends WebSecurityConfigurerAdapter {
             .permitAll()
             .antMatchers("/reviews")
             .permitAll()
+            .antMatchers("/routes/**")
+            .permitAll()
             .antMatchers("/emails/**")
             .permitAll()
             .antMatchers("/reviews/haveDrivingRate/{id}")

@@ -1,15 +1,24 @@
 package com.example.serbUber.service;
 
+import com.example.serbUber.dto.PossibleRouteDTO;
 import com.example.serbUber.dto.RouteDTO;
 import com.example.serbUber.model.Location;
 import com.example.serbUber.model.Route;
 import com.example.serbUber.repository.RouteRepository;
+import com.example.serbUber.request.LocationsForRoutesRequest;
+import com.example.serbUber.request.LongLatRequest;
+import com.graphhopper.ResponsePath;
+import com.graphhopper.util.PointList;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import static com.example.serbUber.SerbUberApplication.hopper;
 import static com.example.serbUber.dto.RouteDTO.fromRoutes;
+import static com.example.serbUber.util.GraphHopperUtil.bla;
+import static com.example.serbUber.util.GraphHopperUtil.routing;
 
 @Service
 public class RouteService {
@@ -39,5 +48,27 @@ public class RouteService {
         ));
 
         return new RouteDTO(route);
+    }
+
+    public List<PossibleRouteDTO> getPossibleRoutes(LocationsForRoutesRequest locationsForRouteRequest) {
+        List<PossibleRouteDTO> possibleRouteDTOs = new LinkedList<>();
+        List<ResponsePath> responsePaths = routing(hopper, locationsForRouteRequest);
+
+        responsePaths.forEach( responsePath -> {
+            possibleRouteDTOs.add(
+                new PossibleRouteDTO(responsePath.getDistance(), responsePath.getTime(), getPointsDTO(responsePath))
+            );
+        });
+
+        return possibleRouteDTOs;
+    }
+
+    private List<double[]> getPointsDTO(ResponsePath responsePath) {
+        List<double[]> points = new LinkedList<>();
+        responsePath.getPoints().size();
+        for (int i = 0; i < responsePath.getPoints().size();i++) {
+            points.add(new double[]{responsePath.getPoints().getLat(i), responsePath.getPoints().getLon(i)});
+        }
+        return points;
     }
 }

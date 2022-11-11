@@ -13,10 +13,10 @@ import { ChangeProfilePicComponent } from '../change-profile-pic/change-profile-
   styleUrls: ['./profile-page.component.css']
 })
 export class ProfilePageComponent implements OnInit, OnDestroy {
-  
+
   loggedUser: User;
   authSubscription: Subscription;
-  
+
   showPayments: boolean = !this.authService.userIsAdmin();
   hidePassword: boolean =true;
   hideConfirmPassword: boolean =true;
@@ -28,9 +28,9 @@ export class ProfilePageComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private configService: ConfigService,
     private dialogEditPicture: MatDialog,
-    private router: Router   
+    private router: Router
     ) {
-    
+
   }
 
   ngOnInit(): void {

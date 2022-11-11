@@ -1,38 +1,26 @@
-.form-container {
-    display: block;
-    max-width: 23rem;
-    margin-top: 5.5rem;
-    margin-left: 2rem;
-    background-color: rgb(245,233,222);
-    padding: 5%;
-    border-radius: 15px;
-    overflow:hidden;
-    clear: both;
+.box{
+  position: absolute;
+  z-index: 99999;
+  top: 0.1rem;
+  left: 0.2rem;
+  max-width: 30rem;
+  background-color: rgb(245,233,222);
+  padding: 1%;
+  border-radius: 15px;
+  overflow:hidden;
+  clear: both;
 }
 
-
-.form-container-map {
-    display: block;
-    max-width: 50rem;
-    margin-top: 1.5rem;
-    margin-right: 6.5rem;
-    background-color: #2c4b61;
-    padding: 1%;
-    border-radius: 15px;
-    overflow:hidden;
-    clear: both;
+#map {
+  margin: 1%;
+  height: 100%;
+  z-index: 0;
 }
 
-.map-container {
-    position: absolute;
+.delete-location-button{
+  color: #2c4b61;
 }
 
-.map-frame {
-    border: 2px solid black;
-    height: 100%;
-}
-
-#map { 
-    height: 23rem;
-    width: 35rem;
+.place-options{
+  background-color: #b73e3e;
 }

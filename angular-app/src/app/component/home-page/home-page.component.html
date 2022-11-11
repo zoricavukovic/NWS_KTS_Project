@@ -1,71 +1,64 @@
-<div style="display: flex;">
+<div id="map">
+    <div class="box mat-elevation-z1">
+      <h1><strong>Request a ride now</strong></h1>
 
-    <div class="form-container mat-elevation-z1">
-        <h1><strong>Request a ride now</strong></h1>
-        <form [formGroup]="autocompleteForm">
-            <mat-form-field appearance="fill">
-                <mat-label>Enter pickup location</mat-label>
-                <input type="text" matInput aria-label="State" 
-                
-                        (keyup)="filterStartPlace()"  
-                        [matAutocomplete]="startPlaces"
-                        placeholder="Enter pickup location"
-                        formControlName="startDest"
-                >
-                <mat-icon matSuffix>location_on</mat-icon>
-                <mat-autocomplete #startPlaces="matAutocomplete" optionSelected>
-                    <mat-option *ngFor="let startPlace of filteredStartPlaces | async" [value]="startPlace.label" (click)="onBlurStart(startPlace)">
-                        <span>{{startPlace.label}}</span>
-                    </mat-option> 
-                </mat-autocomplete>
+      <div *ngFor="let addedLocation of searchingRoutesForm; let i=index" class="div">
+        <mat-form-field appearance="fill">
 
-                <mat-error *ngIf="autocompleteForm.get('startDest').hasError('forbiddenNames')">
-                    You should enter value from suggested one only. Other <strong>input values</strong> is not allowed.
-                </mat-error>
-                <mat-error *ngIf="autocompleteForm.hasError('required')">
-                    This is <strong>required</strong>
-                </mat-error>
+          <mat-label *ngIf="i === 0" style="font-size:1.1rem">Enter pickup location</mat-label>
+          <mat-label *ngIf="i === searchingRoutesForm.length-1" style="font-size:1.1rem">Enter destination</mat-label>
+          <mat-label *ngIf="i !== 0 && i !== searchingRoutesForm.length-1" style="font-size:1.1rem">Via destination</mat-label>
 
-            </mat-form-field>
-        
-            <mat-form-field appearance="fill">
-                <mat-label>Enter destination</mat-label>
-                <input type="text" matInput aria-label="State"
-                        
-                        (keyup)="filterDestination()" 
-                        [matAutocomplete]="destinations" 
-                        placeholder="Enter destination"
-                        formControlName="endDest"
-                >
-                <mat-icon matSuffix>location_on</mat-icon>
-                <mat-autocomplete #destinations="matAutocomplete">
-                    <mat-option *ngFor="let destination of filteredDestinations | async" [value]="destination.label" (click)="onBlurDestination(destination)">
-                    <span>{{destination.label}}</span>
-                </mat-option> 
-                </mat-autocomplete>
-            </mat-form-field>
-            
-            <div class="margin-top">
-                <button mat-raised-button  style="background-color: #abbbae; font-size: 1.4rem; color: #2c4b61;">Request now</button>
+          <input type="text" matInput aria-label="State"
+                 [(ngModel)]="searchingRoutesForm.at(i).inputPlace"
+                 (keyup)="filterPlace(i)"
+                 [matAutocomplete]="startPlaces"
+                 placeholder="Enter location"
+                 [matAutocompletePosition]="'below'"
+                 style="font-size:1.2rem"
+          >
+          <mat-icon *ngIf="i === 0 || i === searchingRoutesForm.length-1" [style.color]="i===0 ? '#abbbae' : '#b73e3e'" matSuffix>location_on</mat-icon>
+          <mat-icon *ngIf="i !== 0 && i !== searchingRoutesForm.length-1"  matSuffix>{{getIconName(i)}}</mat-icon>
+
+          <mat-autocomplete #startPlaces="matAutocomplete">
+            <div class="place-options">
+              <mat-option *ngFor="let place of getFilteredPlaces(i) | async" [value]="place.label" (click)="chooseMarker(i, place)">
+                <span>{{place.label}}</span>
+              </mat-option>
             </div>
-        </form>
-    </div>
 
+          </mat-autocomplete>
 
-    <div class="form-container-map">
-        <h1><strong>Request a ride now</strong></h1>
-    
-        
-    
-        
-        <div class="container">
-            <div class="map-frame">
-                <div id="map">
-    
-                </div>
-            </div>
-        </div>
-       
+<!--            <mat-error *ngIf="autocompleteForm.get('startDest').hasError('forbiddenNames')">-->
+<!--              You should enter value from suggested one only. Other <strong>input values</strong> is not allowed.-->
+<!--            </mat-error>-->
+<!--            <mat-error *ngIf="autocompleteForm.hasError('required')">-->
+<!--              This is <strong>required</strong>-->
+<!--            </mat-error>-->
+
+        </mat-form-field>
+        <button *ngIf="searchingRoutesForm.length > 2" mat-icon-button class="delete-location-button" (click)="deleteOneLocation(i)">
+          <mat-icon>remove_circle</mat-icon>
+        </button>
+      </div>
+
+      <button *ngIf="canAddMoreLocation()" mat-button (click)="addOneMoreLocation()" style="font-size: 1rem; color: #2c4b61;border-color:#2c4b61">
+        <mat-icon>add_circle</mat-icon>
+        Add location
+      </button>
+
+      <div class="margin-top">
+          <button mat-raised-button (click)="getPossibleRoutes()" style="background-color: #abbbae; font-size: 1.4rem; color: #2c4b61;">Request now</button>
+      </div>
+
+      <div *ngIf="possibleRoutes.length > 0" class="devider-container">
+        <div class="devider-line"><mat-divider></mat-divider></div>
+        <div class="devider-text mat-typography"><b>Possible routes</b></div>
+        <div class="devider-line"><mat-divider></mat-divider></div>
+      </div>
+
+      <div *ngFor="let route of possibleRoutes; let i=index" class="margin-top">
+        <route-row [route]="route" [index]="i" (click)="changeCurrentRoute(route, i)"></route-row>
+      </div>
     </div>
-    
 </div>

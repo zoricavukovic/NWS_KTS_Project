@@ -30,6 +30,7 @@ import { ProfilePageComponent } from './component/user/profile-page/profile-page
 import { EditProfileComponent } from './component/user/edit-profile/edit-profile.component';
 import { ChangeProfilePicComponent } from './component/user/change-profile-pic/change-profile-pic.component';
 import { ToastrModule } from 'ngx-toastr';
+import { RouteRowComponent } from './component/route-row/route-row.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { ToastrModule } from 'ngx-toastr';
     DrivingRowComponent,
     ProfilePageComponent,
     EditProfileComponent,
-    ChangeProfilePicComponent
+    ChangeProfilePicComponent,
+    RouteRowComponent
   ],
   imports: [
     BrowserModule,

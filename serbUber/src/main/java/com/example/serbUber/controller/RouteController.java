@@ -1,12 +1,17 @@
 package com.example.serbUber.controller;
 
+import com.example.serbUber.dto.PossibleRouteDTO;
 import com.example.serbUber.dto.RouteDTO;
+import com.example.serbUber.request.LocationsForRoutesRequest;
+import com.example.serbUber.request.LongLatRequest;
 import com.example.serbUber.request.RouteRequest;
 import com.example.serbUber.service.RouteService;
+import com.example.serbUber.util.MaxSizeConstraint;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @RestController
@@ -35,5 +40,14 @@ public class RouteController {
                 routeRequest.getKilometers()
         );*/
         return null;
+    }
+
+    @PostMapping(path = "/possible")
+    @ResponseStatus(HttpStatus.OK)
+    public List<PossibleRouteDTO> getPossibleRoutes(
+        @Valid @RequestBody LocationsForRoutesRequest locationsForRouteRequest
+    ) {
+
+        return this.routeService.getPossibleRoutes(locationsForRouteRequest);
     }
 }

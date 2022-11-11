@@ -149,11 +149,6 @@ public abstract class User {
         this.role = role;
     }
 
-    public static boolean passwordsMatch(String password, String confirmationPassword){
-
-        return password.equals(confirmationPassword);
-    }
-
     public static boolean passwordsDontMatch(String password, String confirmationPassword){
 
         return !password.equals(confirmationPassword);
