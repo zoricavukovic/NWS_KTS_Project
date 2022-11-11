@@ -19,14 +19,7 @@ import { Review } from "../model/response/review";
     return this.http.post<Review>(this.configService.rate_driver_vehicle_url, reviewRequest)
   }
 
-  //TODO NEMA OVE METODE NA BACK-u????
-  haveReview(drivingId: number){
-    this.http.get(this.configService.have_driving_rate_url + drivingId)
-    .pipe(
-      map((response) => {
-        console.log(response);
-        return response;
-      })
-    );
+  getReviewedDrivingsForUser(userEmail: string){
+    return this.http.get<number[]>(this.configService.reviewed_drivings_url(userEmail));
   }
 }

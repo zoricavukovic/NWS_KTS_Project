@@ -1,0 +1,22 @@
+<mat-card class="card">
+    <mat-card-header>
+      <img mat-card-avatar [src]="getBase64Prefix() + driver.profilePicture">
+      <mat-card-title>{{driver.name}} {{driver.surname}}</mat-card-title>
+    </mat-card-header>
+    <br>
+    <mat-card-content >
+        <div style="display:flex;">
+        <mat-icon style="display:inline-flex">email</mat-icon>&nbsp;{{driver.email}}
+        </div>
+        <br>
+        <div style="display:flex;">
+            <mat-icon style="display:inline-flex">phone</mat-icon>&nbsp;{{driver.phoneNumber}}
+            </div>
+        <div style="float:right">
+        ocene</div>
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+        <button mat-raised-button class="btn" (click)="viewDrivings()">View drivings</button>
+    </mat-card-actions>
+  </mat-card>

@@ -34,8 +34,9 @@ export class RegistrationComponent implements OnInit, OnDestroy{
   matcher = new MyErrorStateMatcher();
   cities: string[] = ['Belgrade', 'Novi Sad', 'Kraljevo', 'Sabac'];
   registrationSubscription: Subscription;
+  currentUserSubscription: Subscription;
 
-  showDriverForm: boolean = this.authService.userIsAdmin();
+  showDriverForm: boolean;
   hidePassword: boolean =true;
   hideConfirmPassword: boolean =true;
 
@@ -43,7 +44,12 @@ export class RegistrationComponent implements OnInit, OnDestroy{
   babySeat: boolean = false;
   vehicleType: string;
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.currentUserSubscription = this.authService.getCurrentUser().subscribe(
+      (data) => {
+          this.showDriverForm = this.authService.userIsAdmin(data);
+      });
+  }
 
   constructor(
     private userService: UserService,

@@ -25,12 +25,21 @@ import { TimelineModule } from 'primeng/timeline';
 import { NavBarComponent} from './component/nav-bar/nav-bar.component';
 import {RatingModule} from 'primeng/rating';
 import { NgxStarsModule } from 'ngx-stars';
+import { MglTimelineModule } from 'angular-mgl-timeline';
 import { DrivingRowComponent } from './component/driving/driving-row/driving-row.component';
 import { ProfilePageComponent } from './component/user/profile-page/profile-page.component';
 import { EditProfileComponent } from './component/user/edit-profile/edit-profile.component';
 import { ChangeProfilePicComponent } from './component/user/change-profile-pic/change-profile-pic.component';
+import { NgToastModule } from 'ng-angular-popup';
+import { MatTooltipModule} from '@angular/material/tooltip';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { ToastrModule } from 'ngx-toastr';
 import { RouteRowComponent } from './component/route-row/route-row.component';
+import { ShowDriversComponent } from './component/admin/show-drivers/show-drivers.component';
+import { DriverRowComponent } from './component/admin/driver-row/driver-row.component';
+import { ShowUsersComponent } from './component/admin/show-users/show-users.component';
+import { UserRowComponent } from './component/admin/user-row/user-row.component';
 
 @NgModule({
   declarations: [
@@ -50,7 +59,11 @@ import { RouteRowComponent } from './component/route-row/route-row.component';
     ProfilePageComponent,
     EditProfileComponent,
     ChangeProfilePicComponent,
-    RouteRowComponent
+    RouteRowComponent,
+    ShowDriversComponent,
+    DriverRowComponent,
+    ShowUsersComponent,
+    UserRowComponent
   ],
   imports: [
     BrowserModule,
@@ -66,6 +79,11 @@ import { RouteRowComponent } from './component/route-row/route-row.component';
     RatingModule,
     TimelineModule,
     NgxStarsModule,
+    NgToastModule,
+    MglTimelineModule,
+    MatTooltipModule,
+    MatRadioModule,
+    MatPaginatorModule,
     ToastrModule.forRoot({
       timeOut: 4000,
       positionClass: 'toast-bottom-left',

@@ -7,6 +7,6 @@
     <br>
     <mat-card-actions>
       <button mat-raised-button (click) = "goToDetailsPage(driving.id)">Details</button>
-      <button class="btn" *ngIf="user.role.name === 'ROLE_REGULAR_USER' && isDisabledBtnRate(driving.started,driving.duration)" mat-raised-button (click) = "openDialog(driving.id)">Rate</button>
+      <button class="btn" *ngIf="user.role.name === 'ROLE_REGULAR_USER' && isDisabledBtnRate(driving.started,driving.duration) && !driving.hasReviewForUser" mat-raised-button (click) = "openDialog(driving.id)">Rate</button>
     </mat-card-actions>
 </mat-card>

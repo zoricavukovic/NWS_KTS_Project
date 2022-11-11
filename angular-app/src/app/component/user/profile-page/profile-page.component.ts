@@ -16,8 +16,8 @@ export class ProfilePageComponent implements OnInit, OnDestroy {
 
   loggedUser: User;
   authSubscription: Subscription;
+  showPayments: boolean;
 
-  showPayments: boolean = !this.authService.userIsAdmin();
   hidePassword: boolean =true;
   hideConfirmPassword: boolean =true;
 
@@ -35,7 +35,10 @@ export class ProfilePageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.authSubscription = this.authService.getCurrentUser().subscribe(
-      user => this.loggedUser = user
+      user => {
+        this.loggedUser = user
+        this.showPayments = !this.authService.userIsAdmin(user);
+      }
     );
   }
 

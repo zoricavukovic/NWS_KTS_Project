@@ -6,7 +6,7 @@ import com.example.serbUber.exception.EntityAlreadyExistsException;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.MailCannotBeSentException;
 import com.example.serbUber.exception.PasswordsDoNotMatchException;
-import com.example.serbUber.request.user.DriverRegistrationRequest;
+import com.example.serbUber.request.user.FavouriteRouteRequest;
 import com.example.serbUber.request.user.RegularUserRequest;
 import com.example.serbUber.request.user.UserEmailRequest;
 import com.example.serbUber.request.user.UsersProfileUpdateRequest;
@@ -43,6 +43,27 @@ public class RegularUserController {
         return regularUserService.get(emailRequest.getEmail());
     }
 
+
+    @PostMapping("/favourite")
+    @ResponseStatus(HttpStatus.OK)
+    public boolean addToFavouriteRoutes(@RequestBody FavouriteRouteRequest request) throws EntityNotFoundException {
+
+        return regularUserService.addToFavouriteRoutes(request.getUserEmail(), request.getRouteId());
+    }
+
+    @PostMapping("/removeFavourite")
+    @ResponseStatus(HttpStatus.OK)
+    public boolean removeFromFavouriteRoutes(@RequestBody FavouriteRouteRequest request) throws EntityNotFoundException {
+
+        return regularUserService.removeFromFavouriteRoutes(request.getUserEmail(), request.getRouteId());
+    }
+
+    @GetMapping("/favouriteRoute/{id}/{email}")
+    @ResponseStatus(HttpStatus.OK)
+    public boolean isFavouriteRoute(@PathVariable Long id, @PathVariable String email){
+        return regularUserService.isFavouriteRoute(id, email);
+    }
+
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public UserDTO create(@Valid @RequestBody RegularUserRequest regularUserRequest)
@@ -59,6 +80,4 @@ public class RegularUserController {
                 regularUserRequest.getProfilePicture()
         );
     }
-
-
 }

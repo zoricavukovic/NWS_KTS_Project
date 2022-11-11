@@ -21,3 +21,34 @@
     min-height: 180px;
 }
 
+.drivingInfo{
+  background-color: #f5e9de;
+  max-width: 30%;
+  margin: 30px;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+
+.icon{
+  display:inline-flex;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.button-container .mat-button-base{
+  margin-left: 30px;
+}
+
+.button-container .mat-button-base .mat-icon{
+ transform:scale(1.4);
+}
+
+
+
+
+

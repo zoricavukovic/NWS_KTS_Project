@@ -3,9 +3,11 @@ package com.example.serbUber.service.user;
 import com.example.serbUber.dto.user.RegularUserDTO;
 import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.*;
+import com.example.serbUber.model.Route;
 import com.example.serbUber.model.Verify;
 import com.example.serbUber.model.user.RegularUser;
 import com.example.serbUber.repository.user.RegularUserRepository;
+import com.example.serbUber.service.RouteService;
 import com.example.serbUber.service.VerifyService;
 import org.springframework.stereotype.Service;
 
@@ -24,14 +26,17 @@ public class RegularUserService {
     private final RegularUserRepository regularUserRepository;
     private final VerifyService verifyService;
     private final RoleService roleService;
+    private final RouteService routeService;
 
     public RegularUserService(
             final RegularUserRepository regularUserRepository,
             final VerifyService verifyService,
+            final RouteService routeService,
             final RoleService roleService
     ) {
         this.regularUserRepository = regularUserRepository;
         this.verifyService = verifyService;
+        this.routeService = routeService;
         this.roleService = roleService;
     }
 
@@ -108,6 +113,35 @@ public class RegularUserService {
         } catch (IllegalArgumentException e) {
             throw new EntityAlreadyExistsException(String.format("User with %s already exists.", email));
         }
+    }
+
+    public boolean addToFavouriteRoutes(String userEmail, Long routeId) throws EntityNotFoundException {
+        RegularUser user = getRegularByEmail(userEmail);
+        Route route  = routeService.get(routeId);
+        List<Route> favouriteRoutes = user.getFavouriteRoutes();
+        favouriteRoutes.add(route);
+        user.setFavouriteRoutes(favouriteRoutes);
+        regularUserRepository.save(user);
+        return true;
+    }
+
+    public boolean removeFromFavouriteRoutes(String userEmail, Long routeId) throws EntityNotFoundException {
+        RegularUser user = getRegularByEmail(userEmail);
+        List<Route> favouriteRoutes = user.getFavouriteRoutes();
+        for(Route r : favouriteRoutes){
+            if(r.getId().equals(routeId)){
+                favouriteRoutes.remove(r);
+                break;
+            }
+        }
+        user.setFavouriteRoutes(favouriteRoutes);
+        regularUserRepository.save(user);
+        return true;
+    }
+
+    public boolean isFavouriteRoute(Long routeId, String userEmail) {
+        RegularUser u = regularUserRepository.getUserWithFavouriteRouteId(routeId, userEmail);
+        return u != null;
     }
 
     public UserDTO activate(final Long verifyId, final int securityCode)

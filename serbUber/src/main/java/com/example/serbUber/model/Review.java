@@ -1,4 +1,7 @@
 package com.example.serbUber.model;
+import com.example.serbUber.model.user.RegularUser;
+import com.example.serbUber.model.user.User;
+
 import javax.persistence.*;
 
 
@@ -19,6 +22,10 @@ public class Review {
     private String message;
 
     @OneToOne()
+    @JoinColumn(name="sender_id", referencedColumnName = "id")
+    private RegularUser sender;
+
+    @OneToOne()
     @JoinColumn(name = "driving_id", referencedColumnName = "id")
     private Driving driving;
 
@@ -29,12 +36,14 @@ public class Review {
         final double vehicleRate,
         final double driverRate,
         final String message,
-        final Driving driving
+        final Driving driving,
+        final RegularUser sender
     ) {
         this.vehicleRate = vehicleRate;
         this.driverRate = driverRate;
         this.message = message;
         this.driving = driving;
+        this.sender = sender;
     }
 
     public Long getId() {
@@ -71,5 +80,13 @@ public class Review {
 
     public void setDriving(Driving driving) {
         this.driving = driving;
+    }
+
+    public RegularUser getSender() {
+        return sender;
+    }
+
+    public void setSender(RegularUser sender) {
+        this.sender = sender;
     }
 }

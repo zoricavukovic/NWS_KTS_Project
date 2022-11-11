@@ -1,21 +1,25 @@
 package com.example.serbUber.repository;
 import com.example.serbUber.model.Driving;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface DrivingRepository extends JpaRepository<Driving, Long> {
 
-    @Query(value = "select d from Driving d left join fetch d.route r left join fetch r.destinations dest left join fetch d.usersPaid up left join fetch d.users u where u.email = ?1 order by d.started desc")
-    List<Driving> findByUserEmail(String email);
+    @Query(value = "select d from Driving d left join fetch d.route r left join fetch r.destinations dest left join fetch d.usersPaid up left join fetch d.users u where u.email = ?1")
+//    @Query(value="select * from drivings d, routes r, route_destinations rd, locations l, drivings_users du, regular_users ru where d.route_id = r.id and r.id = rd.route_id and rd.location_id = l.id and d.id = du.driving_id and ru.id = du.user_id and ru.email='ana@gmail.com'",nativeQuery = true)
+    List<Driving> findByUserEmail(String email, Pageable pageable);
 
-    @Query(value = "select d from Driving d left join fetch d.route r left join fetch r.destinations dest left join fetch d.usersPaid up left join fetch d.users u where d.driverEmail = ?1 order by d.started desc")
-    List<Driving> findByDriverEmail(String email);
+    @Query(value = "select d from Driving d left join fetch d.route r left join fetch r.destinations dest left join fetch d.usersPaid up left join fetch d.users u where d.driverEmail = ?1")
+    List<Driving> findByDriverEmail(String email, Pageable pageable);
 
-    @Query("select d from Driving d left join fetch d.route r left join fetch r.destinations dest left join fetch d.usersPaid up where d.id=?1")
+    @Query("select d from Driving d left join fetch d.route r left join fetch r.destinations dest left join fetch d.usersPaid up left join fetch d.users u where d.id=?1")
     Optional<Driving> getDrivingById(Long id);
 }

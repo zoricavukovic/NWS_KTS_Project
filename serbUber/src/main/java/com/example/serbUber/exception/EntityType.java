@@ -8,6 +8,7 @@ public enum EntityType {
     VERIFY,
     PHOTO,
     DRIVING,
+    ROUTE,
     ROLE;
 
     public static String getEntityErrorMessage(String id, EntityType entityType){

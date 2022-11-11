@@ -7,6 +7,7 @@ import { PasswordUpdateRequest } from 'src/app/model/request/user/user-profile-u
 import { UserProfilePictureRequest } from '../model/request/user/user-profile-update';
 import { UsersProfileUpdateRequest } from '../model/request/user/user-profile-update';
 import { UserPasswordUpdateRequest } from '../model/request/user/user-profile-update';
+import { FavouriteRouteRequest } from '../model/request/favourite-route-request';
 import { Router } from '@angular/router';
 import { AuthService } from './auth.service';
 import { User } from '../model/response/user/user';
@@ -58,6 +59,25 @@ export class UserService {
   registerDriver(driverRequest: DriverRegistrationRequest): Observable<User> {
 
     return this.http.post<User>(this.configService.register_driver, driverRequest)
+  }
+
+  addToFavouriteRoutes(favouriteRouteRequest: FavouriteRouteRequest){
+
+    return this.http.post<any>(this.configService.add_favourite_route_url, favouriteRouteRequest)
+  }
+
+  removeFromFavouriteRoutes(favouriteRouteRequest: FavouriteRouteRequest){
+
+    return this.http.post<any>(this.configService.remove_favourite_route_url, favouriteRouteRequest)
+  }
+
+  isFavouriteRouteForUser(routeId:number, email: string){
+
+    return this.http.get(this.configService.is_favourite_route(routeId,email));
+  }
+
+  getAllRegularUsers(){
+    return this.http.get<User[]>(this.configService.all_users_url);
   }
 
 }

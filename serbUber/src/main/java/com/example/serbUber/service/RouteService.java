@@ -2,23 +2,23 @@ package com.example.serbUber.service;
 
 import com.example.serbUber.dto.PossibleRouteDTO;
 import com.example.serbUber.dto.RouteDTO;
+import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.model.Location;
 import com.example.serbUber.model.Route;
 import com.example.serbUber.repository.RouteRepository;
 import com.example.serbUber.request.LocationsForRoutesRequest;
-import com.example.serbUber.request.LongLatRequest;
 import com.graphhopper.ResponsePath;
-import com.graphhopper.util.PointList;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static com.example.serbUber.SerbUberApplication.hopper;
 import static com.example.serbUber.dto.RouteDTO.fromRoutes;
-import static com.example.serbUber.util.GraphHopperUtil.bla;
 import static com.example.serbUber.util.GraphHopperUtil.routing;
+import static com.example.serbUber.exception.EntityType.ROUTE;
 
 @Service
 public class RouteService {
@@ -33,6 +33,14 @@ public class RouteService {
         List<Route> routes = routeRepository.findAll();
 
         return fromRoutes(routes);
+    }
+
+    public Route get(Long id) throws EntityNotFoundException {
+        Optional<Route> route = routeRepository.findById(id);
+        if(route.isPresent()){
+            return route.get();
+        }
+        throw new EntityNotFoundException(id, ROUTE);
     }
 
     public RouteDTO create(
