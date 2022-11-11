@@ -53,7 +53,7 @@ public class PictureHandler {
         try{
             byte[] image = Base64.getDecoder().decode(base64);
             OutputStream out = new FileOutputStream(generateSavePhotoPath(pictureName));
-             out.write(image);
+            out.write(image);
             out.flush();
             out.close();
 
