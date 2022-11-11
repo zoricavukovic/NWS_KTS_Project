@@ -1,5 +1,5 @@
 <div>
-  <div class="sortDiv">
+  <div class="sortDiv" *ngIf="drivings.length !== 0">
     <div>
       <label id="sort-order-radio-group-label">Pick sort order</label>
      <mat-radio-group
@@ -29,7 +29,11 @@
     <driving-row [driving]="driving" [index]="i" [user]="currentUser"></driving-row>
   </div>
 
-  <div class="paginator">
+  <div *ngIf="drivings.length === 0" style="color:white;">
+      User have not drivings.
+  </div>
+
+  <div class="paginator" *ngIf="drivings.length !== 0">
     <mat-paginator appPaginator
                 [length]="3"
                 [pageSize]="pageSize"
