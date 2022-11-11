@@ -12,7 +12,7 @@ import { AuthService } from 'src/app/service/auth.service';
 export class NavBarComponent implements OnInit, OnDestroy {
 
   currentUser: User;
-  isAdmin: boolean = this.authService.userIsAdmin();
+  isAdmin: boolean;
   currentUserSubscription: Subscription;
   
   constructor(
@@ -23,6 +23,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.currentUserSubscription = this.authService.getCurrentUser().subscribe((data) => {
       this.currentUser=data; 
+      this.isAdmin = this.authService.userIsAdmin();
     });
   }
 
@@ -32,6 +33,10 @@ export class NavBarComponent implements OnInit, OnDestroy {
 
   redirectToProfilePage() {
     this.router.navigate(['/profile-page']);
+  }
+
+  redirectToMessagesPage() {
+    this.router.navigate(['/messages']);
   }
 
   logOut(){

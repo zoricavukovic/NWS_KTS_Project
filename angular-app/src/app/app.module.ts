@@ -30,6 +30,10 @@ import { ProfilePageComponent } from './component/user/profile-page/profile-page
 import { EditProfileComponent } from './component/user/edit-profile/edit-profile.component';
 import { ChangeProfilePicComponent } from './component/user/change-profile-pic/change-profile-pic.component';
 import { ToastrModule } from 'ngx-toastr';
+import { ButtonLiveChatComponent } from './component/chat/button-live-chat/button-live-chat.component';
+import { PoupupLiveChatComponent } from './component/chat/poupup-live-chat/poupup-live-chat.component';
+import { HistoryLiveChatComponent } from './component/chat/history-live-chat/history-live-chat.component';
+
 
 @NgModule({
   declarations: [
@@ -48,7 +52,10 @@ import { ToastrModule } from 'ngx-toastr';
     DrivingRowComponent,
     ProfilePageComponent,
     EditProfileComponent,
-    ChangeProfilePicComponent
+    ChangeProfilePicComponent,
+    ButtonLiveChatComponent,
+    PoupupLiveChatComponent,
+    HistoryLiveChatComponent,
   ],
   imports: [
     BrowserModule,

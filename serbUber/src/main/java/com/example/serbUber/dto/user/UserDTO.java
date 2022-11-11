@@ -47,7 +47,7 @@ public class UserDTO{
         this.surname = surname;
         this.phoneNumber = phoneNumber;
         this.city = city;
-        this.profilePicture = profilePicture;
+        this.profilePicture = convertPictureToBase64ByName(profilePicture);
         this.role = role;
         this.password = password;
     }
@@ -58,7 +58,7 @@ public class UserDTO{
         this.surname = driver.getSurname();
         this.phoneNumber = driver.getPhoneNumber();
         this.city = driver.getCity();
-        this.profilePicture = driver.getProfilePicture();
+        this.profilePicture = convertPictureToBase64ByName(driver.getProfilePicture());
         this.role = driver.getRole();
         this.password = driver.getPassword();
     }
@@ -69,7 +69,7 @@ public class UserDTO{
         this.surname = regularUser.getSurname();
         this.phoneNumber = regularUser.getPhoneNumber();
         this.city = regularUser.getCity();
-        this.profilePicture = regularUser.getProfilePicture();
+        this.profilePicture = convertPictureToBase64ByName(regularUser.getProfilePicture());
         this.role = regularUser.getRole();
         this.password = regularUser.getPassword();
     }
