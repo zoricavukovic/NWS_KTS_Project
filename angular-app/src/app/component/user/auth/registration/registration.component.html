@@ -22,7 +22,7 @@
                     Phone number is <strong>required</strong>
                 </mat-error>
                 <mat-error *ngIf="registrationForm.get('phoneNumberFormControl').hasError('pattern')">
-                    Please enter a valid phone number(9 digits)
+                    Please enter a valid phone number (8-12 digits)
                 </mat-error>
             </mat-form-field>
         </div> 
@@ -73,9 +73,12 @@
                 <mat-error *ngIf="registrationForm.get('passwordAgainFormControl').hasError('minlength') && !registrationForm.get('passwordAgainFormControl').hasError('required')">
                     Password should contains at least 8 characters, one digit and one special character
                 </mat-error>
-                <mat-error *ngIf="registrationForm.get('passwordAgainFormControl').hasError('mismatch')">
-                    Passwords are not match
+                <mat-error *ngIf="registrationForm.get('passwordAgainFormControl').hasError('required')">
+                    Confirm password is <strong>required</strong>
                 </mat-error>
+                <mat-error *ngIf="getError() && !registrationForm.get('passwordAgainFormControl').hasError('minlength')">
+                    Passwords are not match
+                </mat-error>    
             </mat-form-field>
         </div>
         

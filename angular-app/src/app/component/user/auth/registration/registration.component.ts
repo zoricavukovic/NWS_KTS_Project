@@ -23,20 +23,23 @@ export class RegistrationComponent implements OnInit, OnDestroy{
   filteredCities: Observable<string[]>;
   registrationForm = new FormGroup({
     'emailFormControl' : new FormControl('', [Validators.required, Validators.email]),
-    'phoneNumberFormControl' : new FormControl('', [Validators.required, Validators.pattern("[0-9]{9}")]),
+    'phoneNumberFormControl' : new FormControl('', [Validators.required, Validators.pattern("[0-9]{8,12}")]),
     'nameFormControl' : new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]),
     'surnameFormControl' : new FormControl('', [Validators.required, Validators.pattern('[a-zA-Z ]*')]),
-    'passwordAgainFormControl' : new FormControl('', [Validators.required, matchPasswordsValidator, Validators.minLength(8)]),
+    'passwordAgainFormControl' : new FormControl('', [Validators.required, Validators.minLength(8)]),
     'passwordFormControl' : new FormControl('',[Validators.required, Validators.minLength(9)]),
     'cityFormControl' : new FormControl('',[Validators.required, Validators.pattern('[a-zA-Z ]*')],),
-  });
+  },[matchPasswordsValidator()]);
+
 
   matcher = new MyErrorStateMatcher();
   cities: string[] = ['Belgrade', 'Novi Sad', 'Kraljevo', 'Sabac'];
   registrationSubscription: Subscription;
   currentUserSubscription: Subscription;
 
-  showDriverForm: boolean;
+  submitted=false;
+
+  showDriverForm: boolean = false;
   hidePassword: boolean =true;
   hideConfirmPassword: boolean =true;
 
@@ -47,7 +50,9 @@ export class RegistrationComponent implements OnInit, OnDestroy{
   ngOnInit(): void {
     this.currentUserSubscription = this.authService.getCurrentUser().subscribe(
       (data) => {
+        if(data){
           this.showDriverForm = this.authService.userIsAdmin(data);
+        }
       });
   }
 
@@ -69,8 +74,16 @@ export class RegistrationComponent implements OnInit, OnDestroy{
 
     return this.cities.filter(city => city.toLowerCase().includes(filterValue));
   }
+  
+  getError(){
+    console.log(this.registrationForm.hasError('mismatch'));
+    return this.registrationForm.hasError('mismatch');
+  }
 
   register(){
+    if(this.registrationForm.hasError('mismatch')){
+      this.toast.error("Passwords not match");
+    }
     if (isFormValid(this.registrationForm)){
       if (this.showDriverForm) {
         this.registrationSubscription = this.userService.registerDriver(

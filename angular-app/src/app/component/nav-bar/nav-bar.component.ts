@@ -12,8 +12,8 @@ import { AuthService } from 'src/app/service/auth.service';
 export class NavBarComponent implements OnInit, OnDestroy {
 
   currentUser: User;
-  isAdmin: boolean;
-  isRegularUser: boolean;
+  isAdmin: boolean = false;
+  isRegularUser: boolean = false;
   currentUserSubscription: Subscription;
   
   constructor(
@@ -24,8 +24,10 @@ export class NavBarComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.currentUserSubscription = this.authService.getCurrentUser().subscribe((data) => {
       this.currentUser=data; 
-      this.isRegularUser = this.authService.userIsRegular(this.currentUser);
-      this.isAdmin = this.authService.userIsAdmin(this.currentUser);
+      if(this.currentUser){
+        this.isRegularUser = this.authService.userIsRegular(this.currentUser);
+        this.isAdmin = this.authService.userIsAdmin(this.currentUser);
+      }
     });
   }
 
