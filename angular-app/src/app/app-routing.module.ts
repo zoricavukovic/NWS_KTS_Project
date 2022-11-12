@@ -12,6 +12,7 @@ import { ProfilePageComponent } from './component/user/profile-page/profile-page
 import { EditProfileComponent } from './component/user/edit-profile/edit-profile.component';
 import { ShowDriversComponent } from './component/admin/show-drivers/show-drivers.component';
 import { ShowUsersComponent } from './component/admin/show-users/show-users.component';
+import {MapComponent} from "./component/map/map.component";
 
 const routes: Routes = [
   {path:'', redirectTo:'home-page', pathMatch:'full'},
@@ -21,7 +22,7 @@ const routes: Routes = [
   {path: 'forgot-password', component: SendResetPasswordEmailComponent},
   {path: 'verify/:id', component: VerifyComponent},
   {path: 'drivings', component: ShowDrivingsComponent},
-  {path: 'details', component: DrivingDetailsComponent},
+  {path: 'details', component: MapComponent},
   {path: 'reset-password/:email', component: ResetPasswordComponent},
   {path: 'profile-page', component: ProfilePageComponent},
   {path: 'verify/:id', component: VerifyComponent},

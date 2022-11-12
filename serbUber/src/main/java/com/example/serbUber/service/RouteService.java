@@ -44,15 +44,15 @@ public class RouteService {
     }
 
     public RouteDTO create(
-            final Location startPoint,
-            final Set<Location> destinations,
-            final double kilometers
+            final Set<Location> locations,
+            final double distance,
+            final double time
     ) {
 
         Route route = routeRepository.save(new Route(
-                startPoint,
-                destinations,
-                kilometers
+                locations,
+                distance,
+                time
         ));
 
         return new RouteDTO(route);

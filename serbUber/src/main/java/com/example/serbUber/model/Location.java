@@ -15,16 +15,16 @@ public class Location {
     @Column(name="street", nullable = false)
     private String street;
 
-    @Column(name="number", nullable = false)
+    @Column(name="number")
     private String number;
 
-    @Column(name="zip_code", nullable = false)
+    @Column(name="zip_code")
     private String zipCode;
 
-    @Column(name="lon")
+    @Column(name="lon", nullable = false)
     private double lon;
 
-    @Column(name="lat")
+    @Column(name="lat", nullable = false)
     private double lat;
 
     public Location(

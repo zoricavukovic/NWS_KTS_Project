@@ -30,30 +30,24 @@ insert into vehicles (baby_seat, pet_friendly, rate, vehicle_type_id) values
 
 -- insert into routes (kilometres, location_id, )
 insert into locations (city, lat, lon, street, number, zip_code) values
-    ('Novi Sad', 0, 0, 'Bulevar Oslobodjenja', '55', '21000');
-insert into locations (city, lat, lon, street, number, zip_code) values
-    ('Novi Sad', 10, 10, 'Bulevar Cara Lazara', '5', '21000');
-insert into locations (city, lat, lon, street, number, zip_code) values
-    ('Novi Sad', 20, 20, 'Bulevar Evrope', '10', '21000');
-insert into locations (city, lat, lon, street, number, zip_code) values
-    ('Novi Sad', 30, 30, 'Lasla Gala', '2', '21000');
+    ('Novi Sad', 45.258300,19.833950, 'Bulevar Oslobodjenja', '55', '21000'),
+    ('Novi Sad', 45.246710, 19.848760, 'Bulevar Cara Lazara', '5', '21000'),
+    ('Novi Sad', 45.256420, 19.811140, 'Bulevar Evrope', '10', '21000'),
+    ('Novi Sad', 45.247460, 19.839030, 'Lasla Gala', '2', '21000');
 
-insert into routes (kilometers, location_id) values
-    (3, 1);
-insert into routes (kilometers, location_id) values
-    (5, 1);
-insert into routes (kilometers, location_id) values
-    (6, 3);
+insert into routes (distance, time) values
+    (3, 5),
+    (5, 2),
+    (6, 6);
 
-insert into route_destinations (route_id, location_id) values
-    (1, 2);
-insert into route_destinations (route_id, location_id) values
-    (2, 3);
-insert into route_destinations (route_id, location_id) values
-    (2, 1);
-insert into route_destinations (route_id, location_id) values
-    (3, 4);
-
+insert into route_locations (route_id, location_id) values
+    (1, 1),
+    (1, 2),
+    (2, 3),
+    (2, 1),
+    (2, 4),
+    (3, 4),
+    (3, 2);
 
 insert into drivers (id, email, password, name, surname, phone_number, city, profile_picture, role_id, active, blocked, verified, start_shift, end_shift, last_active, rate, working_minutes, location_id, vehicle_id) values
     (nextval('users_id_gen'), 'mile@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Mile', 'Milic', '012345678', 'Novi Sad', 'default-user.png', 3, false, false, true, null, null, null, 0, 0, 1, 1);

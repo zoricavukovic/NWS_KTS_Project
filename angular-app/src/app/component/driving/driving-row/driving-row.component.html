@@ -1,5 +1,11 @@
 <mat-card class="card">
-    <mat-card-title class="line"><p>{{driving.route.startPoint.street}} {{driving.route.startPoint.number}}  </p> <mat-divider class="divider"></mat-divider> <p class="price">{{driving.route.destinations[driving.route.destinations.length-1].street}} {{driving.route.destinations[driving.route.destinations.length-1].number}}</p></mat-card-title>
+    <mat-card-title class="line"><p>{{driving.route.locations.at(0).street}}
+      {{driving.route.locations.at(0).number}}  </p>
+      <mat-divider class="divider"></mat-divider>
+      <p class="price">{{driving.route.locations.at(driving.route.locations.length - 1).street}}
+        {{driving.route.locations.at(driving.route.locations.length - 1).number}}
+      </p>
+    </mat-card-title>
     <br>
     <mat-card-subtitle><p>{{driving.started|date :'dd.MM.yyyy. hh:mm'}}</p>  <p class="date">{{endDrivingDate(driving.started, driving.duration) |date :'dd.MM.yyyy. hh:mm'}}</p></mat-card-subtitle>
     <mat-card-content class="price">Price: {{driving.price}} din.</mat-card-content>

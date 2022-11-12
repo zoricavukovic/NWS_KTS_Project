@@ -23,7 +23,7 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
   selectedSortOrder: string = "Descending";
 
   sortOrder = [
-    {name:"Descending", checked: true}, 
+    {name:"Descending", checked: true},
     {name:"Ascending", checked: false}
   ]
 
@@ -40,7 +40,7 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
   reviewedDrivingsSubscription: Subscription;
 
   constructor( private authService: AuthService, private drivingService: DrivingService, private reviewService: ReviewService) { }
-  
+
   ngOnInit(): void {
     this.currentUserSubscription = this.authService.getCurrentUser().subscribe(
       (data) => {
@@ -49,9 +49,10 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
           this.drivingService.setUserEmail = this.currentUser.email;
         }
       });
-    
+
     this.drivingsSubscription = this.drivingService.getDrivingsForUser(this.pageNumber, this.pageSize, this.selectedSortBy, this.selectedSortOrder).subscribe((response:any) => {
-        this.drivings = response;
+      console.log(response);
+      this.drivings = response;
         this.reviewedDrivingsSubscription= this.reviewService.getReviewedDrivingsForUser(this.currentUser.email).subscribe((response: any) => {
           for(let driving of this.drivings){
             if(response.includes(driving.id)){

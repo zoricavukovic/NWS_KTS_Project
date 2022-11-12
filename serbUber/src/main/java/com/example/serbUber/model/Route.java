@@ -1,7 +1,5 @@
 package com.example.serbUber.model;
 import javax.persistence.*;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -11,58 +9,57 @@ public class Route {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne()
-    @JoinColumn(name = "location_id", referencedColumnName = "id")
-    private Location startPoint;
-
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "route_destinations",
-            joinColumns = {@JoinColumn(name = "route_id")},
-            inverseJoinColumns = {@JoinColumn(name = "location_id")}
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "route_locations",
+            joinColumns = @JoinColumn(name = "route_id"),
+            inverseJoinColumns = @JoinColumn(name = "location_id")
     )
-    private Set<Location> destinations;
+    private Set<Location> locations;
 
-    @Column(name="kilometers", nullable = false)
-    private double kilometers;
+    @Column(name="distance", nullable = false)
+    private double distance;
+
+    @Column(name="time", nullable = false)
+    private double timeInMin;
 
     public Route(){
     }
 
     public Route(
-        final Location startPoint,
-        final Set<Location> destinations,
-        final double kilometers
+        final Set<Location> locations,
+        final double distance,
+        final double timeInMin
     ) {
-        this.startPoint = startPoint;
-        this.destinations = destinations;
-        this.kilometers = kilometers;
+        this.locations = locations;
+        this.distance = distance;
+        this.timeInMin = timeInMin;
     }
 
     public Long getId() {
         return id;
     }
 
-    public Location getStartPoint() {
-        return startPoint;
+    public Set<Location> getLocations() {
+        return locations;
     }
 
-    public void setStartPoint(Location startPoint) {
-        this.startPoint = startPoint;
+    public void setLocations(Set<Location> locations) {
+        this.locations = locations;
     }
 
-    public Set<Location> getDestinations() {
-        return destinations;
+    public double getDistance() {
+        return distance;
     }
 
-    public void setDestinations(Set<Location> destinations) {
-        this.destinations = destinations;
+    public void setDistance(double distance) {
+        this.distance = distance;
     }
 
-    public double getKilometers() {
-        return kilometers;
+    public double getTimeInMin() {
+        return timeInMin;
     }
 
-    public void setKilometers(double kilometers) {
-        this.kilometers = kilometers;
+    public void setTimeInMin(double timeInMin) {
+        this.timeInMin = timeInMin;
     }
 }

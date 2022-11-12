@@ -10,7 +10,7 @@ import static com.example.serbUber.util.GraphHopperUtil.createGraphHopperInstanc
 @EnableAsync
 public class SerbUberApplication {
 
-	public static GraphHopper hopper = createGraphHopperInstance("src/main/resources/core/files/serbia-latest.osm.pbf");
+	public static GraphHopper hopper = createGraphHopperInstance("src/main/resources/core/files/novi_sad.osm.pbf");
 	public static void main(String[] args) { SpringApplication.run(SerbUberApplication.class, args);}
 
 }

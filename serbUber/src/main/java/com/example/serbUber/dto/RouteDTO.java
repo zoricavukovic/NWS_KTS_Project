@@ -9,14 +9,14 @@ import java.util.Set;
 
 public class RouteDTO {
 
-    private Location startPoint;
-    private Set<Location> destinations;
-    private double kilometers;
+    private Set<Location> locations;
+    private double distance; //in metres
+    private double timeInMin;
 
     public RouteDTO(final Route route) {
-        this.startPoint = route.getStartPoint();
-        this.destinations = route.getDestinations();
-        this.kilometers = route.getKilometers();
+        this.locations = route.getLocations();
+        this.distance = route.getDistance();
+        this.timeInMin = route.getTimeInMin();
     }
 
     public static List<RouteDTO> fromRoutes(final List<Route> routes){
@@ -28,15 +28,15 @@ public class RouteDTO {
         return routeDTOs;
     }
 
-    public Location getStartPoint() {
-        return startPoint;
+    public Set<Location> getLocations() {
+        return locations;
     }
 
-    public Set<Location> getDestinations() {
-        return destinations;
+    public double getDistance() {
+        return distance;
     }
 
-    public double getKilometers() {
-        return kilometers;
+    public double getTimeInMin() {
+        return timeInMin;
     }
 }
