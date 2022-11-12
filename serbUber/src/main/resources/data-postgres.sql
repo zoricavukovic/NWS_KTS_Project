@@ -77,18 +77,26 @@ insert into drivings_users(driving_id, user_id) values
     (2, 2);
 
 
-insert into messages(id, message, time_stamp, sender_id, receiver_id, admin_response) values
-    (nextval('notifications_id_gen'), 'Heej, imam problem', '11.11.2022. 11:00', 2, 1, false);
-insert into messages(id, message, time_stamp, sender_id, receiver_id, admin_response) values
-    (nextval('notifications_id_gen'), 'Sta te muci?', '11.11.2022. 11:20', 2, 1, true);
-insert into messages(id, message, time_stamp, sender_id, receiver_id, admin_response) values
-    (nextval('notifications_id_gen'), 'Mozes mi reci..', '11.11.2022. 11:29', 2, 1, true);
-insert into messages(id, message, time_stamp, sender_id, receiver_id, admin_response) values
-    (nextval('notifications_id_gen'), 'Ma zezam te..', '11.11.2022. 11:45', 2, 1, false);
-insert into messages(id, message, time_stamp, sender_id, receiver_id, admin_response) values
-    (nextval('notifications_id_gen'), 'Pomoc na putu..', '11.11.2022. 15:00', 5, 1, false);
-insert into messages(id, message, time_stamp, sender_id, receiver_id, admin_response) values
-    (nextval('notifications_id_gen'), 'Tu si?', '11.11.2022. 16:00', 5, 1, false);
+insert into chat_rooms(client_id, admin_id, resolved) values
+    (2,1, true);
+insert into chat_rooms(client_id, admin_id, resolved) values
+    (2,1, false);
+insert into chat_rooms(client_id, admin_id, resolved) values
+    (3,1, true);
+
+
+insert into messages(message, time_stamp, admin_response, chat_room_id) values
+    ('Heej, imam problem', '11.11.2022. 11:00', false, 2);
+insert into messages(message, time_stamp, admin_response, chat_room_id) values
+    ('Sta te muci?', '11.11.2022. 11:20', true, 2);
+insert into messages(message, time_stamp, admin_response, chat_room_id) values
+    ('Kako da se logout..', '11.11.2022. 11:29', false, 1);
+insert into messages(message, time_stamp, admin_response, chat_room_id) values
+    ('Kliknes na ikonicu i logout..', '11.11.2022. 11:45', true, 1);
+insert into messages(message, time_stamp, admin_response, chat_room_id) values
+    ('Pomoc na putu..', '11.11.2022. 15:00', false, 3);
+insert into messages(message, time_stamp, admin_response, chat_room_id) values
+    ('Tu si?', '11.11.2022. 16:00', false, 3);
 
 
 

@@ -1,4 +1,4 @@
-package com.example.serbUber.dto.user;
+package com.example.serbUber.dto.message;
 
 import com.example.serbUber.model.user.Role;
 import com.example.serbUber.model.user.User;

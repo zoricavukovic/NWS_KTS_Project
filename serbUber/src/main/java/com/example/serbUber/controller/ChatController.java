@@ -1,6 +1,7 @@
 package com.example.serbUber.controller;
 
-import com.example.serbUber.dto.MessageDTO;
+import com.example.serbUber.dto.message.MessageDTO;
+import com.example.serbUber.request.message.ChatRoomRequest;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -16,11 +17,10 @@ public class ChatController {
     }
 
     @MessageMapping("/send")
-    public void send(@Payload MessageDTO messageReq) {
-        //String path = "/user/" + (messageDTO.isAdminResponse() ? messageDTO.getReceiver().getEmail()
-        //        : messageDTO.getSender().getEmail());
+    public void send(@Payload ChatRoomRequest chatRoomRequest) {
 
-        this.messagingTemplate.convertAndSendToUser("ana@gmail.com","/messages", messageReq);
+        this.messagingTemplate.convertAndSendToUser(chatRoomRequest.getClient().getEmail(),"/connect", chatRoomRequest);
+        this.messagingTemplate.convertAndSendToUser(chatRoomRequest.getAdmin().getEmail(),"/connect", chatRoomRequest);
     }
 
 }

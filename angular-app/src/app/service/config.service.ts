@@ -31,6 +31,7 @@ export class ConfigService {
   private _base64_show_photo_prefix = 'data:image/png;base64,';
   private _users_url = this._api_url + "/users";
   private _all_messages = this._api_url + "/messages"
+  private _all_chat_rooms = this._api_url + "/chat-rooms"
 
   private _send_reset_password_email = this._api_url + "/users/send-rest-password-link";
   private _reset_password = this._api_url + "/users/reset-password";
@@ -122,6 +123,10 @@ export class ConfigService {
 
   get logout_url(): string {
     return this._logout_user;
+  }
+
+  get chat_rooms_url(): string {
+    return this._all_chat_rooms;
   }
 
 }

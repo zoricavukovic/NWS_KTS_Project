@@ -19,6 +19,7 @@ public class ErrorMessagesConstants {
     public static final String UPDATE_ERROR_MESSAGE = "Entity cannot be updated due to server error.";
     public static final String WRONG_SECURITY_CODE = "Security code is number greater than 0.";
     public static final String WRONG_VERIFY_ID = "Verify id must be added.";
+    public static final String NO_AVAILABLE_ADMIN_EXC = "Chat cannot be created right now, all out admins are busy.";
 
 
 }

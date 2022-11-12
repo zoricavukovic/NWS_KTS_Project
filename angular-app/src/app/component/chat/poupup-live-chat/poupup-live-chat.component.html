@@ -1,23 +1,31 @@
 <div *ngIf="loggedUser" class="live-chat-container">
     <div class="chat">
         <div class="contact bar">
-            <div class="pic stark"></div>
-            <div class="name center">
-                Admin support team
+            <div class="name" style="display: flex; justify-content: space-between;">
+                <span>Admin support team</span>
+                <mat-icon (click)="fireOnClose()">close</mat-icon>
             </div>
         </div>
         <div class="messages" id="chat">
-            <div *ngFor="let mes of messages">
-                <div *ngIf="showDescTag(mes)" class="name-data">
-                    {{mes.receiver.name + " " + mes.receiver.surname}}
-                </div>
-                <div [class]="mes.adminResponse ? 'message' : 'message sender'">
-                    {{mes.message}}
+            <div *ngIf="chatRoom; else haveProblemBlock">
+                <div *ngFor="let mes of chatRoom.messages">
+                    <div *ngIf="showDescTag(mes)" class="name-data">
+                        {{chatRoom.admin.name + " " + chatRoom.admin.surname}}
+                    </div>
+                    <div [class]="mes.adminResponse ? 'message' : 'message sender'">
+                        {{mes.message}}
+                    </div>
                 </div>
             </div>
+            <ng-template #haveProblemBlock>
+                <div class="name-data">
+                    Need some help?
+                </div>
+            </ng-template>
         </div>
         <div class="input">
             <input #messageInput [(ngModel)]="newMessage" placeholder="Type your message here!" type="text" (keyup.enter)="onSend()" />
+            <button (click)="onSend()" class="send-button">Send</button>
         </div>
     </div>
 </div>

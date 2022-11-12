@@ -190,4 +190,10 @@ public class UserService {
 
         return new UserDTO(userRepository.save(user));
     }
+
+    public User findOnlineAdmin() throws NoAvailableAdminException {
+
+        return userRepository.findOnlineAdmin()
+                .orElseThrow(NoAvailableAdminException::new);
+    }
 }

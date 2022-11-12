@@ -1,11 +1,12 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Message } from 'src/app/model/response/messages/message';
 import { User } from 'src/app/model/response/user/user';
-import { MessageService } from 'src/app/service/message.service';
 import {ToastrService} from "ngx-toastr";
-import { MessageRequest } from 'src/app/model/request/message-request';
 import { ChatService } from 'src/app/service/chat.service';
+import { ChatRoom } from 'src/app/model/response/messages/chat-room';
+import { ChatRoomService } from 'src/app/service/chat-room.service';
+import { MessageRequest } from 'src/app/model/request/message-request';
 
 @Component({
   selector: 'app-poupup-live-chat',
@@ -13,17 +14,17 @@ import { ChatService } from 'src/app/service/chat.service';
   styleUrls: ['./poupup-live-chat.component.scss']
 })
 export class PoupupLiveChatComponent implements OnInit, OnDestroy {
-
+  @Output() onCloseEvent = new EventEmitter();
   @Input() loggedUser: User;
 
   constructor(
-    private messageService: MessageService,
+    private chatRoomService: ChatRoomService,
     private toast: ToastrService,
     private chatService: ChatService
   ) { }
   
-  messages: Message[];
-  messagesSubscription: Subscription;
+  chatRoom: ChatRoom;
+  chatRoomSubscription: Subscription;
   sendMessageSubscription: Subscription;
   changedRole: boolean = false;
   previousMessage: Message;
@@ -31,9 +32,9 @@ export class PoupupLiveChatComponent implements OnInit, OnDestroy {
   newMessage: string = '';
   
   ngOnInit(): void {
-    this.messagesSubscription = this.messageService.getMessagesPerUser(this.loggedUser.email).subscribe(
+    this.chatRoomSubscription = this.chatRoomService.getUserChatRoom(this.loggedUser.email).subscribe(
       res => {
-        this.messages = res;
+        this.chatRoom = res;
       }
     );
     }
@@ -52,11 +53,19 @@ export class PoupupLiveChatComponent implements OnInit, OnDestroy {
       return true;
     }
 
-    findAdminEmail(): string {
-      for (let i = 0; i < this.messages.length; i++){
-        if (this.messages[i].adminResponse) {
-          return this.messages[i].receiver.email;
-        }
+    getChatRoomIdIfExist(): number {
+      if (this.chatRoom !== null && this.chatRoom !== undefined) {
+
+        return this.chatRoom.id;
+      }
+
+      return null;
+    }
+
+    findAdminIfExist(): string {
+      if (this.chatRoom !== null && this.chatRoom !== undefined) {
+
+        return this.chatRoom.admin.email;
       }
 
       return null;
@@ -64,11 +73,12 @@ export class PoupupLiveChatComponent implements OnInit, OnDestroy {
 
     onSend(): void {
       if (this.validateMessage()) {
-        this.sendMessageSubscription = this.messageService.sendMessage(
+        this.sendMessageSubscription = this.chatRoomService.addMessageToChatRoom(
         new MessageRequest(
+          this.getChatRoomIdIfExist(),
           this.newMessage,
           this.loggedUser.email,
-          this.findAdminEmail(),
+          this.findAdminIfExist(),
           this.isAdmin
         )
       ).subscribe(
@@ -76,7 +86,7 @@ export class PoupupLiveChatComponent implements OnInit, OnDestroy {
           this.newMessage = '';
           this.chatService.sendMessage(res);
         },
-        error => this.toast.error(error.error, "Message cannot be sent!")
+        error => this.toast.error("Message cannot be sent!", "All our operators are currently busy! Try later.")
       );
       }
 
@@ -97,9 +107,13 @@ export class PoupupLiveChatComponent implements OnInit, OnDestroy {
       return this.changedRole;
     }
 
+    fireOnClose() {
+      this.onCloseEvent.emit(false);
+    }
+
     ngOnDestroy(): void {
-      if (this.messagesSubscription){
-        this.messagesSubscription.unsubscribe();
+      if (this.chatRoomSubscription){
+        this.chatRoomSubscription.unsubscribe();
       }
 
       if (this.sendMessageSubscription) {

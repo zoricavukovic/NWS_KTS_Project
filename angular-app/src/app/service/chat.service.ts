@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import * as SockJS from 'sockjs-client';
 import {Stomp} from '@stomp/stompjs';
 import { Message } from '../model/response/messages/message';
-import { MessageService } from './message.service';
 import { environment } from 'src/environments/environment';
+import { ChatRoomService } from './chat-room.service';
+import { ChatRoom } from '../model/response/messages/chat-room';
 
 
 @Injectable({
@@ -13,12 +14,11 @@ export class ChatService {
 
   private stompClient = null;
   initialized: boolean = false;
-  roleAdmin: string = "ROLE_ADMIN";
 
-  constructor(private messageService: MessageService) {}
+  constructor(private chatRoomService: ChatRoomService) {}
 
   
-  connect(userRole: string, userEmail: string) {
+  connect(userEmail: string) {
     if (!this.initialized) {
       this.initialized = true;
       const serverUrl = environment.webSocketUrl;
@@ -26,21 +26,14 @@ export class ChatService {
       this.stompClient = Stomp.over(ws);
       const that = this;
       this.stompClient.connect({}, function(frame) {
-        that.stompClient.subscribe(environment.publisherUrl + userEmail + "/messages", (message) => {
+        that.stompClient.subscribe(environment.publisherUrl + userEmail + "/connect", (message) => {
           if (message !== null && message !== undefined) {
             console.log("Uspelo" + message.body);
-            that.messageService.addMessage(JSON.parse(message.body));
+            that.chatRoomService.addMessage(JSON.parse(message.body));
           }
         }); 
       });
     }
-  }
-
-  subscribeToLocalSocket(userEmail: string): void {
-    this.stompClient.subscribe(environment.publisherUrl + "/" + userEmail, (message) => {
-      this.showMessage(message);
-      console.log("Neki event kod specificne rute.")
-    });
   }
 
   disconnect(): void {
@@ -52,7 +45,7 @@ export class ChatService {
     console.log('Disconnected!');
   }
 
-  sendMessage(message: Message) {
+  sendMessage(message: ChatRoom) {
     this.stompClient.send('/app/send' , {}, JSON.stringify(message));
   }
 

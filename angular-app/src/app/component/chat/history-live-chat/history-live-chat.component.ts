@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MessageService } from 'src/app/service/message.service';
 import { Subscription } from 'rxjs';
 import { User } from 'src/app/model/response/user/user';
 import { AuthService } from 'src/app/service/auth.service';
@@ -21,8 +20,7 @@ export class HistoryLiveChatComponent implements OnInit, OnDestroy {
 
   constructor(
     private authService: AuthService,
-    private chatService: ChatService,
-    private messageService: MessageService
+    private chatService: ChatService
   ) { }
 
   ngOnInit(): void {
@@ -30,10 +28,10 @@ export class HistoryLiveChatComponent implements OnInit, OnDestroy {
       user => this.loggedUser = user
     );
 
-    this.messageSubscription = this.messageService.getAllMessages().subscribe(
-      res => this.messages = res,
-      error => console.log(error)
-    )
+    // this.messageSubscription = this.messageService.getAllMessages().subscribe(
+    //   res => this.messages = res,
+    //   error => console.log(error)
+    // )
   }
 
   ngOnDestroy(): void {

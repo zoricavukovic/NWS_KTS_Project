@@ -1,9 +1,6 @@
-package com.example.serbUber.dto;
+package com.example.serbUber.dto.message;
 
-import com.example.serbUber.dto.user.MessageUserDTO;
-import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.model.Message;
-import com.example.serbUber.model.user.User;
 
 import java.time.LocalDateTime;
 import java.util.LinkedList;
@@ -15,30 +12,21 @@ public class MessageDTO {
 
     private LocalDateTime timeStamp;
 
-    private MessageUserDTO sender;
-
-    private MessageUserDTO receiver;
-
     private boolean adminResponse;
 
     public MessageDTO(
             final String message,
             final LocalDateTime timeStamp,
-            final MessageUserDTO sender,
-            final MessageUserDTO receiver,
-            final boolean adminResponse) {
+            final boolean adminResponse
+    ) {
         this.message = message;
         this.timeStamp = timeStamp;
-        this.sender = sender;
-        this.receiver = receiver;
         this.adminResponse = adminResponse;
     }
 
     public MessageDTO(final Message message) {
         this.message = message.getMessage();
         this.timeStamp = message.getTimeStamp();
-        this.sender = new MessageUserDTO(message.getSender());
-        this.receiver = new MessageUserDTO(message.getReceiver());
         this.adminResponse = message.isAdminResponse();
     }
 
@@ -57,14 +45,6 @@ public class MessageDTO {
 
     public LocalDateTime getTimeStamp() {
         return timeStamp;
-    }
-
-    public MessageUserDTO getSender() {
-        return sender;
-    }
-
-    public MessageUserDTO getReceiver() {
-        return receiver;
     }
 
     public boolean isAdminResponse() {

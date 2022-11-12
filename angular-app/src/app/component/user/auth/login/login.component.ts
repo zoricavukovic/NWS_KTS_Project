@@ -50,8 +50,8 @@ export class LoginComponent implements OnInit, OnDestroy {
         authService.loginWithGoogle(user.idToken)
           .subscribe({
             next(loggedUser:LoginResponse): void {
-              chatService.connect(loggedUser.userDTO.role.name, loggedUser.userDTO.email);
               authService.setLocalStorage(loggedUser);
+              chatService.connect(loggedUser.userDTO.email);
               authService.currentUser$.next(loggedUser.userDTO);
               router.navigate(['/home-page'])
             },
@@ -73,8 +73,8 @@ export class LoginComponent implements OnInit, OnDestroy {
         this.social.loginWithFacebook(data.authToken)
           .subscribe({
             next(loggedUser:LoginResponse): void {
-              chatService.connect(loggedUser.userDTO.role.name, loggedUser.userDTO.email);
               authService.setLocalStorage(loggedUser);
+              chatService.connect(loggedUser.userDTO.email);
               authService.currentUser$.next(loggedUser.userDTO);
               router.navigate(['/home-page'])
             },
@@ -106,8 +106,8 @@ export class LoginComponent implements OnInit, OnDestroy {
       )).subscribe(
         {
           next(loggedUser:LoginResponse): void {
-            chatService.connect(loggedUser.userDTO.role.name, loggedUser.userDTO.email);
             authService.setLocalStorage(loggedUser);
+            chatService.connect(loggedUser.userDTO.email);
             authService.currentUser$.next(loggedUser.userDTO);
             router.navigate(['/home-page'])
           },
@@ -118,6 +118,8 @@ export class LoginComponent implements OnInit, OnDestroy {
       )
     }
   }
+
+
 
   ngOnDestroy(): void {
     if (this.authSubscription){

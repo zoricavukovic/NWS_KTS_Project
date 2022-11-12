@@ -21,8 +21,6 @@ public abstract class Notification {
     @Column(name = "time_stamp", nullable = false)
     private LocalDateTime timeStamp;
 
-    //Kod reporta sender ko prijavljuje, receiver ko je prijavljen
-    //kod message, sender uvek Regular/Driver, a receiver neki od admina
     @OneToOne()
     @JoinColumn(name = "sender_id", referencedColumnName = "id")
     private User sender;
