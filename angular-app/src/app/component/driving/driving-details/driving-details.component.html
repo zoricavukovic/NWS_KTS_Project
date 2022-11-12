@@ -1,7 +1,8 @@
-<div>     
+<map></map>
+<div>
     <div class="drivingInfo">
       <div class="route">
-        
+
          <!-- <mat-card-header>
             <mat-card-title>Route</mat-card-title>
           </mat-card-header>
@@ -26,10 +27,10 @@
             <div mat-line>{{dest}}</div>
           </div><br>
         </mat-list-item>
-        
+
       </mat-expansion-panel>
 
-    
+
     </div>
     <br>
     <div class="button-container" *ngIf="isRegularUser">
@@ -43,30 +44,17 @@
       </button>
     </div>
     <br>
-    <div>
-      <mat-card>
-        <mat-card-header>
-          <img mat-card-avatar [src]="vehicle_image[driver.vehicle.vehicleTypeInfo.vehicleType]">
-          <mat-card-title>{{driver.vehicle.vehicleTypeInfo.vehicleType}}</mat-card-title>
-          <div style="display:flex;margin-left:50px;">
-            <mat-icon style="display:inline-flex">people</mat-icon>&nbsp;<span>{{driver.vehicle.vehicleTypeInfo.numOfSeats}}</span>
-            </div>
-        </mat-card-header>
-        <mat-card-content>
-            <ngx-star-rating class="stars"  [(ngModel)]="driver.vehicle.rate" [id]="'rating'" [disabled]="true"></ngx-star-rating>
-        </mat-card-content>
-      </mat-card>
-    </div>
+      <vehicle-details [vehicle]="driver.vehicle"></vehicle-details>
     <br>
     <div *ngIf="!isDriver">
       <mat-card>
         <mat-card-header>
-          <img mat-card-avatar [src]="getBase64Prefix() + driver.profilePicture">
+          <img mat-card-avatar style="height:5rem; width: 5rem" [src]="getBase64Prefix() + driver.profilePicture">
           <mat-card-title>{{driver.name}} {{driver.surname}}</mat-card-title>
           <mat-card-subtitle>{{driver.email}} </mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
-          
+
         </mat-card-content>
       </mat-card>
     </div>
@@ -88,17 +76,18 @@
                 <mat-card-subtitle>{{user.email}} </mat-card-subtitle>
               </mat-card-header>
               <mat-card-content>
-                
+
               </mat-card-content>
             </mat-card>
         </div>
-          
+
         </mat-expansion-panel>
     </div>
     <br>
 
     <div style="text-align:center">
-      
+
       <h2>{{driving.price}}.00 RSD</h2>
     </div>
+</div>
 </div>

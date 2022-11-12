@@ -44,7 +44,7 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
     "CAR": '/assets/images/car.png'
   };
 
-  constructor( private route: ActivatedRoute, private http: HttpClient, private configService: ConfigService, 
+  constructor( private route: ActivatedRoute, private http: HttpClient, private configService: ConfigService,
               private authService: AuthService, private userService: UserService, private drivingService: DrivingService,
               private driverService: DriverService) { }
 
@@ -60,18 +60,19 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
 
       this.driverSubscription = this.driverService.getDriver(this.driving.driverEmail).subscribe((response: Driver) => {
         this.driver = response;
+        console.log(response);
        })
 
        this.currentUserSubscription = this.authService.getCurrentUser().subscribe(
-        (response) => 
+        (response) =>
         {
           this.isRegularUser = this.authService.userIsRegular(response);
           this.isDriver = this.authService.userIsDriver(response);
           this.currentUser=response;
           this.favouriteRouteSubscription = this.userService.isFavouriteRouteForUser(this.driving.route.id, this.currentUser.email).subscribe(
-            (response) => 
+            (response) =>
             {
-              if(response) 
+              if(response)
               {
                 this.favouriteRoute = true;
               }
@@ -90,7 +91,7 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
       );
     }
     else{
-    
+
       this.userService.addToFavouriteRoutes(new FavouriteRouteRequest(this.currentUser.email, this.driving.route.id)).subscribe(
         res => {this.favouriteRoute = true;}
       );
@@ -105,7 +106,7 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
     if(this.currentUserSubscription){
       this.currentUserSubscription.unsubscribe();
     }
-    
+
     if(this.drivingsSubscription){
       this.drivingsSubscription.unsubscribe();
     }

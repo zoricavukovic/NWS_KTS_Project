@@ -4,7 +4,7 @@ import java.util.List;
 
 public class PossibleRouteDTO {
 
-    private double distance;
+    private double distance; //in metres
     private double timeInMin;
     private List<double[]> pointList;
 

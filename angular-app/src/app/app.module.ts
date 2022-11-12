@@ -40,6 +40,8 @@ import { ShowDriversComponent } from './component/admin/show-drivers/show-driver
 import { DriverRowComponent } from './component/admin/driver-row/driver-row.component';
 import { ShowUsersComponent } from './component/admin/show-users/show-users.component';
 import { UserRowComponent } from './component/admin/user-row/user-row.component';
+import { VehicleDetailsComponent } from './component/vehicle/vehicle-details/vehicle-details.component';
+import { MapComponent } from './component/map/map.component';
 
 @NgModule({
   declarations: [
@@ -63,7 +65,9 @@ import { UserRowComponent } from './component/admin/user-row/user-row.component'
     ShowDriversComponent,
     DriverRowComponent,
     ShowUsersComponent,
-    UserRowComponent
+    UserRowComponent,
+    VehicleDetailsComponent,
+    MapComponent
   ],
   imports: [
     BrowserModule,
