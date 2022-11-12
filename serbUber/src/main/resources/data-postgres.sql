@@ -82,6 +82,10 @@ insert into messages(id, message, time_stamp, sender_id, receiver_id, admin_resp
 insert into messages(id, message, time_stamp, sender_id, receiver_id, admin_response) values
     (nextval('notifications_id_gen'), 'Sta te muci?', '11.11.2022. 11:20', 2, 1, true);
 insert into messages(id, message, time_stamp, sender_id, receiver_id, admin_response) values
+    (nextval('notifications_id_gen'), 'Mozes mi reci..', '11.11.2022. 11:29', 2, 1, true);
+insert into messages(id, message, time_stamp, sender_id, receiver_id, admin_response) values
+    (nextval('notifications_id_gen'), 'Ma zezam te..', '11.11.2022. 11:45', 2, 1, false);
+insert into messages(id, message, time_stamp, sender_id, receiver_id, admin_response) values
     (nextval('notifications_id_gen'), 'Pomoc na putu..', '11.11.2022. 15:00', 5, 1, false);
 insert into messages(id, message, time_stamp, sender_id, receiver_id, admin_response) values
     (nextval('notifications_id_gen'), 'Tu si?', '11.11.2022. 16:00', 5, 1, false);

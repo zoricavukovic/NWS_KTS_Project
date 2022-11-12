@@ -6,6 +6,7 @@ import { User } from '../model/response/user/user';
 import { ConfigService } from './config.service';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { Router } from '@angular/router';
+import { ChatService } from './chat.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,13 +18,14 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private configService: ConfigService,
-    private router: Router
+    private router: Router,
+    private chatService: ChatService
   ) { }
 
-    login(loginRequest: LoginRequest): Observable<LoginResponse> {
+  login(loginRequest: LoginRequest): Observable<LoginResponse> {
 
-      return this.http.post<LoginResponse>(this.configService.login_url, loginRequest);
-    }
+    return this.http.post<LoginResponse>(this.configService.login_url, loginRequest);
+  }
 
   loginWithGoogle(token:String): Observable<LoginResponse> {
 
@@ -41,6 +43,7 @@ export class AuthService {
   }
 
   logOut(){
+    this.chatService.disconnect();
     this.currentUser$.next(null);
     localStorage.clear();
     this.router.navigate(['/login']);

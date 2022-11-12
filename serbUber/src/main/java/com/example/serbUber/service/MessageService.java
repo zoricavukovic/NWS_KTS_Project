@@ -64,7 +64,7 @@ public class MessageService {
             final boolean adminResponse
     ) throws EntityNotFoundException {
         User sender = userService.getUserByEmail(senderEmail);
-        User receiver = userService.getUserByEmail(receiverEmail);
+        User receiver = findAdmin(receiverEmail);
 
         Message createdMessage = messageRepository.save(new Message(
                 message,
@@ -74,5 +74,11 @@ public class MessageService {
         ));
 
         return new MessageDTO(createdMessage);
+    }
+
+    private User findAdmin(String receiverEmail) throws EntityNotFoundException {
+
+        return (receiverEmail != null) ? userService.getUserByEmail(receiverEmail) :
+                userService.findFirstAdmin();
     }
 }

@@ -29,7 +29,7 @@ export class ConfigService {
   private _have_driving_rate_url = this._api_url + "/reviews/haveDrivingRate/";
   private _base64_show_photo_prefix = 'data:image/png;base64,';
   private _users_url = this._api_url + "/users";
-  private _all_messages = this._api_url + "/chats"
+  private _all_messages = this._api_url + "/messages"
 
   private _send_reset_password_email = this._api_url + "/users/send-rest-password-link";
   private _reset_password = this._api_url + "/users/reset-password";

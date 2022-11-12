@@ -1,15 +1,10 @@
 package com.example.serbUber.request;
 
-import com.example.serbUber.model.user.User;
 
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
 
 import static com.example.serbUber.exception.ErrorMessagesConstants.*;
 import static com.example.serbUber.exception.ErrorMessagesConstants.TOO_LONG_EMAIL;
@@ -27,9 +22,7 @@ public class MessageRequest {
     @Size(max = 60, message = TOO_LONG_EMAIL)
     private String senderEmail;
 
-    @Email(message = WRONG_EMAIL)
-    @NotBlank(message = EMPTY_EMAIL)
-    @Size(max = 60, message = TOO_LONG_EMAIL)
+    //moze biti null ako je prva poruka koja se salje adminima
     private String receiverEmail;
 
     @NotNull(message = "Admin response must be selected.")

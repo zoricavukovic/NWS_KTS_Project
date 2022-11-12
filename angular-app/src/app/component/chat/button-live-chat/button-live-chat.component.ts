@@ -12,6 +12,7 @@ export class ButtonLiveChatComponent implements OnInit, OnDestroy {
 
   isAdmin: boolean;
   loggedUser: User;
+  showChatPoupup: boolean = false;
 
   authSubscription: Subscription;
 

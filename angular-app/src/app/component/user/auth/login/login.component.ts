@@ -9,6 +9,7 @@ import { isFormValid } from 'src/app/util/validation-function';
 import { Router } from '@angular/router';
 import { LoginResponse } from 'src/app/model/response/user/login';
 import {ToastrService} from "ngx-toastr";
+import { ChatService } from 'src/app/service/chat.service';
 
 @Component({
   selector: 'app-login',
@@ -30,7 +31,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   constructor(private authService: SocialAuthService,
               private social: AuthService,
               private router: Router,
-              private toast: ToastrService
+              private toast: ToastrService,
+              private chatService: ChatService
   ) { }
 
   ngOnInit(): void {
@@ -40,6 +42,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   signInWithGoogle(): void {
     let router = this.router;
     let toast = this.toast;
+    let chatService = this.chatService;
     this.authService.authState.subscribe(
 
       (user) => {
@@ -47,6 +50,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         authService.loginWithGoogle(user.idToken)
           .subscribe({
             next(loggedUser:LoginResponse): void {
+              chatService.connect(loggedUser.userDTO.role.name, loggedUser.userDTO.email);
               authService.setLocalStorage(loggedUser);
               authService.currentUser$.next(loggedUser.userDTO);
               router.navigate(['/home-page'])
@@ -62,12 +66,14 @@ export class LoginComponent implements OnInit, OnDestroy {
   signInWithFB(): void {
     let router = this.router;
     let toast = this.toast;
+    let chatService = this.chatService;
     this.authService.signIn(FacebookLoginProvider.PROVIDER_ID).then(
       data => {
         let authService = this.social;
         this.social.loginWithFacebook(data.authToken)
           .subscribe({
             next(loggedUser:LoginResponse): void {
+              chatService.connect(loggedUser.userDTO.role.name, loggedUser.userDTO.email);
               authService.setLocalStorage(loggedUser);
               authService.currentUser$.next(loggedUser.userDTO);
               router.navigate(['/home-page'])
@@ -93,12 +99,14 @@ export class LoginComponent implements OnInit, OnDestroy {
       let router = this.router;
       let toast = this.toast;
       let authService = this.social;
+      let chatService = this.chatService;
       this.authSubscription = this.social.login(new LoginRequest(
         this.loginForm.get('email').value,
         this.loginForm.get('password').value
       )).subscribe(
         {
           next(loggedUser:LoginResponse): void {
+            chatService.connect(loggedUser.userDTO.role.name, loggedUser.userDTO.email);
             authService.setLocalStorage(loggedUser);
             authService.currentUser$.next(loggedUser.userDTO);
             router.navigate(['/home-page'])
@@ -110,8 +118,6 @@ export class LoginComponent implements OnInit, OnDestroy {
       )
     }
   }
-
-
 
   ngOnDestroy(): void {
     if (this.authSubscription){

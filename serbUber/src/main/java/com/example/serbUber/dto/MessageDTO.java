@@ -1,5 +1,6 @@
 package com.example.serbUber.dto;
 
+import com.example.serbUber.dto.user.MessageUserDTO;
 import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.model.Message;
 import com.example.serbUber.model.user.User;
@@ -14,17 +15,17 @@ public class MessageDTO {
 
     private LocalDateTime timeStamp;
 
-    private UserDTO sender;
+    private MessageUserDTO sender;
 
-    private UserDTO receiver;
+    private MessageUserDTO receiver;
 
     private boolean adminResponse;
 
     public MessageDTO(
             final String message,
             final LocalDateTime timeStamp,
-            final UserDTO sender,
-            final UserDTO receiver,
+            final MessageUserDTO sender,
+            final MessageUserDTO receiver,
             final boolean adminResponse) {
         this.message = message;
         this.timeStamp = timeStamp;
@@ -36,8 +37,8 @@ public class MessageDTO {
     public MessageDTO(final Message message) {
         this.message = message.getMessage();
         this.timeStamp = message.getTimeStamp();
-        this.sender = new UserDTO(message.getSender());
-        this.receiver = new UserDTO(message.getReceiver());
+        this.sender = new MessageUserDTO(message.getSender());
+        this.receiver = new MessageUserDTO(message.getReceiver());
         this.adminResponse = message.isAdminResponse();
     }
 
@@ -58,11 +59,11 @@ public class MessageDTO {
         return timeStamp;
     }
 
-    public UserDTO getSender() {
+    public MessageUserDTO getSender() {
         return sender;
     }
 
-    public UserDTO getReceiver() {
+    public MessageUserDTO getReceiver() {
         return receiver;
     }
 

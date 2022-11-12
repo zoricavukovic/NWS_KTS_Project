@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import * as SockJS from 'sockjs-client';
 import {Stomp} from '@stomp/stompjs';
+import { Message } from '../model/response/messages/message';
+import { MessageService } from './message.service';
 
 
 @Injectable({
@@ -8,43 +10,55 @@ import {Stomp} from '@stomp/stompjs';
 })
 export class ChatService {
 
-  messages: string[];
-  newMessage = {
-    "message": "ovo je poruka",
-    "senderEmail": "ana@gmail.com",
-    "receiverEmail": "pera@gmail.com",
-    "adminResponse": false
-  };
-
   private stompClient = null;
+  initialized: boolean = false;
+  webSocketUrl: string = 'http://localhost:8080/ws';
+  publisherUrl: string = '/user/';
+  roleAdmin: string = "ROLE_ADMIN";
 
-  constructor() {
-    this.connect();
+  constructor(private messageService: MessageService) {}
+
+  
+  connect(userRole: string, userEmail: string) {
+    if (!this.initialized) {
+      this.initialized = true;
+      const serverUrl = this.webSocketUrl;
+      const ws = new SockJS(serverUrl);
+      this.stompClient = Stomp.over(ws);
+      const that = this;
+      this.stompClient.connect({}, function(frame) {
+        that.stompClient.subscribe(that.publisherUrl + userEmail + "/messages", (message) => {
+          if (message !== null && message !== undefined) {
+            console.log("Uspelo" + message.body);
+            that.messageService.addMessage(JSON.parse(message.body));
+          }
+        });
+      });
+    }
   }
 
-  //dobijam konkretnog ulogovanog, ako je user onda slusa samo na svom
-  //ako je admin, slusa na /user
-  connect() {
-    const serverUrl = 'http://localhost:8080/ws';
-    const ws = new SockJS(serverUrl);
-    this.stompClient = Stomp.over(ws);
-    const that = this;
-    this.stompClient.connect({}, function(frame) {
-      that.stompClient.subscribe('/socket-publisher', (message) => {
-        if (message !== null && message !== undefined) {
-          console.log("Uspelo" +message.body);
-          //that.messages.push(message);
-        }
-      });
+  subscribeToLocalSocket(userEmail: string): void {
+    this.stompClient.subscribe(this.publisherUrl + "/" + userEmail, (message) => {
+      this.showMessage(message);
+      console.log("Neki event kod specificne rute.")
     });
   }
 
-  sendMessage() {
-    this.stompClient.send('/socket-subscriber/send/message' , {}, JSON.stringify(this.newMessage));
+  disconnect(): void {
+    if (this.stompClient != null) {
+      this.stompClient.disconnect();
+    }
+
+    this.initialized = false;
+    console.log('Disconnected!');
+  }
+
+  sendMessage(message: Message) {
+    this.stompClient.send('/app/send' , {}, JSON.stringify(message));
   }
 
   showMessage(message) {
-    this.messages.push(message);
+    //this.messages.push(message);
   }
 
 }

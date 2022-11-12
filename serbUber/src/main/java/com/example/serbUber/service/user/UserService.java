@@ -12,6 +12,7 @@ import java.util.List;
 
 import static com.example.serbUber.dto.user.UserDTO.fromUsers;
 import static com.example.serbUber.model.user.User.passwordsDontMatch;
+import static com.example.serbUber.util.Constants.ROLE_ADMIN;
 import static com.example.serbUber.util.EmailConstants.FRONT_RESET_PASSWORD_URL;
 import static com.example.serbUber.util.EmailConstants.RESET_PASSWORD_SUBJECT;
 import static com.example.serbUber.util.JwtProperties.getHashedNewUserPassword;
@@ -168,5 +169,11 @@ public class UserService {
         if (!oldPasswordsMatch(currentPassword, user.getPassword())) {
             throw new PasswordsDoNotMatchException("Your old password is not correct.");
         }
+    }
+
+    public User findFirstAdmin() throws EntityNotFoundException {
+
+        return userRepository.getFirstAdmin()
+                .orElseThrow(() -> new EntityNotFoundException(ROLE_ADMIN, EntityType.USER));
     }
 }

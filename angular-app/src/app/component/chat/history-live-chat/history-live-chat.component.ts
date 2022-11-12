@@ -36,10 +36,6 @@ export class HistoryLiveChatComponent implements OnInit, OnDestroy {
     )
   }
 
-  sendMessage() {
-    this.chatService.sendMessage();
-  }
-
   ngOnDestroy(): void {
     if (this.authService) {
       this.authSubscription.unsubscribe();

@@ -14,7 +14,8 @@ import java.util.List;
 
 import static com.example.serbUber.exception.ErrorMessagesConstants.WRONG_EMAIL;
 
-@RestController("/messages")
+@RestController()
+@RequestMapping("/messages")
 public class MessageController {
 
     private MessageService messageService;
@@ -32,7 +33,7 @@ public class MessageController {
 
     @GetMapping("/{email}")
     @ResponseStatus(HttpStatus.OK)
-    public List<MessageDTO> getAllPerUser(@Valid @Email(message = WRONG_EMAIL)@PathVariable String email) {
+    public List<MessageDTO> getAllPerUser(@PathVariable @Email(message = WRONG_EMAIL) String email) {
 
         return messageService.getMessagesPerUser(email);
     }

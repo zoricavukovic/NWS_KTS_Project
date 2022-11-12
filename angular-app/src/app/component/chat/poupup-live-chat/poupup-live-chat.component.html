@@ -1,1 +1,23 @@
-<p>poupup-live-chat works!</p>
+<div class="live-chat-container">
+    <div class="chat">
+        <div class="contact bar">
+            <div class="pic stark"></div>
+            <div class="name center">
+                Admin support team
+            </div>
+        </div>
+        <div class="messages" id="chat">
+            <div *ngFor="let mes of messages">
+                <div *ngIf="showDescTag(mes)" class="name-data">
+                    {{mes.receiver.name + " " + mes.receiver.surname}}
+                </div>
+                <div [class]="mes.adminResponse ? 'message' : 'message sender'">
+                    {{mes.message}}
+                </div>
+            </div>
+        </div>
+        <div class="input">
+            <input #messageInput [(ngModel)]="newMessage" placeholder="Type your message here!" type="text" (keyup.enter)="onSend()" />
+        </div>
+    </div>
+</div>
