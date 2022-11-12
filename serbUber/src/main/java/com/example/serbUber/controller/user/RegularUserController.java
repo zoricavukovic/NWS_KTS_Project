@@ -1,5 +1,6 @@
 package com.example.serbUber.controller.user;
 
+import com.example.serbUber.dto.RouteDTO;
 import com.example.serbUber.dto.user.RegularUserDTO;
 import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.EntityAlreadyExistsException;
@@ -15,7 +16,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Email;
 import java.util.List;
+
+import static com.example.serbUber.exception.ErrorMessagesConstants.WRONG_EMAIL;
 
 @RestController
 @RequestMapping("/regular-users")
@@ -62,6 +66,12 @@ public class RegularUserController {
     @ResponseStatus(HttpStatus.OK)
     public boolean isFavouriteRoute(@PathVariable Long id, @PathVariable String email){
         return regularUserService.isFavouriteRoute(id, email);
+    }
+
+    @GetMapping("/favourite-routes/{email}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<RouteDTO> getFavouriteRoutes(@Valid @Email(message=WRONG_EMAIL) @PathVariable String email){
+        return regularUserService.getFavouriteRoutes(email);
     }
 
     @PostMapping("/register")

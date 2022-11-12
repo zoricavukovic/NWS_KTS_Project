@@ -12,6 +12,7 @@ import { ProfilePageComponent } from './component/user/profile-page/profile-page
 import { EditProfileComponent } from './component/user/edit-profile/edit-profile.component';
 import { ShowDriversComponent } from './component/admin/show-drivers/show-drivers.component';
 import { ShowUsersComponent } from './component/admin/show-users/show-users.component';
+import { FavouriteRoutesComponent } from './component/favourite-routes/favourite-routes.component';
 
 const routes: Routes = [
   {path:'', redirectTo:'home-page', pathMatch:'full'},
@@ -30,6 +31,7 @@ const routes: Routes = [
   {path: 'edit-profile-data', component: EditProfileComponent},
   {path: 'drivers', component: ShowDriversComponent},
   {path: 'users', component: ShowUsersComponent},
+  {path: 'favourite-routes', component:FavouriteRoutesComponent},
   {path:'', redirectTo:'login', pathMatch:'full'}
 ];
 

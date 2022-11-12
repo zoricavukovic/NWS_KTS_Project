@@ -92,6 +92,8 @@ public class SpringConfig extends WebSecurityConfigurerAdapter {
             .permitAll()
             .antMatchers("/regular-users/favouriteRoute/{id}/{email}")
             .permitAll()
+            .antMatchers("/regular-users/favourite-routes/{email}")
+            .permitAll()
             .anyRequest()
             .authenticated()
             .and()

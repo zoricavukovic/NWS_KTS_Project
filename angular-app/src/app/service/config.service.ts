@@ -38,6 +38,7 @@ export class ConfigService {
   private _is_favourite_route_url = this._api_url + "/regular-users/favouriteRoute/";
   private _all_drivers_url = this._api_url + "/drivers";
   private _all_users_url = this._api_url + "/regular-users";
+  private _get_favourite_routes = this._api_url +"/regular-users/favourite-routes/"
 
   private _send_reset_password_email = this._api_url + "/users/send-rest-password-link";
   private _reset_password = this._api_url + "/users/reset-password";
@@ -149,6 +150,10 @@ export class ConfigService {
 
   get all_users_url(): string{
     return this._all_users_url;
+  }
+
+  get_favourite_routes(email: string): string{
+    return this._get_favourite_routes + email;
   }
 
 }
