@@ -14,6 +14,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
   currentUser: User;
   isAdmin: boolean;
   currentUserSubscription: Subscription;
+  logoutSubscription: Subscription;
   
   constructor(
     private authService: AuthService,
@@ -40,7 +41,9 @@ export class NavBarComponent implements OnInit, OnDestroy {
   }
 
   logOut(){
-
+    this.logoutSubscription = this.authService.setOfflineStatus(this.currentUser).subscribe((res) => {
+      console.log("Logut");
+    })
     this.authService.logOut();
     this.router.navigate(['/home-page']);
   }

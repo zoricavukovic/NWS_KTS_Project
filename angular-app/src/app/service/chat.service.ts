@@ -3,6 +3,7 @@ import * as SockJS from 'sockjs-client';
 import {Stomp} from '@stomp/stompjs';
 import { Message } from '../model/response/messages/message';
 import { MessageService } from './message.service';
+import { environment } from 'src/environments/environment';
 
 
 @Injectable({
@@ -12,8 +13,6 @@ export class ChatService {
 
   private stompClient = null;
   initialized: boolean = false;
-  webSocketUrl: string = 'http://localhost:8080/ws';
-  publisherUrl: string = '/user/';
   roleAdmin: string = "ROLE_ADMIN";
 
   constructor(private messageService: MessageService) {}
@@ -22,23 +21,23 @@ export class ChatService {
   connect(userRole: string, userEmail: string) {
     if (!this.initialized) {
       this.initialized = true;
-      const serverUrl = this.webSocketUrl;
+      const serverUrl = environment.webSocketUrl;
       const ws = new SockJS(serverUrl);
       this.stompClient = Stomp.over(ws);
       const that = this;
       this.stompClient.connect({}, function(frame) {
-        that.stompClient.subscribe(that.publisherUrl + userEmail + "/messages", (message) => {
+        that.stompClient.subscribe(environment.publisherUrl + userEmail + "/messages", (message) => {
           if (message !== null && message !== undefined) {
             console.log("Uspelo" + message.body);
             that.messageService.addMessage(JSON.parse(message.body));
           }
-        });
+        }); 
       });
     }
   }
 
   subscribeToLocalSocket(userEmail: string): void {
-    this.stompClient.subscribe(this.publisherUrl + "/" + userEmail, (message) => {
+    this.stompClient.subscribe(environment.publisherUrl + "/" + userEmail, (message) => {
       this.showMessage(message);
       console.log("Neki event kod specificne rute.")
     });

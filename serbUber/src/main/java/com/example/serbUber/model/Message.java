@@ -12,6 +12,8 @@ public class Message extends Notification {
     @Column(name="admin_response", nullable = false)
     private boolean adminResponse = false;
 
+    //da li je procesuirana poruka
+
     public Message() {
         super();
     }

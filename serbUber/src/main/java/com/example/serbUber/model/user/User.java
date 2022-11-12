@@ -37,6 +37,9 @@ public abstract class User {
     @JoinColumn(name="role_id", nullable = false)
     private Role role;
 
+    @Column(name = "online", nullable = false)
+    private boolean online = false;
+
     public User() {}
 
     public User(
@@ -147,6 +150,14 @@ public abstract class User {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public boolean isOnline() {
+        return online;
+    }
+
+    public void setOnline(boolean online) {
+        this.online = online;
     }
 
     public static boolean passwordsMatch(String password, String confirmationPassword){

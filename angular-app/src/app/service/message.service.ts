@@ -11,7 +11,7 @@ import { MessageRequest } from '../model/request/message-request';
 })
 export class MessageService {
 
-  messages$ = new BehaviorSubject<Message[]>(null);
+  messages$ = new BehaviorSubject<Message[]>([]);
 
   constructor( 
     private http: HttpClient,
@@ -38,7 +38,7 @@ export class MessageService {
   }
 
   addMessage(message: Message) {
-
+    
     this.messages$.next(this.messages$.value.concat(message));
   }
 

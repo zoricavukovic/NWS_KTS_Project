@@ -14,6 +14,7 @@ export class ConfigService {
 
   private _api_url = environment.apiUrl;
   private _login_user = this._api_url + "/auth/login";
+  private _logout_user = this._api_url + "/auth/logout";
   private _login_with_gmail_user = this._api_url + "/auth/login/google";
   private _login_with_facebook_user = this._api_url + "/auth/login/facebook";
   private _register_user = this._api_url + "/regular-users/register";
@@ -115,8 +116,12 @@ export class ConfigService {
     return this._users_url + "/password";
   }
 
-   get all_messages(): string {
+  get all_messages(): string {
     return this._all_messages;
+  }
+
+  get logout_url(): string {
+    return this._logout_user;
   }
 
 }

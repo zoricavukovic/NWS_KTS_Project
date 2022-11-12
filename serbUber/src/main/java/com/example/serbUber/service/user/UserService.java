@@ -176,4 +176,18 @@ public class UserService {
         return userRepository.getFirstAdmin()
                 .orElseThrow(() -> new EntityNotFoundException(ROLE_ADMIN, EntityType.USER));
     }
+
+    public UserDTO setOnlineStatus(final String email) throws EntityNotFoundException {
+        User user = getUserByEmail(email);
+        user.setOnline(true);
+
+        return new UserDTO(userRepository.save(user));
+    }
+
+    public UserDTO setOfflineStatus(final String email) throws EntityNotFoundException {
+        User user = getUserByEmail(email);
+        user.setOnline(false);
+
+        return new UserDTO(userRepository.save(user));
+    }
 }

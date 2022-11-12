@@ -49,6 +49,11 @@ export class AuthService {
     this.router.navigate(['/login']);
   }
 
+  setOfflineStatus(loggedUser: User): Observable<User> {
+
+     return this.http.post<User>(this.configService.logout_url, loggedUser.email);
+  }
+
   setUserInLocalStorage(user: User): void {
     localStorage.setItem('user', JSON.stringify(user));
     this.currentUser$.next(user);
