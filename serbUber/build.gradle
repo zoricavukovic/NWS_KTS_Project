@@ -47,6 +47,7 @@ dependencies {
 	implementation 'com.graphhopper:graphhopper-core:6.2'
 	runtimeOnly 'org.postgresql:postgresql'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 

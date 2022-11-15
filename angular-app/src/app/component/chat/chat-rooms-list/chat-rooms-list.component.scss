@@ -1,0 +1,100 @@
+$background: white;
+
+.center {
+    position: absolute;
+    top: 50%;
+    left: calc(50% + 12rem);
+    transform: translate(-50%, -50%);
+}
+
+.pic {
+    width: 3.5rem;
+    height: 3.5rem;
+    background-size: cover;
+    background-position: center;
+    border-radius: 50%;
+}
+
+.contact {
+    position: relative;
+    margin-bottom: 1rem;
+    padding-left: 5rem;
+    height: 4.5rem;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .pic {
+        position: absolute;
+        left: 0.5rem;
+    }
+
+    .name {
+        font-weight: bold;
+        font-size: 1rem;
+        margin-bottom: 0.1rem;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .resolved-badge {
+        background-color: var(--mint);
+        font-size: 1rem;
+        padding: 4px 8px;
+        text-align: center;
+        margin-right: 1rem;
+        border-radius: 20px;
+    }
+
+    .badge {
+        box-sizing: border-box;
+        position: absolute;
+        width: 1.5rem;
+        height: 1.5rem;
+        text-align: center;
+        font-size: 0.9rem;
+        padding-top: 0.125rem;
+        border-radius: 1rem;
+
+        top: 0;
+        left: 2.5rem;
+        background: var(--blue);
+        color: white;
+    }
+
+}
+
+.contacts {
+    margin-top: 2rem;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translate(-25rem, -50%);
+
+    width: 26rem;
+    height: 38rem;
+    padding: 1rem 2rem 1rem 1rem;
+    box-sizing: border-box;
+    border-radius: 1rem 0 0 1rem;
+
+    background: var(--cream);
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    h2 {
+        display: flex;
+        font-size: 1.5rem;
+        justify-content: center;
+    }
+
+    .active {
+        background-color: $background !important;
+        width: 18.5rem;
+        border-radius: 2rem;
+    }
+}
+
+.default-message {
+    background-image: url(../../../../assets/images/message.png);
+}

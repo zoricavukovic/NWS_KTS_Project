@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { User } from 'src/app/model/response/user/user';
 import { AuthService } from 'src/app/service/auth.service';
+import { ConfigService } from 'src/app/service/config.service';
 
 @Component({
   selector: 'nav-bar',
@@ -14,18 +15,21 @@ export class NavBarComponent implements OnInit, OnDestroy {
   isAdmin = false;
   isRegularUser = false;
   currentUserSubscription: Subscription;
+  logoutSubscription: Subscription;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    public configService: ConfigService
+  ) {}
 
   ngOnInit(): void {
     this.currentUserSubscription = this.authService
       .getCurrentUser()
-      .subscribe(data => {
-        this.currentUser = data;
-        if (this.currentUser) {
-          this.isRegularUser = this.authService.userIsRegular(this.currentUser);
-          this.isAdmin = this.authService.userIsAdmin(this.currentUser);
-        }
+      .subscribe((user: User) => {
+        this.currentUser = user;
+        this.isAdmin = user.isUserAdmin();
+        this.isRegularUser = user.userIsRegular();
       });
   }
 
@@ -37,7 +41,17 @@ export class NavBarComponent implements OnInit, OnDestroy {
     this.router.navigate(['/profile-page']);
   }
 
+  redirectToMessagesPage() {
+    this.router.navigate(['/messages']);
+  }
+
   logOut() {
+    this.logoutSubscription = this.authService
+      .setOfflineStatus(this.currentUser)
+      .subscribe(response => {
+        console.log(response);
+        console.log('Logut');
+      });
     this.authService.logOut();
     this.router.navigate(['/home-page']);
   }

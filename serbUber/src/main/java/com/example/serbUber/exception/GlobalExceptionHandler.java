@@ -63,4 +63,11 @@ public class GlobalExceptionHandler {
         );
         return errorMap;
     }
+
+    @ExceptionHandler(value = NoAvailableAdminException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String NoAvailableAdminException(NoAvailableAdminException noAvailableAdminException) {
+
+        return noAvailableAdminException.getMessage();
+    }
 }

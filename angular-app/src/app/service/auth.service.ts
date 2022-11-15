@@ -7,6 +7,7 @@ import { Route } from '../model/response/route';
 import { ConfigService } from './config.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Router } from '@angular/router';
+import { ChatService } from './chat.service';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +18,8 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private configService: ConfigService,
-    private router: Router
+    private router: Router,
+    private chatService: ChatService
   ) {}
 
   login(loginRequest: LoginRequest): Observable<LoginResponse> {
@@ -47,9 +49,17 @@ export class AuthService {
   }
 
   logOut() {
+    this.chatService.disconnect();
     this.currentUser$.next(null);
     localStorage.clear();
     this.router.navigate(['/login']);
+  }
+
+  setOfflineStatus(loggedUser: User): Observable<User> {
+    return this.http.post<User>(
+      this.configService.logout_url,
+      loggedUser.email
+    );
   }
 
   setUserInLocalStorage(user: User): void {
@@ -60,7 +70,18 @@ export class AuthService {
   getCurrentUser(): BehaviorSubject<User> {
     const user = localStorage.getItem('user');
     if (user !== null && user !== undefined) {
-      this.currentUser$.next(JSON.parse(user));
+      const parsedUser: User = JSON.parse(user);
+      this.currentUser$.next(
+        new User(
+          parsedUser.email,
+          parsedUser.name,
+          parsedUser.surname,
+          parsedUser.phoneNumber,
+          parsedUser.city,
+          parsedUser.role,
+          parsedUser.profilePicture
+        )
+      );
     } else {
       this.currentUser$.next(null);
     }

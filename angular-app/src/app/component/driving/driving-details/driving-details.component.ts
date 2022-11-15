@@ -27,7 +27,7 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
   driving: Driving = new Driving();
   driver: Driver;
   vehicle: Vehicle;
-  currentUser: User = new User();
+  currentUser: User;
   destinations: string[] = [];
   startPoint: string;
   favouriteRoute = false;
@@ -79,8 +79,10 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
 
         this.currentUserSubscription = this.authService
           .getCurrentUser()
-          .subscribe(response => {
-            this.currentUser = response;
+          .subscribe(user => {
+            this.isRegularUser = user.userIsRegular();
+            this.isDriver = user.userIsDriver();
+            this.currentUser = user;
             this.favouriteRouteSubscription = this.userService
               .isFavouriteRouteForUser(
                 this.driving.route.id,

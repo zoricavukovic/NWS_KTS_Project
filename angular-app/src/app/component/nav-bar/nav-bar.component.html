@@ -18,13 +18,14 @@
 
 
     <div *ngIf="currentUser" class="temp">
-        <img mat-button [matMenuTriggerFor]="menu" src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img (31).webp" alt="avatar" loading="lazy"  class="img-circle-small">
+        <img mat-button [matMenuTriggerFor]="menu" [src]="configService.base64_show_photo_prefix + currentUser.profilePicture" alt="avatar" loading="lazy"  class="img-circle-small">
         <span class="status bottomRight"></span>
     </div>
    
     <mat-menu #menu="matMenu">
         <button mat-menu-item (click)="redirectToProfilePage()"><mat-icon color="primary">account_circle</mat-icon><span>My profile</span></button>
         <button mat-menu-item (click)="redirectToEditPage()"><mat-icon color="primary">edit</mat-icon><span>Edit profile</span></button>
+        <button mat-menu-item *ngIf="isAdmin" (click)="redirectToMessagesPage()"><mat-icon color="primary">chat</mat-icon><span>Messages</span></button>
         <button mat-menu-item (click)="logOut()"><mat-icon color="primary">logout</mat-icon><span>Log out</span></button>
     </mat-menu>
 </mat-toolbar>

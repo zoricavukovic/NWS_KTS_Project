@@ -2,17 +2,17 @@ INSERT INTO ROLE (name) VALUES ('ROLE_ADMIN');
 INSERT INTO ROLE (name) VALUES ('ROLE_REGULAR_USER');
 INSERT INTO ROLE (name) VALUES ('ROLE_DRIVER');
 --sifra123@
-insert into admins (id, email, password, name, surname, phone_number, city, profile_picture, role_id) values
-    (nextval('users_id_gen'), 'pera@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Pera', 'Peric', '012345678', 'Novi Sad', 'default-user.png', 1);
+insert into admins (id, email, password, name, surname, phone_number, city, profile_picture, role_id, online) values
+    (nextval('users_id_gen'), 'pera@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Pera', 'Peric', '012345678', 'Novi Sad', 'default-user.png', 1, false);
 
-insert into regular_users (id, email, password, name, surname, phone_number, city, profile_picture, role_id, blocked, verified) values
-    (nextval('users_id_gen'), 'ana@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Ana', 'Ancic', '012345678', 'Novi Sad', 'default-user.png',2, false, true);
+insert into regular_users (id, email, password, name, surname, phone_number, city, profile_picture, role_id, blocked, verified, online) values
+    (nextval('users_id_gen'), 'ana@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Ana', 'Ancic', '012345678', 'Novi Sad', 'default-user.png',2, false, true, false);
 
-insert into regular_users (id, email, password, name, surname, phone_number, city, profile_picture, role_id, blocked, verified) values
-    (nextval('users_id_gen'), 'miki@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Miki', 'Mikic', '0651234567', 'Novi Sad', 'default-user.png',2, false, true);
+insert into regular_users (id, email, password, name, surname, phone_number, city, profile_picture, role_id, blocked, verified, online) values
+    (nextval('users_id_gen'), 'miki@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Miki', 'Mikic', '0651234567', 'Novi Sad', 'default-user.png',2, false, true, false);
 
-insert into regular_users (id, email, password, name, surname, phone_number, city, profile_picture, role_id, blocked, verified) values
-    (nextval('users_id_gen'), 'zoka200015@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Zorica', 'Vukovic', '0651234567', 'Novi Sad', 'default-user.png',2, false, true);
+insert into regular_users (id, email, password, name, surname, phone_number, city, profile_picture, role_id, blocked, verified, online) values
+    (nextval('users_id_gen'), 'zoka200015@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Zorica', 'Vukovic', '0651234567', 'Novi Sad', 'default-user.png',2, false, true, false);
 
 insert into vehicle_type_infos (num_of_seats, start_price, vehicle_type) values
     (9, 200, 0);
@@ -55,14 +55,14 @@ insert into route_destinations (route_id, location_id) values
     (3, 4);
 
 
-insert into drivers (id, email, password, name, surname, phone_number, city, profile_picture, role_id, active, blocked, verified, start_shift, end_shift, last_active, rate, working_minutes, location_id, vehicle_id) values
-    (nextval('users_id_gen'), 'mile@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Mile', 'Milic', '012345678', 'Novi Sad', 'default-user.png', 3, false, false, true, null, null, null, 0, 0, 1, 1);
+insert into drivers (id, email, password, name, surname, phone_number, city, profile_picture, role_id, active, blocked, verified, start_shift, end_shift, last_active, rate, working_minutes, location_id, vehicle_id, online) values
+    (nextval('users_id_gen'), 'mile@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Mile', 'Milic', '012345678', 'Novi Sad', 'default-user.png', 3, false, false, true, null, null, null, 0, 0, 1, 1, false);
 
-insert into drivers (id, email, password, name, surname, phone_number, city, profile_picture, role_id, active, blocked, verified, start_shift, end_shift, last_active, rate, working_minutes, location_id, vehicle_id) values
-    (nextval('users_id_gen'), 'milan@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Milan', 'Milanovic', '012345678', 'Novi Sad', 'default-user.png', 3, false, false, true, null, null, null, 0, 0, 1, 2);
+insert into drivers (id, email, password, name, surname, phone_number, city, profile_picture, role_id, active, blocked, verified, start_shift, end_shift, last_active, rate, working_minutes, location_id, vehicle_id, online) values
+    (nextval('users_id_gen'), 'milan@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Milan', 'Milanovic', '012345678', 'Novi Sad', 'default-user.png', 3, false, false, true, null, null, null, 0, 0, 1, 2, false);
 
 insert into drivings (active, driver_email, driving_status, duration, paying_limit, price, started, route_id) values
-    (false, 'mile@gmail.com', 1, 10, null, 400, to_timestamp('06.11.2022 14:00', 'DD.MM.YYYY HH24:MI'), 1);
+    (false, 'mile@gmail.com', 1, 10, null, 400, to_timestamp('06.11.2022. 14:00', 'DD.MM.YYYY HH24:MI'), 1);
 insert into drivings (active, driver_email, driving_status, duration, paying_limit, price, started, route_id) values
     (false, 'milan@gmail.com', 1, 10, null, 500,to_timestamp('24.08.2022 14:00', 'DD.MM.YYYY HH24:MI'), 3);
 insert into drivings (active, driver_email, driving_status, duration, paying_limit, price, started, route_id) values
@@ -75,6 +75,28 @@ insert into drivings_users(driving_id, user_id) values
     (2, 2);
 insert into drivings_users(driving_id, user_id) values
     (3, 2);
+
+
+insert into chat_rooms(client_id, admin_id, resolved) values
+    (2,1, true);
+insert into chat_rooms(client_id, admin_id, resolved) values
+    (2,1, false);
+insert into chat_rooms(client_id, admin_id, resolved) values
+    (3,1, false);
+
+
+insert into messages(message, time_stamp, admin_response, chat_room_id) values
+    ('Heej, imam problem', '11.11.2022. 11:00', false, 2);
+insert into messages(message, time_stamp, admin_response, chat_room_id) values
+    ('Sta te muci?', '11.11.2022. 11:20', true, 2);
+insert into messages(message, time_stamp, admin_response, chat_room_id) values
+    ('Kako da se logout..', '11.11.2022. 11:29', false, 1);
+insert into messages(message, time_stamp, admin_response, chat_room_id) values
+    ('Kliknes na ikonicu i logout..', '11.11.2022. 11:45', true, 1);
+insert into messages(message, time_stamp, admin_response, chat_room_id) values
+    ('Pomoc na putu..', '11.11.2022. 15:00', false, 3);
+insert into messages(message, time_stamp, admin_response, chat_room_id) values
+    ('Tu si?', '11.11.2022. 16:00', false, 3);
 
 
 

@@ -21,7 +21,10 @@ import org.springframework.social.facebook.api.impl.FacebookTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Email;
 import java.util.Collections;
+
+import static com.example.serbUber.exception.ErrorMessagesConstants.WRONG_EMAIL;
 
 @RestController
 @RequestMapping("/auth")
@@ -44,7 +47,9 @@ public class AuthenticationController {
 
     @PostMapping(path="/login")
     @ResponseStatus(HttpStatus.OK)
-    public LoginDTO login(@Valid @RequestBody final LoginRequest loginRequest) {
+    public LoginDTO login(@Valid @RequestBody final LoginRequest loginRequest)
+            throws EntityNotFoundException
+    {
 
         return getLoginDTO(loginRequest.getEmail(), loginRequest.getPassword());
     }
@@ -66,7 +71,10 @@ public class AuthenticationController {
         GoogleIdToken.Payload payload = googleIdToken.getPayload();
 
         UserDTO userDTO = userService.get(payload.getEmail());
-        return tokenService.googleLogin(userDTO);
+        LoginDTO loginDTO = tokenService.googleLogin(userDTO);
+        userService.setOnlineStatus(loginDTO.getUserDTO().getEmail());
+
+        return loginDTO;
     }
 
     @PostMapping(path="/login/facebook", consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -78,12 +86,28 @@ public class AuthenticationController {
         User user = facebook.fetchObject("me", User.class,data);
 
         UserDTO userDTO = userService.get(user.getEmail());
-        return tokenService.googleLogin(userDTO);
+        LoginDTO loginDTO = tokenService.googleLogin(userDTO);
+        userService.setOnlineStatus(loginDTO.getUserDTO().getEmail());
+
+        return loginDTO;
     }
 
-    private LoginDTO getLoginDTO(final String email, final String password) {
+    private LoginDTO getLoginDTO(final String email, final String password)
+            throws EntityNotFoundException
+    {
         JwtLogin jwtLogin = new JwtLogin(email, password);
+        LoginDTO loginDTO = tokenService.login(jwtLogin);
+        userService.setOnlineStatus(loginDTO.getUserDTO().getEmail());
 
-        return tokenService.login(jwtLogin);
+        return loginDTO;
+    }
+
+    @PostMapping(path="/logout")
+    @ResponseStatus(HttpStatus.OK)
+    private UserDTO logout(@Valid @Email(message = WRONG_EMAIL) @RequestBody final String email)
+            throws EntityNotFoundException
+    {
+
+        return userService.setOfflineStatus(email);
     }
 }

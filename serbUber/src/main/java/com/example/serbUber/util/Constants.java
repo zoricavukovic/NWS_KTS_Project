@@ -5,7 +5,6 @@ public class Constants {
     public static final String PHOTOS_FILE_PATH = "src/main/resources/static/images/";
     public static final String TARGET_PHOTO_FILE_PATH = "./src/main/resources/static/images/";
     public static final double STARTING_RATE = 0.0;
-    public static final int MIN_LENGTH_OF_MESSAGE = 20;
     public static final int MAX_LENGTH_OF_MESSAGE = 100;
     public static final int MIN_RATE = 0;
     public static final int MAX_RATE = 5;

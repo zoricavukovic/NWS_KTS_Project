@@ -14,6 +14,7 @@ export class ConfigService {
 
   private _api_url = environment.apiUrl;
   private _login_user = this._api_url + "/auth/login";
+  private _logout_user = this._api_url + "/auth/logout";
   private _login_with_gmail_user = this._api_url + "/auth/login/google";
   private _login_with_facebook_user = this._api_url + "/auth/login/facebook";
   private _register_user = this._api_url + "/regular-users/register";
@@ -30,6 +31,8 @@ export class ConfigService {
   private _reviewed_drivings_url = this._api_url + "/reviews/reviewedDrivings/";
   private _base64_show_photo_prefix = 'data:image/png;base64,';
   private _users_url = this._api_url + "/users";
+  private _all_messages = this._api_url + "/messages"
+  private _all_chat_rooms = this._api_url + "/chat-rooms"
 
   private _routes_url = this._api_url + "/routes";
 
@@ -126,6 +129,26 @@ export class ConfigService {
 
   get users_update_password(): string {
     return this._users_url + "/password";
+  }
+
+  get all_messages(): string {
+    return this._all_messages;
+  }
+
+  get logout_url(): string {
+    return this._logout_user;
+  }
+
+  get chat_rooms_url(): string {
+    return this._all_chat_rooms;
+  }
+
+  get all_chat_rooms_url(): string {
+    return this._all_chat_rooms + '/all/';
+  }
+
+  get resolve_chat_room_url(): string {
+    return this._all_chat_rooms + '/resolve/';
   }
 
   get option_routes(): string {

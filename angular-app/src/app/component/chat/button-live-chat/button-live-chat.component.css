@@ -1,0 +1,19 @@
+
+div.live-chat-button {
+    position: absolute;
+    bottom: 3%;
+    right: 5%;
+}
+
+.icon-live-chat {
+    transform: scale(1.5);
+}
+
+button {
+    background-color: var(--red) !important;
+}
+
+.icon-live-chat-container {
+    width: 4rem;
+    height: 4rem;
+}

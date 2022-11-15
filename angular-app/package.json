@@ -25,6 +25,9 @@
     "@angular/platform-browser": "^14.2.0",
     "@angular/platform-browser-dynamic": "^14.2.0",
     "@angular/router": "^14.2.0",
+    "@stomp/stompjs": "^6.1.2",
+    "@types/sockjs-client": "^1.5.1",
+    "@types/stompjs": "^2.3.5",
     "angular-mgl-timeline": "^1.0.0",
     "bootstrap": "^5.2.2",
     "eslint": "^8.27.0",
@@ -35,6 +38,7 @@
     "ngx-toastr": "^15.2.1",
     "primeng": "^14.1.2",
     "rxjs": "~7.5.0",
+    "sockjs-client": "^1.6.1",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"
   },

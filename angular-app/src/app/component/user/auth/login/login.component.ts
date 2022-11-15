@@ -12,6 +12,7 @@ import { isFormValid } from 'src/app/util/validation-function';
 import { Router } from '@angular/router';
 import { LoginResponse } from 'src/app/model/response/user/login';
 import { ToastrService } from 'ngx-toastr';
+import { ChatService } from 'src/app/service/chat.service';
 
 @Component({
   selector: 'app-login',
@@ -35,7 +36,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     private authService: SocialAuthService,
     private social: AuthService,
     private router: Router,
-    private toast: ToastrService
+    private toast: ToastrService,
+    private chatService: ChatService
   ) {}
 
   ngOnInit(): void {
@@ -45,11 +47,13 @@ export class LoginComponent implements OnInit, OnDestroy {
   signInWithGoogle(): void {
     const router = this.router;
     const toast = this.toast;
+    const chatService = this.chatService;
     this.authService.authState.subscribe(user => {
       const authService = this.social;
       authService.loginWithGoogle(user.idToken).subscribe({
         next(loggedUser: LoginResponse): void {
           authService.setLocalStorage(loggedUser);
+          chatService.connect(loggedUser.userDTO.email);
           authService.currentUser$.next(loggedUser.userDTO);
           router.navigate(['/home-page']);
         },
@@ -63,11 +67,13 @@ export class LoginComponent implements OnInit, OnDestroy {
   signInWithFB(): void {
     const router = this.router;
     const toast = this.toast;
+    const chatService = this.chatService;
     this.authService.signIn(FacebookLoginProvider.PROVIDER_ID).then(data => {
       const authService = this.social;
       this.social.loginWithFacebook(data.authToken).subscribe({
         next(loggedUser: LoginResponse): void {
           authService.setLocalStorage(loggedUser);
+          chatService.connect(loggedUser.userDTO.email);
           authService.currentUser$.next(loggedUser.userDTO);
           router.navigate(['/home-page']);
         },
@@ -93,6 +99,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       const router = this.router;
       const toast = this.toast;
       const authService = this.social;
+      const chatService = this.chatService;
       this.authSubscription = this.social
         .login(
           new LoginRequest(
@@ -103,6 +110,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         .subscribe({
           next(loggedUser: LoginResponse): void {
             authService.setLocalStorage(loggedUser);
+            chatService.connect(loggedUser.userDTO.email);
             authService.currentUser$.next(loggedUser.userDTO);
             router.navigate(['/home-page']);
           },

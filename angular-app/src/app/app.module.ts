@@ -35,6 +35,11 @@ import { MatTooltipModule} from '@angular/material/tooltip';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { ToastrModule } from 'ngx-toastr';
+import { ButtonLiveChatComponent } from './component/chat/button-live-chat/button-live-chat.component';
+import { PoupupLiveChatComponent } from './component/chat/poupup-live-chat/poupup-live-chat.component';
+import { HistoryLiveChatComponent } from './component/chat/history-live-chat/history-live-chat.component';
+import { ChatRoomsListComponent } from './component/chat/chat-rooms-list/chat-rooms-list.component';
+import { MessagesBoxComponent } from './component/chat/messages-box/messages-box.component';
 import { RouteRowComponent } from './component/route-row/route-row.component';
 import { ShowDriversComponent } from './component/admin/show-drivers/show-drivers.component';
 import { DriverRowComponent } from './component/admin/driver-row/driver-row.component';
@@ -64,6 +69,11 @@ import { UtilMessageComponent } from './component/util-message/util-message.comp
     ProfilePageComponent,
     EditProfileComponent,
     ChangeProfilePicComponent,
+    ButtonLiveChatComponent,
+    PoupupLiveChatComponent,
+    HistoryLiveChatComponent,
+    ChatRoomsListComponent,
+    MessagesBoxComponent,
     RouteRowComponent,
     ShowDriversComponent,
     DriverRowComponent,
