@@ -40,10 +40,15 @@ export class PoupupLiveChatComponent implements OnInit, OnDestroy {
     );
   }
 
+  //ako je resolved kreiraj novu
   checkIfResolved() {
     if (this.chatRoom.resolved){
       this.toast.success("Problem solved!", "Thank you for using live chat.");
-      this.ngOnInit();
+      this.chatRoomSubscription = this.chatRoomService.getUserChatRoom(this.loggedUser.email).subscribe(
+      res => {
+        this.chatRoom = res;
+      }
+    );
     }
   }
 
@@ -61,8 +66,13 @@ export class PoupupLiveChatComponent implements OnInit, OnDestroy {
     return true;
   }
 
+  checkIfChatRoomValid(): boolean {
+
+    return (this.chatRoom !== null && this.chatRoom !== undefined && !this.chatRoom.resolved)
+  }
+
   getChatRoomIdIfExist(): number {
-    if (this.chatRoom !== null && this.chatRoom !== undefined) {
+    if (this.checkIfChatRoomValid()) {
 
       return this.chatRoom.id;
     }

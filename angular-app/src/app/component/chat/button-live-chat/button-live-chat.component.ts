@@ -22,7 +22,7 @@ export class ButtonLiveChatComponent implements OnInit, OnDestroy {
     this.authSubscription = this.authService.getCurrentUser().subscribe(
         user => {
           this.loggedUser = user;
-          this.isAdmin = this.authService.userIsAdmin();
+          this.isAdmin = this.authService.userIsAdmin(this.loggedUser);
         }
       );
     }

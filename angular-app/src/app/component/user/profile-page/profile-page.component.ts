@@ -16,13 +16,11 @@ export class ProfilePageComponent implements OnInit, OnDestroy {
 
   loggedUser: User;
   authSubscription: Subscription;
-  showPayments: boolean;
 
   hidePassword: boolean =true;
   hideConfirmPassword: boolean =true;
 
   showEditPassword: boolean = false;
-  showEditPayments: boolean = false;
 
   constructor(
     private authService: AuthService,
@@ -37,7 +35,6 @@ export class ProfilePageComponent implements OnInit, OnDestroy {
     this.authSubscription = this.authService.getCurrentUser().subscribe(
       user => {
         this.loggedUser = user
-        this.showPayments = !this.authService.userIsAdmin(user);
       }
     );
   }

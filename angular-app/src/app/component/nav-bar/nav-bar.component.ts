@@ -25,7 +25,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.currentUserSubscription = this.authService.getCurrentUser().subscribe((data) => {
       this.currentUser=data; 
-      this.isAdmin = this.authService.userIsAdmin();
+      this.isAdmin = this.authService.userIsAdmin(this.currentUser);
       this.isRegularUser = this.authService.userIsRegular(this.currentUser);
       this.isAdmin = this.authService.userIsAdmin(this.currentUser);
     });
