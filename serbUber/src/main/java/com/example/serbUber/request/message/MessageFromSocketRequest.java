@@ -7,12 +7,11 @@ import java.time.LocalDateTime;
 
 import static com.example.serbUber.exception.ErrorMessagesConstants.WRONG_MESSAGE_LENGTH;
 import static com.example.serbUber.util.Constants.MAX_LENGTH_OF_MESSAGE;
-import static com.example.serbUber.util.Constants.MIN_LENGTH_OF_MESSAGE;
 
 public class MessageFromSocketRequest {
 
     @NotBlank(message = WRONG_MESSAGE_LENGTH)
-    @Size(min = MIN_LENGTH_OF_MESSAGE, max = MAX_LENGTH_OF_MESSAGE, message = WRONG_MESSAGE_LENGTH)
+    @Size(max = MAX_LENGTH_OF_MESSAGE, message = WRONG_MESSAGE_LENGTH)
     private String message;
 
     @NotNull(message = "Time must exist.")

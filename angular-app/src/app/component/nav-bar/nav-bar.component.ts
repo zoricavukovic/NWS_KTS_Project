@@ -1,8 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { Role } from 'src/app/model/response/user/role';
 import { User } from 'src/app/model/response/user/user';
 import { AuthService } from 'src/app/service/auth.service';
+import { ConfigService } from 'src/app/service/config.service';
 
 @Component({
   selector: 'nav-bar',
@@ -16,18 +18,19 @@ export class NavBarComponent implements OnInit, OnDestroy {
   isRegularUser: boolean;
   currentUserSubscription: Subscription;
   logoutSubscription: Subscription;
+
   
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    public configService: ConfigService
   ) { }
 
   ngOnInit(): void {
-    this.currentUserSubscription = this.authService.getCurrentUser().subscribe((data) => {
-      this.currentUser=data; 
-      this.isAdmin = this.authService.userIsAdmin(this.currentUser);
-      this.isRegularUser = this.authService.userIsRegular(this.currentUser);
-      this.isAdmin = this.authService.userIsAdmin(this.currentUser);
+    this.currentUserSubscription = this.authService.getCurrentUser().subscribe((user : User) => {
+      this.currentUser=user; 
+      this.isAdmin = user.isUserAdmin();
+      this.isRegularUser = user.userIsRegular();
     });
   }
 

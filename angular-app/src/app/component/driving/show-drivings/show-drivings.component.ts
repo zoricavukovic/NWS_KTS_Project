@@ -43,9 +43,9 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
   
   ngOnInit(): void {
     this.currentUserSubscription = this.authService.getCurrentUser().subscribe(
-      (data) => {
-        this.currentUser=data;
-        if(!this.authService.userIsAdmin(this.currentUser)){
+      (user) => {
+        this.currentUser=user;
+        if(!user.isUserAdmin()){
           this.drivingService.setUserEmail = this.currentUser.email;
         }
       });

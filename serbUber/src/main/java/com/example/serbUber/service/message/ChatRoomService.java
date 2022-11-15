@@ -55,6 +55,7 @@ public class ChatRoomService {
                 .orElseThrow(() -> new EntityNotFoundException(id.toString(), EntityType.CHAT_ROOM));
     }
 
+
     public ChatRoomDTO create(
             final Long chatId,
             final String message,
@@ -63,8 +64,15 @@ public class ChatRoomService {
             final boolean adminResponse
     ) throws NoAvailableAdminException, EntityNotFoundException {
 
-        return (chatId == null) ? createNewChatRoom(message, senderEmail, adminResponse)
+        return (chatRoomNotExists(chatId)) ? createNewChatRoom(message, senderEmail, adminResponse)
                 : addMessageToExisting(chatId, message, senderEmail, receiverEmail, adminResponse);
+    }
+
+    public ChatRoomDTO resolve(final Long id) throws EntityNotFoundException {
+        ChatRoom chatRoom = getActiveChatRoomById(id);
+        chatRoom.setResolved(true);
+
+        return new ChatRoomDTO(chatRoomRepository.save(chatRoom));
     }
 
     private ChatRoomDTO addMessageToExisting(Long chatId, String message, String senderEmail, String receiverEmail, boolean adminResponse)
@@ -95,10 +103,8 @@ public class ChatRoomService {
         )));
     }
 
-    public ChatRoomDTO resolve(final Long id) throws EntityNotFoundException {
-        ChatRoom chatRoom = getActiveChatRoomById(id);
-        chatRoom.setResolved(true);
-
-        return new ChatRoomDTO(chatRoomRepository.save(chatRoom));
+    private boolean chatRoomNotExists(Long chatId) {
+        return chatId == null;
     }
+
 }

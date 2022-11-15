@@ -66,13 +66,14 @@ $background: white;
 }
 
 .contacts {
+    margin-top: 2rem;
     position: absolute;
     top: 50%;
     left: 0;
-    transform: translate(-22rem, -50%);
+    transform: translate(-25rem, -50%);
 
-    width: 23rem;
-    height: 30rem;
+    width: 26rem;
+    height: 38rem;
     padding: 1rem 2rem 1rem 1rem;
     box-sizing: border-box;
     border-radius: 1rem 0 0 1rem;
@@ -89,7 +90,7 @@ $background: white;
 
     .active {
         background-color: $background !important;
-        width: 15rem;
+        width: 18.5rem;
         border-radius: 2rem;
     }
 }

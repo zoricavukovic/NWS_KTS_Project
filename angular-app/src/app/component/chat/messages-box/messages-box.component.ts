@@ -32,22 +32,13 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
   }
 
-  validateMessage(): boolean {
-      if (this.newMessage.length < 5) {
-        this.toast.error("Message cannot be sent!", "Message must contain at least 5 characters");
+  messageIsInvalid(): boolean {
 
-        return false;
-      } else if (this.newMessage.length >= 50) {
-        this.toast.error("Message cannot be sent!", "Message cannot contain more than 50 characters");
-
-        return false;
-      }
-
-      return true;
-    }
+    return this.newMessage.length >= 100;
+  }
 
   onSend(): void {
-      if (this.validateMessage()) {
+      if (!this.messageIsInvalid()) {
         this.sendMessageSubscription = this.chatRoomService.addMessageToChatRoom(
         new MessageRequest(
           this.selectedChatRoom.id,

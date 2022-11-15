@@ -18,7 +18,7 @@
 
 
     <div *ngIf="currentUser" class="temp">
-        <img mat-button [matMenuTriggerFor]="menu" src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img (31).webp" alt="avatar" loading="lazy"  class="img-circle-small">
+        <img mat-button [matMenuTriggerFor]="menu" [src]="configService.base64_show_photo_prefix + currentUser.profilePicture" alt="avatar" loading="lazy"  class="img-circle-small">
         <span class="status bottomRight"></span>
     </div>
    

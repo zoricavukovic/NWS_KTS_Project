@@ -3,11 +3,11 @@
         <div class="name">
             <span>{{selectedChatRoom.client.name + " " + selectedChatRoom.client.surname}}</span>
         </div>
-        <div class="resolved-badge" (click)="onResolve()">
+        <div class="resolved-badge" (click)="onResolve()" [matTooltip]="selectedChatRoom.resolved ? 'Problem solved' : 'Mark problem as resolved'"  matTooltipPosition="above">
             <mat-icon>{{selectedChatRoom.resolved ? 'turned_in' : 'turned_in_not'}}</mat-icon>
         </div>
     </div>
-    <div id="chat" [class]="selectedChatRoom.resolved ? 'messages resolved-position' : 'messages'">
+    <div [class]="selectedChatRoom.resolved ? 'messages resolved-position' : 'messages'">
         <div *ngFor="let mes of selectedChatRoom.messages; index as i">
             <div *ngIf="(i === 0)" class="name-data">
                 {{mes.timeStamp | date: 'dd.MM.YYYY HH:mm'}}
@@ -17,8 +17,14 @@
             </div>
         </div>
     </div>
-    <div *ngIf="!selectedChatRoom.resolved" [class]="!selectedChatRoom.resolved ? 'input' : ''">
-        <input #messageInput (keyup.enter)="onSend()" [(ngModel)] = "newMessage" placeholder="Type your message here!" type="text" />
-        <button (click)="onSend()" class="send-button">Send</button>
+    <div *ngIf="!selectedChatRoom.resolved" style="display: block; margin:1rem;">
+        <div [class]="!selectedChatRoom.resolved ? 'input' : ''">
+            <input #messageInput (keyup.enter)="onSend()" [(ngModel)]="newMessage" placeholder="Type your message here..."
+                type="text" />
+            <button (click)="onSend()" class="send-button">Send</button>
+        </div>
+        <mat-error *ngIf="messageIsInvalid()" style="margin-left: 2.3rem;">
+            Message is too long!
+        </mat-error>
     </div>
 </div>

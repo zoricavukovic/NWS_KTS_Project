@@ -14,9 +14,6 @@ import { ChatService } from './chat.service';
 })
 export class AuthService {
   currentUser$ = new BehaviorSubject<User>(null);
-  ROLE_ADMIN: string = "ROLE_ADMIN";
-  ROLE_REGULAR_USER: string = "ROLE_REGULAR_USER";
-  ROLE_DRIVER: string = "ROLE_DRIVER";
 
   constructor(
     private http: HttpClient,
@@ -65,37 +62,24 @@ export class AuthService {
   getCurrentUser(): BehaviorSubject<User> {
     let user = localStorage.getItem('user');
     if (user !== null && user !== undefined){
-
-        this.currentUser$.next(JSON.parse(user));
+        let parsedUser: User = JSON.parse(user);
+        this.currentUser$.next(
+          new User(
+          parsedUser.email, 
+          parsedUser.name, 
+          parsedUser.surname, 
+          parsedUser.phoneNumber, 
+          parsedUser.city, 
+          parsedUser.role, 
+          parsedUser.profilePicture
+        ));
     }else{
 
       this.currentUser$.next(null);
     }
     return this.currentUser$;
   }
-
-  userIsAdmin(user: User): boolean {
-    /*const userString = localStorage.getItem('user');
-    if (userString !== null && userString !== undefined){
-      const user = JSON.parse(userString);
-      if (user.role.name === this.ROLE_ADMIN){
-
-        return true;
-      }
-    }
-    return false;*/
-
-    return user.role.name === this.ROLE_ADMIN;
-  }
-
-  userIsRegular(user: User): boolean{
-    return user.role.name === this.ROLE_REGULAR_USER;
-  }
-
-  userIsDriver(user: User): boolean{
-    return user.role.name === this.ROLE_DRIVER;
-  }
-
+  
   tokenIsPresent() {
     let accessToken = this.getToken();
     return accessToken !== null;

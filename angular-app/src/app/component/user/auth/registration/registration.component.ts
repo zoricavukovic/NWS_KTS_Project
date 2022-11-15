@@ -46,8 +46,8 @@ export class RegistrationComponent implements OnInit, OnDestroy{
 
   ngOnInit(): void {
     this.currentUserSubscription = this.authService.getCurrentUser().subscribe(
-      (data) => {
-          this.showDriverForm = this.authService.userIsAdmin(data);
+      (user) => {
+          this.showDriverForm = user.isUserAdmin();
       });
   }
 

@@ -5,6 +5,7 @@ import { VerifyRequest } from 'src/app/model/request/verify-request';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth.service';
 import {ToastrService} from "ngx-toastr";
+import { User } from 'src/app/model/response/user/user';
 
 @Component({
   selector: 'app-verify',
@@ -34,16 +35,20 @@ export class VerifyComponent implements OnInit, OnDestroy {
     private router: Router
   ) {}
 
+  private checkRegistrationPurpose(user: User) {
+    if(user.isUserAdmin()){
+      this.verifyUserType = "ROLE_DRIVER";
+    }
+    else {
+      this.verifyUserType = "ROLE_REGULAR_USER";
+    }
+  }
+
   ngOnInit(): void {
     this.verifyId = this.route.snapshot.paramMap.get('id');
     this.currentUserSubscription = this.authService.getCurrentUser().subscribe(
-      (data) => {
-        if(this.authService.userIsAdmin(data)){
-          this.verifyUserType = "ROLE_DRIVER";
-        }
-        else{
-          this.verifyUserType = "ROLE_REGULAR_USER";
-        }
+      (user) => {
+        this.checkRegistrationPurpose(user);
       }
     )
   }

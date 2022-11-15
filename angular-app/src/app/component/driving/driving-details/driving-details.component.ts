@@ -60,15 +60,14 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
 
       this.driverSubscription = this.driverService.getDriver(this.driving.driverEmail).subscribe((response: Driver) => {
         this.driver = response;
-        console.log(response);
        })
 
        this.currentUserSubscription = this.authService.getCurrentUser().subscribe(
-        (response) =>
+        (user) =>
         {
-          this.isRegularUser = this.authService.userIsRegular(response);
-          this.isDriver = this.authService.userIsDriver(response);
-          this.currentUser=response;
+          this.isRegularUser = user.userIsRegular();
+          this.isDriver = user.userIsDriver();
+          this.currentUser=user;
           this.favouriteRouteSubscription = this.userService.isFavouriteRouteForUser(this.driving.route.id, this.currentUser.email).subscribe(
             (response) =>
             {
