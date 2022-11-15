@@ -3,6 +3,8 @@ import { Driving } from 'src/app/model/response/driving';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { RatingDialogComponent } from '../../review/rating-dialog/rating-dialog.component';
+import { ConfigService } from 'src/app/service/config.service';
+import { ReviewService } from 'src/app/service/review.service';
 import { Subscription } from 'rxjs';
 import { User } from 'src/app/model/response/user/user';
 import { ToastrService } from 'ngx-toastr';
@@ -27,13 +29,11 @@ export class DrivingRowComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private dialog: MatDialog,
-    private authService: AuthService,
-    private drivingService: DrivingService,
     private toast: ToastrService
   ) {}
 
   ngOnInit(): void {
-    this.isRegularUser = this.authService.userIsRegular(this.user);
+    this.isRegularUser = this.user.userIsRegular();
   }
 
   goToDetailsPage(id: number) {

@@ -15,6 +15,7 @@ export class User {
   profilePicture: string;
 
   constructor(
+    id: number,
     email: string,
     name: string,
     surname: string,
@@ -23,6 +24,7 @@ export class User {
     role: Role,
     profilePicture: string
   ) {
+    this.id = id;
     this.email = email;
     this.name = name;
     this.surname = surname;

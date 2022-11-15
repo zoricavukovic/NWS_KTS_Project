@@ -62,19 +62,18 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
       .getDrivingDetails(this.id)
       .subscribe((response: Driving) => {
         this.driving = response;
-        this.startPoint =
-          this.driving.route.startPoint.street +
-          ' ' +
-          this.driving.route.startPoint.number;
+        this.startPoint = `${this.driving.route.startPoint.street} 
+          ${this.driving.route.startPoint.number}`;
         this.destinations.push(this.startPoint);
         for (const destination of this.driving.route.destinations) {
-          this.destinations.push(destination.street + ' ' + destination.number);
+          this.destinations.push(`${destination.street} ${destination.number}`);
         }
 
         this.driverSubscription = this.driverService
           .getDriver(this.driving.driverEmail)
           .subscribe((response: Driver) => {
             this.driver = response;
+            this.vehicle = response.vehicle;
           });
 
         this.currentUserSubscription = this.authService

@@ -2,18 +2,24 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './material/material.module';
 import { LoginComponent } from './component/user/auth/login/login.component';
-import { SocialLoginModule, SocialAuthServiceConfig } from '@abacritt/angularx-social-login';
-import { GoogleLoginProvider, FacebookLoginProvider } from '@abacritt/angularx-social-login';
+import {
+  SocialLoginModule,
+  SocialAuthServiceConfig,
+} from '@abacritt/angularx-social-login';
+import {
+  GoogleLoginProvider,
+  FacebookLoginProvider,
+} from '@abacritt/angularx-social-login';
 import { environment } from 'src/environments/environment';
 import { RegistrationComponent } from './component/user/auth/registration/registration.component';
 import { VerifyComponent } from './component/user/auth/verify/verify.component';
 import { DriverVehicleComponent } from './component/vehicle/create-vehicle/driver-vehicle.component';
-import {CarouselModule} from 'primeng/carousel';
+import { CarouselModule } from 'primeng/carousel';
 import { ShowDrivingsComponent } from './component/driving/show-drivings/show-drivings.component';
 import { DrivingDetailsComponent } from './component/driving/driving-details/driving-details.component';
 import { RatingDialogComponent } from './component/review/rating-dialog/rating-dialog.component';
@@ -22,8 +28,8 @@ import { SendResetPasswordEmailComponent } from './component/user/auth/send-rese
 import { ResetPasswordComponent } from './component/user/auth/reset-password/reset-password.component';
 import { HomePageComponent } from './component/home-page/home-page.component';
 import { TimelineModule } from 'primeng/timeline';
-import { NavBarComponent} from './component/nav-bar/nav-bar.component';
-import {RatingModule} from 'primeng/rating';
+import { NavBarComponent } from './component/nav-bar/nav-bar.component';
+import { RatingModule } from 'primeng/rating';
 import { NgxStarsModule } from 'ngx-stars';
 import { MglTimelineModule } from 'angular-mgl-timeline';
 import { DrivingRowComponent } from './component/driving/driving-row/driving-row.component';
@@ -31,7 +37,7 @@ import { ProfilePageComponent } from './component/user/profile-page/profile-page
 import { EditProfileComponent } from './component/user/edit-profile/edit-profile.component';
 import { ChangeProfilePicComponent } from './component/user/change-profile-pic/change-profile-pic.component';
 import { NgToastModule } from 'ng-angular-popup';
-import { MatTooltipModule} from '@angular/material/tooltip';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { ToastrModule } from 'ngx-toastr';
@@ -83,7 +89,7 @@ import { UtilMessageComponent } from './component/util-message/util-message.comp
     MapComponent,
     FavouriteRoutesComponent,
     FavouriteRouteRowComponent,
-    UtilMessageComponent
+    UtilMessageComponent,
   ],
   imports: [
     BrowserModule,
@@ -108,10 +114,10 @@ import { UtilMessageComponent } from './component/util-message/util-message.comp
       timeOut: 4000,
       positionClass: 'toast-bottom-left',
       preventDuplicates: true,
-      closeButton: true
+      closeButton: true,
     }),
   ],
-  entryComponents:[EditProfileComponent],
+  entryComponents: [EditProfileComponent],
   providers: [
     {
       provide: 'SocialAuthServiceConfig',
@@ -120,21 +126,19 @@ import { UtilMessageComponent } from './component/util-message/util-message.comp
         providers: [
           {
             id: GoogleLoginProvider.PROVIDER_ID,
-            provider: new GoogleLoginProvider(
-              environment.clientId
-            )
+            provider: new GoogleLoginProvider(environment.clientId),
           },
           {
             id: FacebookLoginProvider.PROVIDER_ID,
-            provider: new FacebookLoginProvider(environment.facebookAppId)
-          }
+            provider: new FacebookLoginProvider(environment.facebookAppId),
+          },
         ],
-        onError: (err) => {
+        onError: err => {
           console.error(err);
-        }
+        },
       } as SocialAuthServiceConfig,
     },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

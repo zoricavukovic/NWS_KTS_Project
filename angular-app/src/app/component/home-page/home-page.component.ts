@@ -26,10 +26,10 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
   possibleRoutes: PossibleRoute[] = [];
   currentPolyline;
   searchingRoutesForm: SearchingRoutesForm[] = [];
-  autocompleteForm = new FormGroup({
+  /* autocompleteForm = new FormGroup({
     startDest: new FormControl(undefined, [this.requireMatch.bind(this)]),
     endDest: new FormControl(undefined, [this.requireMatch.bind(this)]),
-  });
+  });*/
 
   rgbDeepBlue: number[] = [44, 75, 97];
   private authSubscription: Subscription;

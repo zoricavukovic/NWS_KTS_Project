@@ -73,6 +73,7 @@ export class AuthService {
       const parsedUser: User = JSON.parse(user);
       this.currentUser$.next(
         new User(
+          parsedUser.id,
           parsedUser.email,
           parsedUser.name,
           parsedUser.surname,

@@ -39,37 +39,12 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
   reviewSubscription: Subscription;
   reviewedDrivingsSubscription: Subscription;
 
-<<<<<<< HEAD
   constructor(
     private authService: AuthService,
     private drivingService: DrivingService,
     private reviewService: ReviewService,
     private route: ActivatedRoute
   ) {}
-=======
-  constructor( private authService: AuthService, private drivingService: DrivingService, private reviewService: ReviewService) { }
-  
-  ngOnInit(): void {
-    this.currentUserSubscription = this.authService.getCurrentUser().subscribe(
-      (user) => {
-        this.currentUser=user;
-        if(!user.isUserAdmin()){
-          this.drivingService.setUserEmail = this.currentUser.email;
-        }
-      });
-    
-    this.drivingsSubscription = this.drivingService.getDrivingsForUser(this.pageNumber, this.pageSize, this.selectedSortBy, this.selectedSortOrder).subscribe((response:any) => {
-        this.drivings = response;
-        this.reviewedDrivingsSubscription= this.reviewService.getReviewedDrivingsForUser(this.currentUser.email).subscribe((response: any) => {
-          for(let driving of this.drivings){
-            if(response.includes(driving.id)){
-              driving.hasReviewForUser = true;
-            }
-          }
-        })
-    })
-   }
->>>>>>> f4983aaf65c8078062833a3d40915658b19e7daa
 
   ngOnInit(): void {
     this.userId = +this.route.snapshot.paramMap.get('id');
