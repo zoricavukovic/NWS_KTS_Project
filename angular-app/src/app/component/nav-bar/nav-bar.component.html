@@ -6,7 +6,7 @@
     <div class="spacer">
         <div *ngIf="currentUser">
         &nbsp;&nbsp;
-        <a *ngIf="!isAdmin" [routerLink]="['/drivings']" routerLinkActive='active' mat-button color="primary">Drivings</a>
+        <a *ngIf="!isAdmin" [routerLink]="['/drivings', currentUser.id]" routerLinkActive='active' mat-button color="primary">Drivings</a>
         <a *ngIf="isRegularUser" [routerLink]="['/favourite-routes']" routerLinkActive='active' mat-button color="primary">Favourite Routes</a>
         <a *ngIf="isAdmin" [routerLink]="['/drivers']" routerLinkActive='active' mat-button color="primary">Drivers</a>
         <a *ngIf="isAdmin" [routerLink]="['/users']" routerLinkActive='active' mat-button color="primary">Users</a>

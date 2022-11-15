@@ -13,6 +13,7 @@ public class RegularUserDTO extends UserDTO{
 
     public RegularUserDTO(final RegularUser regularUser) {
         super(
+            regularUser.getId(),
             regularUser.getEmail(),
             regularUser.getName(),
             regularUser.getSurname(),

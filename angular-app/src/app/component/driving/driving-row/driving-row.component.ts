@@ -3,82 +3,82 @@ import { Driving } from 'src/app/model/response/driving';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { RatingDialogComponent } from '../../review/rating-dialog/rating-dialog.component';
-import { ConfigService } from 'src/app/service/config.service';
-import { ReviewService } from 'src/app/service/review.service';
 import { Subscription } from 'rxjs';
 import { User } from 'src/app/model/response/user/user';
-import {ToastrService} from "ngx-toastr";
+import { ToastrService } from 'ngx-toastr';
 import { DrivingService } from 'src/app/service/driving.service';
+import { AuthService } from 'src/app/service/auth.service';
 
 @Component({
   selector: 'driving-row',
   templateUrl: './driving-row.component.html',
-  styleUrls: ['./driving-row.component.css']
+  styleUrls: ['./driving-row.component.css'],
 })
 export class DrivingRowComponent implements OnInit, OnDestroy {
-
   @Input() driving: Driving;
   @Input() index: number;
   @Input() user: User;
 
   dataRate;
+  isRegularUser = true;
 
   reviewSubscription: Subscription;
 
-  constructor(private router: Router,
-              private dialog: MatDialog,
-              private reviewService: ReviewService,
-              private configService: ConfigService,
-              private drivingService: DrivingService,
-              private toast: ToastrService
-  ) { }
+  constructor(
+    private router: Router,
+    private dialog: MatDialog,
+    private authService: AuthService,
+    private drivingService: DrivingService,
+    private toast: ToastrService
+  ) {}
 
-  ngOnInit(): void {}
-
-  goToDetailsPage(id: number){
-    this.drivingService.setDrivingId = id;
-    this.router.navigate(["/details"]);
+  ngOnInit(): void {
+    this.isRegularUser = this.authService.userIsRegular(this.user);
   }
 
-  isDisabledBtnRate(date, id: number) : boolean{
-    const date_today:Date = new Date();
+  goToDetailsPage(id: number) {
+    this.router.navigate(['/details', id]);
+  }
+
+  isDisabledBtnRate(date): boolean {
+    const date_today: Date = new Date();
 
     return !(this.getDifferenceInDays(date, date_today) > 3);
-   }
+  }
 
-  getDifferenceInDays(date1, date2):number {
+  getDifferenceInDays(date1, date2): number {
     const diffInMs = Math.abs(date2 - Date.parse(date1));
 
     return diffInMs / (1000 * 60 * 60 * 24);
   }
 
-  endDrivingDate(startDate, duration){
-    let start = new Date(Date.parse(startDate));
+  endDrivingDate(startDate, duration) {
+    const start = new Date(Date.parse(startDate));
 
-    return new Date(start.getTime() + duration*60000)
-   }
+    return new Date(start.getTime() + duration * 60000);
+  }
 
-
-  openDialog(id:number){
+  openDialog(id: number) {
     const dialogConfig = new MatDialogConfig();
 
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
-    dialogConfig.data ={
+    dialogConfig.data = {
       id: id,
-      userEmail: this.user.email
-    }
+      userEmail: this.user.email,
+    };
     const dialogRef = this.dialog.open(RatingDialogComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(
-
-      res => {
-        this.toast.success("Review created");
+      response => {
+        console.log(response);
+        this.toast.success('Review created');
         this.driving.hasReviewForUser = true;
       },
 
-      err => {
-        this.toast.error("Review creation failed");
+      error => {
+        console.log(error);
+        this.toast.error('Review creation failed');
       }
       /*res => {this.toast.success({detail:"Review created", summary:"Review is successfully created!", 
                 duration:4000, position:'bl'});
@@ -86,15 +86,12 @@ export class DrivingRowComponent implements OnInit, OnDestroy {
               },
       error => this.toast.error({detail:"Review creation failed", summary:error.error, 
                 duration:4000, position:'bl'})*/
-      );
+    );
   }
 
-
   ngOnDestroy(): void {
-
-    if(this.reviewSubscription){
+    if (this.reviewSubscription) {
       this.reviewSubscription.unsubscribe();
     }
-   }
-
+  }
 }

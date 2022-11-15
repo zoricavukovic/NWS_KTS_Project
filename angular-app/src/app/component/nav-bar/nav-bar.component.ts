@@ -7,28 +7,26 @@ import { AuthService } from 'src/app/service/auth.service';
 @Component({
   selector: 'nav-bar',
   templateUrl: './nav-bar.component.html',
-  styleUrls: ['./nav-bar.component.css']
+  styleUrls: ['./nav-bar.component.css'],
 })
 export class NavBarComponent implements OnInit, OnDestroy {
-
   currentUser: User;
-  isAdmin: boolean = false;
-  isRegularUser: boolean = false;
+  isAdmin = false;
+  isRegularUser = false;
   currentUserSubscription: Subscription;
-  
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) { }
+
+  constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
-    this.currentUserSubscription = this.authService.getCurrentUser().subscribe((data) => {
-      this.currentUser=data; 
-      if(this.currentUser){
-        this.isRegularUser = this.authService.userIsRegular(this.currentUser);
-        this.isAdmin = this.authService.userIsAdmin(this.currentUser);
-      }
-    });
+    this.currentUserSubscription = this.authService
+      .getCurrentUser()
+      .subscribe(data => {
+        this.currentUser = data;
+        if (this.currentUser) {
+          this.isRegularUser = this.authService.userIsRegular(this.currentUser);
+          this.isAdmin = this.authService.userIsAdmin(this.currentUser);
+        }
+      });
   }
 
   redirectToEditPage() {
@@ -39,8 +37,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
     this.router.navigate(['/profile-page']);
   }
 
-  logOut(){
-
+  logOut() {
     this.authService.logOut();
     this.router.navigate(['/home-page']);
   }

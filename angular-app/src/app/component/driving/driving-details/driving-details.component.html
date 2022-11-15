@@ -2,23 +2,11 @@
 <div>
     <div class="drivingInfo">
       <div class="route">
-
-         <!-- <mat-card-header>
-            <mat-card-title>Route</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <mat-list-item *ngFor="let dest of destinations">
-              <div style="display:flex;font-size:18px;">
-                <mat-icon mat-list-icon class="icon">location_on</mat-icon>
-                <div mat-line>{{dest}}</div>
-              </div><br>
-            </mat-list-item>
-      </mat-card-content>-->
       <h1>Route</h1>
       <mat-expansion-panel>
         <mat-expansion-panel-header>
           <mat-panel-title>
-            {{destinations[0]}} - {{destinations[destinations.length - 1]}}
+            {{destinations[0]}} <mat-icon>arrow_forward</mat-icon> {{destinations[destinations.length - 1]}}
           </mat-panel-title>
         </mat-expansion-panel-header>
 

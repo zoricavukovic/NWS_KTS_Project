@@ -19,7 +19,7 @@ import { Review } from "../model/response/review";
     return this.http.post<Review>(this.configService.rate_driver_vehicle_url, reviewRequest)
   }
 
-  getReviewedDrivingsForUser(userEmail: string){
-    return this.http.get<number[]>(this.configService.reviewed_drivings_url(userEmail));
+  getReviewedDrivingsForUser(id: number){
+    return this.http.get<number[]>(this.configService.reviewed_drivings_url(id));
   }
 }

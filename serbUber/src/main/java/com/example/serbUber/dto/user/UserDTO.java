@@ -12,6 +12,7 @@ import static com.example.serbUber.util.PictureHandler.convertPictureToBase64ByN
 
 public class UserDTO{
 
+    private final Long id;
     private final String email;
     private final String name;
     private final String surname;
@@ -22,6 +23,7 @@ public class UserDTO{
     private String password;
 
     public UserDTO(final User user) {
+        this.id = user.getId();
         this.email = user.getEmail();
         this.name = user.getName();
         this.surname = user.getSurname();
@@ -33,6 +35,7 @@ public class UserDTO{
     }
 
     public UserDTO(
+        final Long id,
         final String email,
         final String name,
         final String surname,
@@ -42,6 +45,7 @@ public class UserDTO{
         final Role role,
         final String password
     ) {
+        this.id = id;
         this.email = email;
         this.name = name;
         this.surname = surname;
@@ -53,6 +57,7 @@ public class UserDTO{
     }
 
     public UserDTO(final Driver driver) {
+        this.id = driver.getId();
         this.email = driver.getEmail();
         this.name = driver.getName();
         this.surname = driver.getSurname();
@@ -64,6 +69,7 @@ public class UserDTO{
     }
 
     public UserDTO(final RegularUser regularUser) {
+        this.id = regularUser.getId();
         this.email = regularUser.getEmail();
         this.name = regularUser.getName();
         this.surname = regularUser.getSurname();
@@ -118,4 +124,10 @@ public class UserDTO{
     public void setRole(Role role) {
         this.role = role;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+
 }

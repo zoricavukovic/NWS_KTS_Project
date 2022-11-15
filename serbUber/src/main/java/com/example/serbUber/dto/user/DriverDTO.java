@@ -23,7 +23,7 @@ public class DriverDTO extends UserDTO {
     private LocalDateTime lastActive;
 
     public DriverDTO(final Driver driver) {
-        super(
+        super(driver.getId(),
             driver.getEmail(),
             driver.getName(),
             driver.getSurname(),

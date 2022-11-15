@@ -15,7 +15,7 @@
           "options": {
             "allowedCommonJsDependencies": [
               "leaflet"
-           ],
+            ],
             "outputPath": "dist/angular-app",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -106,12 +106,24 @@
             ],
             "scripts": []
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
+          }
         }
       }
     }
   },
   "cli": {
-    "analytics": false
+    "analytics": false,
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ]
   },
   "defaultProject": "angular-app"
 }

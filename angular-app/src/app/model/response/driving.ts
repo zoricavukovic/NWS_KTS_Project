@@ -14,5 +14,4 @@ export class Driving {
     users: User[];
     price: number;
     hasReviewForUser: boolean;
-
 }
