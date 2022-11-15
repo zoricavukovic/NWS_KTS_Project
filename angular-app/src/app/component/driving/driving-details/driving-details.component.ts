@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Driving } from 'src/app/model/response/driving';
 import {AfterViewInit, Component, Input, OnDestroy, OnInit} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
@@ -7,28 +6,33 @@ import { AuthService } from 'src/app/service/auth.service';
 import { Subscription } from 'rxjs';
 import { User } from 'src/app/model/response/user/user';
 import { Driver } from 'src/app/model/response/user/driver';
-import {TooltipPosition} from '@angular/material/tooltip';
+import { TooltipPosition } from '@angular/material/tooltip';
 import { FavouriteRouteRequest } from 'src/app/model/request/favourite-route-request';
 import { UserService } from 'src/app/service/user.service';
 import { DrivingService } from 'src/app/service/driving.service';
 import { DriverService } from 'src/app/service/driver.service';
 import {drawPolyline} from "../../../util/map-functions";
+import { Vehicle } from 'src/app/model/response/vehicle';
 
 @Component({
   selector: 'app-driving-details',
   templateUrl: './driving-details.component.html',
-  styleUrls: ['./driving-details.component.css','./driving-details.component.scss'],
+  styleUrls: [
+    './driving-details.component.css',
+    './driving-details.component.scss',
+  ],
 })
 export class DrivingDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
-
   @Input() map;
-  id:string;
+  id: number;
   vehicleRating: number;
-  driving:Driving = new Driving();
-  driver: Driver = new Driver();
+  driving: Driving = new Driving();
+  driver: Driver;
+  vehicle: Vehicle;
   currentUser: User;
   destinations: string[] = [];
   favouriteRoute: boolean = false;
+  startPoint: string;
   positionOption: TooltipPosition = 'above';
   isDriver: boolean;
   isRegularUser: boolean;
@@ -40,46 +44,49 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy, AfterViewInit
   favouriteRouteSubscription: Subscription;
 
   vehicle_image = {
-    "VAN": '/assets/images/van.png',
-    "SUV": '/assets/images/suv.png',
-    "CAR": '/assets/images/car.png'
+    VAN: '/assets/images/van.png',
+    SUV: '/assets/images/suv.png',
+    CAR: '/assets/images/car.png',
   };
 
-  constructor( private route: ActivatedRoute, private http: HttpClient, private configService: ConfigService,
-              private authService: AuthService, private userService: UserService, private drivingService: DrivingService,
-              private driverService: DriverService) { }
+  constructor(
+    private route: ActivatedRoute,
+    private configService: ConfigService,
+    private authService: AuthService,
+    private userService: UserService,
+    private drivingService: DrivingService,
+    private driverService: DriverService
+  ) {}
 
   ngOnInit(): void {
+    this.id = +this.route.snapshot.paramMap.get('id');
+
     this.destinations = [];
-    this.drivingsSubscription = this.drivingService.getDrivingDetails().subscribe((response: Driving) => {
-      this.driving = response;
-      for (let destination of response.route.locations) {
-        this.destinations.push(destination.street + " " + destination.number);
-      }
+    this.drivingsSubscription = this.drivingService.getDrivingDetails(this.id).subscribe((response: Driving) => {
+        this.driving = response;
+        for (let destination of response.route.locations) {
+          this.destinations.push(destination.street + " " + destination.number);
+        }
 
-      this.driverSubscription = this.driverService.getDriver(this.driving.driverEmail).subscribe((response: Driver) => {
-        this.driver = response;
-       })
-
-       this.currentUserSubscription = this.authService.getCurrentUser().subscribe(
-        (response) =>
-        {
-          this.isRegularUser = this.authService.userIsRegular(response);
-          this.isDriver = this.authService.userIsDriver(response);
-          this.currentUser=response;
-          this.favouriteRouteSubscription = this.userService.isFavouriteRouteForUser(this.driving.route.id, this.currentUser.email).subscribe(
-            (response) =>
-            {
-              if(response)
-              {
-                this.favouriteRoute = true;
-              }
-            }
-          )
+        this.driverSubscription = this.driverService.getDriver(this.driving.driverEmail).subscribe((response: Driver) => {
+          this.driver = response;
         });
 
-   })
-
+        this.currentUserSubscription = this.authService.getCurrentUser().subscribe(
+          (user) => {
+            this.isRegularUser = user.userIsRegular();
+            this.isDriver = user.userIsDriver();
+            this.currentUser = user;
+            this.favouriteRouteSubscription = this.userService.isFavouriteRouteForUser(this.driving.route.id, this.currentUser.email).subscribe(
+              (response) => {
+                if (response) {
+                  this.favouriteRoute = true;
+                }
+              }
+            )
+          })
+      }
+    );
   }
 
   ngAfterViewInit(){
@@ -103,29 +110,28 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
   getBase64Prefix(): string {
-    return this.configService.base64_show_photo_prefix
+    return this.configService.base64_show_photo_prefix;
   }
 
   ngOnDestroy(): void {
-    if(this.currentUserSubscription){
+    if (this.currentUserSubscription) {
       this.currentUserSubscription.unsubscribe();
     }
 
-    if(this.drivingsSubscription){
+    if (this.drivingsSubscription) {
       this.drivingsSubscription.unsubscribe();
     }
 
-    if(this.driverSubscription){
+    if (this.driverSubscription) {
       this.driverSubscription.unsubscribe();
     }
 
-    if(this.favouriteRouteSubscription){
+    if (this.favouriteRouteSubscription) {
       this.favouriteRouteSubscription.unsubscribe();
     }
 
-    if(this.vehicleRatingSubscription){
+    if (this.vehicleRatingSubscription) {
       this.vehicleRatingSubscription.unsubscribe();
     }
   }
-
 }

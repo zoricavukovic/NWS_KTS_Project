@@ -62,7 +62,7 @@ public class RegularUserController {
         return regularUserService.removeFromFavouriteRoutes(request.getUserEmail(), request.getRouteId());
     }
 
-    @GetMapping("/favouriteRoute/{id}/{email}")
+    @GetMapping("/favourite-route/{id}/{email}")
     @ResponseStatus(HttpStatus.OK)
     public boolean isFavouriteRoute(@PathVariable Long id, @PathVariable String email){
         return regularUserService.isFavouriteRoute(id, email);

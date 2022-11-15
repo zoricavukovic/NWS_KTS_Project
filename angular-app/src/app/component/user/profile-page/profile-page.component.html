@@ -34,13 +34,10 @@
                 </div>
 
             </mat-tab>
-            <mat-tab [label]="showPayments ? 'Password & payments' : 'Password'">
+            <mat-tab label="Password">
                 <div class="password-payments-content">
                     <div class="password-col col">
                         <app-reset-password [user]="loggedUser"></app-reset-password>
-                    </div>
-                    <div class="payment-col col">
-                        This works
                     </div>
                 </div>
             </mat-tab>

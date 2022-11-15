@@ -9,6 +9,7 @@ public class AdminDTO extends UserDTO{
 
     public AdminDTO(final Admin admin) {
         super(
+            admin.getId(),
             admin.getEmail(),
             admin.getName(),
             admin.getSurname(),

@@ -7,7 +7,7 @@ import { FavouriteRouteRequest } from 'src/app/model/request/favourite-route-req
 @Component({
   selector: 'favourite-route-row',
   templateUrl: './favourite-route-row.component.html',
-  styleUrls: ['./favourite-route-row.component.css']
+  styleUrls: ['./favourite-route-row.component.css'],
 })
 export class FavouriteRouteRowComponent implements OnInit {
   @Input() user: User;
@@ -18,7 +18,7 @@ export class FavouriteRouteRowComponent implements OnInit {
   startPoint: string;
   endPoint: string;
 
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService) {}
 
   ngOnInit(): void {
     this.startPoint = this.route.locations.at(0).street + this.route.locations.at(0).number;
@@ -26,12 +26,14 @@ export class FavouriteRouteRowComponent implements OnInit {
     this.endPoint = end.street + end.number;
   }
 
-  removeFromFavouriteRoutes(){
-    this.userService.removeFromFavouriteRoutes(new FavouriteRouteRequest(this.user.email, this.route.id)).subscribe(
-      res => {
+  removeFromFavouriteRoutes() {
+    this.userService
+      .removeFromFavouriteRoutes(
+        new FavouriteRouteRequest(this.user.email, this.route.id)
+      )
+      .subscribe(response => {
+        console.log(response);
         this.removeFromFavourites.emit();
-      }
-    );
-    }
-
+      });
+  }
 }

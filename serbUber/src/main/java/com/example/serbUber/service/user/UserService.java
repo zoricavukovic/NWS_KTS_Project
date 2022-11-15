@@ -12,6 +12,7 @@ import java.util.List;
 
 import static com.example.serbUber.dto.user.UserDTO.fromUsers;
 import static com.example.serbUber.model.user.User.passwordsDontMatch;
+import static com.example.serbUber.util.Constants.ROLE_ADMIN;
 import static com.example.serbUber.util.EmailConstants.FRONT_RESET_PASSWORD_URL;
 import static com.example.serbUber.util.EmailConstants.RESET_PASSWORD_SUBJECT;
 import static com.example.serbUber.util.JwtProperties.getHashedNewUserPassword;
@@ -47,9 +48,11 @@ public class UserService {
             .orElseThrow(() -> new EntityNotFoundException(email, EntityType.USER));
     }
 
-    public UserDTO getUserDTOByEmail(String email) throws EntityNotFoundException {
-        return new UserDTO(getUserByEmail(email));
+    public User getUserById(Long id) throws EntityNotFoundException {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(id, EntityType.USER));
     }
+
 
     public UserDTO get(String email) throws EntityNotFoundException {
 
@@ -168,5 +171,31 @@ public class UserService {
         if (!oldPasswordsMatch(currentPassword, user.getPassword())) {
             throw new PasswordsDoNotMatchException("Your old password is not correct.");
         }
+    }
+
+    public User findFirstAdmin() throws EntityNotFoundException {
+
+        return userRepository.getFirstAdmin()
+                .orElseThrow(() -> new EntityNotFoundException(ROLE_ADMIN, EntityType.USER));
+    }
+
+    public UserDTO setOnlineStatus(final String email) throws EntityNotFoundException {
+        User user = getUserByEmail(email);
+        user.setOnline(true);
+
+        return new UserDTO(userRepository.save(user));
+    }
+
+    public UserDTO setOfflineStatus(final String email) throws EntityNotFoundException {
+        User user = getUserByEmail(email);
+        user.setOnline(false);
+
+        return new UserDTO(userRepository.save(user));
+    }
+
+    public User findOnlineAdmin() throws NoAvailableAdminException {
+
+        return userRepository.findOnlineAdmin()
+                .orElseThrow(NoAvailableAdminException::new);
     }
 }

@@ -1,23 +1,17 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {Vehicle} from "../../../model/response/vehicle";
+import { Component, Input } from '@angular/core';
+import { Vehicle } from '../../../model/response/vehicle';
 
 @Component({
   selector: 'vehicle-details',
   templateUrl: './vehicle-details.component.html',
-  styleUrls: ['./vehicle-details.component.css']
+  styleUrls: ['./vehicle-details.component.css'],
 })
-export class VehicleDetailsComponent implements OnInit {
-
+export class VehicleDetailsComponent {
   @Input() vehicle: Vehicle;
+
   vehicle_image = {
-    "VAN": '/assets/images/van.png',
-    "SUV": '/assets/images/suv.png',
-    "CAR": '/assets/images/car.png'
+    VAN: '/assets/images/van.png',
+    SUV: '/assets/images/suv.png',
+    CAR: '/assets/images/car.png',
   };
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
 }

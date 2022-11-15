@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, ValidationErrors} from '@angular/forms';
+import {FormBuilder } from '@angular/forms';
 import * as L from 'leaflet';
 import {OpenStreetMapProvider} from 'leaflet-geosearch';
 import {SearchingRoutesForm} from "../../model/searching-routes-form";
@@ -16,7 +16,7 @@ import {drawPolylineOnMap, removeLayer, removeMarker, removeOneLayer} from "../.
 @Component({
   selector: 'home-page',
   templateUrl: './home-page.component.html',
-  styleUrls: ['./home-page.component.css']
+  styleUrls: ['./home-page.component.css'],
 })
 export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
 
@@ -25,16 +25,15 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
   provider1: OpenStreetMapProvider = new OpenStreetMapProvider();
 
   maxNumberOfLocations: number = 5;
-
   possibleRoutesViaPoints: PossibleRoutesViaPoints[] = [];
   drawPolylineList = [];
   searchingRoutesForm: SearchingRoutesForm[] = [];
-  autocompleteForm = new FormGroup({
+  /* autocompleteForm = new FormGroup({
     startDest: new FormControl(undefined, [this.requireMatch.bind(this)]),
-    endDest: new FormControl(undefined, [this.requireMatch.bind(this)])
-  });
+    endDest: new FormControl(undefined, [this.requireMatch.bind(this)]),
+  });*/
 
-  rgbDeepBlue: number[] = [44 , 75, 97];
+  rgbDeepBlue: number[] = [44, 75, 97];
   private authSubscription: Subscription;
   private routeSubscription: Subscription;
 
@@ -47,9 +46,9 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit(): void {
     this.searchingRoutesForm.push(new SearchingRoutesForm());
     this.searchingRoutesForm.push(new SearchingRoutesForm());
-    this.authSubscription = this.authService.getCurrentUser().subscribe(
-      user => this.currentUser = user
-    );
+    this.authSubscription = this.authService
+      .getCurrentUser()
+      .subscribe(user => (this.currentUser = user));
   }
 
   ngOnDestroy(): void {
@@ -65,7 +64,7 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
     this.initMap();
   }
 
-  async initMap(){
+  async initMap() {
     this.map = L.map('map').setView([45.25167, 19.83694], 13);
 
     L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { crossOrigin: true}).addTo(this.map);
@@ -82,16 +81,16 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
   deleteOneLocation(index: number){
     this.deleteMarker(index);
     this.removeAllPolylines();
-
     this.searchingRoutesForm.splice(index, 1);
   }
 
-  async filterPlaces(searchParam: string){
-    return await this.provider1.search({query: searchParam});
+  async filterPlaces(searchParam: string) {
+    return await this.provider1.search({ query: searchParam });
   }
 
-  requireMatch(control: FormControl): ValidationErrors | null {
-    const selection = control.value;
+
+  /*requireMatch(control: FormControl): ValidationErrors | null {
+    const selection: any = control.value; //??
     console.log(selection);
 
     // console.log(this.filteredStartPlaces)
@@ -99,8 +98,7 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
     //   return { requireMatch: true };
     // }
     return null;
-  }
-
+  }*/
 
   chooseMarker(index: number, place) {
     this.deleteMarker(index);
@@ -122,7 +120,7 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getPossibleRoutes() {
-    let locationsForCreateRoutes: Location[] = [];
+    const locationsForCreateRoutes: Location[] = [];
     this.searchingRoutesForm.forEach(searchingRoutesLocation =>
       locationsForCreateRoutes.push(searchingRoutesLocation.location)
     );
@@ -132,12 +130,10 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
     ).subscribe(
       res => {
         this.possibleRoutesViaPoints = res;
-        if (res.length > 0){
+        if (res.length > 0) {
           this.changeCurrentRoutes(res);
         }
-      },
-      error => console.log("greska")
-    );
+      })
   }
 
   changeCurrentRoutes(routes: PossibleRoutesViaPoints[]) {
@@ -194,7 +190,6 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private createLocation(place, index: number) {
-
     let loc = new Location();
     loc.city = place.value;
     loc.lat = place.y;
@@ -203,18 +198,22 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private getIconUrl(index: number): string {
-    switch (index){
-      case 0: return "../../../assets/images/startMarker.png";
-      case this.searchingRoutesForm.length-1: return "../../../assets/images/endMarker.png";
-      default: return "../../../assets/images/viaMarker.png";
+    switch (index) {
+      case 0:
+        return '../../../assets/images/startMarker.png';
+      case this.searchingRoutesForm.length - 1:
+        return '../../../assets/images/endMarker.png';
+      default:
+        return '../../../assets/images/viaMarker.png';
     }
   }
 
   canAddMoreLocation() {
-
-    return this.searchingRoutesForm.length < this.maxNumberOfLocations &&
+    return (
+      this.searchingRoutesForm.length < this.maxNumberOfLocations &&
       this.currentUser !== null &&
-      this.currentUser !== undefined;
+      this.currentUser !== undefined
+    );
   }
 
   private addMarker(index: number, place) {

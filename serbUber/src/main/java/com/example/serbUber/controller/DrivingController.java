@@ -49,10 +49,10 @@ public class DrivingController {
         return null;
     }
 
-    @GetMapping("/{email}/{pageNumber}/{pageSize}/{parameter}/{sortOrder}")
+    @GetMapping("/{id}/{pageNumber}/{pageSize}/{parameter}/{sortOrder}")
     @ResponseStatus(HttpStatus.OK)
     public List<DrivingDTO> getAllDrivingsForUser(
-            @Valid @Email(message = WRONG_EMAIL) @PathVariable String email,
+            @PathVariable Long id,
             @PathVariable int pageNumber,
             @PathVariable int pageSize,
             @PathVariable String parameter,
@@ -61,12 +61,13 @@ public class DrivingController {
             throws EntityNotFoundException
     {
 
-        return drivingService.getDrivingsForUser(email, pageNumber, pageSize, parameter, sortOrder);
+        return drivingService.getDrivingsForUser(id, pageNumber, pageSize, parameter, sortOrder);
     }
 
     @GetMapping("/details/{id}")
     @ResponseStatus(HttpStatus.OK)
     public DrivingDTO getDriving(@PathVariable Long id) throws EntityNotFoundException {
+
         return drivingService.getDrivingDto(id);
     }
 }

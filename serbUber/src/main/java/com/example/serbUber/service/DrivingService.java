@@ -65,20 +65,20 @@ public class DrivingService {
         return fromDrivings(drivings);
     }
 
-    public List<DrivingDTO> getDrivingsForUser(String email, int pageNumber, int pageSize, String parameter, String sortOrder) throws EntityNotFoundException {
-        User user = userService.getUserByEmail(email);
+    public List<DrivingDTO> getDrivingsForUser(Long id, int pageNumber, int pageSize, String parameter, String sortOrder) throws EntityNotFoundException {
+        User user = userService.getUserById(id);
         Pageable page = PageRequest.of(pageNumber, pageSize, Sort.by(getSortOrder(sortOrder), getSortBy(parameter)));
 
         return user.getRole().isDriver() ?
-                fromDrivings(drivingRepository.findByDriverEmail(email, page)) :
-                fromDrivings(drivingRepository.findByUserEmail(email, page));
+                fromDrivings(drivingRepository.findByDriverEmail(user.getEmail(), page)) :
+                fromDrivings(drivingRepository.findByUserId(id, page));
     }
 
     private String getSortBy(String sortBy){
         Dictionary<String, String> sortByDict = new Hashtable<>();
         sortByDict.put("Date","started");
         sortByDict.put("Departure","route.startPoint");
-        sortByDict.put("Destination","route.destinations"); //ne znam ovo kako da pristupi??
+        sortByDict.put("Destination","route.locations"); //ne znam ovo kako da pristupi??
         sortByDict.put("Price","price");
 
         return sortByDict.get(sortBy);

@@ -93,9 +93,9 @@ public class ReviewService {
        return fromReviews(reviews);
     }
 
-    public List<Long> getAllReviewedDrivingIdForUser(String email){
+    public List<Long> getAllReviewedDrivingIdForUser(Long id){
         List<Long> reviewedDrivingsId = new ArrayList<>();
-        List<Review> allReviewsForUser = reviewRepository.findAllReviewedDrivingIdForUser(email);
+        List<Review> allReviewsForUser = reviewRepository.findAllReviewedDrivingIdForUser(id);
         for(Review review : allReviewsForUser){
             reviewedDrivingsId.add(review.getDriving().getId());
         }

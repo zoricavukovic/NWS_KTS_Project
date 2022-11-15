@@ -17,6 +17,7 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatStepperModule} from '@angular/material/stepper';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 const MaterialConstants = [
   MatButtonModule,
@@ -38,7 +39,8 @@ const MaterialConstants = [
   MatIconModule,
   MatTabsModule,
   MatDialogModule,
-  MatStepperModule
+  MatStepperModule,
+  MatTooltipModule
 ]
 
 @NgModule({

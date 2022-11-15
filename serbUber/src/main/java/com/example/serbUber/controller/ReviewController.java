@@ -8,10 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Email;
 import java.util.List;
 
-import static com.example.serbUber.exception.ErrorMessagesConstants.WRONG_EMAIL;
 
 
 @RestController
@@ -52,9 +50,9 @@ public class ReviewController {
         );
     }
 
-    @GetMapping("/reviewedDrivings/{email}")
+    @GetMapping("/reviewedDrivings/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public List<Long> getReviewDrivingsForUser(@Valid @Email(message = WRONG_EMAIL) @PathVariable String email){
-        return reviewService.getAllReviewedDrivingIdForUser(email);
+    public List<Long> getReviewDrivingsForUser(@PathVariable Long id){
+        return reviewService.getAllReviewedDrivingIdForUser(id);
     }
 }

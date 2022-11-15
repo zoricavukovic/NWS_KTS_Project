@@ -1,0 +1,34 @@
+<div class="message-history-container">
+    <div *ngIf="selectedChatRoom; else noChatRooms">
+        <div class="center">
+            <div class="contacts">
+                <h2>
+                    Chat Rooms
+                </h2>
+                <div class="contact" *ngFor="let chatRoom of chatRooms; index as i" [class]="(chatRoom.id === selectedChatRoom.id) ? 'active' : ''">
+                    <div (click)="changedSelected(i)">
+                        <div class="pic default-message"></div>
+                        <!--
+                                                <div class="badge">
+                                                    14
+                                                </div>
+                                            -->
+                        <div class="name">
+                            {{chatRoom.client.name + " " + chatRoom.client.surname}}
+                            <span class="resolved-badge">{{(chatRoom.resolved) ? 'Closed' : 'Active'}}</span>
+                        </div>
+                        <div class="message">
+                            {{
+                            (chatRoom.messages.at(-1).message.length <= 25) ? chatRoom.messages.at(-1).message :
+                                chatRoom.messages.at(-1).message.substring(0, 25) + "..." }} 
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <app-messages-box [selectedChatRoom]="selectedChatRoom">
+            </app-messages-box>
+        </div>
+    </div>
+    <ng-template #noChatRooms>Your inbox is empty.</ng-template>
+</div>
+

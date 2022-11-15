@@ -8,6 +8,7 @@ public enum EntityType {
     VERIFY,
     PHOTO,
     DRIVING,
+    CHAT_ROOM,
     ROUTE,
     ROLE;
 
@@ -43,6 +44,10 @@ public enum EntityType {
             case ROLE -> {
 
                 return "Role: " + id + " is not found";
+            }
+            case CHAT_ROOM -> {
+
+                return "ChatRoom for user : " + id + " is not found";
             }
             default -> {
 
