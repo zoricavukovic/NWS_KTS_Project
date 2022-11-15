@@ -20,6 +20,6 @@ public class ErrorMessagesConstants {
     public static final String WRONG_SECURITY_CODE = "Security code is number greater than 0.";
     public static final String WRONG_VERIFY_ID = "Verify id must be added.";
     public static final String NO_AVAILABLE_ADMIN_EXC = "Chat cannot be created right now, all out admins are busy.";
-
+    public static final String ADDING_MESSAGE_TO_RESOLVED_CHAT_ROOM = "You cannot add message to resolved chat room.";
 
 }

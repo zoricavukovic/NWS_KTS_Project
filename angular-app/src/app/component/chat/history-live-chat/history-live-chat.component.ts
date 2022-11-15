@@ -2,8 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { User } from 'src/app/model/response/user/user';
 import { AuthService } from 'src/app/service/auth.service';
-import { ChatService } from 'src/app/service/chat.service';
 import { ChatRoom } from 'src/app/model/response/messages/chat-room';
+import { ChatRoomService } from 'src/app/service/chat-room.service';
 
 @Component({
   selector: 'app-history-live-chat',
@@ -13,14 +13,15 @@ import { ChatRoom } from 'src/app/model/response/messages/chat-room';
 export class HistoryLiveChatComponent implements OnInit, OnDestroy {
 
   loggedUser: User;
-  messages: ChatRoom;
+  chatRooms: ChatRoom[];
+  selectedChatRoom: ChatRoom;
   
   authSubscription: Subscription;
-  messageSubscription: Subscription;
+  chatRoomSubscription: Subscription;
 
   constructor(
     private authService: AuthService,
-    private chatService: ChatService
+    private chatRoomService: ChatRoomService
   ) { }
 
   ngOnInit(): void {
@@ -28,10 +29,18 @@ export class HistoryLiveChatComponent implements OnInit, OnDestroy {
       user => this.loggedUser = user
     );
 
-    // this.messageSubscription = this.messageService.getAllMessages().subscribe(
-    //   res => this.messages = res,
-    //   error => console.log(error)
-    // )
+    this.chatRoomSubscription = this.chatRoomService.getAllChatRooms(this.loggedUser.email).subscribe(
+      res => {
+        this.chatRooms = res;
+        this.selectedChatRoom = this.getSelectedChatRoom();
+      },
+      error => console.log(error)
+    )
+  }
+
+  getSelectedChatRoom(): ChatRoom {
+
+    return (this.chatRooms.length > 0) ? this.chatRooms[0] : null;
   }
 
   ngOnDestroy(): void {
@@ -39,8 +48,8 @@ export class HistoryLiveChatComponent implements OnInit, OnDestroy {
       this.authSubscription.unsubscribe();
     }
 
-    if (this.messageSubscription) {
-      this.messageSubscription.unsubscribe();
+    if (this.chatRoomSubscription) {
+      this.chatRoomSubscription.unsubscribe();
     }
 
   }

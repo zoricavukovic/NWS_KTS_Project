@@ -1,6 +1,7 @@
 package com.example.serbUber.dto.message;
 
 import com.example.serbUber.model.ChatRoom;
+import com.example.serbUber.model.Message;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -39,6 +40,15 @@ public class ChatRoomDTO {
         this.client = new MessageUserDTO(chatRoom.getClient());
         this.admin = new MessageUserDTO(chatRoom.getAdmin());
         this.messages = fromMessages(chatRoom.getMessages());
+    }
+
+    public static List<ChatRoomDTO> fromChatRooms(final List<ChatRoom> chatRooms){
+        List<ChatRoomDTO> chatRoomDTOs = new LinkedList<>();
+        chatRooms.forEach(c ->
+                chatRoomDTOs.add(new ChatRoomDTO(c))
+        );
+
+        return chatRoomDTOs;
     }
 
     public Long getId() {

@@ -129,4 +129,12 @@ export class ConfigService {
     return this._all_chat_rooms;
   }
 
+  get all_chat_rooms_url(): string {
+    return this._all_chat_rooms + '/all/';
+  }
+
+  get resolve_chat_room_url(): string {
+    return this._all_chat_rooms + '/resolve/';
+  }
+
 }

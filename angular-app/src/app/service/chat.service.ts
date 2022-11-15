@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as SockJS from 'sockjs-client';
 import {Stomp} from '@stomp/stompjs';
-import { Message } from '../model/response/messages/message';
 import { environment } from 'src/environments/environment';
 import { ChatRoomService } from './chat-room.service';
 import { ChatRoom } from '../model/response/messages/chat-room';
@@ -28,7 +27,6 @@ export class ChatService {
       this.stompClient.connect({}, function(frame) {
         that.stompClient.subscribe(environment.publisherUrl + userEmail + "/connect", (message) => {
           if (message !== null && message !== undefined) {
-            console.log("Uspelo" + message.body);
             that.chatRoomService.addMessage(JSON.parse(message.body));
           }
         }); 

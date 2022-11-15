@@ -1,6 +1,7 @@
 package com.example.serbUber.service.message;
 
 import com.example.serbUber.dto.message.ChatRoomDTO;
+import com.example.serbUber.exception.AddingMessageToResolvedChatRoom;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.EntityType;
 import com.example.serbUber.exception.NoAvailableAdminException;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
+import static com.example.serbUber.dto.message.ChatRoomDTO.fromChatRooms;
 
 @Service
 public class ChatRoomService {
@@ -31,6 +34,12 @@ public class ChatRoomService {
         this.userService = userService;
         this.chatRoomRepository = chatRoomRepository;
         this.messageService = messageService;
+    }
+
+    public List<ChatRoomDTO> getAllChatRooms(final String email) throws EntityNotFoundException {
+        User user = userService.getUserByEmail(email);
+
+        return fromChatRooms(chatRoomRepository.getAllChatRooms(email));
     }
 
     //ako ne postoji trenutno aktivni chat room za usera, vrati null
@@ -65,6 +74,7 @@ public class ChatRoomService {
         User admin = userService.getUserByEmail(receiverEmail);
         Message newMessage = new Message(message, adminResponse);
         ChatRoom chatRoom = getActiveChatRoomById(chatId);
+
         chatRoom.getMessages().add(newMessage);
 
         return new ChatRoomDTO(chatRoomRepository.save(chatRoom));
@@ -85,4 +95,10 @@ public class ChatRoomService {
         )));
     }
 
+    public ChatRoomDTO resolve(final Long id) throws EntityNotFoundException {
+        ChatRoom chatRoom = getActiveChatRoomById(id);
+        chatRoom.setResolved(true);
+
+        return new ChatRoomDTO(chatRoomRepository.save(chatRoom));
+    }
 }

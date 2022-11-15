@@ -82,7 +82,7 @@ insert into chat_rooms(client_id, admin_id, resolved) values
 insert into chat_rooms(client_id, admin_id, resolved) values
     (2,1, false);
 insert into chat_rooms(client_id, admin_id, resolved) values
-    (3,1, true);
+    (3,1, false);
 
 
 insert into messages(message, time_stamp, admin_response, chat_room_id) values

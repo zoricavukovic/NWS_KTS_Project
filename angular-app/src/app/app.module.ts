@@ -33,6 +33,8 @@ import { ToastrModule } from 'ngx-toastr';
 import { ButtonLiveChatComponent } from './component/chat/button-live-chat/button-live-chat.component';
 import { PoupupLiveChatComponent } from './component/chat/poupup-live-chat/poupup-live-chat.component';
 import { HistoryLiveChatComponent } from './component/chat/history-live-chat/history-live-chat.component';
+import { ChatRoomsListComponent } from './component/chat/chat-rooms-list/chat-rooms-list.component';
+import { MessagesBoxComponent } from './component/chat/messages-box/messages-box.component';
 
 
 @NgModule({
@@ -56,6 +58,8 @@ import { HistoryLiveChatComponent } from './component/chat/history-live-chat/his
     ButtonLiveChatComponent,
     PoupupLiveChatComponent,
     HistoryLiveChatComponent,
+    ChatRoomsListComponent,
+    MessagesBoxComponent,
   ],
   imports: [
     BrowserModule,
