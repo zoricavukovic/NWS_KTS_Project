@@ -1,23 +1,9 @@
-<!--<map [route]="driving.route"></map>-->
-<div>
-    <div class="drivingInfo">
-      <div class="route">
-
-         <!-- <mat-card-header>
-            <mat-card-title>Route</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <mat-list-item *ngFor="let dest of destinations">
-              <div style="display:flex;font-size:18px;">
-                <mat-icon mat-list-icon class="icon">location_on</mat-icon>
-                <div mat-line>{{dest}}</div>
-              </div><br>
-            </mat-list-item>
-      </mat-card-content>-->
+<div class="form-container mat-elevation-z1">
+      <h1>Route</h1>
       <mat-expansion-panel>
         <mat-expansion-panel-header>
           <mat-panel-title>
-            Route
+            {{destinations[0]}} - {{destinations[destinations.length - 1]}}
           </mat-panel-title>
         </mat-expansion-panel-header>
 
@@ -30,8 +16,6 @@
 
       </mat-expansion-panel>
 
-
-    </div>
     <br>
     <div class="button-container" *ngIf="isRegularUser">
       <button mat-raised-button>Request now</button>
@@ -85,9 +69,8 @@
     </div>
     <br>
 
-    <div style="text-align:center">
+    <div style="text-align:right">
 
-      <h2>{{driving.price}}.00 RSD</h2>
+      <h2>={{driving.price}}.00 RSD</h2>
     </div>
-</div>
 </div>

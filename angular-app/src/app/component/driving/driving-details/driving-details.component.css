@@ -27,6 +27,7 @@
   margin: 30px;
   border-radius: 10px;
   padding: 10px;
+  z-index: 9;
 }
 
 
@@ -47,6 +48,11 @@
 .button-container .mat-button-base .mat-icon{
  transform:scale(1.4);
 }
+
+.details{
+  position: relative;
+}
+
 
 
 

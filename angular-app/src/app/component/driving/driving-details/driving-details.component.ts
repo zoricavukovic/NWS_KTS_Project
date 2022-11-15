@@ -50,10 +50,10 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy, AfterViewInit
               private driverService: DriverService) { }
 
   ngOnInit(): void {
-
+    this.destinations = [];
     this.drivingsSubscription = this.drivingService.getDrivingDetails().subscribe((response: Driving) => {
       this.driving = response;
-      for (let destination of this.driving.route.locations) {
+      for (let destination of response.route.locations) {
         this.destinations.push(destination.street + " " + destination.number);
       }
 
@@ -83,7 +83,6 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
   ngAfterViewInit(){
-    console.log(this.map);
     if (this.map){
       drawPolyline(this.map, this.driving.route);
     }

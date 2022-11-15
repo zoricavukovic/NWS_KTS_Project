@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router'
-import { DrivingDetailsComponent } from './component/driving/driving-details/driving-details.component';
+import { Routes, RouterModule } from '@angular/router';
 import { LoginComponent } from './component/user/auth/login/login.component';
 import { RegistrationComponent } from './component/user/auth/registration/registration.component';
 import { ShowDrivingsComponent } from './component/driving/show-drivings/show-drivings.component';
@@ -13,6 +12,7 @@ import { EditProfileComponent } from './component/user/edit-profile/edit-profile
 import { ShowDriversComponent } from './component/admin/show-drivers/show-drivers.component';
 import { ShowUsersComponent } from './component/admin/show-users/show-users.component';
 import {MapComponent} from "./component/map/map.component";
+import { FavouriteRoutesComponent } from './component/favourite-routes/favourite-routes.component';
 
 const routes: Routes = [
   {path:'', redirectTo:'home-page', pathMatch:'full'},
@@ -22,7 +22,7 @@ const routes: Routes = [
   {path: 'forgot-password', component: SendResetPasswordEmailComponent},
   {path: 'verify/:id', component: VerifyComponent},
   {path: 'drivings', component: ShowDrivingsComponent},
-  {path: 'details', component: MapComponent},
+  {path: 'driving-details', component: MapComponent},
   {path: 'reset-password/:email', component: ResetPasswordComponent},
   {path: 'profile-page', component: ProfilePageComponent},
   {path: 'verify/:id', component: VerifyComponent},
@@ -31,12 +31,13 @@ const routes: Routes = [
   {path: 'edit-profile-data', component: EditProfileComponent},
   {path: 'drivers', component: ShowDriversComponent},
   {path: 'users', component: ShowUsersComponent},
+  {path: 'favourite-routes', component:FavouriteRoutesComponent},
   {path:'', redirectTo:'login', pathMatch:'full'}
 ];
-
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
+
 export class AppRoutingModule { }

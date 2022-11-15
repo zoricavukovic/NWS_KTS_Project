@@ -6,6 +6,7 @@ import {VehicleTypeInfo} from "../model/response/vehicle-type-info";
 import {LocationsForRoutesRequest} from "../model/request/locations-for-routes-request";
 import {PossibleRoute} from "../model/response/possible-routes";
 import {map} from "rxjs/operators";
+import {PossibleRoutesViaPoints} from "../model/response/possible-routes-via-points";
 
 @Injectable({
   providedIn: 'root'
@@ -17,8 +18,8 @@ export class RouteService {
     private configService: ConfigService
   ) { }
 
-  getPossibleRoutes(locationsForCreateRoutes: LocationsForRoutesRequest): Observable<PossibleRoute[]>{
-    console.log(locationsForCreateRoutes);
-    return this.http.post<PossibleRoute[]>(this.configService.option_routes, locationsForCreateRoutes);
+  getPossibleRoutes(locationsForCreateRoutes: LocationsForRoutesRequest): Observable<PossibleRoutesViaPoints[]>{
+
+    return this.http.post<PossibleRoutesViaPoints[]>(this.configService.option_routes, locationsForCreateRoutes);
   }
 }

@@ -1,15 +1,17 @@
-import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
-import {FormControl, FormGroup, ValidationErrors} from '@angular/forms';
+import {AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import {FormBuilder, FormControl, FormGroup, ValidationErrors} from '@angular/forms';
 import * as L from 'leaflet';
 import {OpenStreetMapProvider} from 'leaflet-geosearch';
 import {SearchingRoutesForm} from "../../model/searching-routes-form";
-import {Location} from "../../model/response/location";
+import { Location } from "../../model/response/location";
 import {RouteService} from "../../service/route.service";
 import {LocationsForRoutesRequest} from "../../model/request/locations-for-routes-request";
 import {PossibleRoute} from "../../model/response/possible-routes";
 import {User} from "../../model/response/user/user";
 import {Subscription} from "rxjs";
 import {AuthService} from "../../service/auth.service";
+import {PossibleRoutesViaPoints} from "../../model/response/possible-routes-via-points";
+import {drawPolylineOnMap, removeLayer, removeMarker, removeOneLayer} from "../../util/map-functions";
 
 @Component({
   selector: 'home-page',
@@ -18,14 +20,14 @@ import {AuthService} from "../../service/auth.service";
 })
 export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
 
-  private map;
+  private map: L.Map;
   currentUser: User;
-  provider1 = new OpenStreetMapProvider();
+  provider1: OpenStreetMapProvider = new OpenStreetMapProvider();
 
-  maxNumberOfLocations: number = 7;
+  maxNumberOfLocations: number = 5;
 
-  possibleRoutes: PossibleRoute[] = [];
-  currentPolyline;
+  possibleRoutesViaPoints: PossibleRoutesViaPoints[] = [];
+  drawPolylineList = [];
   searchingRoutesForm: SearchingRoutesForm[] = [];
   autocompleteForm = new FormGroup({
     startDest: new FormControl(undefined, [this.requireMatch.bind(this)]),
@@ -38,7 +40,8 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(
     private routeService: RouteService,
-    private authService: AuthService
+    private authService: AuthService,
+    private _formBuilder: FormBuilder
   ) { }
 
   ngOnInit(): void {
@@ -66,13 +69,20 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
     this.map = L.map('map').setView([45.25167, 19.83694], 13);
 
     L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { crossOrigin: true}).addTo(this.map);
+    let div = L.DomUtil.get('route-div');
+    L.DomEvent.on(div, 'mousewheel', L.DomEvent.stopPropagation);
+    L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation);
   }
 
   addOneMoreLocation(){
+    this.possibleRoutesViaPoints = [];
     this.searchingRoutesForm.splice(this.searchingRoutesForm.length-1, 0, new SearchingRoutesForm());
   }
 
   deleteOneLocation(index: number){
+    this.deleteMarker(index);
+    this.removeAllPolylines();
+
     this.searchingRoutesForm.splice(index, 1);
   }
 
@@ -81,7 +91,7 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   requireMatch(control: FormControl): ValidationErrors | null {
-    const selection: any = control.value;
+    const selection = control.value;
     console.log(selection);
 
     // console.log(this.filteredStartPlaces)
@@ -91,32 +101,14 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
     return null;
   }
 
-  chooseMarker(index: number, place) {
-    if (this.searchingRoutesForm.at(index).marker){
-      this.map.removeLayer(this.searchingRoutesForm.at(index).marker);
-    }
-    if (this.polylineFound()){
-      this.map.removeLayer(this.currentPolyline);
-    }
 
-    const customIcon = L.icon({iconUrl: this.getIconUrl(index), iconSize: [30, 30]})
-    const markerOptions = {
-      title: 'Location',
-      clickable: true,
-      icon: customIcon
-    }
-    this.searchingRoutesForm.at(index).marker = L.marker([place.y, place.x], markerOptions);
-    this.searchingRoutesForm.at(index).marker.addTo(this.map);
+  chooseMarker(index: number, place) {
+    this.deleteMarker(index);
+    this.removeAllPolylines();
+
+    this.addMarker(index, place);
 
     this.createLocation(place, index);
-  }
-
-  getIconName(index: number):string{
-    switch (index){
-      case 1: return "looks_one";
-      case 2: return "looks_two";
-      default: return "looks_"+index;
-    }
   }
 
   getFilteredPlaces(index: number) {
@@ -139,32 +131,62 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
       new LocationsForRoutesRequest(locationsForCreateRoutes)
     ).subscribe(
       res => {
-        this.possibleRoutes = res;
+        this.possibleRoutesViaPoints = res;
         if (res.length > 0){
-          this.changeCurrentRoute(res.at(0), 0);
+          this.changeCurrentRoutes(res);
         }
       },
       error => console.log("greska")
     );
   }
 
-  changeCurrentRoute(route: PossibleRoute, index: number) {
-    if (this.polylineFound()){
-      this.map.removeLayer(this.currentPolyline);
-    }
+  changeCurrentRoutes(routes: PossibleRoutesViaPoints[]) {
+    this.removeAllPolylines();
+
+    let index: number = 0;
+    routes.forEach(route => {
+      let latLongs = this.getLatLongsForFirstRoute(route);
+      this.drawPolyline(index, latLongs);
+      index++;
+    });
+  }
+
+  private getLatLongsForFirstRoute(route: PossibleRoutesViaPoints) {
+    let latLongs = [];
+    route.possibleRouteDTOList.at(0).pointList.forEach(
+      latLng => latLongs.push([latLng[0], latLng[1]])
+    );
+
+    return latLongs;
+  }
+
+  private drawPolyline(index: number, latLongs) {
+    let color: string = this.getPolylineColor(index);
+    drawPolylineOnMap(this.map, latLongs, color, this.drawPolylineList);
+  }
+
+  changeOptionRouteOnClick(route: PossibleRoute, idx: number) {
+
+    this.removeOnePolyline(idx);
+
     let latLongs = [];
     route.pointList.forEach(
       latLng => latLongs.push([latLng[0], latLng[1]])
-    )
-    let color: string = "rgb(" + this.incrementShadeOfColor(index, 0) + ", " +
-      this.incrementShadeOfColor(index, 1)+ ", " + this.incrementShadeOfColor(index, 2) + ")";
+    );
+    let color: string = this.getPolylineColor(idx);
+    drawPolylineOnMap(this.map, latLongs, color, this.drawPolylineList);
+  }
 
-    this.currentPolyline = L.polyline(latLongs, {color: color, weight:7}).addTo(this.map);
-    this.map.fitBounds(this.currentPolyline.getBounds());
+  getIconName(index: number):string{
+    switch (index){
+      case 1: return "looks_one";
+      case 2: return "looks_two";
+      default: return "looks_"+index;
+    }
   }
 
   private polylineFound() {
-    return this.currentPolyline !== null && this.currentPolyline !== undefined;
+    return this.drawPolylineList !== null && this.drawPolylineList !== undefined;
   }
 
   private incrementShadeOfColor(index: number, number: number) {
@@ -172,6 +194,7 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private createLocation(place, index: number) {
+
     let loc = new Location();
     loc.city = place.value;
     loc.lat = place.y;
@@ -192,5 +215,43 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
     return this.searchingRoutesForm.length < this.maxNumberOfLocations &&
       this.currentUser !== null &&
       this.currentUser !== undefined;
+  }
+
+  private addMarker(index: number, place) {
+    const customIcon = L.icon({iconUrl: this.getIconUrl(index), iconSize: [30, 30]})
+    const markerOptions = {
+      title: 'Location',
+      clickable: true,
+      icon: customIcon
+    }
+
+    this.searchingRoutesForm.at(index).marker = L.marker([place.y, place.x], markerOptions);
+    this.searchingRoutesForm.at(index).marker.addTo(this.map);
+    this.map.panBy(L.point(place.y, place.x));
+  }
+
+  private deleteMarker(index: number) {
+    if (this.searchingRoutesForm.at(index).marker !== null && this.searchingRoutesForm.at(index).marker !== undefined){
+      removeMarker(this.map, this.searchingRoutesForm.at(index).marker);
+    }
+  }
+
+  private removeAllPolylines() {
+    if (this.polylineFound()){
+      removeLayer(this.map, this.drawPolylineList);
+    }
+  }
+
+  private removeOnePolyline(index: number){
+    if (this.drawPolylineList.at(index)){
+      removeOneLayer(this.map, this.drawPolylineList.at(index));
+
+    }
+  }
+
+  private getPolylineColor(index: number): string{
+
+    return `rgb(${this.incrementShadeOfColor(index*5, 0)},
+     ${this.incrementShadeOfColor(index*5, 1)}, ${this.incrementShadeOfColor(index*5, 2)})`;
   }
 }

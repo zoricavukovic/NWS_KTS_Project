@@ -28,6 +28,12 @@ public class RouteDTO {
         return routeDTOs;
     }
 
+    public RouteDTO(Set<Location> locations, double distance, double timeInMs) {
+        this.locations = locations;
+        this.distance = distance;
+        this.timeInMin = getTimeInMinFromMs(timeInMs);
+    }
+
     public Set<Location> getLocations() {
         return locations;
     }
@@ -38,5 +44,9 @@ public class RouteDTO {
 
     public double getTimeInMin() {
         return timeInMin;
+    }
+
+    private double getTimeInMinFromMs(final double timeInMs) {
+        return timeInMs == 0 ? 0.0 :  Math.ceil((timeInMs/1000)/60L + 0.5);
     }
 }

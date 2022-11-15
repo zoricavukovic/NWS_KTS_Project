@@ -46,6 +46,11 @@ public class Location {
     public Location() {
     }
 
+    public Location(double lat, double lon) {
+        this.lat = lat;
+        this.lon = lon;
+    }
+
     public Long getId() {
         return id;
     }

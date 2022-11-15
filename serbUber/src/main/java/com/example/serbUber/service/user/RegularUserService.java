@@ -1,5 +1,6 @@
 package com.example.serbUber.service.user;
 
+import com.example.serbUber.dto.RouteDTO;
 import com.example.serbUber.dto.user.RegularUserDTO;
 import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.*;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import static com.example.serbUber.dto.RouteDTO.fromRoutes;
 import static com.example.serbUber.dto.user.RegularUserDTO.fromRegularUsers;
 import static com.example.serbUber.model.user.User.passwordsDontMatch;
 import static com.example.serbUber.util.Constants.ROLE_REGULAR_USER;
@@ -142,6 +144,11 @@ public class RegularUserService {
     public boolean isFavouriteRoute(Long routeId, String userEmail) {
         RegularUser u = regularUserRepository.getUserWithFavouriteRouteId(routeId, userEmail);
         return u != null;
+    }
+
+    public List<RouteDTO> getFavouriteRoutes(String email){
+        Optional<RegularUser> u = regularUserRepository.getRegularUserByEmail(email);
+        return fromRoutes(u.get().getFavouriteRoutes());
     }
 
     public UserDTO activate(final Long verifyId, final int securityCode)

@@ -1,6 +1,7 @@
 package com.example.serbUber.controller;
 
 import com.example.serbUber.dto.PossibleRouteDTO;
+import com.example.serbUber.dto.PossibleRoutesViaPointsDTO;
 import com.example.serbUber.dto.RouteDTO;
 import com.example.serbUber.request.LocationsForRoutesRequest;
 import com.example.serbUber.request.LongLatRequest;
@@ -44,7 +45,7 @@ public class RouteController {
 
     @PostMapping(path = "/possible")
     @ResponseStatus(HttpStatus.OK)
-    public List<PossibleRouteDTO> getPossibleRoutes(
+    public List<PossibleRoutesViaPointsDTO> getPossibleRoutes(
         @Valid @RequestBody LocationsForRoutesRequest locationsForRouteRequest
     ) {
 

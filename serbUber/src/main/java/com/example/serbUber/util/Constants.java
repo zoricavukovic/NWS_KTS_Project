@@ -1,5 +1,10 @@
 package com.example.serbUber.util;
 
+import com.example.serbUber.dto.PossibleRoutesViaPointsDTO;
+import com.example.serbUber.request.LongLatRequest;
+
+import java.util.List;
+
 public class Constants {
 
     public static final String PHOTOS_FILE_PATH = "src/main/resources/static/images/";
@@ -29,6 +34,8 @@ public class Constants {
 
     public static final String ROLE_ADMIN = "ROLE_ADMIN";
 
+    public static final int START_LIST_INDEX = 0;
+
     public static int generateSecurityCode() {
         return (int)(Math.random() * (Constants.MAX_SECURITY_NUM - Constants.MIN_SECURITY_NUM + 1) + Constants.MIN_SECURITY_NUM);
     }
@@ -38,8 +45,13 @@ public class Constants {
         return ((isDefaultPicture(profilePicture)) ? DEFAULT_PICTURE : profilePicture);
     }
 
+    public static int getBeforeLastIndexOfList(List<LongLatRequest> list){
+
+        return list.size()-1;
+    }
     private static boolean isDefaultPicture(String profilePicture) {
         return profilePicture == null || profilePicture.equalsIgnoreCase(DEFAULT_PICTURE);
     }
+
 
 }

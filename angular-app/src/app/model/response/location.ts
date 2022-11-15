@@ -1,9 +1,9 @@
 export class Location{
-    city: string = "";
-    street: string = "";
-    number: number = -1;
-    lon: number = -1;
-    lat: number = -1;
+    public city: string = "";
+    public street: string = "";
+    public number: number = -1;
+    public lon: number = -1;
+    public lat: number = -1;
     constructor();
 
     constructor(

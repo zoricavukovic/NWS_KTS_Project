@@ -6,15 +6,15 @@ public class PossibleRouteDTO {
 
     private double distance; //in metres
     private double timeInMin;
-    private List<double[]> pointList;
+    private List<double[]> locations;
 
     public PossibleRouteDTO() {
     }
 
-    public PossibleRouteDTO(final double distance, final double timeInMs, final List<double[]> pointList) {
+    public PossibleRouteDTO(final double distance, final double timeInMs, final List<double[]> locations) {
         this.distance = distance;
         this.timeInMin = getTimeInMinFromMs(timeInMs);
-        this.pointList = pointList;
+        this.locations = locations;
     }
 
     private double getTimeInMinFromMs(final double timeInMs) {
@@ -38,11 +38,11 @@ public class PossibleRouteDTO {
     }
 
     public List<double[]> getPointList() {
-        return pointList;
+        return locations;
     }
 
-    public void setPointList(List<double[]> pointList) {
-        this.pointList = pointList;
+    public void setPointList(List<double[]> locations) {
+        this.locations = locations;
     }
 
 }

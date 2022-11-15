@@ -1,9 +1,8 @@
-import {AfterViewInit, Component, Input, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import * as L from 'leaflet';
 import {OpenStreetMapProvider} from 'leaflet-geosearch';
-import {Route} from "../../model/response/route";
 import {DrivingDetailsComponent} from "../driving/driving-details/driving-details.component";
-import {PossibleRoute} from "../../model/response/possible-routes";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'map',
@@ -11,17 +10,26 @@ import {PossibleRoute} from "../../model/response/possible-routes";
   styleUrls: ['./map.component.css']
 })
 export class MapComponent implements OnInit, AfterViewInit {
-  map;
+  map: L.Map;
   provider1 = new OpenStreetMapProvider();
   @ViewChild(DrivingDetailsComponent) private drivingDetailsComponent: DrivingDetailsComponent;
-  constructor() { }
+  homePage:boolean;
+
+  constructor(private router: Router) { }
+
   ngOnInit(): void {
+    if (this.map != undefined) { this.map.remove(); }
     this.initMap();
   }
 
   ngAfterViewInit(): void {
     this.drivingDetailsComponent.ngOnInit();
-
+    // if (this.isHomeComponent(this.router?.url)){
+    //   this.homePageComponent.ngOnInit()
+    // }
+    // else{
+    //   this.drivingDetailsComponent.ngOnInit()
+    // }
   }
 
   async initMap(){
@@ -30,18 +38,15 @@ export class MapComponent implements OnInit, AfterViewInit {
     L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { crossOrigin: true}).addTo(this.map);
   }
 
-  // drawPolyline(route: Route) {
-  //   console.log("sjadosa");
-  //   // if (this.polylineFound()){
-  //   //   this.map.removeLayer(this.currentPolyline);
-  //   // }
-  //   let latLongs = [];
-  //   route.locations.forEach(
-  //     location => latLongs.push([location.lat, location.lon])
-  //   )
-  //
-  //   let currentPolyline = L.polyline(latLongs, {color: "red", weight:7}).addTo(this.map);
-  //   this.map.fitBounds(currentPolyline.getBounds());
-  // }
-
+  private checkHomeComponent(url: string | undefined) {
+    switch(url){
+      case "/home-page": {
+        this.homePage = true;
+        break;
+      }
+      default:{
+        this.homePage = false;
+      }
+    }
+  }
 }

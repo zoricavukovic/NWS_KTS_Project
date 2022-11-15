@@ -79,3 +79,16 @@
   padding-right: 10px;
 }
 
+.box{
+  position: absolute;
+  z-index: 99999;
+  top: 0.1rem;
+  left: 0.2rem;
+  max-width: 30rem;
+  background-color: rgb(245,233,222);
+  padding: 1%;
+  border-radius: 15px;
+  overflow:hidden;
+  clear: both;
+}
+

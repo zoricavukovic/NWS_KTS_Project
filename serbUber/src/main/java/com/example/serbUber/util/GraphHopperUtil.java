@@ -33,9 +33,11 @@ public class GraphHopperUtil {
         hopper.importOrLoad();
         return hopper;
     }
-    public static List<ResponsePath> routing(GraphHopper hopper, LocationsForRoutesRequest locationsForRouteRequest) {
-        LongLatRequest startLocation = locationsForRouteRequest.getLocationsForRouteRequest().get(0);
-        LongLatRequest endLocation = getLongLatRequest(locationsForRouteRequest.getLocationsForRouteRequest());
+    public static List<ResponsePath> routing(
+        GraphHopper hopper,
+        LongLatRequest startLocation,
+        LongLatRequest endLocation
+    ) {
         // simple configuration of the request object
         GHRequest req = new GHRequest(
             startLocation.getLat(),
@@ -59,15 +61,15 @@ public class GraphHopperUtil {
         PointList pointList = path.getPoints();
         double distance = path.getDistance();
         long timeInMs = path.getTime();
-
+        Translation tr = hopper.getTranslationMap().getWithFallBack(Locale.UK);
+        InstructionList il = path.getInstructions();
+        // iterate over all turn instructions
+        for (Instruction instruction : il) {
+            System.out.println("distance " + instruction.getDistance() + " for instruction: " + instruction.getTurnDescription(tr));
+        }
         return rsp.getAll();
 
-//        Translation tr = hopper.getTranslationMap().getWithFallBack(Locale.UK);
-//        InstructionList il = path.getInstructions();
-//        // iterate over all turn instructions
-//        for (Instruction instruction : il) {
-//            System.out.println("distance " + instruction.getDistance() + " for instruction: " + instruction.getTurnDescription(tr));
-//        }
+
     }
 
     public static List<ResponsePath> bla(GraphHopper hopper, LocationsForRoutesRequest locationsForRouteRequest) {

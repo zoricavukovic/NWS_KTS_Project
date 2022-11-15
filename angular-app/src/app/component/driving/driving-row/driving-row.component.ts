@@ -37,7 +37,7 @@ export class DrivingRowComponent implements OnInit, OnDestroy {
 
   goToDetailsPage(id: number){
     this.drivingService.setDrivingId = id;
-    this.router.navigate(["/details"]);
+    this.router.navigate(["/driving-details"]);
   }
 
   isDisabledBtnRate(date, id: number) : boolean{
@@ -80,11 +80,11 @@ export class DrivingRowComponent implements OnInit, OnDestroy {
       err => {
         this.toast.error("Review creation failed");
       }
-      /*res => {this.toast.success({detail:"Review created", summary:"Review is successfully created!", 
+      /*res => {this.toast.success({detail:"Review created", summary:"Review is successfully created!",
                 duration:4000, position:'bl'});
                 this.driving.hasReviewForUser = true;
               },
-      error => this.toast.error({detail:"Review creation failed", summary:error.error, 
+      error => this.toast.error({detail:"Review creation failed", summary:error.error,
                 duration:4000, position:'bl'})*/
       );
   }

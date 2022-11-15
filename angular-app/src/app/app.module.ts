@@ -42,6 +42,10 @@ import { ShowUsersComponent } from './component/admin/show-users/show-users.comp
 import { UserRowComponent } from './component/admin/user-row/user-row.component';
 import { VehicleDetailsComponent } from './component/vehicle/vehicle-details/vehicle-details.component';
 import { MapComponent } from './component/map/map.component';
+import { FavouriteRoutesComponent } from './component/favourite-routes/favourite-routes.component';
+import { FavouriteRouteRowComponent } from './component/favourite-route-row/favourite-route-row.component';
+import { UtilMessageComponent } from './component/util-message/util-message.component';
+import {ScrollingModule} from "@angular/cdk/scrolling";
 
 @NgModule({
   declarations: [
@@ -67,7 +71,10 @@ import { MapComponent } from './component/map/map.component';
     ShowUsersComponent,
     UserRowComponent,
     VehicleDetailsComponent,
-    MapComponent
+    MapComponent,
+    FavouriteRoutesComponent,
+    FavouriteRouteRowComponent,
+    UtilMessageComponent
   ],
   imports: [
     BrowserModule,
@@ -94,6 +101,7 @@ import { MapComponent } from './component/map/map.component';
       preventDuplicates: true,
       closeButton: true
     }),
+    ScrollingModule,
   ],
   entryComponents:[EditProfileComponent],
   providers: [

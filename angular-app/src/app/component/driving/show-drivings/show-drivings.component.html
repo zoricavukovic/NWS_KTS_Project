@@ -29,9 +29,7 @@
     <driving-row [driving]="driving" [index]="i" [user]="currentUser"></driving-row>
   </div>
 
-  <div *ngIf="drivings.length === 0" style="color:white;">
-      User have not drivings.
-  </div>
+  <util-message message="User don't have any drivings." *ngIf="drivings.length === 0"></util-message>
 
   <div class="paginator" *ngIf="drivings.length !== 0">
     <mat-paginator appPaginator

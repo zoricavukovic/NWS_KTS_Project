@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { LoginRequest } from '../model/request/user/login-request';
 import { LoginResponse } from '../model/response/user/login';
 import { User } from '../model/response/user/user';
+import { Route } from '../model/response/route';
 import { ConfigService } from './config.service';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { Router } from '@angular/router';
@@ -94,5 +95,9 @@ export class AuthService {
 
   getToken() {
     return localStorage.getItem('token');
+  }
+
+  getFavouriteRoutesForUser(email: string){
+    return this.http.get<Route[]>(this.configService.get_favourite_routes(email))
   }
 }
