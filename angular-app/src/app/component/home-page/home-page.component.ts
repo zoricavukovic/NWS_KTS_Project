@@ -1,125 +1,196 @@
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
-import { FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
+import {FormControl, FormGroup, ValidationErrors} from '@angular/forms';
 import * as L from 'leaflet';
-import { OpenStreetMapProvider } from 'leaflet-geosearch';
+import {OpenStreetMapProvider} from 'leaflet-geosearch';
+import {SearchingRoutesForm} from "../../model/searching-routes-form";
+import {Location} from "../../model/response/location";
+import {RouteService} from "../../service/route.service";
+import {LocationsForRoutesRequest} from "../../model/request/locations-for-routes-request";
+import {PossibleRoute} from "../../model/response/possible-routes";
+import {User} from "../../model/response/user/user";
+import {Subscription} from "rxjs";
+import {AuthService} from "../../service/auth.service";
 
 @Component({
   selector: 'home-page',
   templateUrl: './home-page.component.html',
   styleUrls: ['./home-page.component.css']
 })
-export class HomePageComponent implements AfterViewInit {
+export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private map;
+  currentUser: User;
   provider1 = new OpenStreetMapProvider();
 
-  //inputStartPlace: string = "";
-  filteredStartPlaces;
-  startMarker;
+  maxNumberOfLocations: number = 7;
 
-  inputDestination: string = "";
-  filteredDestinations;
-  destinationMarker;
-
+  possibleRoutes: PossibleRoute[] = [];
+  currentPolyline;
+  searchingRoutesForm: SearchingRoutesForm[] = [];
   autocompleteForm = new FormGroup({
     startDest: new FormControl(undefined, [this.requireMatch.bind(this)]),
     endDest: new FormControl(undefined, [this.requireMatch.bind(this)])
   });
 
-  constructor() { }
+  rgbDeepBlue: number[] = [44 , 75, 97];
+  private authSubscription: Subscription;
+  private routeSubscription: Subscription;
 
+  constructor(
+    private routeService: RouteService,
+    private authService: AuthService
+  ) { }
+
+  ngOnInit(): void {
+    this.searchingRoutesForm.push(new SearchingRoutesForm());
+    this.searchingRoutesForm.push(new SearchingRoutesForm());
+    this.authSubscription = this.authService.getCurrentUser().subscribe(
+      user => this.currentUser = user
+    );
+  }
+
+  ngOnDestroy(): void {
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
+    }
+    if (this.routeSubscription) {
+      this.routeSubscription.unsubscribe();
+    }
+  }
 
   ngAfterViewInit(): void {
     this.initMap();
   }
 
   async initMap(){
-  
-    // this.map = L.map('map', {
-    //   center: [ 39.8282, -98.5795 ],
-    //   zoom: 3
-    // });
-
-    //this.map = L.map('map').setView({center: [51.505, -0.09], zoom:13});
-
-    // const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    //   maxZoom: 18,
-    //   minZoom: 3,
-    //   attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    // });
-
-    // tiles.addTo(this.map);
-
-    // const search = GeoSearch.GeoSearchControl({
-    //   provider: new GeoSearch.OpenStreetMapProvider(),
-    // });
-    
-    //this.map.addControl(search);
-
-
     this.map = L.map('map').setView([45.25167, 19.83694], 13);
 
-    L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(this.map);
+    L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { crossOrigin: true}).addTo(this.map);
   }
 
-  filterStartPlace(){
-    this.filteredStartPlaces = this.filterPlaces(this.autocompleteForm.get("startDest").value);
-    // console.log(this.filteredStartPlaces);
+  addOneMoreLocation(){
+    this.searchingRoutesForm.splice(this.searchingRoutesForm.length-1, 0, new SearchingRoutesForm());
   }
 
-  filterDestination(){
-    this.filteredDestinations = this.filterPlaces(this.inputDestination);
-    //console.log(this.filteredDestinations);
+  deleteOneLocation(index: number){
+    this.searchingRoutesForm.splice(index, 1);
   }
-    
+
   async filterPlaces(searchParam: string){
-    const places = await this.provider1.search({ query: searchParam });
-    return places;
+    return await this.provider1.search({query: searchParam});
   }
-
 
   requireMatch(control: FormControl): ValidationErrors | null {
     const selection: any = control.value;
     console.log(selection);
-    
+
     // console.log(this.filteredStartPlaces)
     // if (selection !== null && this.filteredStartPlaces.value && this.filteredStartPlaces.value.indexOf(selection) < 0) {
     //   return { requireMatch: true };
     // }
     return null;
-  } 
+  }
 
-  onBlurStart(startPlace) {
-    if (this.startMarker){
-      this.map.removeLayer(this.startMarker);
+  chooseMarker(index: number, place) {
+    if (this.searchingRoutesForm.at(index).marker){
+      this.map.removeLayer(this.searchingRoutesForm.at(index).marker);
     }
-    const customIcon = L.icon({iconUrl: "../../../assets/images/circle.png", iconSize: [15, 15]})
+    if (this.polylineFound()){
+      this.map.removeLayer(this.currentPolyline);
+    }
+
+    const customIcon = L.icon({iconUrl: this.getIconUrl(index), iconSize: [30, 30]})
     const markerOptions = {
-      title: 'Pickup Location',
+      title: 'Location',
       clickable: true,
       icon: customIcon
     }
-    this.startMarker = L.marker([startPlace.y, startPlace.x], markerOptions);
-    this.startMarker.addTo(this.map);
+    this.searchingRoutesForm.at(index).marker = L.marker([place.y, place.x], markerOptions);
+    this.searchingRoutesForm.at(index).marker.addTo(this.map);
+
+    this.createLocation(place, index);
   }
 
-  onBlurDestination(destination) {
-    if (this.destinationMarker){
-      this.map.removeLayer(this.destinationMarker);
+  getIconName(index: number):string{
+    switch (index){
+      case 1: return "looks_one";
+      case 2: return "looks_two";
+      default: return "looks_"+index;
     }
-    const customIcon = L.icon({iconUrl: "../../../assets/images/square.png", iconSize: [15, 15]})
-    const markerOptions = {
-      title: 'Pickup Location',
-      clickable: true,
-      icon: customIcon
-    }
-    this.destinationMarker = L.marker([destination.y, destination.x], markerOptions);
-    this.destinationMarker.addTo(this.map);
   }
 
-  // loseFocus(options): boolean {
-  //   console.log(options.value);
-  //   return options.value.filter(s => s.value.equals(this.autocompleteForm.get("startDest").value)).length === 0;
-  //   return true;
-  // }
+  getFilteredPlaces(index: number) {
+    return this.searchingRoutesForm.at(index).filteredPlaces;
+  }
+
+  filterPlace(index: number) {
+    this.searchingRoutesForm.at(index).filteredPlaces = this.filterPlaces(
+      this.searchingRoutesForm.at(index).inputPlace
+    );
+  }
+
+  getPossibleRoutes() {
+    let locationsForCreateRoutes: Location[] = [];
+    this.searchingRoutesForm.forEach(searchingRoutesLocation =>
+      locationsForCreateRoutes.push(searchingRoutesLocation.location)
+    );
+
+    this.routeSubscription = this.routeService.getPossibleRoutes(
+      new LocationsForRoutesRequest(locationsForCreateRoutes)
+    ).subscribe(
+      res => {
+        this.possibleRoutes = res;
+        if (res.length > 0){
+          this.changeCurrentRoute(res.at(0), 0);
+        }
+      },
+      error => console.log("greska")
+    );
+  }
+
+  changeCurrentRoute(route: PossibleRoute, index: number) {
+    if (this.polylineFound()){
+      this.map.removeLayer(this.currentPolyline);
+    }
+    let latLongs = [];
+    route.pointList.forEach(
+      latLng => latLongs.push([latLng[0], latLng[1]])
+    )
+    let color: string = "rgb(" + this.incrementShadeOfColor(index, 0) + ", " +
+      this.incrementShadeOfColor(index, 1)+ ", " + this.incrementShadeOfColor(index, 2) + ")";
+
+    this.currentPolyline = L.polyline(latLongs, {color: color, weight:7}).addTo(this.map);
+    this.map.fitBounds(this.currentPolyline.getBounds());
+  }
+
+  private polylineFound() {
+    return this.currentPolyline !== null && this.currentPolyline !== undefined;
+  }
+
+  private incrementShadeOfColor(index: number, number: number) {
+    return this.rgbDeepBlue[number] + index;
+  }
+
+  private createLocation(place, index: number) {
+    let loc = new Location();
+    loc.city = place.value;
+    loc.lat = place.y;
+    loc.lon = place.x;
+    this.searchingRoutesForm.at(index).location = loc;
+  }
+
+  private getIconUrl(index: number): string {
+    switch (index){
+      case 0: return "../../../assets/images/startMarker.png";
+      case this.searchingRoutesForm.length-1: return "../../../assets/images/endMarker.png";
+      default: return "../../../assets/images/viaMarker.png";
+    }
+  }
+
+  canAddMoreLocation() {
+
+    return this.searchingRoutesForm.length < this.maxNumberOfLocations &&
+      this.currentUser !== null &&
+      this.currentUser !== undefined;
+  }
 }

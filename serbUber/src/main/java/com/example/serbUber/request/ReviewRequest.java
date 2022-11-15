@@ -25,6 +25,8 @@ public class ReviewRequest {
 //    @Size(min = Constants.MIN_LENGTH_OF_MESSAGE, max = Constants.MAX_LENGTH_OF_MESSAGE, message = WRONG_MESSAGE_LENGTH)
     private String message;
 
+    private String userEmail;
+
 //    @NotBlank(message = "Driving must be selected!")
     private Long driving;
 
@@ -32,12 +34,14 @@ public class ReviewRequest {
             final double vehicleRate,
             final double driverRate,
             final String message,
+            final String userEmail,
             final Long driving
     ) {
         this.vehicleRate = vehicleRate;
         this.driverRate = driverRate;
         this.message = message;
         this.driving = driving;
+        this.userEmail = userEmail;
     }
 
     public double getVehicleRate() {
@@ -56,4 +60,7 @@ public class ReviewRequest {
         return driving;
     }
 
+    public String getUserEmail() {
+        return userEmail;
+    }
 }

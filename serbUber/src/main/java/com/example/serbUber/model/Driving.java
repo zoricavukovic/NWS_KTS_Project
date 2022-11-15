@@ -45,6 +45,7 @@ public class Driving {
     @Column(name="price", nullable = false)
     private double price;
 
+
     public Driving() {
     }
 

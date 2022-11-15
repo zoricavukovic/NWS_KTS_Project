@@ -1,99 +1,94 @@
+<map></map>
 <div>
-   <!--<mat-grid-list cols="3" rowHeight="3:1">
-        <mat-grid-tile colspan="2" rowspan="2">
-          <div style="background-color:green;max-width:700px; min-width:600px;min-height:300px;">mapaaa</div>
-        </mat-grid-tile>
-        <mat-grid-tile rowspan="2">
-          
-            
+    <div class="drivingInfo">
+      <div class="route">
+
+         <!-- <mat-card-header>
+            <mat-card-title>Route</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
             <mat-list-item *ngFor="let dest of destinations">
-              <mat-icon mat-list-icon>location_on</mat-icon>
-              <div mat-line>{{dest}}</div>
+              <div style="display:flex;font-size:18px;">
+                <mat-icon mat-list-icon class="icon">location_on</mat-icon>
+                <div mat-line>{{dest}}</div>
+              </div><br>
             </mat-list-item>
-            
-            
-        </mat-grid-tile>
-        <mat-grid-tile rowspan="2">
-      
-          <div *ngIf="currentUser.role.name === 'ROLE_DRIVER'">
-            <mat-accordion>
-              <mat-expansion-panel hideToggle>
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    This is the expansion title
-                  </mat-panel-title>
-                  <mat-panel-description>
-                    This is a summary of the content
-                  </mat-panel-description>
-                </mat-expansion-panel-header>
-                <p>This is the primary content of the panel.</p>
-              </mat-expansion-panel>
-              <mat-expansion-panel (opened)="panelOpenState = true"
-                                   (closed)="panelOpenState = false">
-                <mat-expansion-panel-header>
-                  <mat-panel-title>
-                    Self aware panel
-                  </mat-panel-title>
-                  <mat-panel-description>
-                    Currently I am {{panelOpenState ? 'open' : 'closed'}}
-                  </mat-panel-description>
-                </mat-expansion-panel-header>
-                <p>I'm visible because I am open</p>
-              </mat-expansion-panel>
-            </mat-accordion>
-          </div>
-          <div *ngIf="currentUser.role.name === 'ROLE_REGULAR_USER'" style="vertical-align: top;">
-            <div class="driverInfo" style="float:left"> 
-              <h2>Driver</h2>
-              <h3 style="display:flex;">
-                <mat-icon  style="display:inline-flex">person</mat-icon> 
-                <span>{{driver.name}}  {{driver.surname}}</span>
-              </h3>
-              <h3 style="display:flex">
-                <mat-icon  style="display:inline-flex">email</mat-icon> 
-                <span>{{driver.email}}</span>
-              </h3>
-              <h3 style="display:flex">
-                <mat-icon  style="display:inline-flex">phone</mat-icon> 
-                <span>{{driver.phoneNumber}}</span>
-              </h3>
-            </div>
-          </div>
-     
-        </mat-grid-tile>
-        <mat-grid-tile rowspan="2">
-          <div class="rating">
-            <h2>Rating</h2>
-            <h3 style="display:flex;">
-              <mat-icon  style="display:inline-flex">person</mat-icon> 
-              <div class="star w-50 rating-star">
-               <ngx-star-rating class="stars"  [(ngModel)]="driver.rate" [id]="'rating'" [disabled]="true"></ngx-star-rating>
-              </div>
-            </h3>
-            <h3 style="display:flex;">
-              <mat-icon  style="display:inline-flex">directions_car</mat-icon> 
-              <div class="star w-50 rating-star">
-                <ngx-star-rating class="stars"  [(ngModel)]="vehicleRating" [id]="'rating'" [disabled]="true"></ngx-star-rating>
-               </div>
-            </h3>
-          </div>
+      </mat-card-content>-->
+      <h1>Route</h1>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{destinations[0]}} - {{destinations[destinations.length - 1]}}
+          </mat-panel-title>
+        </mat-expansion-panel-header>
 
-        </mat-grid-tile>
-       
-        <mat-grid-tile rowspan="2">
-       
-            <button mat-raised-button class="routebtn" [matMenuTriggerFor]="menu" style="float:left">Request driving</button>
-            <mat-menu #menu="matMenu">
-              <button mat-menu-item>Now</button>
-              <button mat-menu-item>Later</button>
-            </mat-menu>
-      
-        </mat-grid-tile>
-      </mat-grid-list>-->
+        <mat-list-item *ngFor="let dest of destinations">
+          <div style="display:flex;font-size:15px;">
+            <mat-icon mat-list-icon class="icon">location_on</mat-icon>
+            <div mat-line>{{dest}}</div>
+          </div><br>
+        </mat-list-item>
 
-      <p-timeline [value]="events">
-        <ng-template pTemplate="content" let-event>
-            {{event.status}}
-        </ng-template>
-    </p-timeline>
+      </mat-expansion-panel>
+
+
+    </div>
+    <br>
+    <div class="button-container" *ngIf="isRegularUser">
+      <button mat-raised-button>Request now</button>
+      <button mat-raised-button>Request later</button>
+      <button mat-icon-button color="warn" (click)="setFavouriteRoute()" >
+        <mat-icon *ngIf="!favouriteRoute" matTooltip="Add to favourite routes" matTooltipClass="tooltip"
+        matTooltipHideDelay="1000">favorite_border</mat-icon>
+        <mat-icon *ngIf="favouriteRoute" matTooltip="Remove from favourite routes" matTooltipClass="tooltip"
+        matTooltipHideDelay="1000">favorite</mat-icon>
+      </button>
+    </div>
+    <br>
+      <vehicle-details [vehicle]="driver.vehicle"></vehicle-details>
+    <br>
+    <div *ngIf="!isDriver">
+      <mat-card>
+        <mat-card-header>
+          <img mat-card-avatar style="height:5rem; width: 5rem" [src]="getBase64Prefix() + driver.profilePicture">
+          <mat-card-title>{{driver.name}} {{driver.surname}}</mat-card-title>
+          <mat-card-subtitle>{{driver.email}} </mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <br>
+
+    <div *ngIf="!isRegularUser">
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Passengers
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <div *ngFor="let user of this.driving.users">
+            <mat-card>
+              <mat-card-header>
+                <img mat-card-avatar [src]="getBase64Prefix() + user.profilePicture">
+                <mat-card-title>{{user.name}} {{user.surname}}</mat-card-title>
+                <mat-card-subtitle>{{user.email}} </mat-card-subtitle>
+              </mat-card-header>
+              <mat-card-content>
+
+              </mat-card-content>
+            </mat-card>
+        </div>
+
+        </mat-expansion-panel>
+    </div>
+    <br>
+
+    <div style="text-align:center">
+
+      <h2>{{driving.price}}.00 RSD</h2>
+    </div>
+</div>
 </div>

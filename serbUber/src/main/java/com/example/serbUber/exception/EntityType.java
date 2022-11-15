@@ -9,6 +9,7 @@ public enum EntityType {
     PHOTO,
     DRIVING,
     CHAT_ROOM,
+    ROUTE,
     ROLE;
 
     public static String getEntityErrorMessage(String id, EntityType entityType){

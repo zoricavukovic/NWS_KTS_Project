@@ -1,0 +1,4 @@
+<div *ngFor="let route of favouriteRoutes; let i=index;">
+    <favourite-route-row [user]="currentUser" [route]="route" [index]="i" (removeFromFavourites)="removeFromFavourites()"></favourite-route-row>
+</div>
+<util-message message="You don't have any favourite routes." *ngIf="favouriteRoutes.length === 0"></util-message>

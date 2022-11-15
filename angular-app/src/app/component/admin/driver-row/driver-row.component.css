@@ -1,0 +1,10 @@
+.card{
+    max-width: 40%;
+    margin-top: 20px;
+    margin-left: 30%;
+    padding: 20px;
+}
+
+.btn{
+    float: right;
+}

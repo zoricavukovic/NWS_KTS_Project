@@ -1,4 +1,5 @@
 import { Route } from "./route";
+import {User} from "./user/user";
 
 export class Driving {
     id: number;
@@ -10,6 +11,8 @@ export class Driving {
     drivingStatus: string;
     driverEmail: string;
     usersPaid: {};
+    users: User[];
     price: number;
+    hasReviewForUser: boolean;
 
 }

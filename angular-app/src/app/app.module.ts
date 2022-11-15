@@ -25,17 +25,31 @@ import { TimelineModule } from 'primeng/timeline';
 import { NavBarComponent} from './component/nav-bar/nav-bar.component';
 import {RatingModule} from 'primeng/rating';
 import { NgxStarsModule } from 'ngx-stars';
+import { MglTimelineModule } from 'angular-mgl-timeline';
 import { DrivingRowComponent } from './component/driving/driving-row/driving-row.component';
 import { ProfilePageComponent } from './component/user/profile-page/profile-page.component';
 import { EditProfileComponent } from './component/user/edit-profile/edit-profile.component';
 import { ChangeProfilePicComponent } from './component/user/change-profile-pic/change-profile-pic.component';
+import { NgToastModule } from 'ng-angular-popup';
+import { MatTooltipModule} from '@angular/material/tooltip';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { ToastrModule } from 'ngx-toastr';
 import { ButtonLiveChatComponent } from './component/chat/button-live-chat/button-live-chat.component';
 import { PoupupLiveChatComponent } from './component/chat/poupup-live-chat/poupup-live-chat.component';
 import { HistoryLiveChatComponent } from './component/chat/history-live-chat/history-live-chat.component';
 import { ChatRoomsListComponent } from './component/chat/chat-rooms-list/chat-rooms-list.component';
 import { MessagesBoxComponent } from './component/chat/messages-box/messages-box.component';
-
+import { RouteRowComponent } from './component/route-row/route-row.component';
+import { ShowDriversComponent } from './component/admin/show-drivers/show-drivers.component';
+import { DriverRowComponent } from './component/admin/driver-row/driver-row.component';
+import { ShowUsersComponent } from './component/admin/show-users/show-users.component';
+import { UserRowComponent } from './component/admin/user-row/user-row.component';
+import { VehicleDetailsComponent } from './component/vehicle/vehicle-details/vehicle-details.component';
+import { MapComponent } from './component/map/map.component';
+import { FavouriteRoutesComponent } from './component/favourite-routes/favourite-routes.component';
+import { FavouriteRouteRowComponent } from './component/favourite-route-row/favourite-route-row.component';
+import { UtilMessageComponent } from './component/util-message/util-message.component';
 
 @NgModule({
   declarations: [
@@ -60,6 +74,16 @@ import { MessagesBoxComponent } from './component/chat/messages-box/messages-box
     HistoryLiveChatComponent,
     ChatRoomsListComponent,
     MessagesBoxComponent,
+    RouteRowComponent,
+    ShowDriversComponent,
+    DriverRowComponent,
+    ShowUsersComponent,
+    UserRowComponent,
+    VehicleDetailsComponent,
+    MapComponent,
+    FavouriteRoutesComponent,
+    FavouriteRouteRowComponent,
+    UtilMessageComponent
   ],
   imports: [
     BrowserModule,
@@ -75,6 +99,11 @@ import { MessagesBoxComponent } from './component/chat/messages-box/messages-box
     RatingModule,
     TimelineModule,
     NgxStarsModule,
+    NgToastModule,
+    MglTimelineModule,
+    MatTooltipModule,
+    MatRadioModule,
+    MatPaginatorModule,
     ToastrModule.forRoot({
       timeOut: 4000,
       positionClass: 'toast-bottom-left',

@@ -11,6 +11,9 @@ import { HomePageComponent } from './component/home-page/home-page.component';
 import { ProfilePageComponent } from './component/user/profile-page/profile-page.component';
 import { EditProfileComponent } from './component/user/edit-profile/edit-profile.component';
 import { HistoryLiveChatComponent } from './component/chat/history-live-chat/history-live-chat.component';
+import { ShowDriversComponent } from './component/admin/show-drivers/show-drivers.component';
+import { ShowUsersComponent } from './component/admin/show-users/show-users.component';
+import { FavouriteRoutesComponent } from './component/favourite-routes/favourite-routes.component';
 
 const routes: Routes = [
   {path:'', redirectTo:'home-page', pathMatch:'full'},
@@ -20,7 +23,7 @@ const routes: Routes = [
   {path: 'forgot-password', component: SendResetPasswordEmailComponent},
   {path: 'verify/:id', component: VerifyComponent},
   {path: 'drivings', component: ShowDrivingsComponent},
-  {path: 'details/:id', component: DrivingDetailsComponent},
+  {path: 'details', component: DrivingDetailsComponent},
   {path: 'reset-password/:email', component: ResetPasswordComponent},
   {path: 'profile-page', component: ProfilePageComponent},
   {path: 'verify/:id', component: VerifyComponent},
@@ -28,6 +31,9 @@ const routes: Routes = [
   {path: 'profile-page', component: ProfilePageComponent},
   {path: 'edit-profile-data', component: EditProfileComponent},
   {path: 'messages', component: HistoryLiveChatComponent},
+  {path: 'drivers', component: ShowDriversComponent},
+  {path: 'users', component: ShowUsersComponent},
+  {path: 'favourite-routes', component:FavouriteRoutesComponent},
   {path:'', redirectTo:'login', pathMatch:'full'}
 ];
 

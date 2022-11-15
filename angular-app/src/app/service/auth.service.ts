@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { LoginRequest } from '../model/request/user/login-request';
 import { LoginResponse } from '../model/response/user/login';
 import { User } from '../model/response/user/user';
+import { Route } from '../model/response/route';
 import { ConfigService } from './config.service';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { Router } from '@angular/router';
@@ -14,6 +15,8 @@ import { ChatService } from './chat.service';
 export class AuthService {
   currentUser$ = new BehaviorSubject<User>(null);
   ROLE_ADMIN: string = "ROLE_ADMIN";
+  ROLE_REGULAR_USER: string = "ROLE_REGULAR_USER";
+  ROLE_DRIVER: string = "ROLE_DRIVER";
 
   constructor(
     private http: HttpClient,
@@ -61,7 +64,6 @@ export class AuthService {
 
   getCurrentUser(): BehaviorSubject<User> {
     let user = localStorage.getItem('user');
-    console.log(user);
     if (user !== null && user !== undefined){
 
         this.currentUser$.next(JSON.parse(user));
@@ -72,8 +74,8 @@ export class AuthService {
     return this.currentUser$;
   }
 
-  userIsAdmin(): boolean {
-    const userString = localStorage.getItem('user');
+  userIsAdmin(user: User): boolean {
+    /*const userString = localStorage.getItem('user');
     if (userString !== null && userString !== undefined){
       const user = JSON.parse(userString);
       if (user.role.name === this.ROLE_ADMIN){
@@ -81,8 +83,17 @@ export class AuthService {
         return true;
       }
     }
+    return false;*/
 
-    return false;
+    return user.role.name === this.ROLE_ADMIN;
+  }
+
+  userIsRegular(user: User): boolean{
+    return user.role.name === this.ROLE_REGULAR_USER;
+  }
+
+  userIsDriver(user: User): boolean{
+    return user.role.name === this.ROLE_DRIVER;
   }
 
   tokenIsPresent() {
@@ -92,5 +103,9 @@ export class AuthService {
 
   getToken() {
     return localStorage.getItem('token');
+  }
+
+  getFavouriteRoutesForUser(email: string){
+    return this.http.get<Route[]>(this.configService.get_favourite_routes(email))
   }
 }

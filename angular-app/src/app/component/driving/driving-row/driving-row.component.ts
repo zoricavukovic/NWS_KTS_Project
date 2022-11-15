@@ -5,10 +5,10 @@ import { Router } from '@angular/router';
 import { RatingDialogComponent } from '../../review/rating-dialog/rating-dialog.component';
 import { ConfigService } from 'src/app/service/config.service';
 import { ReviewService } from 'src/app/service/review.service';
-import { ReviewRequest } from 'src/app/model/request/review-request';
 import { Subscription } from 'rxjs';
 import { User } from 'src/app/model/response/user/user';
 import {ToastrService} from "ngx-toastr";
+import { DrivingService } from 'src/app/service/driving.service';
 
 @Component({
   selector: 'driving-row',
@@ -21,21 +21,23 @@ export class DrivingRowComponent implements OnInit, OnDestroy {
   @Input() index: number;
   @Input() user: User;
 
+  dataRate;
+
   reviewSubscription: Subscription;
 
   constructor(private router: Router,
               private dialog: MatDialog,
               private reviewService: ReviewService,
               private configService: ConfigService,
+              private drivingService: DrivingService,
               private toast: ToastrService
   ) { }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   goToDetailsPage(id: number){
-
-    this.router.navigate(["/details", id]);
+    this.drivingService.setDrivingId = id;
+    this.router.navigate(["/details"]);
   }
 
   isDisabledBtnRate(date, id: number) : boolean{
@@ -56,12 +58,6 @@ export class DrivingRowComponent implements OnInit, OnDestroy {
     return new Date(start.getTime() + duration*60000)
    }
 
-  haveDrivingRate(id: number){
-    if(this.configService.have_driving_rate_url + id){
-      return true;
-    }
-    return false;
- }
 
   openDialog(id:number){
     const dialogConfig = new MatDialogConfig();
@@ -69,20 +65,28 @@ export class DrivingRowComponent implements OnInit, OnDestroy {
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
     dialogConfig.data ={
-      id: id
+      id: id,
+      userEmail: this.user.email
     }
     const dialogRef = this.dialog.open(RatingDialogComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(
-      data => {
-        console.log(data.message);
-        this.reviewSubscription = this.reviewService.saveReview(
-          new ReviewRequest(data.ratingVehicle, data.ratingDriver, data.message, data.id)
-        ).subscribe(
-          res => this.toast.success("Review is successfully created!", "Review created"),
-          error => this.toast.error(error.error, "Review creation failed")
-        );
-      });
+
+      res => {
+        this.toast.success("Review created");
+        this.driving.hasReviewForUser = true;
+      },
+
+      err => {
+        this.toast.error("Review creation failed");
+      }
+      /*res => {this.toast.success({detail:"Review created", summary:"Review is successfully created!", 
+                duration:4000, position:'bl'});
+                this.driving.hasReviewForUser = true;
+              },
+      error => this.toast.error({detail:"Review creation failed", summary:error.error, 
+                duration:4000, position:'bl'})*/
+      );
   }
 
 
@@ -91,7 +95,6 @@ export class DrivingRowComponent implements OnInit, OnDestroy {
     if(this.reviewSubscription){
       this.reviewSubscription.unsubscribe();
     }
-
    }
 
 }

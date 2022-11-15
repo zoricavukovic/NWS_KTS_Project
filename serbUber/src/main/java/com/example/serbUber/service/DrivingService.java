@@ -10,13 +10,13 @@ import com.example.serbUber.model.user.User;
 import com.example.serbUber.repository.DrivingRepository;
 import com.example.serbUber.repository.user.UserRepository;
 import com.example.serbUber.service.user.UserService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static com.example.serbUber.dto.DrivingDTO.fromDrivings;
 import static com.example.serbUber.util.Constants.ROLE_DRIVER;
@@ -65,12 +65,31 @@ public class DrivingService {
         return fromDrivings(drivings);
     }
 
-    public List<DrivingDTO> getDrivingsForUser(String email) throws EntityNotFoundException {
+    public List<DrivingDTO> getDrivingsForUser(String email, int pageNumber, int pageSize, String parameter, String sortOrder) throws EntityNotFoundException {
         User user = userService.getUserByEmail(email);
+        Pageable page = PageRequest.of(pageNumber, pageSize, Sort.by(getSortOrder(sortOrder), getSortBy(parameter)));
 
         return user.getRole().isDriver() ?
-                fromDrivings(drivingRepository.findByDriverEmail(email)) :
-                fromDrivings(drivingRepository.findByUserEmail(email));
+                fromDrivings(drivingRepository.findByDriverEmail(email, page)) :
+                fromDrivings(drivingRepository.findByUserEmail(email, page));
+    }
+
+    private String getSortBy(String sortBy){
+        Dictionary<String, String> sortByDict = new Hashtable<>();
+        sortByDict.put("Date","started");
+        sortByDict.put("Departure","route.startPoint");
+        sortByDict.put("Destination","route.destinations"); //ne znam ovo kako da pristupi??
+        sortByDict.put("Price","price");
+
+        return sortByDict.get(sortBy);
+    }
+
+    private Sort.Direction getSortOrder(String sortOrder){
+        Dictionary<String, Sort.Direction> sortOrderDict = new Hashtable<>();
+        sortOrderDict.put("Descending", Sort.Direction.DESC);
+        sortOrderDict.put("Ascending", Sort.Direction.ASC);
+
+        return sortOrderDict.get(sortOrder);
     }
 
     public DrivingDTO getDrivingDto(Long id) throws EntityNotFoundException {

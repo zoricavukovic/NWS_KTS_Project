@@ -13,6 +13,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
 
   currentUser: User;
   isAdmin: boolean;
+  isRegularUser: boolean;
   currentUserSubscription: Subscription;
   logoutSubscription: Subscription;
   
@@ -25,6 +26,8 @@ export class NavBarComponent implements OnInit, OnDestroy {
     this.currentUserSubscription = this.authService.getCurrentUser().subscribe((data) => {
       this.currentUser=data; 
       this.isAdmin = this.authService.userIsAdmin();
+      this.isRegularUser = this.authService.userIsRegular(this.currentUser);
+      this.isAdmin = this.authService.userIsAdmin(this.currentUser);
     });
   }
 
