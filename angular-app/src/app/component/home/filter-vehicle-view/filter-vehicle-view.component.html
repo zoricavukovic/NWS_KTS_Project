@@ -1,0 +1,49 @@
+<driver-vehicle
+  (petFriendlyEvent)="petFriendly = $event"
+  (babySeatEvent)="babySeat = $event"
+  (vehicleTypeEvent)="vehicleType = $event"></driver-vehicle>
+<br />
+<mat-expansion-panel>
+  <mat-expansion-panel-header>
+    <mat-panel-title> Add other passengers </mat-panel-title>
+  </mat-expansion-panel-header>
+  <mat-chip-list aria-label="Passenger selection">
+    <mat-chip
+      *ngFor="let user of selectedPassengers"
+      (removed)="removePassengerFromSelected(user)">
+      {{ user }}
+      <button matChipRemove>
+        <mat-icon>cancel</mat-icon>
+      </button>
+    </mat-chip>
+  </mat-chip-list>
+  <br />
+  <mat-form-field appearance="fill">
+    <mat-label>Email</mat-label>
+    <input
+      type="text"
+      matInput
+      aria-label="State"
+      [matAutocomplete]="auto"
+      placeholder="Enter passenger's email" />
+    <mat-autocomplete
+      #auto="matAutocomplete"
+      (optionSelected)="addSelectedPassenger($event.option.value)">
+      <mat-option *ngFor="let user of allRegularUsers" [value]="user">
+        <span>{{ user }}</span>
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+</mat-expansion-panel>
+<br />
+<button
+  mat-stroked-button
+  class="showPriceBtn"
+  *ngIf="price === 0"
+  (click)="showPrice()">
+  Show price
+</button>
+
+<div style="text-align: right" *ngIf="price !== 0">
+  <h2>={{ price }}.00 RSD</h2>
+</div>

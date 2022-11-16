@@ -1,0 +1,308 @@
+<div id="map">
+  <div id="route-div" *ngIf="!currentUserIsDriver" class="box mat-elevation-z1">
+    <div *ngIf="routeChoiceView">
+      <h1><strong>Request a ride now</strong></h1>
+
+      <div
+        *ngFor="let addedLocation of searchingRoutesForm; let i = index"
+        class="div">
+        <mat-form-field appearance="fill">
+          <mat-label *ngIf="i === 0" style="font-size: 1.1rem"
+            >Enter pickup location</mat-label
+          >
+          <mat-label
+            *ngIf="i === searchingRoutesForm.length - 1"
+            style="font-size: 1.1rem"
+            >Enter destination</mat-label
+          >
+          <mat-label
+            *ngIf="i !== 0 && i !== searchingRoutesForm.length - 1"
+            style="font-size: 1.1rem"
+            >Via destination</mat-label
+          >
+
+          <input
+            type="text"
+            matInput
+            aria-label="State"
+            [(ngModel)]="searchingRoutesForm.at(i).inputPlace"
+            (keyup)="filterPlace(i)"
+            [matAutocomplete]="startPlaces"
+            placeholder="Enter location"
+            style="font-size: 1.2rem" />
+          <mat-icon
+            *ngIf="i === 0 || i === searchingRoutesForm.length - 1"
+            [style.color]="i === 0 ? '#abbbae' : '#b73e3e'"
+            matSuffix
+            >location_on</mat-icon
+          >
+          <mat-icon
+            *ngIf="i !== 0 && i !== searchingRoutesForm.length - 1"
+            matSuffix
+            >{{ getIconName(i) }}</mat-icon
+          >
+
+          <mat-autocomplete #startPlaces="matAutocomplete">
+            <mat-option
+              class="place-options"
+              *ngFor="let place of getFilteredPlaces(i) | async"
+              [value]="place.label"
+              (click)="chooseMarker(i, place)">
+              <span>{{ place.label }}</span>
+            </mat-option>
+          </mat-autocomplete>
+
+          <!--            <mat-error *ngIf="autocompleteForm.get('startDest').hasError('forbiddenNames')">-->
+          <!--              You should enter value from suggested one only. Other <strong>input values</strong> is not allowed.-->
+          <!--            </mat-error>-->
+          <!--            <mat-error *ngIf="autocompleteForm.hasError('required')">-->
+          <!--              This is <strong>required</strong>-->
+          <!--            </mat-error>-->
+        </mat-form-field>
+        <button
+          *ngIf="searchingRoutesForm.length > 2"
+          mat-icon-button
+          class="delete-location-button"
+          (click)="deleteOneLocation(i)">
+          <mat-icon
+            matTooltip="Remove from route"
+            matTooltipClass="tooltip"
+            matTooltipHideDelay="10">
+            remove_circle
+          </mat-icon>
+        </button>
+      </div>
+
+      <button
+        *ngIf="canAddMoreLocation()"
+        mat-button
+        (click)="addOneMoreLocation()"
+        style="font-size: 1rem; color: #2c4b61; border-color: #2c4b61">
+        <mat-icon>add_circle</mat-icon>
+        Add location
+      </button>
+
+      <div class="margin-top">
+        <button
+          mat-raised-button
+          (click)="getPossibleRoutes()"
+          style="background-color: #abbbae; font-size: 1.4rem; color: #2c4b61">
+          Request now
+        </button>
+      </div>
+
+      <div *ngIf="possibleRoutesViaPoints.length > 0" class="devider-container">
+        <div class="devider-line"><mat-divider></mat-divider></div>
+        <div class="devider-text mat-typography"><b>Possible routes</b></div>
+        <div class="devider-line"><mat-divider></mat-divider></div>
+      </div>
+
+      <!--      <div *ngIf="possibleRoutesViaPoints.length > 0">-->
+      <!--        <button style="place-content: flex-end">Options</button>-->
+      <!--      </div>-->
+      <!--      <div >-->
+      <!--        <button mat-button style="background-color:#abbbae">Options</button>-->
+      <!--      </div>-->
+      <div *ngIf="possibleRoutesViaPoints.length > 0" class="viewport">
+        <mat-stepper orientation="vertical" [linear]="true" #stepper>
+          <div
+            *ngFor="let possibleRoute of possibleRoutesViaPoints; let i = index"
+            class="margin-top">
+            <mat-step>
+              <form>
+                <ng-template matStepLabel>
+                  {{ searchingRoutesForm.at(i).location.lat }},
+                  {{ searchingRoutesForm.at(i).location.lon }} -
+                  {{ searchingRoutesForm.at(i + 1).location.lat }},
+                  {{ searchingRoutesForm.at(i + 1).location.lon }}
+                </ng-template>
+                <div
+                  *ngFor="
+                    let route of possibleRoute.possibleRouteDTOList;
+                    let j = index
+                  "
+                  class="margin-top">
+                  <route-row
+                    [route]="route"
+                    [index]="j"
+                    (click)="changeOptionRouteOnClick(route, j)"></route-row>
+                </div>
+                <div>
+                  <button *ngIf="i !== 0" mat-button matStepperPrevious>
+                    Back
+                  </button>
+                  <button
+                    *ngIf="i !== possibleRoutesViaPoints.length - 1"
+                    mat-button
+                    matStepperNext>
+                    Next
+                  </button>
+                  <button
+                    *ngIf="i === possibleRoutesViaPoints.length - 1"
+                    mat-button>
+                    Request now
+                  </button>
+                </div>
+              </form>
+            </mat-step>
+          </div>
+        </mat-stepper>
+      </div>
+    </div>
+
+    <!--  DRIVER-->
+
+    <div *ngIf="currentUserIsDriver" class="box mat-elevation-z1">
+      <h1><strong>Your drivings</strong></h1>
+
+      <div
+        *ngFor="let addedLocation of searchingRoutesForm; let i = index"
+        class="div">
+        <mat-form-field appearance="fill">
+          <mat-label *ngIf="i === 0" style="font-size: 1.1rem"
+            >Enter pickup location</mat-label
+          >
+          <mat-label
+            *ngIf="i === searchingRoutesForm.length - 1"
+            style="font-size: 1.1rem"
+            >Enter destination</mat-label
+          >
+          <mat-label
+            *ngIf="i !== 0 && i !== searchingRoutesForm.length - 1"
+            style="font-size: 1.1rem"
+            >Via destination</mat-label
+          >
+
+          <input
+            type="text"
+            matInput
+            aria-label="State"
+            [(ngModel)]="searchingRoutesForm.at(i).inputPlace"
+            (keyup)="filterPlace(i)"
+            [matAutocomplete]="startPlaces"
+            placeholder="Enter location"
+            style="font-size: 1.2rem" />
+          <mat-icon
+            *ngIf="i === 0 || i === searchingRoutesForm.length - 1"
+            [style.color]="i === 0 ? '#abbbae' : '#b73e3e'"
+            matSuffix
+            >location_on</mat-icon
+          >
+          <mat-icon
+            *ngIf="i !== 0 && i !== searchingRoutesForm.length - 1"
+            matSuffix
+            >{{ getIconName(i) }}</mat-icon
+          >
+
+          <mat-autocomplete #startPlaces="matAutocomplete">
+            <mat-option
+              class="place-options"
+              *ngFor="let place of getFilteredPlaces(i) | async"
+              [value]="place.label"
+              (click)="chooseMarker(i, place)">
+              <span>{{ place.label }}</span>
+            </mat-option>
+          </mat-autocomplete>
+
+          <!--            <mat-error *ngIf="autocompleteForm.get('startDest').hasError('forbiddenNames')">-->
+          <!--              You should enter value from suggested one only. Other <strong>input values</strong> is not allowed.-->
+          <!--            </mat-error>-->
+          <!--            <mat-error *ngIf="autocompleteForm.hasError('required')">-->
+          <!--              This is <strong>required</strong>-->
+          <!--            </mat-error>-->
+        </mat-form-field>
+        <button
+          *ngIf="searchingRoutesForm.length > 2"
+          mat-icon-button
+          class="delete-location-button"
+          (click)="deleteOneLocation(i)">
+          <mat-icon
+            matTooltip="Remove from route"
+            matTooltipClass="tooltip"
+            matTooltipHideDelay="10">
+            remove_circle
+          </mat-icon>
+        </button>
+      </div>
+
+      <button
+        *ngIf="canAddMoreLocation()"
+        mat-button
+        (click)="addOneMoreLocation()"
+        style="font-size: 1rem; color: #2c4b61; border-color: #2c4b61">
+        <mat-icon>add_circle</mat-icon>
+        Add location
+      </button>
+
+      <div class="margin-top">
+        <button
+          mat-raised-button
+          (click)="getPossibleRoutes()"
+          style="background-color: #abbbae; font-size: 1.4rem; color: #2c4b61">
+          Request now
+        </button>
+      </div>
+
+      <div *ngIf="possibleRoutesViaPoints.length > 0" class="devider-container">
+        <div class="devider-line"><mat-divider></mat-divider></div>
+        <div class="devider-text mat-typography"><b>Possible routes</b></div>
+        <div class="devider-line"><mat-divider></mat-divider></div>
+      </div>
+
+      <!--      <div *ngIf="possibleRoutesViaPoints.length > 0">-->
+      <!--        <button style="place-content: flex-end">Options</button>-->
+      <!--      </div>-->
+      <!--      <div >-->
+      <!--        <button mat-button style="background-color:#abbbae">Options</button>-->
+      <!--      </div>-->
+      <div *ngIf="possibleRoutesViaPoints.length > 0" class="viewport">
+        <mat-stepper orientation="vertical" [linear]="true" #stepper>
+          <div
+            *ngFor="let possibleRoute of possibleRoutesViaPoints; let i = index"
+            class="margin-top">
+            <mat-step>
+              <form>
+                <ng-template matStepLabel>
+                  {{ searchingRoutesForm.at(i).location.lat }},
+                  {{ searchingRoutesForm.at(i).location.lon }} -
+                  {{ searchingRoutesForm.at(i + 1).location.lat }},
+                  {{ searchingRoutesForm.at(i + 1).location.lon }}
+                </ng-template>
+                <div
+                  *ngFor="
+                    let route of possibleRoute.possibleRouteDTOList;
+                    let j = index
+                  "
+                  class="margin-top">
+                  <route-row
+                    [route]="route"
+                    [index]="j"
+                    (click)="changeOptionRouteOnClick(route, j)"></route-row>
+                </div>
+                <div>
+                  <button *ngIf="i !== 0" mat-button matStepperPrevious>
+                    Back
+                  </button>
+                  <button
+                    *ngIf="i !== possibleRoutesViaPoints.length - 1"
+                    mat-button
+                    matStepperNext>
+                    Next
+                  </button>
+                  <button
+                    *ngIf="i === possibleRoutesViaPoints.length - 1"
+                    mat-button>
+                    Request now
+                  </button>
+                </div>
+              </form>
+            </mat-step>
+          </div>
+        </mat-stepper>
+      </div>
+    </div>
+    <div *ngIf="filterVehicleView">
+      <app-filter-vehicle-view></app-filter-vehicle-view>
+    </div>
+  </div>
+</div>

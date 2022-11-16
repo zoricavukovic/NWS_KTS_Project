@@ -1,17 +1,23 @@
-import {AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
-import {FormBuilder } from '@angular/forms';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormControl } from '@angular/forms';
 import * as L from 'leaflet';
-import {OpenStreetMapProvider} from 'leaflet-geosearch';
-import {SearchingRoutesForm} from "../../model/searching-routes-form";
-import { Location } from "../../model/response/location";
-import {RouteService} from "../../service/route.service";
-import {LocationsForRoutesRequest} from "../../model/request/locations-for-routes-request";
-import {PossibleRoute} from "../../model/response/possible-routes";
-import {User} from "../../model/response/user/user";
-import {Subscription} from "rxjs";
-import {AuthService} from "../../service/auth.service";
-import {PossibleRoutesViaPoints} from "../../model/response/possible-routes-via-points";
-import {drawPolylineOnMap, removeLayer, removeMarker, removeOneLayer} from "../../util/map-functions";
+import { OpenStreetMapProvider } from 'leaflet-geosearch';
+import { SearchingRoutesForm } from '../../../model/searching-routes-form';
+import { Location } from '../../../model/response/location';
+import { RouteService } from '../../../service/route.service';
+import { LocationsForRoutesRequest } from '../../../model/request/locations-for-routes-request';
+import { PossibleRoute } from '../../../model/response/possible-routes';
+import { User } from '../../../model/response/user/user';
+import { Subscription } from 'rxjs';
+import { AuthService } from '../../../service/auth.service';
+import { PossibleRoutesViaPoints } from '../../../model/response/possible-routes-via-points';
+import {
+  drawPolylineOnMap,
+  removeLayer,
+  removeMarker,
+  removeOneLayer,
+} from '../../../util/map-functions';
+import { UserService } from 'src/app/service/user.service';
 
 @Component({
   selector: 'home-page',
@@ -19,12 +25,14 @@ import {drawPolylineOnMap, removeLayer, removeMarker, removeOneLayer} from "../.
   styleUrls: ['./home-page.component.css'],
 })
 export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
+  routeChoiceView = false;
+  filterVehicleView = true;
 
   private map: L.Map;
   currentUser: User;
   provider1: OpenStreetMapProvider = new OpenStreetMapProvider();
 
-  maxNumberOfLocations: number = 5;
+  maxNumberOfLocations = 5;
   possibleRoutesViaPoints: PossibleRoutesViaPoints[] = [];
   drawPolylineList = [];
   searchingRoutesForm: SearchingRoutesForm[] = [];
@@ -40,9 +48,8 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(
     private routeService: RouteService,
-    private authService: AuthService,
-    private _formBuilder: FormBuilder
-  ) { }
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     this.searchingRoutesForm.push(new SearchingRoutesForm());
@@ -51,8 +58,8 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
       .getCurrentUser()
       .subscribe((user: User) => {
         this.currentUser = user;
-        if (user!== null){
-        this.currentUserIsDriver = user.userIsDriver();
+        if (user !== null) {
+          this.currentUserIsDriver = user.userIsDriver();
         }
       });
   }
@@ -73,18 +80,24 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
   async initMap() {
     this.map = L.map('map').setView([45.25167, 19.83694], 13);
 
-    L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { crossOrigin: true}).addTo(this.map);
+    L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      crossOrigin: true,
+    }).addTo(this.map);
     let div = L.DomUtil.get('route-div');
     L.DomEvent.on(div, 'mousewheel', L.DomEvent.stopPropagation);
     L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation);
   }
 
-  addOneMoreLocation(){
+  addOneMoreLocation() {
     this.possibleRoutesViaPoints = [];
-    this.searchingRoutesForm.splice(this.searchingRoutesForm.length-1, 0, new SearchingRoutesForm());
+    this.searchingRoutesForm.splice(
+      this.searchingRoutesForm.length - 1,
+      0,
+      new SearchingRoutesForm()
+    );
   }
 
-  deleteOneLocation(index: number){
+  deleteOneLocation(index: number) {
     this.deleteMarker(index);
     this.removeAllPolylines();
     this.searchingRoutesForm.splice(index, 1);
@@ -130,15 +143,16 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
       locationsForCreateRoutes.push(searchingRoutesLocation.location)
     );
 
-    this.routeSubscription = this.routeService.getPossibleRoutes(
-      new LocationsForRoutesRequest(locationsForCreateRoutes)
-    ).subscribe(
-      res => {
+    this.routeSubscription = this.routeService
+      .getPossibleRoutes(
+        new LocationsForRoutesRequest(locationsForCreateRoutes)
+      )
+      .subscribe(res => {
         this.possibleRoutesViaPoints = res;
         if (res.length > 0) {
           this.changeCurrentRoutes(res);
         }
-      })
+      });
   }
 
   changeCurrentRoutes(routes: PossibleRoutesViaPoints[]) {
@@ -154,9 +168,9 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private getLatLongsForFirstRoute(route: PossibleRoutesViaPoints) {
     let latLongs = [];
-    route.possibleRouteDTOList.at(0).pointList.forEach(
-      latLng => latLongs.push([latLng[0], latLng[1]])
-    );
+    route.possibleRouteDTOList
+      .at(0)
+      .pointList.forEach(latLng => latLongs.push([latLng[0], latLng[1]]));
 
     return latLongs;
   }
@@ -167,27 +181,29 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   changeOptionRouteOnClick(route: PossibleRoute, idx: number) {
-
     this.removeOnePolyline(idx);
 
     let latLongs = [];
-    route.pointList.forEach(
-      latLng => latLongs.push([latLng[0], latLng[1]])
-    );
+    route.pointList.forEach(latLng => latLongs.push([latLng[0], latLng[1]]));
     let color: string = this.getPolylineColor(idx);
     drawPolylineOnMap(this.map, latLongs, color, this.drawPolylineList);
   }
 
-  getIconName(index: number):string{
-    switch (index){
-      case 1: return "looks_one";
-      case 2: return "looks_two";
-      default: return "looks_"+index;
+  getIconName(index: number): string {
+    switch (index) {
+      case 1:
+        return 'looks_one';
+      case 2:
+        return 'looks_two';
+      default:
+        return 'looks_' + index;
     }
   }
 
   private polylineFound() {
-    return this.drawPolylineList !== null && this.drawPolylineList !== undefined;
+    return (
+      this.drawPolylineList !== null && this.drawPolylineList !== undefined
+    );
   }
 
   private incrementShadeOfColor(index: number, number: number) {
@@ -222,40 +238,50 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private addMarker(index: number, place) {
-    const customIcon = L.icon({iconUrl: this.getIconUrl(index), iconSize: [30, 30]})
+    const customIcon = L.icon({
+      iconUrl: this.getIconUrl(index),
+      iconSize: [30, 30],
+    });
     const markerOptions = {
       title: 'Location',
       clickable: true,
-      icon: customIcon
-    }
+      icon: customIcon,
+    };
 
-    this.searchingRoutesForm.at(index).marker = L.marker([place.y, place.x], markerOptions);
+    this.searchingRoutesForm.at(index).marker = L.marker(
+      [place.y, place.x],
+      markerOptions
+    );
     this.searchingRoutesForm.at(index).marker.addTo(this.map);
     this.map.panBy(L.point(place.y, place.x));
   }
 
   private deleteMarker(index: number) {
-    if (this.searchingRoutesForm.at(index).marker !== null && this.searchingRoutesForm.at(index).marker !== undefined){
+    if (
+      this.searchingRoutesForm.at(index).marker !== null &&
+      this.searchingRoutesForm.at(index).marker !== undefined
+    ) {
       removeMarker(this.map, this.searchingRoutesForm.at(index).marker);
     }
   }
 
   private removeAllPolylines() {
-    if (this.polylineFound()){
+    if (this.polylineFound()) {
       removeLayer(this.map, this.drawPolylineList);
     }
   }
 
-  private removeOnePolyline(index: number){
-    if (this.drawPolylineList.at(index)){
+  private removeOnePolyline(index: number) {
+    if (this.drawPolylineList.at(index)) {
       removeOneLayer(this.map, this.drawPolylineList.at(index));
-
     }
   }
 
-  private getPolylineColor(index: number): string{
-
-    return `rgb(${this.incrementShadeOfColor(index*5, 0)},
-     ${this.incrementShadeOfColor(index*5, 1)}, ${this.incrementShadeOfColor(index*5, 2)})`;
+  private getPolylineColor(index: number): string {
+    return `rgb(${this.incrementShadeOfColor(index * 5, 0)},
+     ${this.incrementShadeOfColor(index * 5, 1)}, ${this.incrementShadeOfColor(
+      index * 5,
+      2
+    )})`;
   }
 }
