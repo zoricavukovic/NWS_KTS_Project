@@ -13,71 +13,89 @@ import { AuthService } from './auth.service';
 import { User } from '../model/response/user/user';
 import { Observable } from 'rxjs';
 
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService {
-
   constructor(
     private http: HttpClient,
     private configService: ConfigService,
     private router: Router,
-    private authService: AuthService,
-  ) { }
+    private authService: AuthService
+  ) {}
 
   sendResetPasswordEmail(email: string): Observable<boolean> {
-    
-    return this.http.get<boolean>(this.configService.send_reset_password_email(email));
+    return this.http.get<boolean>(
+      this.configService.send_reset_password_email(email)
+    );
   }
 
-  resetPassword(passwordUpdateRequest: PasswordUpdateRequest): Observable<User> {
-
-    return this.http.put<User>(this.configService.reset_password, passwordUpdateRequest);
+  resetPassword(
+    passwordUpdateRequest: PasswordUpdateRequest
+  ): Observable<User> {
+    return this.http.put<User>(
+      this.configService.reset_password,
+      passwordUpdateRequest,
+      {headers: this.configService.header}
+    );
   }
 
   updateProfileData(data: UsersProfileUpdateRequest): Observable<User> {
-
-    return this.http.put<User>(this.configService.users_url, data);
+    return this.http.put<User>(this.configService.users_url, data, {headers: this.configService.header});
   }
 
   updateProfilePicture(data: UserProfilePictureRequest): Observable<User> {
-
-    return this.http.put<User>(this.configService.users_update_profile_pic, data);
+    return this.http.put<User>(
+      this.configService.users_update_profile_pic,
+      data,
+      {headers: this.configService.header}
+    );
   }
 
   updatePassword(data: UserPasswordUpdateRequest): Observable<User> {
-
-    return this.http.put<User>(this.configService.users_update_password, data)
+    return this.http.put<User>(this.configService.users_update_password, data, {headers: this.configService.header});
   }
 
-  registerRegularUser(registrationRequest: RegistrationRequest): Observable<User>{
-
-    return this.http.post<User>(this.configService.registration_url, registrationRequest)
+  registerRegularUser(
+    registrationRequest: RegistrationRequest
+  ): Observable<User> {
+    return this.http.post<User>(
+      this.configService.registration_url,
+      registrationRequest, {headers: this.configService.header}
+    );
   }
 
   registerDriver(driverRequest: DriverRegistrationRequest): Observable<User> {
-
-    return this.http.post<User>(this.configService.register_driver, driverRequest)
+    return this.http.post<User>(
+      this.configService.register_driver,
+      driverRequest,
+      {headers: this.configService.header}
+    );
   }
 
-  addToFavouriteRoutes(favouriteRouteRequest: FavouriteRouteRequest){
-
-    return this.http.post<any>(this.configService.add_favourite_route_url, favouriteRouteRequest)
+  addToFavouriteRoutes(favouriteRouteRequest: FavouriteRouteRequest) {
+    return this.http.post<any>(
+      this.configService.add_favourite_route_url,
+      favouriteRouteRequest,
+      {headers: this.configService.header}
+    );
   }
 
-  removeFromFavouriteRoutes(favouriteRouteRequest: FavouriteRouteRequest){
-
-    return this.http.post<any>(this.configService.remove_favourite_route_url, favouriteRouteRequest)
+  removeFromFavouriteRoutes(favouriteRouteRequest: FavouriteRouteRequest) {
+    return this.http.post<any>(
+      this.configService.remove_favourite_route_url,
+      favouriteRouteRequest,
+      {headers: this.configService.header}
+    );
   }
 
-  isFavouriteRouteForUser(routeId:number, email: string){
-
-    return this.http.get(this.configService.is_favourite_route(routeId,email));
+  isFavouriteRouteForUser(routeId: number, userId: number) {
+    return this.http.get(
+      this.configService.is_favourite_route(routeId, userId), {headers: this.configService.header}
+    );
   }
 
-  getAllRegularUsers(){
-    return this.http.get<User[]>(this.configService.all_users_url);
+  getAllRegularUsers() {
+    return this.http.get<User[]>(this.configService.all_users_url, {headers: this.configService.header});
   }
-
 }

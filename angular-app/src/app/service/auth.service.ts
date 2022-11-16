@@ -58,7 +58,8 @@ export class AuthService {
   setOfflineStatus(loggedUser: User): Observable<User> {
     return this.http.post<User>(
       this.configService.logout_url,
-      loggedUser.email
+      loggedUser.email,
+      {headers: this.configService.header}
     );
   }
 
@@ -98,9 +99,9 @@ export class AuthService {
     return localStorage.getItem('token');
   }
 
-  getFavouriteRoutesForUser(email: string) {
+  getFavouriteRoutesForUser(userId: number) {
     return this.http.get<Route[]>(
-      this.configService.get_favourite_routes(email)
+      this.configService.get_favourite_routes(userId)
     );
   }
 }

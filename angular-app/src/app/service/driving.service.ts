@@ -13,16 +13,17 @@ import { ConfigService } from './config.service';
 
   getDrivingsForUser(id:number, pageNumber: number, pageSize: number, selectedSortBy: string, selectedSortOrder: string){
 
-      return this.http.get(this.configService.drivings_url_with_pagination_and_sort(id, pageNumber, pageSize, selectedSortBy, selectedSortOrder));
+      return this.http.get(this.configService.drivings_url_with_pagination_and_sort(id, pageNumber, pageSize, selectedSortBy, selectedSortOrder),
+        {headers: this.configService.header});
   }
 
   getDrivingDetails(id: number){
 
-      return this.http.get(this.configService.driving_details_url(id));
+      return this.http.get(this.configService.driving_details_url(id), {headers: this.configService.header});
   }
 
   getDrivingsForDriver(driverId: number){
 
-      return this.http.get(this.configService.now_future_drivings_url(driverId));
+      return this.http.get(this.configService.now_future_drivings_url(driverId), {headers: this.configService.header});
   }
 }

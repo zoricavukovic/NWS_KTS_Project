@@ -6,6 +6,7 @@ import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.request.VehicleRequest;
 import com.example.serbUber.service.VehicleService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -37,6 +38,7 @@ public class VehicleController {
 
     @GetMapping("/rating/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
     public double getRatingForVehicle(@PathVariable  Long id) {
         return vehicleService.getRatingForVehicle(id);
     }

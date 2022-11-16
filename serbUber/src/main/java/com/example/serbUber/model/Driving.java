@@ -32,15 +32,15 @@ public class Driving {
     @Column(name="driving_status", nullable = false)
     private DrivingStatus drivingStatus;
 
-    @Column(name="driver_email", nullable = false)
-    private String driverEmail;
+    @Column(name="driver_id", nullable = false)
+    private Long driverId;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "drivings_users", joinColumns = @JoinColumn(name = "driving_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
     private Set<RegularUser> users;
 
     @ElementCollection
-    private Map<String, Boolean> usersPaid = new HashMap<String, Boolean>();
+    private Map<Long, Boolean> usersPaid = new HashMap<>();
 
     @Column(name="price", nullable = false)
     private double price;
@@ -56,8 +56,8 @@ public class Driving {
         final LocalDateTime payingLimit,
         final Route route,
         final DrivingStatus drivingStatus,
-        final String driverEmail,
-        final HashMap<String, Boolean> usersPaid,
+        final Long driverId,
+        final HashMap<Long, Boolean> usersPaid,
         final double price
     ) {
         this.active = active;
@@ -66,7 +66,7 @@ public class Driving {
         this.payingLimit = payingLimit;
         this.route = route;
         this.drivingStatus = drivingStatus;
-        this.driverEmail = driverEmail;
+        this.driverId = driverId;
         this.usersPaid = usersPaid;
         this.price = price;
     }
@@ -123,12 +123,23 @@ public class Driving {
         this.drivingStatus = drivingStatus;
     }
 
-    public String getDriverEmail() {
-        return driverEmail;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void setDriverEmail(String driverEmail) {
-        this.driverEmail = driverEmail;
+    public Long getDriverId() {
+        return driverId;
+    }
+
+    public void setDriverId(Long driverId) {
+        this.driverId = driverId;
+    }
+
+    public void setUsersPaid(Map<Long, Boolean> usersPaid) {
+        this.usersPaid = usersPaid;
+    }
+    public Map<Long, Boolean> getUsersPaid() {
+        return usersPaid;
     }
 
     public Set<RegularUser> getUsers() {
@@ -139,14 +150,6 @@ public class Driving {
         this.users = users;
     }
 
-    public Map<String, Boolean> getUsersPaid() {
-        return usersPaid;
-    }
-
-    public void setUsersPaid(Map<String, Boolean> usersPaid) {
-        this.usersPaid = usersPaid;
-    }
-
     public double getPrice() {
         return price;
     }
@@ -154,4 +157,5 @@ public class Driving {
     public void setPrice(double price) {
         this.price = price;
     }
+
 }

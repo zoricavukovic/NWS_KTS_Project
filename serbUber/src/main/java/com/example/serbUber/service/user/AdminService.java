@@ -33,11 +33,11 @@ public class AdminService {
         return fromAdmins(admins);
     }
 
-    public AdminDTO get(String email) throws EntityNotFoundException {
-        Optional<Admin> optionalAdmin = adminRepository.getAdminByEmail(email);
+    public AdminDTO get(Long id) throws EntityNotFoundException {
+        Optional<Admin> optionalAdmin = adminRepository.findById(id);
 
         return optionalAdmin.map(AdminDTO::new)
-            .orElseThrow(() ->  new EntityNotFoundException(email, EntityType.USER));
+            .orElseThrow(() ->  new EntityNotFoundException(id, EntityType.USER));
     }
 
     public AdminDTO create(

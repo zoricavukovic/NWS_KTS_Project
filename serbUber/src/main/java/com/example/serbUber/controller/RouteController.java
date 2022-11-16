@@ -9,6 +9,7 @@ import com.example.serbUber.request.RouteRequest;
 import com.example.serbUber.service.RouteService;
 import com.example.serbUber.util.MaxSizeConstraint;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;

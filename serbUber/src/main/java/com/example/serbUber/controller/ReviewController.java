@@ -5,6 +5,7 @@ import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.request.ReviewRequest;
 import com.example.serbUber.service.ReviewService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -45,13 +46,14 @@ public class ReviewController {
             reviewRequest.getDriverRate(),
             reviewRequest.getMessage(),
             reviewRequest.getDriving(),
-            reviewRequest.getUserEmail()
+            reviewRequest.getUserId()
 
         );
     }
 
     @GetMapping("/reviewedDrivings/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
     public List<Long> getReviewDrivingsForUser(@PathVariable Long id){
         return reviewService.getAllReviewedDrivingIdForUser(id);
     }

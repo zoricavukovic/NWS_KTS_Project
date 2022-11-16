@@ -6,11 +6,9 @@ import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.model.Driving;
 import com.example.serbUber.model.Review;
 import com.example.serbUber.model.user.RegularUser;
-import com.example.serbUber.model.user.User;
 import com.example.serbUber.repository.ReviewRepository;
 import com.example.serbUber.service.user.DriverService;
 import com.example.serbUber.service.user.RegularUserService;
-import com.example.serbUber.service.user.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -45,10 +43,10 @@ public class ReviewService {
             final double driverRate,
             final String message,
             final Long drivingId,
-            final String userEmail
+            final Long userId
     ) throws EntityNotFoundException {
         Driving driving = drivingService.getDriving(drivingId);
-        RegularUser regularUser = regularUserService.getRegularByEmail(userEmail);
+        RegularUser regularUser = regularUserService.getRegularById(userId);
 
         Review review = reviewRepository.save((new Review(
             vehicleRate,
@@ -65,8 +63,8 @@ public class ReviewService {
     private void updateRate(Driving driving, double vehicleRate, double driverRate)
             throws EntityNotFoundException
     {
-        DriverDTO driverDTO = driverService.get(driving.getDriverEmail());
-        List<ReviewDTO> reviews = getAllForDriver(driving.getDriverEmail());
+        DriverDTO driverDTO = driverService.get(driving.getDriverId());
+        List<ReviewDTO> reviews = getAllForDriver(driving.getDriverId());
         int numberOfReviewsBeforeUpdate = getNumberOfReviewsBeforeUpdate(reviews);
         calculateRateDriver(driverDTO, numberOfReviewsBeforeUpdate, driverRate);
         calculateRateVehicle(vehicleRate, driverDTO, numberOfReviewsBeforeUpdate);
@@ -87,8 +85,8 @@ public class ReviewService {
     }
 
 
-    public List<ReviewDTO> getAllForDriver(String email) {
-        List<Review> reviews = reviewRepository.findAllByDriverEmail(email);
+    public List<ReviewDTO> getAllForDriver(Long id) {
+        List<Review> reviews = reviewRepository.findAllByDriverId(id);
 
        return fromReviews(reviews);
     }

@@ -13,7 +13,7 @@ public interface RegularUserRepository extends JpaRepository<RegularUser, Long> 
 
     Optional<RegularUser> getRegularUserByEmail(String email);
 
-    @Query("select u from RegularUser u left join fetch u.favouriteRoutes route where u.email = ?2 and route.id = ?1")
-    RegularUser getUserWithFavouriteRouteId(Long id, String email);
+    @Query("select u from RegularUser u left join fetch u.favouriteRoutes route where u.id = ?2 and route.id = ?1")
+    RegularUser getUserWithFavouriteRouteId(Long routeId, Long userId);
     Optional<RegularUser> getRegularUserById(Long id);
 }

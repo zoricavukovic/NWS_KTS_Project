@@ -14,13 +14,13 @@ export class ChatRoomService {
   chatRoomClient$ = new BehaviorSubject<ChatRoom>(null);
   adminChatRooms$ = new BehaviorSubject<ChatRoom[]>([]);
 
-  constructor( 
+  constructor(
     private http: HttpClient,
     private configService: ConfigService
     ) { }
 
   getUserChatRoom(email: string) : BehaviorSubject<ChatRoom> {
-    this.http.get<ChatRoom>(this.configService.chat_rooms_url + "/" + email).subscribe(
+    this.http.get<ChatRoom>(this.configService.chat_rooms_url + "/" + email, {headers: this.configService.header}).subscribe(
       res => {
         this.chatRoomClient$.next(res);
       });
@@ -29,7 +29,7 @@ export class ChatRoomService {
   }
 
   getAllChatRooms(email: string): BehaviorSubject<ChatRoom[]> {
-    this.http.get<ChatRoom[]>(this.configService.all_chat_rooms_url + email).subscribe(
+    this.http.get<ChatRoom[]>(this.configService.all_chat_rooms_url + email, {headers: this.configService.header}).subscribe(
     res => {
       this.adminChatRooms$.next(res);
     });

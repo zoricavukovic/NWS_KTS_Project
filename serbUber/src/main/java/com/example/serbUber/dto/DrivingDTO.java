@@ -17,9 +17,9 @@ public class DrivingDTO {
     private LocalDateTime payingLimit;
     private Route route;
     private DrivingStatus drivingStatus;
-    private String driverEmail;
+    private Long driverId;
     private Set<RegularUser> users;
-    private Map<String, Boolean> usersPaid = new HashMap<String, Boolean>();
+    private Map<Long, Boolean> usersPaid = new HashMap<>();
     private double price;
 
     private boolean hasReviewForUser = false;
@@ -32,7 +32,7 @@ public class DrivingDTO {
         this.payingLimit = driving.getPayingLimit();
         this.route = driving.getRoute();
         this.drivingStatus = driving.getDrivingStatus();
-        this.driverEmail = driving.getDriverEmail();
+        this.driverId = driving.getDriverId();
         this.usersPaid = driving.getUsersPaid();
         this.users = driving.getUsers();
         this.price = driving.getPrice();
@@ -73,11 +73,11 @@ public class DrivingDTO {
         return drivingStatus;
     }
 
-    public String getDriverEmail() {
-        return driverEmail;
+    public Long getDriverId() {
+        return driverId;
     }
 
-    public Map<String, Boolean> getUsersPaid() {
+    public Map<Long, Boolean> getUsersPaid() {
         return usersPaid;
     }
 

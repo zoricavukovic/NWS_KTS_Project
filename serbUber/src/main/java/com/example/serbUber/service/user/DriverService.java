@@ -48,14 +48,14 @@ public class DriverService {
         return fromDrivers(drivers);
     }
 
-    public DriverDTO get(String email) throws EntityNotFoundException {
-        Optional<Driver> optionalDriver = driverRepository.getDriverByEmail(email);
+    public DriverDTO get(Long id) throws EntityNotFoundException {
+        Optional<Driver> optionalDriver = driverRepository.findById(id);
 
         return optionalDriver.map(DriverDTO::new)
-            .orElseThrow(() ->  new EntityNotFoundException(email, EntityType.USER));
+            .orElseThrow(() ->  new EntityNotFoundException(id, EntityType.USER));
     }
 
-    public Driver get(Long id) throws EntityNotFoundException {
+    public Driver getDriverById(Long id) throws EntityNotFoundException {
 
         return driverRepository.getDriverById(id)
             .orElseThrow(() -> new EntityNotFoundException(id, EntityType.USER));
@@ -117,22 +117,20 @@ public class DriverService {
     }
 
     public Driver updateRate(Long id, double rate) throws EntityNotFoundException {
-        Driver driver = get(id);
+        Driver driver = getDriverById(id);
         driver.setRate(rate);
         return driverRepository.save(driver);
     }
 
 
-    public Double getDriverRating(String email) throws EntityNotFoundException{
-        DriverDTO driverDTO = get(email);
-
-        return driverRepository.getRatingForDriver(driverDTO.getId());
+    public Double getDriverRating(Long id){
+        return driverRepository.getRatingForDriver(id);
     }
 
     public UserDTO activate(final Long verifyId, final int securityCode)
             throws EntityNotFoundException, WrongVerifyTryException {
         Verify verify = verifyService.update(verifyId, securityCode);
-        Driver driver = get(verify.getUserId());
+        Driver driver = getDriverById(verify.getUserId());
         driver.setVerified(true);
 
         return new UserDTO(driverRepository.save(driver));

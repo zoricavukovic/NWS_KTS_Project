@@ -15,6 +15,7 @@ import com.google.api.client.json.gson.GsonFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.social.facebook.api.Facebook;
 import org.springframework.social.facebook.api.User;
 import org.springframework.social.facebook.api.impl.FacebookTemplate;
@@ -70,7 +71,7 @@ public class AuthenticationController {
         );
         GoogleIdToken.Payload payload = googleIdToken.getPayload();
 
-        UserDTO userDTO = userService.get(payload.getEmail());
+        UserDTO userDTO = new UserDTO(userService.getUserByEmail(payload.getEmail()));
         LoginDTO loginDTO = tokenService.googleLogin(userDTO);
         userService.setOnlineStatus(loginDTO.getUserDTO().getEmail());
 
@@ -85,7 +86,7 @@ public class AuthenticationController {
         String [] data = {"email"};
         User user = facebook.fetchObject("me", User.class,data);
 
-        UserDTO userDTO = userService.get(user.getEmail());
+        UserDTO userDTO = new UserDTO(userService.getUserByEmail(user.getEmail()));
         LoginDTO loginDTO = tokenService.googleLogin(userDTO);
         userService.setOnlineStatus(loginDTO.getUserDTO().getEmail());
 
@@ -104,6 +105,7 @@ public class AuthenticationController {
 
     @PostMapping(path="/logout")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
     private UserDTO logout(@Valid @Email(message = WRONG_EMAIL) @RequestBody final String email)
             throws EntityNotFoundException
     {

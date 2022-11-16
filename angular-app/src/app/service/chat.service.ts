@@ -4,6 +4,7 @@ import {Stomp} from '@stomp/stompjs';
 import { environment } from 'src/environments/environment';
 import { ChatRoomService } from './chat-room.service';
 import { ChatRoom } from '../model/response/messages/chat-room';
+import {ConfigService} from "./config.service";
 
 
 @Injectable({
@@ -14,9 +15,9 @@ export class ChatService {
   private stompClient = null;
   initialized: boolean = false;
 
-  constructor(private chatRoomService: ChatRoomService) {}
+  constructor(private chatRoomService: ChatRoomService, private configService: ConfigService) {}
 
-  
+
   connect(userEmail: string) {
     if (!this.initialized) {
       this.initialized = true;
@@ -29,7 +30,7 @@ export class ChatService {
           if (message !== null && message !== undefined) {
             that.chatRoomService.addMessage(JSON.parse(message.body));
           }
-        }); 
+        });
       });
     }
   }
@@ -44,7 +45,7 @@ export class ChatService {
   }
 
   sendMessage(message: ChatRoom) {
-    this.stompClient.send('/app/send' , {}, JSON.stringify(message));
+    this.stompClient.send('/app/send' , {}, JSON.stringify(message), {headers: this.configService.header});
   }
 
   showMessage(message) {

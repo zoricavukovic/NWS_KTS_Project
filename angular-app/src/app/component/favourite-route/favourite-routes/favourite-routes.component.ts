@@ -7,46 +7,48 @@ import { AuthService } from 'src/app/service/auth.service';
 @Component({
   selector: 'app-favourite-routes',
   templateUrl: './favourite-routes.component.html',
-  styleUrls: ['./favourite-routes.component.css']
+  styleUrls: ['./favourite-routes.component.css'],
 })
 export class FavouriteRoutesComponent implements OnInit, OnDestroy {
-
   currentUser: User;
-  favouriteRoutes: Route[];
+  favouriteRoutes: Route[] = [];
 
   currentUserSubscription: Subscription;
   favouriteRoutesSubscription: Subscription;
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
-    this.currentUserSubscription = this.authService.getCurrentUser().subscribe(
-      (data) => {
-        this.currentUser=data;
-        this.favouriteRoutesSubscription = this.authService.getFavouriteRoutesForUser(this.currentUser.email).subscribe(
-          (data) => {
+    this.currentUserSubscription = this.authService
+      .getCurrentUser()
+      .subscribe(data => {
+        this.currentUser = data;
+        this.favouriteRoutesSubscription = this.authService
+          .getFavouriteRoutesForUser(this.currentUser.id)
+          .subscribe(data => {
+            console.log(this.favouriteRoutes);
             this.favouriteRoutes = data;
-          }
-        )
+            console.log(this.favouriteRoutes);
+          });
       });
   }
 
-  removeFromFavourites(){
-    this.favouriteRoutesSubscription = this.authService.getFavouriteRoutesForUser(this.currentUser.email).subscribe(
-      (data) => {
+  removeFromFavourites() {
+    this.favouriteRoutesSubscription = this.authService
+      .getFavouriteRoutesForUser(this.currentUser.id)
+      .subscribe(data => {
         this.favouriteRoutes = data;
-      }
-    )
+        console.log(this.favouriteRoutes);
+      });
   }
 
   ngOnDestroy(): void {
-    if(this.currentUserSubscription){
+    if (this.currentUserSubscription) {
       this.currentUserSubscription.unsubscribe();
     }
 
-    if(this.favouriteRoutesSubscription){
+    if (this.favouriteRoutesSubscription) {
       this.favouriteRoutesSubscription.unsubscribe();
     }
   }
-
 }

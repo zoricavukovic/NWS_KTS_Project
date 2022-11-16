@@ -16,10 +16,10 @@ import { Review } from "../model/response/review";
 
   saveReview(reviewRequest: ReviewRequest) : Observable<Review> {
 
-    return this.http.post<Review>(this.configService.rate_driver_vehicle_url, reviewRequest)
+    return this.http.post<Review>(this.configService.rate_driver_vehicle_url, reviewRequest, {headers: this.configService.header})
   }
 
   getReviewedDrivingsForUser(id: number){
-    return this.http.get<number[]>(this.configService.reviewed_drivings_url(id));
+    return this.http.get<number[]>(this.configService.reviewed_drivings_url(id), {headers: this.configService.header});
   }
 }
