@@ -1,86 +1,88 @@
 <div class="form-container mat-elevation-z1">
-      <h1>Route</h1>
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            {{ destinations[0] }} <mat-icon>arrow_forward</mat-icon>
-            {{ destinations[destinations.length - 1] }}
-          </mat-panel-title>
-        </mat-expansion-panel-header>
+  <h1>Route</h1>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        {{ destinations[0] }} <mat-icon>arrow_forward</mat-icon>
+        {{ destinations[destinations.length - 1] }}
+      </mat-panel-title>
+    </mat-expansion-panel-header>
 
-        <mat-list-item *ngFor="let dest of destinations">
-          <div style="display: flex; font-size: 15px">
-            <mat-icon mat-list-icon class="icon">location_on</mat-icon>
-            <div mat-line>{{ dest }}</div>
-          </div>
-          <br />
-        </mat-list-item>
-      </mat-expansion-panel>
-    <br>
-    <div class="button-container" *ngIf="isRegularUser">
-      <button mat-raised-button>Request now</button>
-      <button mat-raised-button>Request later</button>
-      <button mat-icon-button color="warn" (click)="setFavouriteRoute()">
-        <mat-icon
-          *ngIf="!favouriteRoute"
-          matTooltip="Add to favourite routes"
-          matTooltipClass="tooltip"
-          matTooltipHideDelay="1000"
-          >favorite_border</mat-icon
+    <mat-list-item *ngFor="let dest of destinations">
+      <div style="display: flex; font-size: 15px">
+        <mat-icon mat-list-icon class="icon">location_on</mat-icon>
+        <div mat-line>{{ dest }}</div>
+      </div>
+      <br />
+    </mat-list-item>
+  </mat-expansion-panel>
+  <br />
+  <div class="button-container" *ngIf="isRegularUser">
+    <button mat-raised-button>Request now</button>
+    <button mat-raised-button>Request later</button>
+    <button mat-icon-button color="warn" (click)="setFavouriteRoute()">
+      <mat-icon
+        *ngIf="!favouriteRoute"
+        matTooltip="Add to favourite routes"
+        matTooltipClass="tooltip"
+        matTooltipHideDelay="1000"
+        >favorite_border</mat-icon
+      >
+      <mat-icon
+        *ngIf="favouriteRoute"
+        matTooltip="Remove from favourite routes"
+        matTooltipClass="tooltip"
+        matTooltipHideDelay="1000"
+        >favorite</mat-icon
+      >
+    </button>
+  </div>
+  <br />
+  <vehicle-details [vehicle]="driver?.vehicle"></vehicle-details>
+  <br />
+  <div *ngIf="!isDriver">
+    <mat-card>
+      <mat-card-header>
+        <img
+          mat-card-avatar
+          style="height: 5rem; width: 5rem"
+          [src]="getBase64Prefix() + driver?.profilePicture" />
+        <mat-card-title
+          >{{ driver?.name }} {{ driver?.surname }}</mat-card-title
         >
-        <mat-icon
-          *ngIf="favouriteRoute"
-          matTooltip="Remove from favourite routes"
-          matTooltipClass="tooltip"
-          matTooltipHideDelay="1000"
-          >favorite</mat-icon
-        >
-      </button>
-    </div>
-    <br />
-    <vehicle-details [vehicle]="driver?.vehicle"></vehicle-details>
-    <br />
-    <div *ngIf="!isDriver">
-      <mat-card>
-        <mat-card-header>
-          <img
-            mat-card-avatar
-            style="height: 5rem; width: 5rem"
-            [src]="getBase64Prefix() + driver?.profilePicture" />
-          <mat-card-title
-            >{{ driver?.name }} {{ driver?.surname }}</mat-card-title
-          >
-          <mat-card-subtitle>{{ driver?.email }} </mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content> </mat-card-content>
-      </mat-card>
-    </div>
-    <br />
+        <mat-card-subtitle>{{ driver?.email }} </mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <!--zvezdice za driver-a, vrednost pokupis sa driver.rate-->
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <br />
 
-    <div *ngIf="!isRegularUser">
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title> Passengers </mat-panel-title>
-        </mat-expansion-panel-header>
+  <div *ngIf="!isRegularUser">
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title> Passengers </mat-panel-title>
+      </mat-expansion-panel-header>
 
-        <div *ngFor="let user of this.driving.users">
-          <mat-card>
-            <mat-card-header>
-              <img
-                mat-card-avatar
-                [src]="getBase64Prefix() + user?.profilePicture" />
-              <mat-card-title
-                >{{ user?.name }} {{ user?.surname }}</mat-card-title
-              >
-              <mat-card-subtitle>{{ user?.email }} </mat-card-subtitle>
-            </mat-card-header>
-            <mat-card-content> </mat-card-content>
-          </mat-card>
-        </div>
-      </mat-expansion-panel>
-    </div>
-    <br>
-    <div style="text-align:right">
-      <h2>={{driving.price}}.00 RSD</h2>
-    </div>
+      <div *ngFor="let user of this.driving.users">
+        <mat-card>
+          <mat-card-header>
+            <img
+              mat-card-avatar
+              [src]="getBase64Prefix() + user?.profilePicture" />
+            <mat-card-title
+              >{{ user?.name }} {{ user?.surname }}</mat-card-title
+            >
+            <mat-card-subtitle>{{ user?.email }} </mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content> </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-expansion-panel>
+  </div>
+  <br />
+  <div style="text-align: right">
+    <h2>={{ driving.price }}.00 RSD</h2>
+  </div>
 </div>

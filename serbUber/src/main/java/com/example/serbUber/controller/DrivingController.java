@@ -9,10 +9,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.example.serbUber.exception.ErrorMessagesConstants.WRONG_EMAIL;
+import static com.example.serbUber.exception.ErrorMessagesConstants.*;
 
 @RestController
 @RequestMapping("/drivings")
@@ -51,12 +54,12 @@ public class DrivingController {
 
     @GetMapping("/{id}/{pageNumber}/{pageSize}/{parameter}/{sortOrder}")
     @ResponseStatus(HttpStatus.OK)
-    public List<DrivingDTO> getAllDrivingsForUser(
-            @PathVariable Long id,
-            @PathVariable int pageNumber,
-            @PathVariable int pageSize,
-            @PathVariable String parameter,
-            @PathVariable String sortOrder
+    public List<DrivingDTO> getAllDrivingsForUserWithPaginationAndSort(
+            @Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable Long id,
+            @Valid @NotNull(message = NOT_NULL_MESSAGE) @PositiveOrZero(message = POSITIVE_OR_ZERO_MESSAGE) @PathVariable int pageNumber,
+            @Valid @NotNull(message = NOT_NULL_MESSAGE) @Positive(message = POSITIVE_MESSAGE) @PathVariable int pageSize,
+            @Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable String parameter,
+            @Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable String sortOrder
         )
             throws EntityNotFoundException
     {
