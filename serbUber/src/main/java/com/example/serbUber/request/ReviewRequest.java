@@ -8,8 +8,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import static com.example.serbUber.exception.ErrorMessagesConstants.WRONG_MESSAGE_LENGTH;
-import static com.example.serbUber.exception.ErrorMessagesConstants.WRONG_RATE;
+import static com.example.serbUber.exception.ErrorMessagesConstants.*;
 
 public class ReviewRequest {
 
@@ -25,7 +24,8 @@ public class ReviewRequest {
 //    @Size(min = Constants.MIN_LENGTH_OF_MESSAGE, max = Constants.MAX_LENGTH_OF_MESSAGE, message = WRONG_MESSAGE_LENGTH)
     private String message;
 
-    private String userEmail;
+    @NotNull(message = NOT_NULL_MESSAGE)
+    private Long userId;
 
 //    @NotBlank(message = "Driving must be selected!")
     private Long driving;
@@ -34,14 +34,14 @@ public class ReviewRequest {
             final double vehicleRate,
             final double driverRate,
             final String message,
-            final String userEmail,
+            final Long userId,
             final Long driving
     ) {
         this.vehicleRate = vehicleRate;
         this.driverRate = driverRate;
         this.message = message;
         this.driving = driving;
-        this.userEmail = userEmail;
+        this.userId = userId;
     }
 
     public double getVehicleRate() {
@@ -60,7 +60,7 @@ public class ReviewRequest {
         return driving;
     }
 
-    public String getUserEmail() {
-        return userEmail;
+    public Long getUserId() {
+        return userId;
     }
 }

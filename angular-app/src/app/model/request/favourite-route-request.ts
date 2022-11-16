@@ -1,9 +1,9 @@
-export class FavouriteRouteRequest{
-    userEmail: string;
-    routeId: number;
+export class FavouriteRouteRequest {
+  userId: number;
+  routeId: number;
 
-    constructor(userEmail: string, routeId: number){
-        this.userEmail = userEmail;
-        this.routeId = routeId;
-    }
+  constructor(userId: number, routeId: number) {
+    this.userId = userId;
+    this.routeId = routeId;
+  }
 }

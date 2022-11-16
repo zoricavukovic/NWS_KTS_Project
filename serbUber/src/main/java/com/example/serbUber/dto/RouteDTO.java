@@ -9,11 +9,13 @@ import java.util.Set;
 
 public class RouteDTO {
 
+    private Long id;
     private Set<Location> locations;
     private double distance; //in metres
     private double timeInMin;
 
     public RouteDTO(final Route route) {
+        this.id = route.getId();
         this.locations = route.getLocations();
         this.distance = route.getDistance();
         this.timeInMin = route.getTimeInMin();
@@ -48,5 +50,9 @@ public class RouteDTO {
 
     private double getTimeInMinFromMs(final double timeInMs) {
         return timeInMs == 0 ? 0.0 :  Math.ceil((timeInMs/1000)/60L + 0.5);
+    }
+
+    public Long getId() {
+        return id;
     }
 }

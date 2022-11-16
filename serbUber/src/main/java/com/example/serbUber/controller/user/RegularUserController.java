@@ -13,12 +13,15 @@ import com.example.serbUber.request.user.UserEmailRequest;
 import com.example.serbUber.request.user.UsersProfileUpdateRequest;
 import com.example.serbUber.service.user.RegularUserService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
+import static com.example.serbUber.exception.ErrorMessagesConstants.NOT_NULL_MESSAGE;
 import static com.example.serbUber.exception.ErrorMessagesConstants.WRONG_EMAIL;
 
 @RestController
@@ -38,40 +41,34 @@ public class RegularUserController {
         return regularUserService.getAll();
     }
 
-    @GetMapping("/byEmail")
-    @ResponseStatus(HttpStatus.OK)
-    public RegularUserDTO get(
-        @Valid @RequestBody UserEmailRequest emailRequest
-    ) throws EntityNotFoundException {
-
-        return regularUserService.get(emailRequest.getEmail());
-    }
-
-
     @PostMapping("/favourite")
     @ResponseStatus(HttpStatus.OK)
+//    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
     public boolean addToFavouriteRoutes(@RequestBody FavouriteRouteRequest request) throws EntityNotFoundException {
 
-        return regularUserService.addToFavouriteRoutes(request.getUserEmail(), request.getRouteId());
+        return regularUserService.addToFavouriteRoutes(request.getUserId(), request.getRouteId());
     }
 
     @PostMapping("/removeFavourite")
     @ResponseStatus(HttpStatus.OK)
+//    @PreAuthorize("hasAnyRole('ROLE_REGULAR_USER')")
     public boolean removeFromFavouriteRoutes(@RequestBody FavouriteRouteRequest request) throws EntityNotFoundException {
 
-        return regularUserService.removeFromFavouriteRoutes(request.getUserEmail(), request.getRouteId());
+        return regularUserService.removeFromFavouriteRoutes(request.getUserId(), request.getRouteId());
     }
 
-    @GetMapping("/favourite-route/{id}/{email}")
+    @GetMapping("/favourite-route/{routeId}/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public boolean isFavouriteRoute(@PathVariable Long id, @PathVariable String email){
-        return regularUserService.isFavouriteRoute(id, email);
+//    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
+    public boolean isFavouriteRoute(@Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable Long routeId, @Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable Long userId){
+        return regularUserService.isFavouriteRoute(routeId, userId);
     }
 
-    @GetMapping("/favourite-routes/{email}")
+    @GetMapping("/favourite-routes/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public List<RouteDTO> getFavouriteRoutes(@Valid @Email(message=WRONG_EMAIL) @PathVariable String email){
-        return regularUserService.getFavouriteRoutes(email);
+//    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_REGULAR_USER')")
+    public List<RouteDTO> getFavouriteRoutes(@Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable Long id) throws EntityNotFoundException {
+        return regularUserService.getFavouriteRoutes(id);
     }
 
     @PostMapping("/register")

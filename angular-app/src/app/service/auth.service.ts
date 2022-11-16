@@ -98,9 +98,9 @@ export class AuthService {
     return localStorage.getItem('token');
   }
 
-  getFavouriteRoutesForUser(email: string) {
+  getFavouriteRoutesForUser(userId: number) {
     return this.http.get<Route[]>(
-      this.configService.get_favourite_routes(email)
+      this.configService.get_favourite_routes(userId)
     );
   }
 }

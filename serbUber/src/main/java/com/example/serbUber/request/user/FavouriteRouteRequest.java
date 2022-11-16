@@ -4,29 +4,29 @@ import com.example.serbUber.model.Route;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
-import static com.example.serbUber.exception.ErrorMessagesConstants.EMPTY_EMAIL;
-import static com.example.serbUber.exception.ErrorMessagesConstants.WRONG_EMAIL;
+import static com.example.serbUber.exception.ErrorMessagesConstants.*;
 
 public class FavouriteRouteRequest {
 
-    @Email(message=WRONG_EMAIL)
-    @NotBlank(message = EMPTY_EMAIL)
-    private String userEmail;
+    @NotNull(message=NOT_NULL_MESSAGE)
+    private Long userId;
 
+    @NotNull(message=NOT_NULL_MESSAGE)
     private Long routeId;
 
-    public FavouriteRouteRequest(final String userEmail, final Long routeId) {
-        this.userEmail = userEmail;
+    public FavouriteRouteRequest(final Long userId, final Long routeId) {
+        this.userId = userId;
         this.routeId = routeId;
     }
 
-    public String getUserEmail() {
-        return userEmail;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public Long getRouteId() {

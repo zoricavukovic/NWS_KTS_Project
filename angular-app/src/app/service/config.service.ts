@@ -91,7 +91,19 @@ export class ConfigService {
     parameter: string,
     sortOrder: string
   ): string {
-    return this._drivings_pagination_url + "/" + id + "/" + pageNumber + "/" + pageSize + "/" + parameter + "/" + sortOrder;
+    return (
+      this._drivings_pagination_url +
+      '/' +
+      id +
+      '/' +
+      pageNumber +
+      '/' +
+      pageSize +
+      '/' +
+      parameter +
+      '/' +
+      sortOrder
+    );
   }
 
   driving_details_url(id: number): string {
@@ -102,8 +114,8 @@ export class ConfigService {
     return this._reset_password;
   }
 
-  driver_info_url(email: string): string {
-    return this._driver_info_url + email;
+  driver_info_url(id: number): string {
+    return this._driver_info_url + id;
   }
 
   get vehicle_rating_url(): string {
@@ -174,8 +186,8 @@ export class ConfigService {
     return this._remove_favourite_route_url;
   }
 
-  is_favourite_route(id: number, email: string) {
-    return this._is_favourite_route_url + id + '/' + email;
+  is_favourite_route(route_id: number, user_id: number) {
+    return this._is_favourite_route_url + route_id + '/' + user_id;
   }
 
   get all_drivers_url(): string {
@@ -186,7 +198,7 @@ export class ConfigService {
     return this._all_users_url;
   }
 
-  get_favourite_routes(email: string): string {
-    return this._get_favourite_routes + email;
+  get_favourite_routes(user_id: number): string {
+    return this._get_favourite_routes + user_id;
   }
 }

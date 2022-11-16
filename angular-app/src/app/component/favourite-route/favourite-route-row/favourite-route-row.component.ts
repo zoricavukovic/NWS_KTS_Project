@@ -21,15 +21,18 @@ export class FavouriteRouteRowComponent implements OnInit {
   constructor(private userService: UserService) {}
 
   ngOnInit(): void {
-    this.startPoint = this.route.locations.at(0).street + this.route.locations.at(0).number;
+    console.log(this.route);
+    this.startPoint =
+      this.route.locations.at(0).street + this.route.locations.at(0).number;
     let end = this.route.locations.at(this.route.locations.length - 1);
     this.endPoint = end.street + end.number;
   }
 
   removeFromFavouriteRoutes() {
+    console.log(this.route.id);
     this.userService
       .removeFromFavouriteRoutes(
-        new FavouriteRouteRequest(this.user.email, this.route.id)
+        new FavouriteRouteRequest(this.user.id, this.route.id)
       )
       .subscribe(response => {
         console.log(response);

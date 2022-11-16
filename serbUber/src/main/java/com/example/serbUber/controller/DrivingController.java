@@ -6,6 +6,7 @@ import com.example.serbUber.model.Driving;
 import com.example.serbUber.request.DrivingRequest;
 import com.example.serbUber.service.DrivingService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
@@ -54,6 +55,7 @@ public class DrivingController {
 
     @GetMapping("/{id}/{pageNumber}/{pageSize}/{parameter}/{sortOrder}")
     @ResponseStatus(HttpStatus.OK)
+//    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
     public List<DrivingDTO> getAllDrivingsForUserWithPaginationAndSort(
             @Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable Long id,
             @Valid @NotNull(message = NOT_NULL_MESSAGE) @PositiveOrZero(message = POSITIVE_OR_ZERO_MESSAGE) @PathVariable int pageNumber,
@@ -69,6 +71,7 @@ public class DrivingController {
 
     @GetMapping("/details/{id}")
     @ResponseStatus(HttpStatus.OK)
+//    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
     public DrivingDTO getDriving(@PathVariable Long id) throws EntityNotFoundException {
 
         return drivingService.getDrivingDto(id);

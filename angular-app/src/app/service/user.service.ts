@@ -13,71 +13,84 @@ import { AuthService } from './auth.service';
 import { User } from '../model/response/user/user';
 import { Observable } from 'rxjs';
 
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService {
-
   constructor(
     private http: HttpClient,
     private configService: ConfigService,
     private router: Router,
-    private authService: AuthService,
-  ) { }
+    private authService: AuthService
+  ) {}
 
   sendResetPasswordEmail(email: string): Observable<boolean> {
-    
-    return this.http.get<boolean>(this.configService.send_reset_password_email(email));
+    return this.http.get<boolean>(
+      this.configService.send_reset_password_email(email)
+    );
   }
 
-  resetPassword(passwordUpdateRequest: PasswordUpdateRequest): Observable<User> {
-
-    return this.http.put<User>(this.configService.reset_password, passwordUpdateRequest);
+  resetPassword(
+    passwordUpdateRequest: PasswordUpdateRequest
+  ): Observable<User> {
+    return this.http.put<User>(
+      this.configService.reset_password,
+      passwordUpdateRequest
+    );
   }
 
   updateProfileData(data: UsersProfileUpdateRequest): Observable<User> {
-
     return this.http.put<User>(this.configService.users_url, data);
   }
 
   updateProfilePicture(data: UserProfilePictureRequest): Observable<User> {
-
-    return this.http.put<User>(this.configService.users_update_profile_pic, data);
+    return this.http.put<User>(
+      this.configService.users_update_profile_pic,
+      data
+    );
   }
 
   updatePassword(data: UserPasswordUpdateRequest): Observable<User> {
-
-    return this.http.put<User>(this.configService.users_update_password, data)
+    return this.http.put<User>(this.configService.users_update_password, data);
   }
 
-  registerRegularUser(registrationRequest: RegistrationRequest): Observable<User>{
-
-    return this.http.post<User>(this.configService.registration_url, registrationRequest)
+  registerRegularUser(
+    registrationRequest: RegistrationRequest
+  ): Observable<User> {
+    return this.http.post<User>(
+      this.configService.registration_url,
+      registrationRequest
+    );
   }
 
   registerDriver(driverRequest: DriverRegistrationRequest): Observable<User> {
-
-    return this.http.post<User>(this.configService.register_driver, driverRequest)
+    return this.http.post<User>(
+      this.configService.register_driver,
+      driverRequest
+    );
   }
 
-  addToFavouriteRoutes(favouriteRouteRequest: FavouriteRouteRequest){
-
-    return this.http.post<any>(this.configService.add_favourite_route_url, favouriteRouteRequest)
+  addToFavouriteRoutes(favouriteRouteRequest: FavouriteRouteRequest) {
+    return this.http.post<any>(
+      this.configService.add_favourite_route_url,
+      favouriteRouteRequest
+    );
   }
 
-  removeFromFavouriteRoutes(favouriteRouteRequest: FavouriteRouteRequest){
-
-    return this.http.post<any>(this.configService.remove_favourite_route_url, favouriteRouteRequest)
+  removeFromFavouriteRoutes(favouriteRouteRequest: FavouriteRouteRequest) {
+    return this.http.post<any>(
+      this.configService.remove_favourite_route_url,
+      favouriteRouteRequest
+    );
   }
 
-  isFavouriteRouteForUser(routeId:number, email: string){
-
-    return this.http.get(this.configService.is_favourite_route(routeId,email));
+  isFavouriteRouteForUser(routeId: number, userId: number) {
+    return this.http.get(
+      this.configService.is_favourite_route(routeId, userId)
+    );
   }
 
-  getAllRegularUsers(){
+  getAllRegularUsers() {
     return this.http.get<User[]>(this.configService.all_users_url);
   }
-
 }

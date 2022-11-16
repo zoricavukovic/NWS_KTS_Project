@@ -54,9 +54,9 @@ public class UserService {
     }
 
 
-    public UserDTO get(String email) throws EntityNotFoundException {
+    public UserDTO get(Long id) throws EntityNotFoundException {
 
-        return new UserDTO(getUserByEmail(email));
+        return new UserDTO(getUserById(id));
     }
 
     public UserDTO updateDriver(

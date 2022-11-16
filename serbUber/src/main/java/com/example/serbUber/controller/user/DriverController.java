@@ -7,16 +7,16 @@ import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.MailCannotBeSentException;
 import com.example.serbUber.exception.PasswordsDoNotMatchException;
 import com.example.serbUber.request.user.DriverRegistrationRequest;
-import com.example.serbUber.request.user.UserEmailRequest;
 import com.example.serbUber.service.user.DriverService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
-import static com.example.serbUber.exception.ErrorMessagesConstants.WRONG_EMAIL;
+import static com.example.serbUber.exception.ErrorMessagesConstants.NOT_NULL_MESSAGE;
 
 @RestController
 @RequestMapping("/drivers")
@@ -35,23 +35,19 @@ public class DriverController {
         return driverService.getAll();
     }
 
-    @GetMapping("/{email}")
-    @ResponseStatus(HttpStatus.OK)
-    public DriverDTO getUserByEmail(@PathVariable String email) throws EntityNotFoundException {
-        return driverService.get(email);
-    }
-
-    @GetMapping("/byEmail")
+    @GetMapping("/{id}")
+//    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
     @ResponseStatus(HttpStatus.OK)
     public DriverDTO get(
-        @Valid @RequestBody UserEmailRequest emailRequest
+        @Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable Long id
     ) throws EntityNotFoundException {
 
-        return driverService.get(emailRequest.getEmail());
+        return driverService.get(id);
     }
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
+//    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public UserDTO create(@Valid @RequestBody DriverRegistrationRequest driverRegistrationRequest)
             throws EntityNotFoundException, PasswordsDoNotMatchException, EntityAlreadyExistsException, MailCannotBeSentException {
 
@@ -70,10 +66,11 @@ public class DriverController {
         );
     }
 
-    @GetMapping("/rating/{email}")
+    @GetMapping("/rating/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public double getRating(@Valid @Email(message=WRONG_EMAIL) @PathVariable String email) throws EntityNotFoundException{
-        return driverService.getDriverRating(email);
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
+    public double getRating(@Valid @NotNull(message=NOT_NULL_MESSAGE) @PathVariable Long id) throws EntityNotFoundException{
+        return driverService.getDriverRating(id);
     }
 }
 

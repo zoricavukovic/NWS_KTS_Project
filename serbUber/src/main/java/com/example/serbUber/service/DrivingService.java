@@ -39,8 +39,8 @@ public class DrivingService {
             final LocalDateTime payingLimit,
             final Route route,
             final DrivingStatus drivingStatus,
-            final String driverEmail,
-            final HashMap<String, Boolean> usersPaid,
+            final Long driverId,
+            final HashMap<Long, Boolean> usersPaid,
             final double price
     ) {
 
@@ -51,7 +51,7 @@ public class DrivingService {
                 payingLimit,
                 route,
                 drivingStatus,
-                driverEmail,
+                driverId,
                 usersPaid,
                 price
         ));
@@ -70,7 +70,7 @@ public class DrivingService {
         Pageable page = PageRequest.of(pageNumber, pageSize, Sort.by(getSortOrder(sortOrder), getSortBy(parameter)));
 
         return user.getRole().isDriver() ?
-                fromDrivings(drivingRepository.findByDriverEmail(user.getEmail(), page)) :
+                fromDrivings(drivingRepository.findByDriverId(id, page)) :
                 fromDrivings(drivingRepository.findByUserId(id, page));
     }
 
