@@ -102,4 +102,10 @@ public class DrivingService {
         return drivingRepository.getDrivingById(id)
             .orElseThrow(() -> new EntityNotFoundException(id, EntityType.DRIVING));
     }
+
+    public List<DrivingDTO> getAllNowAndFutureDrivings(Long id) throws EntityNotFoundException {
+
+        User user = userService.getUserById(id);
+        return fromDrivings(drivingRepository.findByDriverId(user.getEmail()));
+    }
 }

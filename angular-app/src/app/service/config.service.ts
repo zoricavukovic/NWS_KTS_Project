@@ -84,7 +84,7 @@ export class ConfigService {
     return this._register_driver;
   }
 
-  drivings_url(
+  drivings_url_with_pagination_and_sort(
     id: number,
     pageNumber: number,
     pageSize: number,
@@ -92,6 +92,10 @@ export class ConfigService {
     sortOrder: string
   ): string {
     return this._drivings_pagination_url + "/" + id + "/" + pageNumber + "/" + pageSize + "/" + parameter + "/" + sortOrder;
+  }
+
+  now_future_drivings_url(id: number): string {
+    return this._drivings_pagination_url + "/" + id;
   }
 
   driving_details_url(id: number): string {

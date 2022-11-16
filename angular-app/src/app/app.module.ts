@@ -57,6 +57,9 @@ import { FavouriteRoutesComponent } from './component/favourite-route/favourite-
 import { FavouriteRouteRowComponent } from './component/favourite-route/favourite-route-row/favourite-route-row.component';
 import { UtilMessageComponent } from './component/util-message/util-message.component';
 import {ScrollingModule} from "@angular/cdk/scrolling";
+import { DriverHomePageContainerComponent } from './component/home-page/driver-home-page-container/driver-home-page-container.component';
+import {AvatarModule} from 'primeng/avatar';
+import {AvatarGroupModule} from 'primeng/avatargroup';
 
 @NgModule({
   declarations: [
@@ -91,6 +94,7 @@ import {ScrollingModule} from "@angular/cdk/scrolling";
     FavouriteRoutesComponent,
     FavouriteRouteRowComponent,
     UtilMessageComponent,
+    DriverHomePageContainerComponent,
   ],
   imports: [
     BrowserModule,
@@ -118,6 +122,8 @@ import {ScrollingModule} from "@angular/cdk/scrolling";
       closeButton: true,
     }),
     ScrollingModule,
+    AvatarModule,
+    AvatarGroupModule
   ],
   entryComponents: [EditProfileComponent],
   providers: [

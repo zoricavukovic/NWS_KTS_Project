@@ -56,19 +56,23 @@ insert into drivers (id, email, password, name, surname, phone_number, city, pro
     (nextval('users_id_gen'), 'milan@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Milan', 'Milanovic', '012345678', 'Novi Sad', 'default-user.png', 3, false, false, true, null, null, null, 0, 0, 1, 2, false);
 
 insert into drivings (active, driver_email, driving_status, duration, paying_limit, price, started, route_id) values
-    (false, 'mile@gmail.com', 1, 10, null, 400, to_timestamp('06.11.2022. 14:00', 'DD.MM.YYYY HH24:MI'), 1);
-insert into drivings (active, driver_email, driving_status, duration, paying_limit, price, started, route_id) values
-    (false, 'milan@gmail.com', 1, 10, null, 500,to_timestamp('24.08.2022 14:00', 'DD.MM.YYYY HH24:MI'), 3);
-insert into drivings (active, driver_email, driving_status, duration, paying_limit, price, started, route_id) values
+    (false, 'mile@gmail.com', 1, 3, null, 400, to_timestamp('06.11.2022. 14:00', 'DD.MM.YYYY HH24:MI'), 1),
+    (false, 'mile@gmail.com', 1, 2, null, 300, to_timestamp('16.11.2022. 14:00', 'DD.MM.YYYY HH24:MI'), 2),
+    (true, 'mile@gmail.com', 1, 5, null, 600, to_timestamp('16.11.2022. 18:00', 'DD.MM.YYYY HH24:MI'), 3),
+    (false, 'mile@gmail.com', 0, 4, null, 445, to_timestamp('14.12.2022. 14:00', 'DD.MM.YYYY HH24:MI'), 2),
+    (false, 'mile@gmail.com', 1, 4, null, 445, to_timestamp('16.11.2022. 14:00', 'DD.MM.YYYY HH24:MI'), 2),
+    (false, 'mile@gmail.com', 3, 4, null, 445, to_timestamp('16.11.2022. 18:00', 'DD.MM.YYYY HH24:MI'), 2),
+    (false, 'milan@gmail.com', 1, 10, null, 560,to_timestamp('24.08.2022 14:00', 'DD.MM.YYYY HH24:MI'), 3),
     (false, 'milan@gmail.com', 1, 10, null, 500,to_timestamp('24.10.2022 14:00', 'DD.MM.YYYY HH24:MI'), 3);
 
 
 insert into drivings_users(driving_id, user_id) values
-    (1, 2);
-insert into drivings_users(driving_id, user_id) values
-    (2, 2);
-insert into drivings_users(driving_id, user_id) values
-    (3, 2);
+    (1, 2),
+    (2, 2),
+    (3, 2),
+    (4, 4),
+    (4, 2),
+    (4, 3);
 
 
 insert into chat_rooms(client_id, admin_id, resolved) values
