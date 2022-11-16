@@ -28,8 +28,10 @@ export class NavBarComponent implements OnInit, OnDestroy {
       .getCurrentUser()
       .subscribe((user: User) => {
         this.currentUser = user;
-        this.isAdmin = user.isUserAdmin();
-        this.isRegularUser = user.userIsRegular();
+        if (user!== null) {
+          this.isAdmin = user.isUserAdmin();
+          this.isRegularUser = user.userIsRegular();
+        }
       });
   }
 

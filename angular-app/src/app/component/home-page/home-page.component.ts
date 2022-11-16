@@ -28,6 +28,7 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
   possibleRoutesViaPoints: PossibleRoutesViaPoints[] = [];
   drawPolylineList = [];
   searchingRoutesForm: SearchingRoutesForm[] = [];
+  currentUserIsDriver: boolean;
   /* autocompleteForm = new FormGroup({
     startDest: new FormControl(undefined, [this.requireMatch.bind(this)]),
     endDest: new FormControl(undefined, [this.requireMatch.bind(this)]),
@@ -48,7 +49,12 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
     this.searchingRoutesForm.push(new SearchingRoutesForm());
     this.authSubscription = this.authService
       .getCurrentUser()
-      .subscribe(user => (this.currentUser = user));
+      .subscribe((user: User) => {
+        this.currentUser = user;
+        if (user!== null){
+        this.currentUserIsDriver = user.userIsDriver();
+        }
+      });
   }
 
   ngOnDestroy(): void {
@@ -87,7 +93,6 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
   async filterPlaces(searchParam: string) {
     return await this.provider1.search({ query: searchParam });
   }
-
 
   /*requireMatch(control: FormControl): ValidationErrors | null {
     const selection: any = control.value; //??

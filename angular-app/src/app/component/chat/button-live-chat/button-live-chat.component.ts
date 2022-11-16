@@ -17,21 +17,23 @@ export class ButtonLiveChatComponent implements OnInit, OnDestroy {
   authSubscription: Subscription;
 
   constructor(private authService: AuthService) { }
-  
+
   ngOnInit(): void {
     this.authSubscription = this.authService.getCurrentUser().subscribe(
         user => {
           this.loggedUser = user;
-          this.isAdmin = user.isUserAdmin();
+          if (user !== null) {
+            this.isAdmin = user.isUserAdmin();
+          }
         }
       );
     }
-    
+
     isLoggedIn(): boolean {
-      
+
       return this.loggedUser !== null;
     }
-    
+
     ngOnDestroy(): void {
       if (this.authSubscription) {
         this.authSubscription.unsubscribe();
