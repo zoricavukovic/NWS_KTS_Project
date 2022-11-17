@@ -1,19 +1,16 @@
 package com.example.serbUber.request.message;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.example.serbUber.exception.ErrorMessagesConstants.WRONG_MESSAGE_LENGTH;
-import static com.example.serbUber.util.Constants.MAX_LENGTH_OF_MESSAGE;
+import static com.example.serbUber.exception.ErrorMessagesConstants.MISSING_ID;
 
 public class ChatRoomRequest {
 
-    @NotBlank(message = WRONG_MESSAGE_LENGTH)
-    @Size(max = MAX_LENGTH_OF_MESSAGE, message = WRONG_MESSAGE_LENGTH)
+    @NotNull(message = MISSING_ID)
     private Long id;
 
     @NotNull(message = "Resolved must be selected.")

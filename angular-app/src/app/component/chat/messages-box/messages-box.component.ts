@@ -4,7 +4,7 @@ import {ToastrService} from "ngx-toastr";
 import { ChatRoomService } from 'src/app/service/chat-room.service';
 import { Subscription } from 'rxjs';
 import { ChatService } from 'src/app/service/chat.service';
-import { MessageRequest } from 'src/app/model/request/message-request';
+import { MessageRequest } from 'src/app/model/request/message/message-request';
 
 
 @Component({
@@ -15,8 +15,6 @@ import { MessageRequest } from 'src/app/model/request/message-request';
 export class MessagesBoxComponent implements OnInit, OnDestroy {
 
   @Input() selectedChatRoom: ChatRoom;
-
-  selectedIndex: number = 0;
 
   constructor(
     private toast: ToastrService,
@@ -51,7 +49,7 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
         res => {
           this.newMessage = '';
           this.selectedChatRoom = res;
-          this.chatService.sendMessage(res);
+          this.chatService.sendMessage(res, false);
         },
         error => this.toast.error("Message cannot be sent!", "Error occured, try again later.")
       );
@@ -64,7 +62,7 @@ export class MessagesBoxComponent implements OnInit, OnDestroy {
         this.resolveSubscription = this.chatRoomService.resolveChatRoom(this.selectedChatRoom.id)
         .subscribe(
           res => {
-            this.chatService.sendMessage(res);
+            this.chatService.sendMessage(res, false);
             this.selectedChatRoom = res;
             this.toast.success("Chat room is resolved!", "Chat room is marked as resolved.")
           },

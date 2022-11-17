@@ -5,6 +5,7 @@ import com.example.serbUber.exception.AddingMessageToResolvedChatRoom;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.NoAvailableAdminException;
 import com.example.serbUber.request.message.MessageRequest;
+import com.example.serbUber.request.message.MessageSeenRequest;
 import com.example.serbUber.service.message.ChatRoomService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -66,6 +67,17 @@ public class ChatRoomController {
                 messageRequest.getSenderEmail(),
                 messageRequest.getReceiverEmail(),
                 messageRequest.isAdminResponse()
+        );
+    }
+
+    @PostMapping("/seen-messages")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ChatRoomDTO setMessagesToSeen(@Valid @RequestBody MessageSeenRequest messageSeenRequest)
+            throws NoAvailableAdminException, EntityNotFoundException {
+
+        return chatRoomService.setMessagesToSeen(
+                messageSeenRequest.getChatRoomId(),
+                messageSeenRequest.isAdminLogged()
         );
     }
 

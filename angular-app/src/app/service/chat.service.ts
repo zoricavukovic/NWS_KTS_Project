@@ -4,6 +4,7 @@ import {Stomp} from '@stomp/stompjs';
 import { environment } from 'src/environments/environment';
 import { ChatRoomService } from './chat-room.service';
 import { ChatRoom } from '../model/response/messages/chat-room';
+import { ChatRoomWithNotify } from '../model/request/message/chat-room-with-notify';
 
 
 @Injectable({
@@ -14,7 +15,9 @@ export class ChatService {
   private stompClient = null;
   initialized: boolean = false;
 
-  constructor(private chatRoomService: ChatRoomService) {}
+  constructor(
+    private chatRoomService: ChatRoomService,
+    ) {}
 
   
   connect(userEmail: string) {
@@ -43,8 +46,9 @@ export class ChatService {
     console.log('Disconnected!');
   }
 
-  sendMessage(message: ChatRoom) {
-    this.stompClient.send('/app/send' , {}, JSON.stringify(message));
+  sendMessage(message: ChatRoom, notifyAdmin: boolean) {
+    let chatRoomWithNotify: ChatRoomWithNotify = new ChatRoomWithNotify(message, notifyAdmin)
+    this.stompClient.send('/app/send/message' , {}, JSON.stringify(chatRoomWithNotify));
   }
 
   showMessage(message) {
