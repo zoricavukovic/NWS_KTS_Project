@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { PossibleRoute } from '../../model/response/possible-routes';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { PossibleRoute } from '../../../model/response/possible-routes';
 
 @Component({
   selector: 'route-row',
@@ -9,6 +9,7 @@ import { PossibleRoute } from '../../model/response/possible-routes';
 export class RouteRowComponent implements OnInit {
   @Input() route: PossibleRoute;
   @Input() index: number;
+  @Output() chosenRouteEvent = new EventEmitter<string>();
   color: string;
   rgbDeepBlue: number[] = [44, 75, 97];
 
@@ -21,6 +22,11 @@ export class RouteRowComponent implements OnInit {
       ', ' +
       this.incrementShadeOfColor(this.index, 2) +
       ')';
+  }
+
+  chooseRoute() {
+    console.log(this.route);
+    this.chosenRouteEvent.emit('tralalalalal');
   }
 
   private incrementShadeOfColor(index: number, number: number) {

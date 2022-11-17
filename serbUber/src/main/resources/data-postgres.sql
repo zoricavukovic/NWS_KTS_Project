@@ -56,12 +56,14 @@ insert into drivers (id, email, password, name, surname, phone_number, city, pro
     (nextval('users_id_gen'), 'milan@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Milan', 'Milanovic', '012345678', 'Novi Sad', 'default-user.png', 3, false, false, true, null, null, null, 0, 0, 1, 2, false);
 
 insert into drivings (active, driver_id, driving_status, duration, paying_limit, price, started, route_id) values
-    (false, 5, 1, 10, null, 400, to_timestamp('06.11.2022. 14:00', 'DD.MM.YYYY HH24:MI'), 1);
-insert into drivings (active, driver_id, driving_status, duration, paying_limit, price, started, route_id) values
-    (false, 5, 1, 10, null, 500,to_timestamp('24.08.2022 14:00', 'DD.MM.YYYY HH24:MI'), 3);
-insert into drivings (active, driver_id, driving_status, duration, paying_limit, price, started, route_id) values
-    (false, 6, 1, 10, null, 500,to_timestamp('24.10.2022 14:00', 'DD.MM.YYYY HH24:MI'), 3);
-
+                                                                                                               (false, 5, 1, 3, null, 400, to_timestamp('06.11.2022. 14:00', 'DD.MM.YYYY HH24:MI'), 1),
+                                                                                                               (false, 5, 1, 2, null, 300, to_timestamp('16.11.2022. 14:00', 'DD.MM.YYYY HH24:MI'), 2),
+                                                                                                               (true, 5, 1, 5, null, 600, to_timestamp('16.11.2022. 18:00', 'DD.MM.YYYY HH24:MI'), 3),
+                                                                                                               (false, 6, 0, 4, null, 445, to_timestamp('14.12.2022. 14:00', 'DD.MM.YYYY HH24:MI'), 2),
+                                                                                                               (false, 6, 1, 4, null, 445, to_timestamp('16.11.2022. 14:00', 'DD.MM.YYYY HH24:MI'), 2),
+                                                                                                               (false, 6, 2, 4, null, 445, to_timestamp('16.11.2022. 18:00', 'DD.MM.YYYY HH24:MI'), 2),
+                                                                                                               (false, 6, 1, 10, null, 560,to_timestamp('24.08.2022 14:00', 'DD.MM.YYYY HH24:MI'), 3),
+                                                                                                               (false, 6, 1, 10, null, 500,to_timestamp('24.10.2022 14:00', 'DD.MM.YYYY HH24:MI'), 3);
 
 insert into drivings_users(driving_id, user_id) values
     (1, 2);

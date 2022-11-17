@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormControl } from '@angular/forms';
 import * as L from 'leaflet';
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
 import { SearchingRoutesForm } from '../../../model/searching-routes-form';
@@ -17,7 +16,6 @@ import {
   removeMarker,
   removeOneLayer,
 } from '../../../util/map-functions';
-import { UserService } from 'src/app/service/user.service';
 
 @Component({
   selector: 'home-page',
@@ -27,6 +25,8 @@ import { UserService } from 'src/app/service/user.service';
 export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
   routeChoiceView = false;
   filterVehicleView = true;
+
+  selectedRoute: PossibleRoute;
 
   private map: L.Map;
   currentUser: User;
@@ -187,6 +187,8 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
     route.pointList.forEach(latLng => latLongs.push([latLng[0], latLng[1]]));
     let color: string = this.getPolylineColor(idx);
     drawPolylineOnMap(this.map, latLongs, color, this.drawPolylineList);
+
+    this.chooseVehicleAndPassengers(route);
   }
 
   getIconName(index: number): string {
@@ -283,5 +285,12 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
       index * 5,
       2
     )})`;
+  }
+
+  chooseVehicleAndPassengers(route: PossibleRoute) {
+    console.log('blaaaaaaaaa');
+    this.routeChoiceView = false;
+    this.filterVehicleView = true;
+    this.selectedRoute = route;
   }
 }

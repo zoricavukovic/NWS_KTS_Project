@@ -1,7 +1,7 @@
 <driver-vehicle
   (petFriendlyEvent)="petFriendly = $event"
   (babySeatEvent)="babySeat = $event"
-  (vehicleTypeEvent)="vehicleType = $event"></driver-vehicle>
+  (vehicleTypeEvent)="setVehicleTypeAndShowPrice($event)"></driver-vehicle>
 <br />
 <mat-expansion-panel>
   <mat-expansion-panel-header>
@@ -24,6 +24,7 @@
       type="text"
       matInput
       aria-label="State"
+      [formControl]="passengerCtrl"
       [matAutocomplete]="auto"
       placeholder="Enter passenger's email" />
     <mat-autocomplete
@@ -36,14 +37,15 @@
   </mat-form-field>
 </mat-expansion-panel>
 <br />
-<button
-  mat-stroked-button
-  class="showPriceBtn"
-  *ngIf="price === 0"
-  (click)="showPrice()">
-  Show price
-</button>
 
-<div style="text-align: right" *ngIf="price !== 0">
+<div style="text-align: right">
   <h2>={{ price }}.00 RSD</h2>
 </div>
+
+<button
+  mat-stroked-button
+  class="findDriverBtn"
+  *ngIf="vehicleType"
+  (click)="findDriver()">
+  Find driver
+</button>

@@ -68,7 +68,7 @@ public class DrivingService {
     public List<DrivingDTO> getDrivingsForUser(Long id, int pageNumber, int pageSize, String parameter, String sortOrder) throws EntityNotFoundException {
         User user = userService.getUserById(id);
         Pageable page = PageRequest.of(pageNumber, pageSize, Sort.by(getSortOrder(sortOrder), getSortBy(parameter)));
-
+        System.out.println(drivingRepository.findByDriverId(id, page).size());
         return user.getRole().isDriver() ?
                 fromDrivings(drivingRepository.findByDriverId(id, page)) :
                 fromDrivings(drivingRepository.findByUserId(id, page));

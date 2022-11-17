@@ -23,7 +23,7 @@ public class Reservation {
     @JoinColumn(name = "route_id", referencedColumnName = "id")
     private Route route;
 
-    @ManyToMany(mappedBy = "reservations", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "reservations", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore
     private List<RegularUser> users = new LinkedList<>();
 

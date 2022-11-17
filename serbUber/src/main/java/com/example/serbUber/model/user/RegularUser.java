@@ -4,12 +4,14 @@ import com.example.serbUber.model.Driving;
 import com.example.serbUber.model.Reservation;
 import com.example.serbUber.model.Route;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Fetch;
 
 import javax.persistence.*;
 import java.util.LinkedList;
 import java.util.List;
 
 import static com.example.serbUber.util.Constants.ROLE_REGULAR_USER;
+import static org.hibernate.annotations.FetchMode.SELECT;
 
 @Entity
 @Table(name="regular_users")

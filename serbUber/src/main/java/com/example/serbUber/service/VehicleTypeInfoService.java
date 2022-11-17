@@ -48,6 +48,10 @@ public class VehicleTypeInfoService {
                 new EntityNotFoundException(vehicleType.toString(), EntityType.VEHICLE_TYPE_INFO));
     }
 
+    public double getPriceForVehicle(VehicleType vehicleType) throws EntityNotFoundException {
+        return findBy(vehicleType).getStartPrice();
+    }
+
     public VehicleTypeInfo get(VehicleType vehicleType) throws EntityNotFoundException {
 
         return  vehicleTypeInfoRepository.getVehicleTypeInfoByName(vehicleType)

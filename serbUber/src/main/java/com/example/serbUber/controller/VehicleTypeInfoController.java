@@ -1,6 +1,9 @@
 package com.example.serbUber.controller;
 
 import com.example.serbUber.dto.VehicleTypeInfoDTO;
+import com.example.serbUber.exception.EntityNotFoundException;
+import com.example.serbUber.model.VehicleType;
+import com.example.serbUber.model.VehicleTypeInfo;
 import com.example.serbUber.request.VehicleTypeInfoRequest;
 import com.example.serbUber.service.VehicleTypeInfoService;
 import org.springframework.http.HttpStatus;
@@ -24,6 +27,13 @@ public class VehicleTypeInfoController {
     public List<VehicleTypeInfoDTO> getAll() {
 
         return this.vehicleTypeInfoService.getAll();
+    }
+
+    @GetMapping("/price/{type}/{kilometers}")
+    @ResponseStatus(HttpStatus.OK)
+    private double getPriceForSelectedRouteAndVehicle(@PathVariable VehicleType type, @PathVariable double kilometers) throws EntityNotFoundException {
+        double priceForType = this.vehicleTypeInfoService.getPriceForVehicle(type);
+        return priceForType + (kilometers/1000)*120;
     }
 
     @PostMapping()

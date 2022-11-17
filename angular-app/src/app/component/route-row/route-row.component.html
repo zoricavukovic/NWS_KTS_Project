@@ -1,6 +1,0 @@
-<div class="route-container" style="border-left: thick solid; padding-left: 1rem" [style.border-left-color]=[color]>
-  <p style="font-size:1.4rem"><strong>{{route.timeInMin}} min</strong></p>
-  <p style="font-size:1.2rem" *ngIf="route.distance/1000 >= 0.1">{{route.distance/1000 | number:'1.0-1'}} km</p>
-  <p style="font-size:1.2rem" *ngIf="route.distance/1000 < 0.1">{{route.distance | number:'1.0-0'}} m</p>
-</div>
-

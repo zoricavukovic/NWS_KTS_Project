@@ -47,7 +47,7 @@ import { PoupupLiveChatComponent } from './component/chat/poupup-live-chat/poupu
 import { HistoryLiveChatComponent } from './component/chat/history-live-chat/history-live-chat.component';
 import { ChatRoomsListComponent } from './component/chat/chat-rooms-list/chat-rooms-list.component';
 import { MessagesBoxComponent } from './component/chat/messages-box/messages-box.component';
-import { RouteRowComponent } from './component/route-row/route-row.component';
+import { RouteRowComponent } from './component/home/route-row/route-row.component';
 import { ShowDriversComponent } from './component/admin/show-drivers/show-drivers.component';
 import { DriverRowComponent } from './component/admin/driver-row/driver-row.component';
 import { ShowUsersComponent } from './component/admin/show-users/show-users.component';

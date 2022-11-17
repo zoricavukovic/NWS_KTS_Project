@@ -1,6 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { PossibleRoute } from 'src/app/model/response/possible-routes';
 import { UserService } from 'src/app/service/user.service';
+import { VehicleService } from 'src/app/service/vehicle.service';
 
 @Component({
   selector: 'app-filter-vehicle-view',
@@ -8,6 +11,8 @@ import { UserService } from 'src/app/service/user.service';
   styleUrls: ['./filter-vehicle-view.component.css'],
 })
 export class FilterVehicleViewComponent implements OnInit, OnDestroy {
+  @Input() route: PossibleRoute;
+
   petFriendly = false;
   babySeat = false;
   vehicleType: string;
@@ -16,9 +21,15 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
   allRegularUsers = new Array<string>();
   selectedPassengers = new Array<string>();
 
-  private allUsersSubscription: Subscription;
+  passengerCtrl = new FormControl();
 
-  constructor(private userService: UserService) {}
+  private allUsersSubscription: Subscription;
+  private priceSubscription: Subscription;
+
+  constructor(
+    private userService: UserService,
+    private vehicleService: VehicleService
+  ) {}
 
   ngOnInit(): void {
     this.allUsersSubscription = this.userService
@@ -34,10 +45,14 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
     if (this.allUsersSubscription) {
       this.allUsersSubscription.unsubscribe();
     }
+    if (this.priceSubscription) {
+      this.priceSubscription.unsubscribe();
+    }
   }
 
   addSelectedPassenger(email: string) {
     this.selectedPassengers.push(email);
+    this.passengerCtrl.setValue(null);
   }
 
   removePassengerFromSelected(passenger: string): void {
@@ -48,7 +63,21 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  showPrice() {
-    this.price = 1000;
+  setVehicleTypeAndShowPrice(vehicleType: string) {
+    this.vehicleType = vehicleType;
+    console.log(this.vehicleType);
+    this.priceSubscription = this.vehicleService
+      .getPriceForVehicleAndRoute(this.vehicleType, 3800)
+      .subscribe(response => {
+        this.price = response;
+      });
+  }
+
+  findDriver() {
+    if (this.selectedPassengers.length === 0) {
+      console.log('nisuu, trazi vozaca');
+    } else {
+      console.log('saljii voznju');
+    }
   }
 }

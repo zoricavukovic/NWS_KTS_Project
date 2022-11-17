@@ -17,7 +17,7 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
   drivings: Driving[] = [];
   currentUser: User;
   userId: number;
-  pageSize = 1;
+  pageSize = 4;
   pageNumber = 0;
   selectedSortBy = 'Date';
   selectedSortOrder = 'Descending';
