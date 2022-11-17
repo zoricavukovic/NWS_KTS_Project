@@ -6,7 +6,7 @@ import {ToastrService} from "ngx-toastr";
 import { ChatService } from 'src/app/service/chat.service';
 import { ChatRoom } from 'src/app/model/response/messages/chat-room';
 import { ChatRoomService } from 'src/app/service/chat-room.service';
-import { MessageRequest } from 'src/app/model/request/message-request';
+import { MessageRequest } from 'src/app/model/request/message/message-request';
 
 @Component({
   selector: 'app-poupup-live-chat',
@@ -35,7 +35,9 @@ export class PoupupLiveChatComponent implements OnInit, OnDestroy {
     this.chatRoomSubscription = this.chatRoomService.getUserChatRoom(this.loggedUser.email).subscribe(
       res => {
         this.chatRoom = res;
-        this.checkIfResolved();
+        if (this.chatRoom) {
+          this.checkIfResolved();
+        }
       }
     );
   }
@@ -53,12 +55,8 @@ export class PoupupLiveChatComponent implements OnInit, OnDestroy {
   }
 
   validateMessage(): boolean {
-    if (this.newMessage.length < 5) {
-      this.toast.error("Message cannot be sent!", "Message must contain at least 5 characters");
-
-      return false;
-    } else if (this.newMessage.length >= 50) {
-      this.toast.error("Message cannot be sent!", "Message cannot contain more than 50 characters");
+    if (this.newMessage.length >= 100) {
+      this.toast.error("Message cannot be sent!", "Message is too long!");
 
       return false;
     }
@@ -102,7 +100,7 @@ export class PoupupLiveChatComponent implements OnInit, OnDestroy {
     ).subscribe(
       res => {
         this.newMessage = '';
-        this.chatService.sendMessage(res);
+        this.chatService.sendMessage(res, true);
       },
       error => this.toast.error("Message cannot be sent!", "All our operators are currently busy! Try later.")
     );

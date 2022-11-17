@@ -175,7 +175,11 @@ export class ConfigService {
   }
 
   get resolve_chat_room_url(): string {
-    return this._all_chat_rooms + '/resolve/';
+    return this._all_chat_rooms + '/resolve';
+  }
+
+  get set_messages_as_seen(): string {
+    return this._all_chat_rooms + '/seen-messages';
   }
 
   get option_routes(): string {

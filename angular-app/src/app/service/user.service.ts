@@ -8,8 +8,6 @@ import { UserProfilePictureRequest } from '../model/request/user/user-profile-up
 import { UsersProfileUpdateRequest } from '../model/request/user/user-profile-update';
 import { UserPasswordUpdateRequest } from '../model/request/user/user-profile-update';
 import { FavouriteRouteRequest } from '../model/request/favourite-route-request';
-import { Router } from '@angular/router';
-import { AuthService } from './auth.service';
 import { User } from '../model/response/user/user';
 import { Observable } from 'rxjs';
 
@@ -19,10 +17,8 @@ import { Observable } from 'rxjs';
 export class UserService {
   constructor(
     private http: HttpClient,
-    private configService: ConfigService,
-    private router: Router,
-    private authService: AuthService
-  ) {}
+    private configService: ConfigService
+  ) { }
 
   sendResetPasswordEmail(email: string): Observable<boolean> {
     return this.http.get<boolean>(

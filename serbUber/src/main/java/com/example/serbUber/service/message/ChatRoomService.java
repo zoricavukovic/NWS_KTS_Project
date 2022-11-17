@@ -88,6 +88,21 @@ public class ChatRoomService {
         return new ChatRoomDTO(chatRoomRepository.save(chatRoom));
     }
 
+    public ChatRoomDTO setMessagesToSeen(final Long chatRoomId, final boolean adminLogged)
+            throws EntityNotFoundException
+    {
+        ChatRoom chatRoom = getActiveChatRoomById(chatRoomId);
+        chatRoom.getMessages().forEach(message -> {
+            if (adminLogged && adminSawClientMessage(message)) {
+                message.setSeen(true);
+            } else if (!adminLogged && clientSawAdminMessage(message)) {
+                message.setSeen(true);
+            }
+        });
+
+        return new ChatRoomDTO(chatRoomRepository.save(chatRoom));
+    }
+
     private ChatRoomDTO createNewChatRoom(String message, String senderEmail, boolean adminResponse)
             throws NoAvailableAdminException, EntityNotFoundException
     {
@@ -105,6 +120,16 @@ public class ChatRoomService {
 
     private boolean chatRoomNotExists(Long chatId) {
         return chatId == null;
+    }
+
+    private boolean adminSawClientMessage(final Message message) {
+
+        return !message.isSeen() && !message.isAdminResponse();
+    }
+
+    private boolean clientSawAdminMessage(final Message message) {
+
+        return !message.isSeen() && message.isAdminResponse();
     }
 
 }
