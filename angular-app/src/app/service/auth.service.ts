@@ -56,6 +56,7 @@ export class AuthService {
   }
 
   setOfflineStatus(loggedUser: User): Observable<User> {
+    console.log(this.configService.header)
     return this.http.post<User>(
       this.configService.logout_url,
       loggedUser.email,

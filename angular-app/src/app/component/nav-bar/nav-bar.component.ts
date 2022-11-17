@@ -28,7 +28,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
       .getCurrentUser()
       .subscribe((user: User) => {
         this.currentUser = user;
-        if (user!== null) {
+        if (user!== null && user !== undefined) {
           this.isAdmin = user.isUserAdmin();
           this.isRegularUser = user.userIsRegular();
         }
