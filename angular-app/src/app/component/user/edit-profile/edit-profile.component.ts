@@ -47,9 +47,10 @@ export class EditProfileComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-      this.authSubscription = this.authService.getCurrentUser().subscribe(
-        user => this.user = user
-      );
+    this.user =  this.authService.getCurrentUser;
+      // this.authSubscription = this.authService.getCurrentUser().subscribe(
+      //   user => this.user = user
+      // );
   }
 
   saveChanges() {
@@ -66,7 +67,9 @@ export class EditProfileComponent implements OnInit, OnDestroy {
         const parsedUser = res as User;
         this.authService.setUserInLocalStorage(parsedUser);
         this.router.navigate(['/profile-page']);
-        this.toast.success("Profile is updated successfully!", "Profile update completed")
+        this.authService.getCurrentUser?.userIsDriver() ?
+          this.toast.success("Update request is sent to admin!", "Update request completed"):
+          this.toast.success("Profile is updated successfully!", "Profile update completed");
       },
       error => this.toast.error(error.error, "Profile update failed")
     );

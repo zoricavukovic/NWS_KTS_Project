@@ -1,6 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { User } from 'src/app/model/response/user/user';
+import { Component } from '@angular/core';
 import { AuthService } from 'src/app/service/auth.service';
 
 @Component({
@@ -8,36 +6,15 @@ import { AuthService } from 'src/app/service/auth.service';
   templateUrl: './button-live-chat.component.html',
   styleUrls: ['./button-live-chat.component.css']
 })
-export class ButtonLiveChatComponent implements OnInit, OnDestroy {
+export class ButtonLiveChatComponent {
 
-  isAdmin: boolean;
-  loggedUser: User;
   showChatPoupup: boolean = false;
 
-  authSubscription: Subscription;
+  constructor(public authService: AuthService) { }
 
-  constructor(private authService: AuthService) { }
+  isLoggedIn(): boolean {
 
-  ngOnInit(): void {
-    this.authSubscription = this.authService.getCurrentUser().subscribe(
-        user => {
-          this.loggedUser = user;
-          if (user !== null) {
-            this.isAdmin = user.isUserAdmin();
-          }
-        }
-      );
-    }
-
-    isLoggedIn(): boolean {
-
-      return this.loggedUser !== null;
-    }
-
-    ngOnDestroy(): void {
-      if (this.authSubscription) {
-        this.authSubscription.unsubscribe();
-      }
-    }
+    return this.authService.getCurrentUser !== null;
+  }
 
 }

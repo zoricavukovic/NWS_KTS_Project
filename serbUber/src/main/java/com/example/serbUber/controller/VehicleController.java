@@ -38,7 +38,7 @@ public class VehicleController {
 
     @GetMapping("/rating/{id}")
     @ResponseStatus(HttpStatus.OK)
-//    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
     public double getRatingForVehicle(@PathVariable  Long id) {
         return vehicleService.getRatingForVehicle(id);
     }

@@ -33,13 +33,22 @@ public class ChatRoom {
 
     }
 
-    public ChatRoom(User client, User admin, boolean resolved) {
+    public ChatRoom(
+            final User client,
+            final User admin,
+            final boolean resolved
+    ) {
         this.client = client;
         this.admin = admin;
         this.resolved = resolved;
     }
 
-    public ChatRoom(User client, User admin, List<Message> messages,boolean resolved) {
+    public ChatRoom(
+            final User client,
+            final User admin,
+            final List<Message> messages,
+            final boolean resolved
+    ) {
         this.client = client;
         this.admin = admin;
         this.messages = messages;

@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { RegistrationRequest } from '../model/request/user/registration-request';
 import { ConfigService } from './config.service';
@@ -8,8 +8,6 @@ import { UserProfilePictureRequest } from '../model/request/user/user-profile-up
 import { UsersProfileUpdateRequest } from '../model/request/user/user-profile-update';
 import { UserPasswordUpdateRequest } from '../model/request/user/user-profile-update';
 import { FavouriteRouteRequest } from '../model/request/favourite-route-request';
-import { Router } from '@angular/router';
-import { AuthService } from './auth.service';
 import { User } from '../model/response/user/user';
 import { Observable } from 'rxjs';
 
@@ -19,10 +17,8 @@ import { Observable } from 'rxjs';
 export class UserService {
   constructor(
     private http: HttpClient,
-    private configService: ConfigService,
-    private router: Router,
-    private authService: AuthService
-  ) {}
+    private configService: ConfigService
+  ) { }
 
   sendResetPasswordEmail(email: string): Observable<boolean> {
     return this.http.get<boolean>(
@@ -35,23 +31,26 @@ export class UserService {
   ): Observable<User> {
     return this.http.put<User>(
       this.configService.reset_password,
-      passwordUpdateRequest
+      passwordUpdateRequest,
+      {headers: this.configService.getHeader()}
     );
   }
 
   updateProfileData(data: UsersProfileUpdateRequest): Observable<User> {
-    return this.http.put<User>(this.configService.users_url, data);
+
+    return this.http.put<User>(this.configService.users_url, data, {headers: this.configService.getHeader()});
   }
 
   updateProfilePicture(data: UserProfilePictureRequest): Observable<User> {
     return this.http.put<User>(
       this.configService.users_update_profile_pic,
-      data
+      data,
+      {headers: this.configService.getHeader()}
     );
   }
 
   updatePassword(data: UserPasswordUpdateRequest): Observable<User> {
-    return this.http.put<User>(this.configService.users_update_password, data);
+    return this.http.put<User>(this.configService.users_update_password, data, {headers: this.configService.getHeader()});
   }
 
   registerRegularUser(
@@ -59,38 +58,41 @@ export class UserService {
   ): Observable<User> {
     return this.http.post<User>(
       this.configService.registration_url,
-      registrationRequest
+      registrationRequest, {headers: this.configService.getHeader()}
     );
   }
 
   registerDriver(driverRequest: DriverRegistrationRequest): Observable<User> {
     return this.http.post<User>(
       this.configService.register_driver,
-      driverRequest
+      driverRequest,
+      {headers: this.configService.getHeader()}
     );
   }
 
   addToFavouriteRoutes(favouriteRouteRequest: FavouriteRouteRequest) {
     return this.http.post<any>(
       this.configService.add_favourite_route_url,
-      favouriteRouteRequest
+      favouriteRouteRequest,
+      {headers: this.configService.getHeader()}
     );
   }
 
   removeFromFavouriteRoutes(favouriteRouteRequest: FavouriteRouteRequest) {
     return this.http.post<any>(
       this.configService.remove_favourite_route_url,
-      favouriteRouteRequest
+      favouriteRouteRequest,
+      {headers: this.configService.getHeader()}
     );
   }
 
   isFavouriteRouteForUser(routeId: number, userId: number) {
     return this.http.get(
-      this.configService.is_favourite_route(routeId, userId)
+      this.configService.is_favourite_route(routeId, userId), {headers: this.configService.getHeader()}
     );
   }
 
   getAllRegularUsers() {
-    return this.http.get<User[]>(this.configService.all_users_url);
+    return this.http.get<User[]>(this.configService.all_users_url, {headers: this.configService.getHeader()});
   }
 }

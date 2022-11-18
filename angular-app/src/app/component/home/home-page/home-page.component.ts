@@ -25,8 +25,8 @@ import { UserService } from 'src/app/service/user.service';
   styleUrls: ['./home-page.component.css'],
 })
 export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
-  routeChoiceView = false;
-  filterVehicleView = true;
+  routeChoiceView = true;
+  filterVehicleView = false;
 
   private map: L.Map;
   currentUser: User;
@@ -54,14 +54,8 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit(): void {
     this.searchingRoutesForm.push(new SearchingRoutesForm());
     this.searchingRoutesForm.push(new SearchingRoutesForm());
-    this.authSubscription = this.authService
-      .getCurrentUser()
-      .subscribe((user: User) => {
-        this.currentUser = user;
-        if (user !== null) {
-          this.currentUserIsDriver = user.userIsDriver();
-        }
-      });
+    this.currentUser = this.authService.getCurrentUser;
+    this.currentUserIsDriver = this.currentUser?.userIsDriver();
   }
 
   ngOnDestroy(): void {
@@ -139,6 +133,7 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getPossibleRoutes() {
     const locationsForCreateRoutes: Location[] = [];
+    console.log(this.searchingRoutesForm);
     this.searchingRoutesForm.forEach(searchingRoutesLocation =>
       locationsForCreateRoutes.push(searchingRoutesLocation.location)
     );
@@ -148,6 +143,7 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
         new LocationsForRoutesRequest(locationsForCreateRoutes)
       )
       .subscribe(res => {
+        console.log(res);
         this.possibleRoutesViaPoints = res;
         if (res.length > 0) {
           this.changeCurrentRoutes(res);

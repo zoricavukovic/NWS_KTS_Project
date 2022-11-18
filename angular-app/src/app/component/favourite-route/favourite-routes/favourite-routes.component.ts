@@ -19,17 +19,13 @@ export class FavouriteRoutesComponent implements OnInit, OnDestroy {
   constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
-    this.currentUserSubscription = this.authService
-      .getCurrentUser()
+    this.currentUser = this.authService.getCurrentUser;
+    this.favouriteRoutesSubscription = this.authService
+      .getFavouriteRoutesForUser(this.currentUser.id)
       .subscribe(data => {
-        this.currentUser = data;
-        this.favouriteRoutesSubscription = this.authService
-          .getFavouriteRoutesForUser(this.currentUser.id)
-          .subscribe(data => {
-            console.log(this.favouriteRoutes);
-            this.favouriteRoutes = data;
-            console.log(this.favouriteRoutes);
-          });
+        console.log(this.favouriteRoutes);
+        this.favouriteRoutes = data;
+        console.log(this.favouriteRoutes);
       });
   }
 

@@ -23,9 +23,10 @@ export class FavouriteRouteRowComponent implements OnInit {
   ngOnInit(): void {
     console.log(this.route);
     this.startPoint =
-      this.route.locations.at(0).street + this.route.locations.at(0).number;
+      this.route.locations.at(0).location.street +
+      this.route.locations.at(0).location.number;
     let end = this.route.locations.at(this.route.locations.length - 1);
-    this.endPoint = end.street + end.number;
+    this.endPoint = end.location.street + end.location.number;
   }
 
   removeFromFavouriteRoutes() {

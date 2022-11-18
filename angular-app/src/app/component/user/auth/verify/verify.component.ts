@@ -46,11 +46,7 @@ export class VerifyComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.verifyId = this.route.snapshot.paramMap.get('id');
-    this.currentUserSubscription = this.authService.getCurrentUser().subscribe(
-      (user) => {
-        this.checkRegistrationPurpose(user);
-      }
-    )
+    this.checkRegistrationPurpose(this.authService.getCurrentUser);
   }
 
   containsOnlyNumbers(str: string) {

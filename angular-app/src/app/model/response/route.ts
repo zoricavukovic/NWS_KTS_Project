@@ -1,8 +1,8 @@
-import { Location } from "./location";
+import { DrivingLocation } from './driving-location';
 
-export class Route{
-    id: number;
-    locations: Location[];
-    distance: number;
-    timeInMin: number;
+export class Route {
+  id: number;
+  locations: DrivingLocation[];
+  distance: number;
+  timeInMin: number;
 }

@@ -53,7 +53,7 @@ public class ReviewController {
 
     @GetMapping("/reviewedDrivings/{id}")
     @ResponseStatus(HttpStatus.OK)
-//    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
     public List<Long> getReviewDrivingsForUser(@PathVariable Long id){
         return reviewService.getAllReviewedDrivingIdForUser(id);
     }

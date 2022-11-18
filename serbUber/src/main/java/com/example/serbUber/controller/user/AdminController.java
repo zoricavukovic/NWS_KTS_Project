@@ -25,7 +25,7 @@ public class AdminController {
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    //@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public List<AdminDTO> getAll() {
 
         return adminService.getAll();
@@ -34,7 +34,7 @@ public class AdminController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-//    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public UserDTO get(
         @Valid @PathVariable Long id
     ) throws EntityNotFoundException {
@@ -44,7 +44,7 @@ public class AdminController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    //@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public AdminDTO create(@Valid @RequestBody AdminRequest adminRequest) {
 
         return adminService.create(

@@ -6,17 +6,20 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class ConfigService {
-  header = new HttpHeaders().set(
-    'Authorization',
-    localStorage.getItem('token')
-  );
+  getHeader(): HttpHeaders {
+    console.log(localStorage.getItem('token'));
+    return new HttpHeaders().set(
+      'Authorization',
+      localStorage.getItem('token')
+    );
+  }
 
   public role_driver = 'ROLE_DRIVER';
   public role_regular_user = 'ROLE_REGULAR_USER';
 
   private _api_url = environment.apiUrl;
   private _login_user = this._api_url + '/auth/login';
-  private _logout_user = this._api_url + '/auth/logout';
+  private _logout_user = this._api_url + '/users/logout';
   private _login_with_gmail_user = this._api_url + '/auth/login/google';
   private _login_with_facebook_user = this._api_url + '/auth/login/facebook';
   private _register_user = this._api_url + '/regular-users/register';
@@ -84,7 +87,7 @@ export class ConfigService {
     return this._register_driver;
   }
 
-  drivings_url(
+  drivings_url_with_pagination_and_sort(
     id: number,
     pageNumber: number,
     pageSize: number,
@@ -104,6 +107,10 @@ export class ConfigService {
       '/' +
       sortOrder
     );
+  }
+
+  now_future_drivings_url(id: number): string {
+    return this._drivings_pagination_url + '/' + id;
   }
 
   driving_details_url(id: number): string {
@@ -171,7 +178,11 @@ export class ConfigService {
   }
 
   get resolve_chat_room_url(): string {
-    return this._all_chat_rooms + '/resolve/';
+    return this._all_chat_rooms + '/resolve';
+  }
+
+  get set_messages_as_seen(): string {
+    return this._all_chat_rooms + '/seen-messages';
   }
 
   get option_routes(): string {

@@ -36,7 +36,7 @@ public class DriverController {
     }
 
     @GetMapping("/{id}")
-//    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
     @ResponseStatus(HttpStatus.OK)
     public DriverDTO get(
         @Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable Long id
@@ -47,7 +47,7 @@ public class DriverController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-//    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public UserDTO create(@Valid @RequestBody DriverRegistrationRequest driverRegistrationRequest)
             throws EntityNotFoundException, PasswordsDoNotMatchException, EntityAlreadyExistsException, MailCannotBeSentException {
 

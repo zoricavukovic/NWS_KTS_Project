@@ -1,12 +1,13 @@
 package com.example.serbUber.controller.message;
 
 import com.example.serbUber.dto.message.ChatRoomDTO;
-import com.example.serbUber.exception.AddingMessageToResolvedChatRoom;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.NoAvailableAdminException;
 import com.example.serbUber.request.message.MessageRequest;
+import com.example.serbUber.request.message.MessageSeenRequest;
 import com.example.serbUber.service.message.ChatRoomService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -30,6 +31,7 @@ public class ChatRoomController {
 
     @GetMapping("/all/{email}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<ChatRoomDTO> getAllChatRooms(@Valid @Email(message = WRONG_EMAIL) @PathVariable String email)
             throws EntityNotFoundException
     {
@@ -39,6 +41,7 @@ public class ChatRoomController {
 
     @GetMapping("/{email}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_DRIVER', 'ROLE_REGULAR_USER')")
     public ChatRoomDTO getActiveChatRoom(@Valid @Email(message = WRONG_EMAIL) @PathVariable String email)
             throws EntityNotFoundException
     {
@@ -48,6 +51,7 @@ public class ChatRoomController {
 
     @PostMapping("/resolve")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ChatRoomDTO resolve(@Valid @NotNull(message = "Id cannot be empty.") @RequestBody Long id)
             throws EntityNotFoundException
     {
@@ -57,6 +61,7 @@ public class ChatRoomController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
     public ChatRoomDTO create(@Valid @RequestBody MessageRequest messageRequest)
             throws NoAvailableAdminException, EntityNotFoundException {
 
@@ -66,6 +71,18 @@ public class ChatRoomController {
                 messageRequest.getSenderEmail(),
                 messageRequest.getReceiverEmail(),
                 messageRequest.isAdminResponse()
+        );
+    }
+
+    @PostMapping("/seen-messages")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
+    public ChatRoomDTO setMessagesToSeen(@Valid @RequestBody MessageSeenRequest messageSeenRequest)
+            throws NoAvailableAdminException, EntityNotFoundException {
+
+        return chatRoomService.setMessagesToSeen(
+                messageSeenRequest.getChatRoomId(),
+                messageSeenRequest.isAdminLogged()
         );
     }
 

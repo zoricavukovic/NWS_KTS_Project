@@ -5,6 +5,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
+import static com.example.serbUber.exception.ErrorMessagesConstants.SEEN_NOT_EXIST;
 import static com.example.serbUber.exception.ErrorMessagesConstants.WRONG_MESSAGE_LENGTH;
 import static com.example.serbUber.util.Constants.MAX_LENGTH_OF_MESSAGE;
 
@@ -20,13 +21,19 @@ public class MessageFromSocketRequest {
     @NotNull(message = "Admin response must be selected.")
     private boolean adminResponse;
 
+    @NotNull(message = SEEN_NOT_EXIST)
+    private boolean seen;
+
     public MessageFromSocketRequest(
             final String message,
             final LocalDateTime timeStamp,
-            final boolean adminResponse) {
+            final boolean adminResponse,
+            final boolean seen
+    ) {
         this.message = message;
         this.timeStamp = timeStamp;
         this.adminResponse = adminResponse;
+        this.seen = seen;
     }
 
     public String getMessage() {
@@ -39,5 +46,9 @@ public class MessageFromSocketRequest {
 
     public boolean isAdminResponse() {
         return adminResponse;
+    }
+
+    public boolean isSeen() {
+        return seen;
     }
 }

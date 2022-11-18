@@ -4,7 +4,9 @@ import com.example.serbUber.config.jwt.JwtAuthorizationFilter;
 import com.example.serbUber.service.user.CustomUserDetailsService;
 import com.example.serbUber.service.user.UserService;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -16,10 +18,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled=true)
 public class SpringConfig extends WebSecurityConfigurerAdapter {
 
     private final UserService userService;
@@ -46,55 +49,13 @@ public class SpringConfig extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
             .antMatchers(HttpMethod.OPTIONS,"/**")
             .permitAll()
-            .antMatchers("/**")
+            .antMatchers("/auth/**")
             .permitAll()
-            .antMatchers("/admins/**")
+            .antMatchers("/routes/possible")
             .permitAll()
-            .antMatchers("/regular-users/register")
+            .antMatchers("/verify/**")
             .permitAll()
-            .antMatchers("/drivers/register")
-            .permitAll()
-            .antMatchers("/regular-users")
-            .permitAll()
-            .antMatchers("/drivers")
-            .permitAll()
-            .antMatchers("/verify")
-            .permitAll()
-            .antMatchers("/users/**")
-            .permitAll()
-            .antMatchers("/vehicle-type-infos")
-            .permitAll()
-            .antMatchers("/verify/send-code-again")
-            .permitAll()
-            .antMatchers("/drivings/{id}/{pageNumber}/{pageSize}/{parameter}/{sortOrder}")
-            .permitAll()
-            .antMatchers("/drivings/details/{id}")
-            .permitAll()
-            .antMatchers("/drivers/rating/{id}")
-            .permitAll()
-            .antMatchers("/vehicles/rating/{id}")
-            .permitAll()
-            .antMatchers("/drivers/{id}")
-            .permitAll()
-            .antMatchers("/reviews")
-            .permitAll()
-            .antMatchers("/routes/**")
-            .permitAll()
-            .antMatchers("/emails/**")
-            .permitAll()
-            .antMatchers("/reviews/haveDrivingRate/{id}")
-            .permitAll()
-                .antMatchers("/messages/**")
-                .permitAll()
-            .antMatchers("/reviews/reviewedDrivings/{id}")
-            .permitAll()
-            .antMatchers("/regular-users/favourite")
-            .permitAll()
-            .antMatchers("/regular-users/removeFavourite")
-            .permitAll()
-            .antMatchers("/regular-users/favouriteRoute/{routeId}/{userId}")
-            .permitAll()
-            .antMatchers("/regular-users/favourite-routes/{id}")
+            .antMatchers("/ws/**")
             .permitAll()
             .anyRequest()
             .authenticated()

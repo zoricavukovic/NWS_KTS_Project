@@ -34,15 +34,15 @@ export class User {
     this.profilePicture = profilePicture;
   }
 
-  isUserAdmin(): boolean {
+  public isUserAdmin(): boolean {
     return this.role.name === ROLE_ADMIN;
   }
 
-  userIsRegular(): boolean {
+  public userIsRegular(): boolean {
     return this.role.name === ROLE_REGULAR_USER;
   }
 
-  userIsDriver(): boolean {
+  public userIsDriver(): boolean {
     return this.role.name === ROLE_DRIVER;
   }
 }

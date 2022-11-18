@@ -20,3 +20,16 @@ export class MessageRequest {
         this.adminResponse = adminResponse;
     }
 }
+
+export class MessageSeenRequest {
+    chatRoomId: number;
+    adminLogged: boolean;
+
+    constructor(
+        chatRoomId: number,
+        adminLogged: boolean
+    ) {
+        this.chatRoomId = chatRoomId;
+        this.adminLogged = adminLogged;
+    }
+}

@@ -57,8 +57,11 @@ import { MapComponent } from './component/map/map.component';
 import { FavouriteRoutesComponent } from './component/favourite-route/favourite-routes/favourite-routes.component';
 import { FavouriteRouteRowComponent } from './component/favourite-route/favourite-route-row/favourite-route-row.component';
 import { UtilMessageComponent } from './component/util-message/util-message.component';
-import { ScrollingModule } from '@angular/cdk/scrolling';
 import { FilterVehicleViewComponent } from './component/home/filter-vehicle-view/filter-vehicle-view.component';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { DriverHomePageContainerComponent } from './component/home/driver-home-page-container/driver-home-page-container.component';
+import { AvatarModule } from 'primeng/avatar';
+import { AvatarGroupModule } from 'primeng/avatargroup';
 
 @NgModule({
   declarations: [
@@ -94,6 +97,7 @@ import { FilterVehicleViewComponent } from './component/home/filter-vehicle-view
     FavouriteRouteRowComponent,
     UtilMessageComponent,
     FilterVehicleViewComponent,
+    DriverHomePageContainerComponent,
   ],
   imports: [
     BrowserModule,
@@ -122,6 +126,8 @@ import { FilterVehicleViewComponent } from './component/home/filter-vehicle-view
       closeButton: true,
     }),
     ScrollingModule,
+    AvatarModule,
+    AvatarGroupModule,
   ],
   entryComponents: [EditProfileComponent],
   providers: [

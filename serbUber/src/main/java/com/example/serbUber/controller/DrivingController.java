@@ -55,23 +55,32 @@ public class DrivingController {
 
     @GetMapping("/{id}/{pageNumber}/{pageSize}/{parameter}/{sortOrder}")
     @ResponseStatus(HttpStatus.OK)
-//    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
     public List<DrivingDTO> getAllDrivingsForUserWithPaginationAndSort(
             @Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable Long id,
             @Valid @NotNull(message = NOT_NULL_MESSAGE) @PositiveOrZero(message = POSITIVE_OR_ZERO_MESSAGE) @PathVariable int pageNumber,
             @Valid @NotNull(message = NOT_NULL_MESSAGE) @Positive(message = POSITIVE_MESSAGE) @PathVariable int pageSize,
             @Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable String parameter,
             @Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable String sortOrder
-        )
-            throws EntityNotFoundException
+        ) throws EntityNotFoundException
     {
 
         return drivingService.getDrivingsForUser(id, pageNumber, pageSize, parameter, sortOrder);
     }
 
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
+    public List<DrivingDTO> getAllNowAndFutureDrivings(
+        @Valid @NotNull(message = NOT_NULL_MESSAGE)@PathVariable Long id
+    ){
+
+        return drivingService.getAllNowAndFutureDrivings(id);
+    }
+
     @GetMapping("/details/{id}")
     @ResponseStatus(HttpStatus.OK)
-//    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
     public DrivingDTO getDriving(@PathVariable Long id) throws EntityNotFoundException {
 
         return drivingService.getDrivingDto(id);
