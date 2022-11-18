@@ -19,11 +19,11 @@ export class ChatService {
     private chatRoomService: ChatRoomService,
     ) {
     if (!this.stompClient){
-      this.connect(localStorage.getItem('email'))
+      this.connect();
     }
   }
 
-  connect(userEmail: string) {
+  connect() {
     if (!this.initialized) {
       this.initialized = true;
       const serverUrl = environment.webSocketUrl;
@@ -33,7 +33,7 @@ export class ChatService {
       const that = this;
 
       this.stompClient.connect({}, function(frame) {
-        that.stompClient.subscribe(environment.publisherUrl + userEmail + "/connect", (message) => {
+        that.stompClient.subscribe(environment.publisherUrl + localStorage.getItem('email') + "/connect", (message) => {
           if (message !== null && message !== undefined) {
             that.chatRoomService.addMessage(JSON.parse(message.body));
           }

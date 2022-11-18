@@ -61,7 +61,12 @@ export class ChatRoomService {
 
   clientMessageNotSeen(message: Message) {
 
-    return !message.seen && !message.adminResponse
+    return !message.seen && !message.adminResponse;
+  }
+
+  adminMessageNotSeen(message: Message) {
+
+    return !message.seen && message.adminResponse;
   }
 
   getCurrentUserEmail(): string {
@@ -74,6 +79,19 @@ export class ChatRoomService {
     return parsedUser ? parsedUser.email : null;
   }
 
+  getNumOfNotSeenMessages(currentChatRoom: ChatRoom, adminLogged: boolean): number {
+    let notificationsNum: number = 0;
+    for (let mes of currentChatRoom.messages) {
+      if (adminLogged && this.clientMessageNotSeen(mes)) {
+        notificationsNum += 1;
+      } else if (!adminLogged && this.adminMessageNotSeen(mes)) {
+        notificationsNum += 1;
+      }
+    }
+
+    return notificationsNum;
+  }
+
   notifyAdmin(chatRoomWithNotify: ChatRoomWithNotify): void {
     if (chatRoomWithNotify.notifyAdmin && chatRoomWithNotify.chatRoom.admin.email === this.getCurrentUserEmail()) {
       this.toast.info("New message received!",
@@ -83,6 +101,10 @@ export class ChatRoomService {
 
   resetDataAdmin(): void {
     this.adminChatRooms$.next([]);
+  }
+
+  resetDataRegularAndDriver(): void {
+    this.chatRoomClient$.next(null);
   }
 
   addMessage(chatRoomWithNotify: ChatRoomWithNotify): void {

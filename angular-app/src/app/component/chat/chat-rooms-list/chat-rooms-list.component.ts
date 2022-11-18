@@ -16,6 +16,8 @@ export class ChatRoomsListComponent implements OnInit, OnDestroy {
 
   @Input() selectedChatRoom: ChatRoom;
 
+  isAdmin: boolean = true;
+  
   constructor(private chatRoomService: ChatRoomService) { }
 
   ngOnInit(): void {}
@@ -34,14 +36,8 @@ export class ChatRoomsListComponent implements OnInit, OnDestroy {
   }
 
   getNumOfNotSeenMessages(currentChatRoom: ChatRoom): number {
-    let notificationsNum: number = 0;
-    for (let mes of currentChatRoom.messages) {
-      if (this.chatRoomService.clientMessageNotSeen(mes)) {
-        notificationsNum += 1;
-      }
-    }
-
-    return notificationsNum;
+  
+    return this.chatRoomService.getNumOfNotSeenMessages(currentChatRoom, this.isAdmin);
   }
 
   ngOnDestroy(): void {

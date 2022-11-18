@@ -6,7 +6,7 @@ import {ToastrService} from "ngx-toastr";
 import { ChatService } from 'src/app/service/chat.service';
 import { ChatRoom } from 'src/app/model/response/messages/chat-room';
 import { ChatRoomService } from 'src/app/service/chat-room.service';
-import { MessageRequest } from 'src/app/model/request/message/message-request';
+import { MessageRequest, MessageSeenRequest } from 'src/app/model/request/message/message-request';
 
 @Component({
   selector: 'app-poupup-live-chat',
@@ -15,6 +15,7 @@ import { MessageRequest } from 'src/app/model/request/message/message-request';
 })
 export class PoupupLiveChatComponent implements OnInit, OnDestroy {
   @Output() onCloseEvent = new EventEmitter();
+  @Output() onMessagesSeenEvent = new EventEmitter();
   @Input() loggedUser: User;
 
   constructor(
@@ -25,6 +26,7 @@ export class PoupupLiveChatComponent implements OnInit, OnDestroy {
   
   chatRoom: ChatRoom;
   chatRoomSubscription: Subscription;
+  chatRoomSeenSubscription: Subscription;
   sendMessageSubscription: Subscription;
   changedRole: boolean = false;
   previousMessage: Message;
@@ -37,6 +39,7 @@ export class PoupupLiveChatComponent implements OnInit, OnDestroy {
         this.chatRoom = res;
         if (this.chatRoom) {
           this.checkIfResolved();
+          this.setMessagesAsSeen();
         }
       }
     );
@@ -53,6 +56,36 @@ export class PoupupLiveChatComponent implements OnInit, OnDestroy {
     );
     }
   }
+
+  setMessagesAsSeen() {
+    let changed: boolean = false;
+    for (let message of this.chatRoom.messages) {
+      if (this.chatRoomService.adminMessageNotSeen(message)) {
+        message.seen = true;
+        changed = true;
+      }
+    }
+
+    if (changed) {
+      this.updateMessagesSeenOnServer();
+    }
+  }
+
+  updateMessagesSeenOnServer() {
+    this.chatRoomSeenSubscription = this.chatRoomService.setMessagesAsSeen(
+      new MessageSeenRequest(
+        this.chatRoom.id,
+        this.isAdmin
+      )
+    ).subscribe(
+      res => {
+        console.log(res);
+        this.onMessagesSeenEvent.emit();
+      },
+      error => console.log(error)
+    )
+  }
+
 
   validateMessage(): boolean {
     if (this.newMessage.length >= 100) {
@@ -136,6 +169,11 @@ export class PoupupLiveChatComponent implements OnInit, OnDestroy {
       this.sendMessageSubscription.unsubscribe();
     }
 
+    if (this.chatRoomSeenSubscription) {
+      this.chatRoomSeenSubscription.unsubscribe();
+    }
+
+    this.chatRoomService.resetDataRegularAndDriver();
   }
 
 }

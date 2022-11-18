@@ -52,7 +52,7 @@ export class AuthService {
   setLocalStorage(loginResponse: LoginResponse): void {
     localStorage.setItem('token', 'Bearer ' + loginResponse.token);
     localStorage.setItem('user', JSON.stringify(loginResponse.userDTO));
-    localStorage.setItem('email', JSON.stringify(loginResponse.userDTO.email));
+    localStorage.setItem('email', loginResponse.userDTO.email);
   }
 
   logOut() {
