@@ -12,7 +12,7 @@ import javax.validation.Valid;
 @Controller
 public class WebSocketController {
 
-    private SimpMessagingTemplate messagingTemplate;
+    private final SimpMessagingTemplate messagingTemplate;
 
     public WebSocketController(final SimpMessagingTemplate messagingTemplate) {
         this.messagingTemplate = messagingTemplate;

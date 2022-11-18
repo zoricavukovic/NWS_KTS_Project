@@ -54,7 +54,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         next(loggedUser: LoginResponse): void {
           authService.setLocalStorage(loggedUser);
           chatService.connect(loggedUser.userDTO.email);
-          authService.currentUser$.next(loggedUser.userDTO);
+          authService.currentUserSubject$.next(loggedUser.userDTO);
           router.navigate(['/home-page']);
         },
         error(): void {
@@ -74,7 +74,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         next(loggedUser: LoginResponse): void {
           authService.setLocalStorage(loggedUser);
           chatService.connect(loggedUser.userDTO.email);
-          authService.currentUser$.next(loggedUser.userDTO);
+          authService.currentUserSubject$.next(loggedUser.userDTO);
           router.navigate(['/home-page']);
         },
         error(): void {
@@ -111,7 +111,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           next(loggedUser: LoginResponse): void {
             authService.setLocalStorage(loggedUser);
             chatService.connect(loggedUser.userDTO.email);
-            authService.currentUser$.next(loggedUser.userDTO);
+            authService.currentUserSubject$.next(loggedUser.userDTO);
             router.navigate(['/home-page']);
           },
           error(): void {

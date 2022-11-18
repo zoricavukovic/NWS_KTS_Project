@@ -27,7 +27,7 @@ export class ChatRoomService {
     ) { }
 
   getUserChatRoom(email: string) : BehaviorSubject<ChatRoom> {
-    this.http.get<ChatRoom>(this.configService.chat_rooms_url + "/" + email, {headers: this.configService.header}).subscribe(
+    this.http.get<ChatRoom>(this.configService.chat_rooms_url + "/" + email, {headers: this.configService.getHeader()}).subscribe(
       res => {
         this.chatRoomClient$.next(res);
       });
@@ -36,7 +36,7 @@ export class ChatRoomService {
   }
 
   getAllChatRooms(email: string): BehaviorSubject<ChatRoom[]> {
-    this.http.get<ChatRoom[]>(this.configService.all_chat_rooms_url + email, {headers: this.configService.header}).subscribe(
+    this.http.get<ChatRoom[]>(this.configService.all_chat_rooms_url + email, {headers: this.configService.getHeader()}).subscribe(
     res => {
       this.adminChatRooms$.next(res);
     });
@@ -46,17 +46,17 @@ export class ChatRoomService {
 
   addMessageToChatRoom(messageReq: MessageRequest): Observable<ChatRoom> {
 
-    return this.http.post<ChatRoom>(this.configService.chat_rooms_url, messageReq);
+    return this.http.post<ChatRoom>(this.configService.chat_rooms_url, messageReq, {headers: this.configService.getHeader()});
   }
 
   resolveChatRoom(id: number): Observable<ChatRoom> {
 
-    return this.http.post<ChatRoom>(this.configService.resolve_chat_room_url, id);
+    return this.http.post<ChatRoom>(this.configService.resolve_chat_room_url, id, {headers: this.configService.getHeader()});
   }
 
   setMessagesAsSeen(messageSeenRequest: MessageSeenRequest): Observable<ChatRoom> {
 
-    return this.http.post<ChatRoom>(this.configService.set_messages_as_seen, messageSeenRequest);
+    return this.http.post<ChatRoom>(this.configService.set_messages_as_seen, messageSeenRequest, {headers: this.configService.getHeader()});
   }
 
   clientMessageNotSeen(message: Message) {
@@ -76,7 +76,7 @@ export class ChatRoomService {
 
   notifyAdmin(chatRoomWithNotify: ChatRoomWithNotify): void {
     if (chatRoomWithNotify.notifyAdmin && chatRoomWithNotify.chatRoom.admin.email === this.getCurrentUserEmail()) {
-      this.toast.info("New message received!", 
+      this.toast.info("New message received!",
       `You have new message from ${chatRoomWithNotify.chatRoom.client.name + '' + chatRoomWithNotify.chatRoom.client.surname}.`);
     }
   }
@@ -84,7 +84,7 @@ export class ChatRoomService {
   resetDataAdmin(): void {
     this.adminChatRooms$.next([]);
   }
- 
+
   addMessage(chatRoomWithNotify: ChatRoomWithNotify): void {
     let chatRoom = chatRoomWithNotify.chatRoom;
     this.chatRoomClient$.next(chatRoom);

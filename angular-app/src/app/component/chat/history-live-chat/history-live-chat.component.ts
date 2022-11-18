@@ -16,7 +16,7 @@ export class HistoryLiveChatComponent implements OnInit, OnDestroy {
   loggedUser: User;
   chatRooms: ChatRoom[];
   selectedChatRoom: ChatRoom;
-  
+
   authSubscription: Subscription;
   chatRoomSubscription: Subscription;
   firstChatRoomIndex: number = 0;
@@ -29,11 +29,7 @@ export class HistoryLiveChatComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.authSubscription = this.authService.getCurrentUser().subscribe(
-      user => {
-        this.loggedUser = user
-      }
-    );
+    this.loggedUser = this.authService.getCurrentUser;
 
     this.chatRoomSubscription = this.chatRoomService.getAllChatRooms(this.loggedUser.email).subscribe(
       res => {

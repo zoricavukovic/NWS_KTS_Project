@@ -4,7 +4,9 @@ import com.example.serbUber.config.jwt.JwtAuthorizationFilter;
 import com.example.serbUber.service.user.CustomUserDetailsService;
 import com.example.serbUber.service.user.UserService;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -16,10 +18,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled=true)
 public class SpringConfig extends WebSecurityConfigurerAdapter {
 
     private final UserService userService;
@@ -48,9 +51,11 @@ public class SpringConfig extends WebSecurityConfigurerAdapter {
             .permitAll()
             .antMatchers("/auth/**")
             .permitAll()
-                .antMatchers("/ws/**")
-                .permitAll()
+            .antMatchers("/routes/possible")
+            .permitAll()
             .antMatchers("/verify/**")
+            .permitAll()
+            .antMatchers("/ws/**")
             .permitAll()
             .anyRequest()
             .authenticated()

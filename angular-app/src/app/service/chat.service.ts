@@ -5,7 +5,7 @@ import { environment } from 'src/environments/environment';
 import { ChatRoomService } from './chat-room.service';
 import { ChatRoom } from '../model/response/messages/chat-room';
 import { ChatRoomWithNotify } from '../model/request/message/chat-room-with-notify';
-
+import {connect} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +17,11 @@ export class ChatService {
 
   constructor(
     private chatRoomService: ChatRoomService,
-    ) {}
+    ) {
+    if (!this.stompClient){
+      this.connect(localStorage.getItem('email'))
+    }
+  }
 
   connect(userEmail: string) {
     if (!this.initialized) {
@@ -25,7 +29,9 @@ export class ChatService {
       const serverUrl = environment.webSocketUrl;
       const ws = new SockJS(serverUrl);
       this.stompClient = Stomp.over(ws);
+
       const that = this;
+
       this.stompClient.connect({}, function(frame) {
         that.stompClient.subscribe(environment.publisherUrl + userEmail + "/connect", (message) => {
           if (message !== null && message !== undefined) {

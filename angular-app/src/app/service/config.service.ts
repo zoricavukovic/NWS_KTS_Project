@@ -6,10 +6,12 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class ConfigService {
-  header = new HttpHeaders().set(
-    'Authorization',
-    localStorage.getItem('token')
-  );
+
+  getHeader(): HttpHeaders {
+    return new HttpHeaders().set(
+      'Authorization', localStorage.getItem('token')
+    );
+  }
 
   public role_driver = 'ROLE_DRIVER';
   public role_regular_user = 'ROLE_REGULAR_USER';

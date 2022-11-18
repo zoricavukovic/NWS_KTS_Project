@@ -2,7 +2,7 @@ import {Route} from "../model/response/route";
 declare let L;
 
 export function drawPolyline(map, route: Route) {
-
+  console.log(route);
   let latLongs = [];
   route.locations.forEach(
     location => latLongs.push([location.lat, location.lon])

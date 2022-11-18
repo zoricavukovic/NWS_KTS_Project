@@ -48,11 +48,7 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.userId = +this.route.snapshot.paramMap.get('id');
-    this.currentUserSubscription = this.authService
-      .getCurrentUser()
-      .subscribe(data => {
-        this.currentUser = data;
-      });
+    this.currentUser = this.authService.getCurrentUser
 
     this.drivingsSubscription = this.drivingService
       .getDrivingsForUser(

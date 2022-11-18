@@ -6,10 +6,9 @@ import com.example.serbUber.exception.EntityUpdateException;
 import com.example.serbUber.exception.PasswordsDoNotMatchException;
 import com.example.serbUber.request.user.*;
 import com.example.serbUber.service.user.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
@@ -17,7 +16,6 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 import static com.example.serbUber.exception.ErrorMessagesConstants.NOT_NULL_MESSAGE;
-import static com.example.serbUber.exception.ErrorMessagesConstants.WRONG_EMAIL;
 
 @RestController
 @RequestMapping("/users")
@@ -29,10 +27,10 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping(path="/logout")
+    @PostMapping("/logout")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_DRIVER', 'ROLE_REGULAR_USER')")
-    private UserDTO logout(@RequestBody final String email)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
+    public UserDTO logout(@RequestBody final String email)
             throws EntityNotFoundException
     {
 

@@ -13,14 +13,20 @@ import { ChatService } from './chat.service';
   providedIn: 'root',
 })
 export class AuthService {
-  currentUser$ = new BehaviorSubject<User>(null);
+  public currentUserSubject$: BehaviorSubject<User>;
+  public currentUser: Observable<User>;
 
   constructor(
     private http: HttpClient,
     private configService: ConfigService,
     private router: Router,
     private chatService: ChatService
-  ) {}
+  ) {
+    this.currentUserSubject$ = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('user')));
+    this.currentUser = this.currentUserSubject$.asObservable();
+  }
+
+
 
   login(loginRequest: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(
@@ -46,34 +52,33 @@ export class AuthService {
   setLocalStorage(loginResponse: LoginResponse): void {
     localStorage.setItem('token', 'Bearer ' + loginResponse.token);
     localStorage.setItem('user', JSON.stringify(loginResponse.userDTO));
+    localStorage.setItem('email', JSON.stringify(loginResponse.userDTO.email));
   }
 
   logOut() {
     this.chatService.disconnect();
-    this.currentUser$.next(null);
+    this.currentUserSubject$.next(null);
     localStorage.clear();
-    this.router.navigate(['/login']);
   }
 
-  setOfflineStatus(loggedUser: User): Observable<User> {
-    console.log(this.configService.header)
+  setOfflineStatus(): Observable<User> {
     return this.http.post<User>(
       this.configService.logout_url,
-      loggedUser.email,
-      {headers: this.configService.header}
+      this.getCurrentUser?.email,
+      {headers: this.configService.getHeader()}
     );
   }
 
   setUserInLocalStorage(user: User): void {
     localStorage.setItem('user', JSON.stringify(user));
-    this.currentUser$.next(user);
+    this.currentUserSubject$.next(user);
   }
 
-  getCurrentUser(): BehaviorSubject<User> {
+  public get getCurrentUser(): User {
     const user = localStorage.getItem('user');
     if (user !== null && user !== undefined) {
       const parsedUser: User = JSON.parse(user);
-      this.currentUser$.next(
+      this.currentUserSubject$.next(
         new User(
           parsedUser.id,
           parsedUser.email,
@@ -86,9 +91,18 @@ export class AuthService {
         )
       );
     } else {
-      this.currentUser$.next(null);
+      this.currentUserSubject$.next(null);
     }
-    return this.currentUser$;
+    return this.currentUserSubject$.value;
+  }
+
+  public get getCurrentUserId(): number{
+    const user = localStorage.getItem('user');
+    if (user !== null && user !== undefined) {
+      const parsedUser: User = JSON.parse(user);
+      return parsedUser.id;
+    }
+    return -1;
   }
 
   tokenIsPresent() {
@@ -102,7 +116,7 @@ export class AuthService {
 
   getFavouriteRoutesForUser(userId: number) {
     return this.http.get<Route[]>(
-      this.configService.get_favourite_routes(userId)
+      this.configService.get_favourite_routes(userId), {headers: this.configService.getHeader()}
     );
   }
 }

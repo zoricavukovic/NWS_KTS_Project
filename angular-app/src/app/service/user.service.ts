@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { RegistrationRequest } from '../model/request/user/registration-request';
 import { ConfigService } from './config.service';
@@ -32,24 +32,25 @@ export class UserService {
     return this.http.put<User>(
       this.configService.reset_password,
       passwordUpdateRequest,
-      {headers: this.configService.header}
+      {headers: this.configService.getHeader()}
     );
   }
 
   updateProfileData(data: UsersProfileUpdateRequest): Observable<User> {
-    return this.http.put<User>(this.configService.users_url, data, {headers: this.configService.header});
+
+    return this.http.put<User>(this.configService.users_url, data, {headers: this.configService.getHeader()});
   }
 
   updateProfilePicture(data: UserProfilePictureRequest): Observable<User> {
     return this.http.put<User>(
       this.configService.users_update_profile_pic,
       data,
-      {headers: this.configService.header}
+      {headers: this.configService.getHeader()}
     );
   }
 
   updatePassword(data: UserPasswordUpdateRequest): Observable<User> {
-    return this.http.put<User>(this.configService.users_update_password, data, {headers: this.configService.header});
+    return this.http.put<User>(this.configService.users_update_password, data, {headers: this.configService.getHeader()});
   }
 
   registerRegularUser(
@@ -57,7 +58,7 @@ export class UserService {
   ): Observable<User> {
     return this.http.post<User>(
       this.configService.registration_url,
-      registrationRequest, {headers: this.configService.header}
+      registrationRequest, {headers: this.configService.getHeader()}
     );
   }
 
@@ -65,7 +66,7 @@ export class UserService {
     return this.http.post<User>(
       this.configService.register_driver,
       driverRequest,
-      {headers: this.configService.header}
+      {headers: this.configService.getHeader()}
     );
   }
 
@@ -73,7 +74,7 @@ export class UserService {
     return this.http.post<any>(
       this.configService.add_favourite_route_url,
       favouriteRouteRequest,
-      {headers: this.configService.header}
+      {headers: this.configService.getHeader()}
     );
   }
 
@@ -81,17 +82,17 @@ export class UserService {
     return this.http.post<any>(
       this.configService.remove_favourite_route_url,
       favouriteRouteRequest,
-      {headers: this.configService.header}
+      {headers: this.configService.getHeader()}
     );
   }
 
   isFavouriteRouteForUser(routeId: number, userId: number) {
     return this.http.get(
-      this.configService.is_favourite_route(routeId, userId), {headers: this.configService.header}
+      this.configService.is_favourite_route(routeId, userId), {headers: this.configService.getHeader()}
     );
   }
 
   getAllRegularUsers() {
-    return this.http.get<User[]>(this.configService.all_users_url, {headers: this.configService.header});
+    return this.http.get<User[]>(this.configService.all_users_url, {headers: this.configService.getHeader()});
   }
 }
