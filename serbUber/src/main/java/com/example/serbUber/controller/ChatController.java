@@ -21,8 +21,8 @@ public class ChatController {
 //    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
     public void send(@Payload ChatRoomRequest chatRoomRequest) {
 
-        this.messagingTemplate.convertAndSendToUser(chatRoomRequest.getClient().getEmail(),"/connect", chatRoomRequest);
-        this.messagingTemplate.convertAndSendToUser(chatRoomRequest.getAdmin().getEmail(),"/connect", chatRoomRequest);
+        this.messagingTemplate.convertAndSendToUser(chatRoomRequest.getClient().getEmail(),"/connect", "imas poruku");
+        this.messagingTemplate.convertAndSendToUser(chatRoomRequest.getAdmin().getEmail(),"/connect", "imas poruku");
     }
 
 }

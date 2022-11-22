@@ -54,6 +54,8 @@ export class ConfigService {
 
   private _price_for_driving_url = this._api_url + '/vehicle-type-infos/price';
 
+  private _driving_notifications_url = this._api_url + '/driving-notifications';
+
   get login_url(): string {
     return this._login_user;
   }
@@ -206,5 +208,9 @@ export class ConfigService {
 
   get_price_for_driving(type: string, kilometers: number) {
     return this._price_for_driving_url + '/' + type + '/' + kilometers;
+  }
+
+  get driving_notifications_url(): string {
+    return this._driving_notifications_url;
   }
 }

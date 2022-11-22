@@ -61,6 +61,11 @@ public class RegularUserService {
             .orElseThrow(() -> new EntityNotFoundException(id, EntityType.USER));
     }
 
+    public RegularUser getRegularByEmail(String email) throws EntityNotFoundException {
+        return regularUserRepository.getRegularUserByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException(email, EntityType.USER));
+    }
+
     public RegularUserDTO create(
         final String email,
         final String password,

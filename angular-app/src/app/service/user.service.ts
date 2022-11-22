@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { RegistrationRequest } from '../model/request/user/registration-request';
 import { ConfigService } from './config.service';
-import { DriverRegistrationRequest } from '../model/request/user/driver-registration-request';
+import { Driver } from '../model/request/user/driver-registration-request';
 import { PasswordUpdateRequest } from 'src/app/model/request/user/user-profile-update';
 import { UserProfilePictureRequest } from '../model/request/user/user-profile-update';
 import { UsersProfileUpdateRequest } from '../model/request/user/user-profile-update';
@@ -63,7 +63,7 @@ export class UserService {
     );
   }
 
-  registerDriver(driverRequest: DriverRegistrationRequest): Observable<User> {
+  registerDriver(driverRequest: Driver): Observable<User> {
     return this.http.post<User>(
       this.configService.register_driver,
       driverRequest

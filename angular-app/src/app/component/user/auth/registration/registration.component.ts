@@ -13,7 +13,7 @@ import { UserService } from 'src/app/service/user.service';
 import { RegistrationRequest } from 'src/app/model/request/user/registration-request';
 import { matchPasswordsValidator } from './confirm-password.validator';
 import { AuthService } from 'src/app/service/auth.service';
-import { DriverRegistrationRequest } from 'src/app/model/request/user/driver-registration-request';
+import { Driver } from 'src/app/model/request/user/driver-registration-request';
 import { VehicleRequest } from 'src/app/model/request/vehicle-request';
 import { isFormValid } from 'src/app/util/validation-function';
 import { ToastrService } from 'ngx-toastr';
