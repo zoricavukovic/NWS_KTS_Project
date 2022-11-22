@@ -9,7 +9,10 @@ import com.example.serbUber.model.ChatRoom;
 import com.example.serbUber.model.Message;
 import com.example.serbUber.model.user.User;
 import com.example.serbUber.repository.message.ChatRoomRepository;
+import com.example.serbUber.service.interfaces.IChatRoomService;
 import com.example.serbUber.service.user.UserService;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,8 +20,9 @@ import java.util.Optional;
 
 import static com.example.serbUber.dto.message.ChatRoomDTO.fromChatRooms;
 
-@Service
-public class ChatRoomService {
+@Component
+@Qualifier("chatRoomServiceConfiguration")
+public class ChatRoomService implements IChatRoomService {
 
     private ChatRoomRepository chatRoomRepository;
 

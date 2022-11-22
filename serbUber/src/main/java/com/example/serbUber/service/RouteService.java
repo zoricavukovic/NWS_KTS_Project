@@ -10,7 +10,10 @@ import com.example.serbUber.model.Route;
 import com.example.serbUber.repository.RouteRepository;
 import com.example.serbUber.request.LocationsForRoutesRequest;
 import com.example.serbUber.request.LongLatRequest;
+import com.example.serbUber.service.interfaces.IRouteService;
 import com.graphhopper.ResponsePath;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -23,8 +26,9 @@ import static com.example.serbUber.util.Constants.getBeforeLastIndexOfList;
 import static com.example.serbUber.util.GraphHopperUtil.routing;
 import static com.example.serbUber.exception.EntityType.ROUTE;
 
-@Service
-public class RouteService {
+@Component
+@Qualifier("routeServiceConfiguration")
+public class RouteService implements IRouteService {
 
     private final RouteRepository routeRepository;
 

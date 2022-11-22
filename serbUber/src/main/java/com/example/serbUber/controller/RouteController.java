@@ -8,6 +8,7 @@ import com.example.serbUber.request.LongLatRequest;
 import com.example.serbUber.request.RouteRequest;
 import com.example.serbUber.service.RouteService;
 import com.example.serbUber.util.MaxSizeConstraint;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ import java.util.List;
 public class RouteController {
     private final RouteService routeService;
 
-    public RouteController(final RouteService routeService) {
+    public RouteController(@Qualifier("routeServiceConfiguration") final RouteService routeService) {
         this.routeService = routeService;
     }
 

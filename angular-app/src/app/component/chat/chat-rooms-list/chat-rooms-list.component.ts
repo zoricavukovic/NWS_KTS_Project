@@ -1,15 +1,21 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { ChatRoom } from 'src/app/model/response/messages/chat-room';
-import { Message } from 'src/app/model/response/messages/message';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
+import { ChatRoom } from 'src/app/model/message/chat-room';
+import { MessageResponse } from 'src/app/model/message/message-response';
 import { ChatRoomService } from 'src/app/service/chat-room.service';
 
 @Component({
   selector: 'app-chat-rooms-list',
   templateUrl: './chat-rooms-list.component.html',
-  styleUrls: ['./chat-rooms-list.component.scss']
+  styleUrls: ['./chat-rooms-list.component.scss'],
 })
 export class ChatRoomsListComponent implements OnInit, OnDestroy {
-
   @Output() seenMessagesEvent = new EventEmitter();
 
   @Input() chatRooms: ChatRoom[];
@@ -17,8 +23,8 @@ export class ChatRoomsListComponent implements OnInit, OnDestroy {
   @Input() selectedChatRoom: ChatRoom;
 
   isAdmin: boolean = true;
-  
-  constructor(private chatRoomService: ChatRoomService) { }
+
+  constructor(private chatRoomService: ChatRoomService) {}
 
   ngOnInit(): void {}
 
@@ -31,17 +37,19 @@ export class ChatRoomsListComponent implements OnInit, OnDestroy {
   }
 
   showNotificationBadge(currentChatRoom: ChatRoom) {
-
-    return this.getNumOfNotSeenMessages(currentChatRoom) > 0 && !currentChatRoom.resolved && currentChatRoom.id !== this.selectedChatRoom.id;
+    return (
+      this.getNumOfNotSeenMessages(currentChatRoom) > 0 &&
+      !currentChatRoom.resolved &&
+      currentChatRoom.id !== this.selectedChatRoom.id
+    );
   }
 
   getNumOfNotSeenMessages(currentChatRoom: ChatRoom): number {
-  
-    return this.chatRoomService.getNumOfNotSeenMessages(currentChatRoom, this.isAdmin);
+    return this.chatRoomService.getNumOfNotSeenMessages(
+      currentChatRoom,
+      this.isAdmin
+    );
   }
 
-  ngOnDestroy(): void {
-  }
-
-
+  ngOnDestroy(): void {}
 }

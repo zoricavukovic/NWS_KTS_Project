@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { User } from 'src/app/model/response/user/user';
+import { User } from 'src/app/model/user/user';
 import { ConfigService } from 'src/app/service/config.service';
 import { Router } from '@angular/router';
 

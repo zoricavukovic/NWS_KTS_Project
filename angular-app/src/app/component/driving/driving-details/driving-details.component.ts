@@ -1,4 +1,4 @@
-import { Driving } from 'src/app/model/response/driving';
+import { Driving } from 'src/app/model/driving/driving';
 import {
   AfterViewInit,
   Component,
@@ -10,15 +10,13 @@ import { ActivatedRoute } from '@angular/router';
 import { ConfigService } from 'src/app/service/config.service';
 import { AuthService } from 'src/app/service/auth.service';
 import { Subscription } from 'rxjs';
-import { User } from 'src/app/model/response/user/user';
-import { Driver } from 'src/app/model/response/user/driver';
-import { TooltipPosition } from '@angular/material/tooltip';
-import { FavouriteRouteRequest } from 'src/app/model/request/favourite-route-request';
+import { Driver } from 'src/app/model/user/driver';
+import { FavouriteRouteRequest } from 'src/app/model/route/favourite-route-request';
 import { UserService } from 'src/app/service/user.service';
 import { DrivingService } from 'src/app/service/driving.service';
 import { DriverService } from 'src/app/service/driver.service';
 import { drawPolyline } from '../../../util/map-functions';
-import { Vehicle } from 'src/app/model/response/vehicle';
+import { Vehicle } from 'src/app/model/vehicle/vehicle';
 
 @Component({
   selector: 'app-driving-details',
@@ -68,7 +66,7 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
       .getDrivingDetails(this.id)
       .subscribe((driving: Driving) => {
         this.driving = driving;
-        console.log(this.driving.route.locations);
+        console.log(this.driving);
         if (this.map) {
           drawPolyline(this.map, this.driving.route);
         }
@@ -99,7 +97,7 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
     if (this.favouriteRoute) {
       this.userService
         .removeFromFavouriteRoutes(
-          new FavouriteRouteRequest(
+          this.userService.createFavouriteRequest(
             this.authService.getCurrentUserId,
             this.driving.route.id
           )
@@ -110,7 +108,7 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
     } else {
       this.userService
         .addToFavouriteRoutes(
-          new FavouriteRouteRequest(
+          this.userService.createFavouriteRequest(
             this.authService.getCurrentUserId,
             this.driving.route.id
           )

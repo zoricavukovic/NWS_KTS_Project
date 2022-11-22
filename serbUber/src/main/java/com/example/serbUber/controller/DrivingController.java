@@ -5,6 +5,7 @@ import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.model.Driving;
 import com.example.serbUber.request.DrivingRequest;
 import com.example.serbUber.service.DrivingService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,7 @@ public class DrivingController {
 
     private final DrivingService drivingService;
 
-    public DrivingController(final DrivingService drivingService) {
+    public DrivingController(@Qualifier("drivingServiceConfiguration") final DrivingService drivingService) {
         this.drivingService = drivingService;
     }
 

@@ -1,78 +1,78 @@
-
-.btn{
-    float: right;
+.btn {
+  float: right;
 }
 
-.price{
-    float: right;
+.price {
+  float: right;
 }
 
-.date{
-    float: right;
-    margin-right:12%;
+.date {
+  float: right;
+  margin-right: 12%;
 }
 
-
-p{
-    display: inline;
+p {
+  display: inline;
 }
 
-.line{
-    flex:1;
+.line {
+  flex: 1;
 }
 
-.divider{
-
-    display: inline-block;
-    border-top-width: 2px;
-    margin-left: 20%;
+.divider {
+  display: inline-block;
+  border-top-width: 2px;
+  margin-left: 20%;
 }
-
 
 .example-radio-group {
-    display: flex;
-    flex-direction: column;
-    margin: 15px 0;
-    align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  margin: 15px 0;
+  align-items: flex-start;
 }
 
-.sortDiv{
-    float:left;
-    color: #f5e9de;
-    margin-left:30px;
+.sortDiv {
+  float: left;
+  color: #f5e9de;
+  margin-left: 30px;
 }
 
-.sortByDiv{
-    margin-top:20px;
+.sortByDiv {
+  margin-top: 20px;
 }
 
-.mat-divider{
-   border-top-color: white;
-   border-top-width: 2px;
+.mat-divider {
+  border-top-color: white;
+  border-top-width: 2px;
 }
 
-.mat-radio-button{
-    margin-bottom:5px;
+.mat-radio-button {
+  margin-bottom: 5px;
 }
 
 ::ng-deep .mat-radio-button.mat-accent .mat-radio-inner-circle {
-	background-color:#f5e9de; 
+  background-color: #f5e9de;
 }
 
 ::ng-deep.mat-radio-button.mat-accent .mat-radio-outer-circle {
-	border-color:#f5e9de; 
+  border-color: #f5e9de;
 }
 
-mat-paginator{
-    
-    display: flex;
-    justify-content: center;
-    background-color: #2c4b61;
-    color: #f5e9de;
+mat-paginator {
+  display: flex;
+  justify-content: center;
+  color: var(--white);
 }
-  
-.paginator{
-    bottom: 0px;
-    position: absolute;
-    width: 100%;
+
+.paginator {
+  bottom: 0px;
+  position: absolute;
+  width: 100%;
+}
+
+.mat-button,
+.mat-icon-button,
+.mat-stroked-button {
+  color: white;
 }

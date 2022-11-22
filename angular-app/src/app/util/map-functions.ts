@@ -1,4 +1,4 @@
-import { Route } from '../model/response/route';
+import { Route } from '../model/route/route';
 declare let L;
 
 export function drawPolyline(map, route: Route) {

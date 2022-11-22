@@ -2,21 +2,21 @@ import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import * as L from 'leaflet';
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
-import { SearchingRoutesForm } from '../../../model/searching-routes-form';
-import { Location } from '../../../model/response/location';
+import { SearchingRoutesForm } from '../../../model/route/searching-routes-form';
 import { RouteService } from '../../../service/route.service';
-import { LocationsForRoutesRequest } from '../../../model/request/locations-for-routes-request';
-import { PossibleRoute } from '../../../model/response/possible-routes';
-import { User } from '../../../model/response/user/user';
+import { LocationsForRoutesRequest } from '../../../model/route/locations-for-routes-request';
+import { PossibleRoute } from '../../../model/route/possible-routes';
+import { User } from '../../../model/user/user';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../../service/auth.service';
-import { PossibleRoutesViaPoints } from '../../../model/response/possible-routes-via-points';
+import { PossibleRoutesViaPoints } from '../../../model/route/possible-routes-via-points';
 import {
   drawPolylineOnMap,
   removeLayer,
   removeMarker,
   removeOneLayer,
 } from '../../../util/map-functions';
+import { Location } from '../../../model/route/location';
 import { UserService } from 'src/app/service/user.service';
 
 @Component({
@@ -140,7 +140,9 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.routeSubscription = this.routeService
       .getPossibleRoutes(
-        new LocationsForRoutesRequest(locationsForCreateRoutes)
+        this.routeService.createLocationForRoutesRequest(
+          locationsForCreateRoutes
+        )
       )
       .subscribe(res => {
         console.log(res);
@@ -207,11 +209,12 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private createLocation(place, index: number) {
-    let loc = new Location();
-    loc.city = place.value;
-    loc.lat = place.y;
-    loc.lon = place.x;
-    this.searchingRoutesForm.at(index).location = loc;
+    const location: Location = {
+      city: place.value,
+      lat: place.y,
+      lon: place.x,
+    };
+    this.searchingRoutesForm.at(index).location = location;
   }
 
   private getIconUrl(index: number): string {

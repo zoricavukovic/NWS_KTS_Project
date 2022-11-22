@@ -6,6 +6,8 @@ import com.example.serbUber.exception.EntityType;
 import com.example.serbUber.model.user.Admin;
 import com.example.serbUber.model.user.Role;
 import com.example.serbUber.repository.user.AdminRepository;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +18,8 @@ import static com.example.serbUber.util.Constants.ROLE_ADMIN;
 import static com.example.serbUber.util.Constants.getProfilePicture;
 import static com.example.serbUber.util.JwtProperties.getHashedNewUserPassword;
 
-@Service
+@Component
+@Qualifier("adminServiceConfiguration")
 public class AdminService {
 
     private final AdminRepository adminRepository;

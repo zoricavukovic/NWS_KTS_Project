@@ -32,7 +32,7 @@
             style="font-size: 1.2rem" />
           <mat-icon
             *ngIf="i === 0 || i === searchingRoutesForm.length - 1"
-            [style.color]="i === 0 ? '#abbbae' : '#b73e3e'"
+            [style.color]="'#283b50'"
             matSuffix
             >location_on</mat-icon
           >
@@ -76,8 +76,7 @@
       <button
         *ngIf="canAddMoreLocation()"
         mat-button
-        (click)="addOneMoreLocation()"
-        style="font-size: 1rem; color: #2c4b61; border-color: #2c4b61">
+        (click)="addOneMoreLocation()">
         <mat-icon>add_circle</mat-icon>
         Add location
       </button>
@@ -86,7 +85,7 @@
         <button
           mat-raised-button
           (click)="getPossibleRoutes()"
-          style="background-color: #abbbae; font-size: 1.4rem; color: #2c4b61">
+          style="background-color: var(--deep-blue); color: var(--white)">
           Request now
         </button>
       </div>
@@ -228,8 +227,7 @@
       <button
         *ngIf="canAddMoreLocation()"
         mat-button
-        (click)="addOneMoreLocation()"
-        style="font-size: 1rem; color: #2c4b61; border-color: #2c4b61">
+        (click)="addOneMoreLocation()">
         <mat-icon>add_circle</mat-icon>
         Add location
       </button>
@@ -238,7 +236,7 @@
         <button
           mat-raised-button
           (click)="getPossibleRoutes()"
-          style="background-color: #abbbae; font-size: 1.4rem; color: #2c4b61">
+          style="background-color: var(--deep-blue); color: var(--white)">
           Request now
         </button>
       </div>

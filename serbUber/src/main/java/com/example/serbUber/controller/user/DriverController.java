@@ -8,6 +8,7 @@ import com.example.serbUber.exception.MailCannotBeSentException;
 import com.example.serbUber.exception.PasswordsDoNotMatchException;
 import com.example.serbUber.request.user.DriverRegistrationRequest;
 import com.example.serbUber.service.user.DriverService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,7 @@ public class DriverController {
 
     private final DriverService driverService;
 
-    public DriverController(DriverService driverService) {
+    public DriverController(@Qualifier("driverServiceConfiguration") final DriverService driverService) {
         this.driverService = driverService;
     }
 
@@ -60,9 +61,9 @@ public class DriverController {
             driverRegistrationRequest.getPhoneNumber(),
             driverRegistrationRequest.getCity(),
             driverRegistrationRequest.getProfilePicture(),
-            driverRegistrationRequest.getVehicleRequest().isPetFriendly(),
-            driverRegistrationRequest.getVehicleRequest().isBabySeat(),
-            driverRegistrationRequest.getVehicleRequest().getVehicleType()
+            driverRegistrationRequest.getVehicle().isPetFriendly(),
+            driverRegistrationRequest.getVehicle().isBabySeat(),
+            driverRegistrationRequest.getVehicle().getVehicleType()
         );
     }
 

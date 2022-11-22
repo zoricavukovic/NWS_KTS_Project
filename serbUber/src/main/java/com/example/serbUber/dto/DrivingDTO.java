@@ -8,6 +8,8 @@ import com.example.serbUber.model.user.RegularUser;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static com.example.serbUber.util.PictureHandler.convertPictureToBase64ByName;
+
 public class DrivingDTO {
 
     private Long id;
@@ -34,9 +36,15 @@ public class DrivingDTO {
         this.drivingStatus = driving.getDrivingStatus();
         this.driverId = driving.getDriverId();
         this.usersPaid = driving.getUsersPaid();
-        this.users = driving.getUsers();
+        this.users = setPictureForUsers(driving.getUsers());
         this.price = driving.getPrice();
         this.hasReviewForUser = false;
+    }
+
+    private Set<RegularUser> setPictureForUsers(Set<RegularUser> users){
+        users.forEach(user -> user.setProfilePicture(convertPictureToBase64ByName(user.getProfilePicture())));
+
+        return users;
     }
 
 

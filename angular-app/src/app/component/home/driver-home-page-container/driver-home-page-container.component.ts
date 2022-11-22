@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Driving } from '../../../model/response/driving';
+import { Driving } from '../../../model/driving/driving';
 import { Subscription } from 'rxjs';
 import { DrivingService } from '../../../service/driving.service';
 

@@ -1,13 +1,20 @@
 <mat-card class="card">
-    <mat-card-header>
-      <mat-card-title>{{startPoint}} <mat-icon>arrow_forward</mat-icon> {{endPoint}}</mat-card-title>
-    </mat-card-header>
-    <mat-card-actions>
-        <button mat-raised-button class="btn">Request now</button>
-        <button mat-raised-button class="btn">Request later</button>
-        <button mat-icon-button color="warn" (click)="removeFromFavouriteRoutes()">
-            <mat-icon matTooltip="Remove from favourite routes" matTooltipClass="tooltip"
-            matTooltipHideDelay="1000">favorite</mat-icon>
-        </button>
-    </mat-card-actions>
-  </mat-card>
+  <mat-card-header>
+    <mat-card-title
+      >{{ startPoint }} &nbsp;<mat-icon>arrow_forward</mat-icon>&nbsp;
+      {{ endPoint }}</mat-card-title
+    >
+  </mat-card-header>
+  <mat-card-actions>
+    <button mat-raised-button class="btn">Request now</button>
+    <button mat-raised-button class="btn">Request later</button>
+    <button mat-icon-button color="warn" (click)="removeFromFavouriteRoutes()">
+      <mat-icon
+        matTooltip="Remove from favourite routes"
+        matTooltipClass="tooltip"
+        matTooltipHideDelay="1000"
+        >favorite</mat-icon
+      >
+    </button>
+  </mat-card-actions>
+</mat-card>

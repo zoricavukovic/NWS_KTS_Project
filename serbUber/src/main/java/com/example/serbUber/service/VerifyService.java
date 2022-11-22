@@ -7,14 +7,18 @@ import com.example.serbUber.exception.MailCannotBeSentException;
 import com.example.serbUber.exception.WrongVerifyTryException;
 import com.example.serbUber.model.Verify;
 import com.example.serbUber.repository.VerifyRepository;
+import com.example.serbUber.service.interfaces.IVerifyService;
 import com.example.serbUber.util.Constants;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import static com.example.serbUber.util.Constants.MAX_NUM_VERIFY_TRIES;
 import static com.example.serbUber.util.EmailConstants.FRONT_VERIFY_URL;
 
-@Service
-public class VerifyService {
+@Component
+@Qualifier("verifyServiceConfiguration")
+public class VerifyService implements IVerifyService {
 
     private final VerifyRepository verifyRepository;
 
@@ -34,7 +38,7 @@ public class VerifyService {
             .orElseThrow(() -> new EntityNotFoundException(id, EntityType.VERIFY));
     }
 
-    public void sendEmail(
+    public boolean sendEmail(
             final Long userId,
             final String email
     ) throws MailCannotBeSentException {
@@ -44,6 +48,7 @@ public class VerifyService {
                     String.format("Your code is: %d \nClick here to activate your account: %s%s",
                             verify.getSecurityCode(), FRONT_VERIFY_URL, verify.getId())
             );
+            return true;
 
         } catch (Exception e) {
             throw new MailCannotBeSentException(email);
@@ -86,15 +91,15 @@ public class VerifyService {
         }
     }
 
-    private void saveChanges(final Verify verify, final boolean used) {
-        verify.setUsed(used);
-        verifyRepository.save(verify);
-    }
-
     public void generateNewSecurityCode(final Long verifyId)
             throws EntityNotFoundException, MailCannotBeSentException {
         Verify verify = get(verifyId);
         this.sendEmail(verify.getUserId(), verify.getEmail());
         verifyRepository.delete(verify);
+    }
+
+    private void saveChanges(final Verify verify, final boolean used) {
+        verify.setUsed(used);
+        verifyRepository.save(verify);
     }
 }
