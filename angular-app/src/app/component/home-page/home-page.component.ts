@@ -11,7 +11,7 @@ import {User} from "../../model/response/user/user";
 import {Subscription} from "rxjs";
 import {AuthService} from "../../service/auth.service";
 import {PossibleRoutesViaPoints} from "../../model/response/possible-routes-via-points";
-import {drawPolylineOnMap, removeLayer, removeMarker, removeOneLayer} from "../../util/map-functions";
+import {drawPolylineOnMap, refreshMap, removeLayer, removeMarker, removeOneLayer} from "../../util/map-functions";
 
 @Component({
   selector: 'home-page',
@@ -53,6 +53,7 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnDestroy(): void {
+    refreshMap(this.map);
     if (this.authSubscription) {
       this.authSubscription.unsubscribe();
     }
@@ -62,6 +63,7 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    if (this.map != undefined) { this.map = this.map.remove(); }
     this.initMap();
   }
 

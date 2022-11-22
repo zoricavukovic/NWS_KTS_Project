@@ -17,6 +17,10 @@ export class ConfigService {
   public role_regular_user = 'ROLE_REGULAR_USER';
 
   private _api_url = environment.apiUrl;
+  private _drivings_url = `${this._api_url}/drivings`;
+
+  private _drivings_finish_driving_url = `${this._drivings_url}/finish-driving`;
+
   private _login_user = this._api_url + '/auth/login';
   private _logout_user = this._api_url + '/users/logout';
   private _login_with_gmail_user = this._api_url + '/auth/login/google';
@@ -26,8 +30,10 @@ export class ConfigService {
   private _verify_url = this._api_url + '/verify';
   private _send_verify_code_again = this._api_url + '/verify/send-code-again';
   private _vehicle_type_infos = this._api_url + '/vehicle-type-infos';
+
   private _drivings_pagination_url = this._api_url + '/drivings';
   private _drivings_details_url = this._api_url + '/drivings/details/';
+
   private _driver_info_url = this._api_url + '/drivers/';
   private _vehicle_rate_url = this._api_url + '/vehicles/rating/';
   private _rate_vehicle_driver_url = this._api_url + '/reviews';
@@ -208,7 +214,12 @@ export class ConfigService {
     return this._all_users_url;
   }
 
-  get_favourite_routes(user_id: number): string {
-    return this._get_favourite_routes + user_id;
+  get_favourite_routes(userId: number): string {
+    return this._get_favourite_routes + userId;
+  }
+
+
+  get_finish_driving_url(drivingId: number): string {
+    return `${this._drivings_finish_driving_url}/${drivingId}`;
   }
 }

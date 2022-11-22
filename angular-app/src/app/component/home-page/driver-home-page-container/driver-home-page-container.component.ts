@@ -2,6 +2,8 @@ import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Driving} from "../../../model/response/driving";
 import {Subscription} from "rxjs";
 import {DrivingService} from "../../../service/driving.service";
+import {Router} from "@angular/router";
+import {error} from "@angular/compiler-cli/src/transformers/util";
 
 @Component({
   selector: 'app-driver-home-page-container',
@@ -14,7 +16,7 @@ export class DriverHomePageContainerComponent implements OnInit, OnDestroy {
   drivingSubscription: Subscription;
   nowAndFutureDrivings: Driving[] = [];
   maxNumberOfShowedUsers: number = 3;
-  constructor(private drivingService: DrivingService) { }
+  constructor(private drivingService: DrivingService, private router: Router) { }
 
   ngOnInit(): void {
     this.drivingSubscription = this.drivingService.getDrivingsForDriver(this.driverId)
@@ -47,16 +49,20 @@ export class DriverHomePageContainerComponent implements OnInit, OnDestroy {
 
   }
 
-  finishDriving(driving: Driving) {
+  finishDriving(drivingId: number, drivingIndex: number) {
 
+    this.drivingService.finishDriving(drivingId).subscribe(
+        res => this.updateDrivingStatus(drivingIndex),
+        err => console.log(err)
+      )
   }
 
   getNumOfNotShowedUsers(driving: Driving): string {
     return `+${driving.users.length - this.maxNumberOfShowedUsers}`;
   }
 
-  showDrivingDetails(driving: Driving) {
-
+  showDrivingDetails(drivingId: number) {
+    this.router.navigate(['/driving-details', drivingId]);
   }
 
   hasNotFutureDrivings() {
@@ -66,5 +72,9 @@ export class DriverHomePageContainerComponent implements OnInit, OnDestroy {
 
   hasNoActiveDriving(driving: Driving) {
     return !driving.active;
+  }
+
+  private updateDrivingStatus(drivingIndex: number) {
+      this.nowAndFutureDrivings.splice(drivingIndex, 1);
   }
 }

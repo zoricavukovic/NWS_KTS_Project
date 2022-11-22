@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ConfigService } from './config.service';
+import {Observable} from "rxjs";
+import {Driving} from "../model/response/driving";
 @Injectable({
     providedIn: 'root'
   })
@@ -22,8 +24,12 @@ import { ConfigService } from './config.service';
       return this.http.get(this.configService.driving_details_url(id), {headers: this.configService.getHeader()});
   }
 
-  getDrivingsForDriver(driverId: number){
+  getDrivingsForDriver(driverId: number): Observable<Driving[]>{
 
-      return this.http.get(this.configService.now_future_drivings_url(driverId), {headers: this.configService.getHeader()});
+      return this.http.get<Driving[]>(this.configService.now_future_drivings_url(driverId), {headers: this.configService.getHeader()});
+  }
+
+  finishDriving(drivingId: number): Observable<Driving> {
+      return this.http.put<Driving>(this.configService.get_finish_driving_url(drivingId), null,{headers: this.configService.getHeader()});
   }
 }

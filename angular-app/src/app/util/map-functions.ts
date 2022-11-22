@@ -29,3 +29,8 @@ export function drawPolylineOnMap(map, latLongs, color, polylineList){
   polylineList.push(polyline);
   map.fitBounds(polyline.getBounds());
 }
+
+export function refreshMap(map){
+  map.off();
+  map.remove();
+}

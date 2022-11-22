@@ -43,18 +43,9 @@ public class DrivingService {
             final HashMap<Long, Boolean> usersPaid,
             final double price
     ) {
-
-        Driving driving = drivingRepository.save(new Driving(
-                active,
-                duration,
-                started,
-                payingLimit,
-                route,
-                drivingStatus,
-                driverId,
-                usersPaid,
-                price
-        ));
+        Driving driving = drivingRepository.save(
+            new Driving(active, duration, started, payingLimit, route, drivingStatus, driverId, usersPaid, price)
+        );
 
         return new DrivingDTO(driving);
     }
@@ -65,7 +56,13 @@ public class DrivingService {
         return fromDrivings(drivings);
     }
 
-    public List<DrivingDTO> getDrivingsForUser(Long id, int pageNumber, int pageSize, String parameter, String sortOrder) throws EntityNotFoundException {
+    public List<DrivingDTO> getDrivingsForUser(
+        final Long id,
+        final int pageNumber,
+        final int pageSize,
+        final String parameter,
+        final String sortOrder
+    ) throws EntityNotFoundException {
         User user = userService.getUserById(id);
         Pageable page = PageRequest.of(pageNumber, pageSize, Sort.by(getSortOrder(sortOrder), getSortBy(parameter)));
 
@@ -74,7 +71,7 @@ public class DrivingService {
                 fromDrivings(drivingRepository.findByUserId(id, page));
     }
 
-    private String getSortBy(String sortBy){
+    private String getSortBy(final String sortBy){
         Dictionary<String, String> sortByDict = new Hashtable<>();
         sortByDict.put("Date","started");
         sortByDict.put("Departure","route.startPoint");
@@ -84,7 +81,7 @@ public class DrivingService {
         return sortByDict.get(sortBy);
     }
 
-    private Sort.Direction getSortOrder(String sortOrder){
+    private Sort.Direction getSortOrder(final String sortOrder){
         Dictionary<String, Sort.Direction> sortOrderDict = new Hashtable<>();
         sortOrderDict.put("Descending", Sort.Direction.DESC);
         sortOrderDict.put("Ascending", Sort.Direction.ASC);
@@ -92,19 +89,27 @@ public class DrivingService {
         return sortOrderDict.get(sortOrder);
     }
 
-    public DrivingDTO getDrivingDto(Long id) throws EntityNotFoundException {
+    public DrivingDTO getDrivingDto(final Long id) throws EntityNotFoundException {
 
         return new DrivingDTO(getDriving(id));
     }
 
-    public Driving getDriving(Long id) throws EntityNotFoundException {
+    public Driving getDriving(final Long id) throws EntityNotFoundException {
 
         return drivingRepository.getDrivingById(id)
             .orElseThrow(() -> new EntityNotFoundException(id, EntityType.DRIVING));
     }
 
-    public List<DrivingDTO> getAllNowAndFutureDrivings(Long id) {
+    public List<DrivingDTO> getAllNowAndFutureDrivings(final Long id) {
 
         return fromDrivings(drivingRepository.getAllNowAndFutureDrivings(id));
+    }
+
+    public DrivingDTO finishDriving(final Long id) throws EntityNotFoundException {
+        Driving driving = getDriving(id);
+        driving.setActive(false);
+        drivingRepository.save(driving);
+
+        return new DrivingDTO(driving);
     }
 }
