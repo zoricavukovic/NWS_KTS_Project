@@ -8,6 +8,7 @@ import com.example.serbUber.request.VerifyRequest;
 import com.example.serbUber.service.VerifyService;
 import com.example.serbUber.service.user.DriverService;
 import com.example.serbUber.service.user.RegularUserService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,9 +32,9 @@ public class VerifyController {
     private final DriverService driverService;
 
     public VerifyController(
-            final VerifyService verifyService,
-            final RegularUserService regularUserService,
-            final DriverService driverService
+            @Qualifier("verifyServiceConfiguration") final VerifyService verifyService,
+            @Qualifier("regularUserServiceConfiguration") final RegularUserService regularUserService,
+            @Qualifier("driverServiceConfiguration") final DriverService driverService
         ) {
         this.verifyService = verifyService;
         this.regularUserService = regularUserService;

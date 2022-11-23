@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { User } from 'src/app/model/response/user/user';
-import { Route } from 'src/app/model/response/route';
+import { User } from 'src/app/model/user/user';
+import { Route } from 'src/app/model/route/route';
 import { AuthService } from 'src/app/service/auth.service';
 
 @Component({
@@ -19,17 +19,13 @@ export class FavouriteRoutesComponent implements OnInit, OnDestroy {
   constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
-    this.currentUserSubscription = this.authService
-      .getCurrentUser()
+    this.currentUser = this.authService.getCurrentUser;
+    this.favouriteRoutesSubscription = this.authService
+      .getFavouriteRoutesForUser(this.currentUser.id)
       .subscribe(data => {
-        this.currentUser = data;
-        this.favouriteRoutesSubscription = this.authService
-          .getFavouriteRoutesForUser(this.currentUser.id)
-          .subscribe(data => {
-            console.log(this.favouriteRoutes);
-            this.favouriteRoutes = data;
-            console.log(this.favouriteRoutes);
-          });
+        console.log(this.favouriteRoutes);
+        this.favouriteRoutes = data;
+        console.log(this.favouriteRoutes);
       });
   }
 

@@ -10,6 +10,9 @@ import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.repository.user.DriverRepository;
 import com.example.serbUber.service.VehicleService;
 import com.example.serbUber.service.VerifyService;
+import com.example.serbUber.service.interfaces.IDriverService;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 
@@ -22,8 +25,9 @@ import static com.example.serbUber.util.Constants.ROLE_DRIVER;
 import static com.example.serbUber.util.Constants.getProfilePicture;
 import static com.example.serbUber.util.JwtProperties.getHashedNewUserPassword;
 
-@Service
-public class DriverService {
+@Component
+@Qualifier("driverServiceConfiguration")
+public class DriverService implements IDriverService{
 
     private final DriverRepository driverRepository;
     private final VehicleService vehicleService;

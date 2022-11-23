@@ -10,11 +10,11 @@ import { ErrorStateMatcher } from '@angular/material/core';
 import { Observable, Subscription } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { UserService } from 'src/app/service/user.service';
-import { RegistrationRequest } from 'src/app/model/request/user/registration-request';
+import { RegularUser } from 'src/app/model/user/regular-user';
 import { matchPasswordsValidator } from './confirm-password.validator';
 import { AuthService } from 'src/app/service/auth.service';
-import { Driver } from 'src/app/model/request/user/driver-registration-request';
-import { VehicleRequest } from 'src/app/model/request/vehicle-request';
+import { Driver } from 'src/app/model/user/driver';
+import { Vehicle } from 'src/app/model/vehicle/vehicle';
 import { isFormValid } from 'src/app/util/validation-function';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
@@ -76,11 +76,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   vehicleType: string;
 
   ngOnInit(): void {
-    this.currentUserSubscription = this.authService
-      .getCurrentUser()
-      .subscribe(user => {
-        this.showDriverForm = user.isUserAdmin();
-      });
+    this.authService.getCurrentUser.isUserAdmin();
   }
 
   constructor(
@@ -113,23 +109,25 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     }
     if (isFormValid(this.registrationForm)) {
       if (this.showDriverForm) {
+        const vehicle: Vehicle = {
+          petFriendly: this.petFriendly,
+          babySeat: this.babySeat,
+          vehicleType: this.vehicleType,
+        };
+        const driver: Driver = {
+          email: this.registrationForm.get('emailFormControl').value,
+          password: this.registrationForm.get('passwordFormControl').value,
+          confirmPassword: this.registrationForm.get('passwordAgainFormControl')
+            .value,
+          name: this.registrationForm.get('nameFormControl').value,
+          surname: this.registrationForm.get('surnameFormControl').value,
+          phoneNumber: this.registrationForm.get('phoneNumberFormControl')
+            .value,
+          city: this.registrationForm.get('cityFormControl').value,
+          vehicle: vehicle,
+        };
         this.registrationSubscription = this.userService
-          .registerDriver(
-            new DriverRegistrationRequest(
-              this.registrationForm.get('emailFormControl').value,
-              this.registrationForm.get('passwordFormControl').value,
-              this.registrationForm.get('passwordAgainFormControl').value,
-              this.registrationForm.get('nameFormControl').value,
-              this.registrationForm.get('surnameFormControl').value,
-              this.registrationForm.get('phoneNumberFormControl').value,
-              this.registrationForm.get('cityFormControl').value,
-              new VehicleRequest(
-                this.petFriendly,
-                this.babySeat,
-                this.vehicleType
-              )
-            )
-          )
+          .registerDriver(driver)
           .subscribe(
             res => {
               this.toast.success(
@@ -141,18 +139,19 @@ export class RegistrationComponent implements OnInit, OnDestroy {
             error => this.toast.error(error.error, 'Registration failed')
           );
       } else {
+        const regularUser: RegularUser = {
+          email: this.registrationForm.get('emailFormControl').value,
+          password: this.registrationForm.get('passwordFormControl').value,
+          confirmPassword: this.registrationForm.get('passwordAgainFormControl')
+            .value,
+          name: this.registrationForm.get('nameFormControl').value,
+          surname: this.registrationForm.get('surnameFormControl').value,
+          phoneNumber: this.registrationForm.get('phoneNumberFormControl')
+            .value,
+          city: this.registrationForm.get('cityFormControl').value,
+        };
         this.registrationSubscription = this.userService
-          .registerRegularUser(
-            new RegistrationRequest(
-              this.registrationForm.get('emailFormControl').value,
-              this.registrationForm.get('passwordFormControl').value,
-              this.registrationForm.get('passwordAgainFormControl').value,
-              this.registrationForm.get('nameFormControl').value,
-              this.registrationForm.get('surnameFormControl').value,
-              this.registrationForm.get('phoneNumberFormControl').value,
-              this.registrationForm.get('cityFormControl').value
-            )
-          )
+          .registerRegularUser(regularUser)
           .subscribe(
             response => {
               console.log(response);

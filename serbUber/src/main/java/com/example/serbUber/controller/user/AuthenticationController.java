@@ -12,9 +12,12 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.social.facebook.api.Facebook;
 import org.springframework.social.facebook.api.User;
 import org.springframework.social.facebook.api.impl.FacebookTemplate;
@@ -37,9 +40,10 @@ public class AuthenticationController {
     @Value("${google.id}")
     private String idClient;
 
+    @Autowired
     public AuthenticationController(
-        final TokenService tokenService,
-        final UserService userService
+        @Qualifier("tokenServiceConfiguration") final TokenService tokenService,
+        @Qualifier("userServiceConfiguration") final UserService userService
     ) {
         this.tokenService = tokenService;
         this.userService = userService;
@@ -100,14 +104,5 @@ public class AuthenticationController {
         userService.setOnlineStatus(loginDTO.getUserDTO().getEmail());
 
         return loginDTO;
-    }
-
-    @PostMapping(path="/logout")
-    @ResponseStatus(HttpStatus.OK)
-    private UserDTO logout(@Valid @Email(message = WRONG_EMAIL) @RequestBody final String email)
-            throws EntityNotFoundException
-    {
-
-        return userService.setOfflineStatus(email);
     }
 }

@@ -12,7 +12,7 @@ public class RegularUserRequest extends UserRequest{
     @NotBlank(message = WRONG_PASSWORD)
     @Pattern(regexp = Constants.LEGIT_PASSWORD_REG,
             message = WRONG_PASSWORD)
-    private final String confirmationPassword;
+    private final String confirmPassword;
 
     public RegularUserRequest(
             final String email,
@@ -25,10 +25,10 @@ public class RegularUserRequest extends UserRequest{
             final String confirmPassword
     ) {
         super(email, password, name, surname, phoneNumber, city, profilePicture);
-        this.confirmationPassword = confirmPassword;
+        this.confirmPassword = confirmPassword;
     }
 
-    public String getConfirmationPassword() {
-        return confirmationPassword;
+    public String getConfirmPassword() {
+        return confirmPassword;
     }
 }

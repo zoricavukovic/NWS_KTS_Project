@@ -6,6 +6,7 @@ import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.request.user.AdminRequest;
 import com.example.serbUber.request.user.UserEmailRequest;
 import com.example.serbUber.service.user.AdminService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -19,13 +20,13 @@ public class AdminController {
 
     private final AdminService adminService;
 
-    public AdminController(AdminService adminService) {
+    public AdminController(@Qualifier("adminServiceConfiguration") final AdminService adminService) {
         this.adminService = adminService;
     }
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    //@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public List<AdminDTO> getAll() {
 
         return adminService.getAll();
@@ -34,7 +35,7 @@ public class AdminController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-//    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public UserDTO get(
         @Valid @PathVariable Long id
     ) throws EntityNotFoundException {
@@ -44,7 +45,7 @@ public class AdminController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    //@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public AdminDTO create(@Valid @RequestBody AdminRequest adminRequest) {
 
         return adminService.create(

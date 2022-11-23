@@ -2,7 +2,7 @@ import { Component, Inject, OnDestroy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { ReviewService } from 'src/app/service/review.service';
-import { ReviewRequest } from 'src/app/model/request/review-request';
+import { RateReview } from 'src/app/model/review/rate-review';
 
 @Component({
   selector: 'app-rating-dialog',
@@ -34,7 +34,7 @@ export class RatingDialogComponent implements OnDestroy {
     //subscribe() ne radi
     this.reviewSubscription = this.reviewService
       .saveReview(
-        new ReviewRequest(
+        this.reviewService.createRateReview(
           this.ratingVehicle,
           this.ratingDriver,
           this.message,

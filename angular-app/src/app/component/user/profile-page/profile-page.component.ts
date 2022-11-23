@@ -2,7 +2,7 @@ import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Navigation, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { User } from 'src/app/model/response/user/user';
+import { User } from 'src/app/model/user/user';
 import { AuthService } from 'src/app/service/auth.service';
 import { ConfigService } from 'src/app/service/config.service';
 import { ChangeProfilePicComponent } from '../change-profile-pic/change-profile-pic.component';
@@ -10,15 +10,14 @@ import { ChangeProfilePicComponent } from '../change-profile-pic/change-profile-
 @Component({
   selector: 'app-profile-page',
   templateUrl: './profile-page.component.html',
-  styleUrls: ['./profile-page.component.css']
+  styleUrls: ['./profile-page.component.css'],
 })
 export class ProfilePageComponent implements OnInit, OnDestroy {
-
   loggedUser: User;
   authSubscription: Subscription;
 
-  hidePassword: boolean =true;
-  hideConfirmPassword: boolean =true;
+  hidePassword: boolean = true;
+  hideConfirmPassword: boolean = true;
 
   showEditPassword: boolean = false;
 
@@ -27,16 +26,15 @@ export class ProfilePageComponent implements OnInit, OnDestroy {
     private configService: ConfigService,
     private dialogEditPicture: MatDialog,
     private router: Router
-    ) {
-
-  }
+  ) {}
 
   ngOnInit(): void {
-    this.authSubscription = this.authService.getCurrentUser().subscribe(
-      user => {
-        this.loggedUser = user
-      }
-    );
+    this.loggedUser = this.authService.getCurrentUser;
+    // this.authSubscription = this.authService.getCurrentUser().subscribe(
+    //   user => {
+    //     this.loggedUser = user
+    //   }
+    // );
   }
 
   showEditProfile(): void {
@@ -44,7 +42,9 @@ export class ProfilePageComponent implements OnInit, OnDestroy {
   }
 
   showChangePhotoDialog(): void {
-    let dialogRef = this.dialogEditPicture.open(ChangeProfilePicComponent, {data: this.loggedUser.email});
+    let dialogRef = this.dialogEditPicture.open(ChangeProfilePicComponent, {
+      data: this.loggedUser.email,
+    });
 
     dialogRef.afterClosed().subscribe(base64 => {
       if (base64) {
@@ -55,28 +55,33 @@ export class ProfilePageComponent implements OnInit, OnDestroy {
   }
 
   checkValidDialogChange(changedUser: User): boolean {
-    return (changedUser !== null && changedUser !== undefined && changedUser.role.name !== this.configService.role_driver)
+    return (
+      changedUser !== null &&
+      changedUser !== undefined &&
+      changedUser.role.name !== this.configService.role_driver
+    );
   }
 
   getRole(): string {
-    if (this.loggedUser.role.name !== null && this.loggedUser.role.name !== this.configService.role_regular_user) {
-      return this.loggedUser.role.name.split("ROLE_")[1]
+    if (
+      this.loggedUser.role.name !== null &&
+      this.loggedUser.role.name !== this.configService.role_regular_user
+    ) {
+      return this.loggedUser.role.name.split('ROLE_')[1];
     } else if (this.loggedUser.role.name !== null) {
-      return this.loggedUser.role.name.split("_")[1]
+      return this.loggedUser.role.name.split('_')[1];
     } else {
-      return "";
+      return '';
     }
   }
 
   getBase64Prefix(): string {
-    return this.configService.base64_show_photo_prefix
+    return this.configService.base64_show_photo_prefix;
   }
 
-   ngOnDestroy(): void {
+  ngOnDestroy(): void {
     if (this.authSubscription) {
       this.authSubscription.unsubscribe();
     }
   }
-
-
 }

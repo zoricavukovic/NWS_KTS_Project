@@ -1,9 +1,9 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { first, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { DrivingNotificationRequest } from 'src/app/model/request/driving-notification-request';
-import { PossibleRoute } from 'src/app/model/response/possible-routes';
-import { User } from 'src/app/model/response/user/user';
+import { PossibleRoute } from 'src/app/model/route/possible-routes';
+import { User } from 'src/app/model/user/user';
 import { AuthService } from 'src/app/service/auth.service';
 import { ChatService } from 'src/app/service/chat.service';
 import { DrivingNotificationService } from 'src/app/service/driving-notification.service';
@@ -45,11 +45,7 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.authSubscription = this.authService
-      .getCurrentUser()
-      .subscribe((user: User) => {
-        this.currentUser = user;
-      });
+    this.currentUser = this.authService.getCurrentUser;
 
     this.allUsersSubscription = this.userService
       .getAllRegularUsers()

@@ -1,7 +1,5 @@
 package com.example.serbUber.model;
 
-import com.example.serbUber.model.user.User;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -23,14 +21,31 @@ public class Message {
     @Column(name="admin_response", nullable = false)
     private boolean adminResponse = false;
 
+    @Column(name="seen", nullable = false)
+    private boolean seen = false;
+
     public Message() {
 
     }
 
-    public Message(String message, boolean adminResponse) {
+    public Message(
+            final String message,
+            final boolean adminResponse
+    ) {
         this.message = message;
         this.adminResponse = adminResponse;
         this.timeStamp = LocalDateTime.now();
+    }
+
+    public Message(
+            final String message,
+            final boolean adminResponse,
+            final boolean seen
+    ) {
+        this.message = message;
+        this.adminResponse = adminResponse;
+        this.timeStamp = LocalDateTime.now();
+        this.seen = seen;
     }
 
     public Long getId() {
@@ -59,5 +74,13 @@ public class Message {
 
     public void setTimeStamp(LocalDateTime timeStamp) {
         this.timeStamp = timeStamp;
+    }
+
+    public boolean isSeen() {
+        return seen;
+    }
+
+    public void setSeen(boolean seen) {
+        this.seen = seen;
     }
 }

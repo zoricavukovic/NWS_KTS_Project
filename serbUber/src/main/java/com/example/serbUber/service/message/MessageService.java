@@ -2,13 +2,17 @@ package com.example.serbUber.service.message;
 
 import com.example.serbUber.model.Message;
 import com.example.serbUber.repository.message.MessageRepository;
+import com.example.serbUber.service.interfaces.IMessageService;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
 import java.util.List;
 
-@Service
-public class MessageService {
+@Component
+@Qualifier("messageServiceConfiguration")
+public class MessageService implements IMessageService {
 
     private MessageRepository messageRepository;
 

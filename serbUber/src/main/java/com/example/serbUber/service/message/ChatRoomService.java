@@ -9,7 +9,10 @@ import com.example.serbUber.model.ChatRoom;
 import com.example.serbUber.model.Message;
 import com.example.serbUber.model.user.User;
 import com.example.serbUber.repository.message.ChatRoomRepository;
+import com.example.serbUber.service.interfaces.IChatRoomService;
 import com.example.serbUber.service.user.UserService;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,8 +20,9 @@ import java.util.Optional;
 
 import static com.example.serbUber.dto.message.ChatRoomDTO.fromChatRooms;
 
-@Service
-public class ChatRoomService {
+@Component
+@Qualifier("chatRoomServiceConfiguration")
+public class ChatRoomService implements IChatRoomService {
 
     private ChatRoomRepository chatRoomRepository;
 
@@ -88,6 +92,21 @@ public class ChatRoomService {
         return new ChatRoomDTO(chatRoomRepository.save(chatRoom));
     }
 
+    public ChatRoomDTO setMessagesToSeen(final Long chatRoomId, final boolean adminLogged)
+            throws EntityNotFoundException
+    {
+        ChatRoom chatRoom = getActiveChatRoomById(chatRoomId);
+        chatRoom.getMessages().forEach(message -> {
+            if (adminLogged && adminSawClientMessage(message)) {
+                message.setSeen(true);
+            } else if (!adminLogged && clientSawAdminMessage(message)) {
+                message.setSeen(true);
+            }
+        });
+
+        return new ChatRoomDTO(chatRoomRepository.save(chatRoom));
+    }
+
     private ChatRoomDTO createNewChatRoom(String message, String senderEmail, boolean adminResponse)
             throws NoAvailableAdminException, EntityNotFoundException
     {
@@ -105,6 +124,16 @@ public class ChatRoomService {
 
     private boolean chatRoomNotExists(Long chatId) {
         return chatId == null;
+    }
+
+    private boolean adminSawClientMessage(final Message message) {
+
+        return !message.isSeen() && !message.isAdminResponse();
+    }
+
+    private boolean clientSawAdminMessage(final Message message) {
+
+        return !message.isSeen() && message.isAdminResponse();
     }
 
 }

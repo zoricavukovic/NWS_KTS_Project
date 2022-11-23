@@ -3,7 +3,7 @@ import * as SockJS from 'sockjs-client';
 import { Stomp } from '@stomp/stompjs';
 import { environment } from 'src/environments/environment';
 import { ChatRoomService } from './chat-room.service';
-import { ChatRoom } from '../model/response/messages/chat-room';
+import { ChatRoom } from '../model/message/chat-room';
 import { DrivingNotificationService } from './driving-notification.service';
 import { DrivingNotificationRequest } from '../model/request/driving-notification-request';
 

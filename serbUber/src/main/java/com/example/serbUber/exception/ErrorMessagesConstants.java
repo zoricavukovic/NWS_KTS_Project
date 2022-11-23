@@ -24,5 +24,7 @@ public class ErrorMessagesConstants {
     public static final String NOT_NULL_MESSAGE = "Field must not be  null.";
     public static final String POSITIVE_OR_ZERO_MESSAGE = "Value must be positive or zero.";
     public static final String POSITIVE_MESSAGE = "Value must be positive.";
+    public static final String SEEN_NOT_EXIST = "Seen must exist in message.";
+    public static final String MISSING_ID = "Id value cannot be empty.";
 
 }

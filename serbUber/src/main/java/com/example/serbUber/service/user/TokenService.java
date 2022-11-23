@@ -5,21 +5,25 @@ import com.example.serbUber.dto.user.JwtLogin;
 import com.example.serbUber.dto.user.LoginDTO;
 import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.model.user.UserPrinciple;
+import com.example.serbUber.service.interfaces.ITokenService;
 import com.example.serbUber.util.JwtProperties;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 
 import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 
-@Service
-public class TokenService {
+@Component
+@Qualifier("tokenServiceConfiguration")
+public class TokenService implements ITokenService {
     private final AuthenticationManager authenticationManager;
 
     public TokenService(AuthenticationManager authenticationManager) {

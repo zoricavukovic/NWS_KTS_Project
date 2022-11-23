@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ConfigService } from './config.service';
-import { VehicleTypeInfo } from '../model/response/vehicle-type-info';
+import { VehicleTypeInfo } from '../model/vehicle/vehicle-type-info';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -15,7 +15,6 @@ export class VehicleService {
       this.configService.vehicle_type_infos
     );
   }
-
   getPriceForVehicleAndRoute(type: string, kilometers: number) {
     console.log(this.configService.get_price_for_driving(type, kilometers));
     return this.http.get<number>(

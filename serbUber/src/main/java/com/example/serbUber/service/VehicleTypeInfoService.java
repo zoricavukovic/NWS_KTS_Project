@@ -6,6 +6,9 @@ import com.example.serbUber.exception.EntityType;
 import com.example.serbUber.model.VehicleType;
 import com.example.serbUber.model.VehicleTypeInfo;
 import com.example.serbUber.repository.VehicleTypeInfoRepository;
+import com.example.serbUber.service.interfaces.IVehicleTypeInfoService;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,8 +16,9 @@ import java.util.Optional;
 
 import static com.example.serbUber.dto.VehicleTypeInfoDTO.fromVehicleTypeInfos;
 
-@Service
-public class VehicleTypeInfoService {
+@Component
+@Qualifier("vehicleTypeInfoServiceConfiguration")
+public class VehicleTypeInfoService implements IVehicleTypeInfoService {
 
     private final VehicleTypeInfoRepository vehicleTypeInfoRepository;
 
@@ -28,17 +32,17 @@ public class VehicleTypeInfoService {
         return fromVehicleTypeInfos(vehicleTypeInfos);
     }
 
-    public void create(
+    public VehicleTypeInfoDTO create(
             final VehicleType vehicleType,
             final double startPrice,
             final int numOfSeats
     ) {
 
-        vehicleTypeInfoRepository.save(new VehicleTypeInfo(
-           vehicleType,
-           startPrice,
-           numOfSeats
-        ));
+        return new VehicleTypeInfoDTO(vehicleTypeInfoRepository.save(new VehicleTypeInfo(
+                vehicleType,
+                startPrice,
+                numOfSeats
+        )));
     }
 
     public VehicleTypeInfoDTO findBy(VehicleType vehicleType) throws EntityNotFoundException {
@@ -54,8 +58,8 @@ public class VehicleTypeInfoService {
 
     public VehicleTypeInfo get(VehicleType vehicleType) throws EntityNotFoundException {
 
-        return  vehicleTypeInfoRepository.getVehicleTypeInfoByName(vehicleType)
-            .orElseThrow(() -> new EntityNotFoundException(vehicleType.toString(), EntityType.VEHICLE_TYPE_INFO));
+        return vehicleTypeInfoRepository.getVehicleTypeInfoByName(vehicleType)
+                .orElseThrow(() -> new EntityNotFoundException(vehicleType.toString(), EntityType.VEHICLE_TYPE_INFO));
 
     }
 

@@ -1,9 +1,8 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { PasswordUpdateRequest } from 'src/app/model/request/user/user-profile-update';
-import { User } from 'src/app/model/response/user/user';
-import { UserPasswordUpdateRequest } from 'src/app/model/request/user/user-profile-update';
+import { PasswordUpdateRequest } from 'src/app/model/user/user-profile-update';
+import { User } from 'src/app/model/user/user';
 import { AuthService } from 'src/app/service/auth.service';
 import { UserService } from 'src/app/service/user.service';
 import { isFormValid } from 'src/app/util/validation-function';
@@ -66,14 +65,14 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
 
   resetPasswordEmail() {
     if (isFormValid(this.passwordForm)) {
+      const passwordUpdateRequest: PasswordUpdateRequest = {
+        email: this.email,
+        newPassword: this.passwordForm.get('passwordFormControl').value,
+        confirmPassword: this.passwordForm.get('passwordAgainFormControl')
+          .value,
+      };
       this.resetSubscription = this.userService
-        .resetPassword(
-          new PasswordUpdateRequest(
-            this.email,
-            this.passwordForm.get('passwordFormControl').value,
-            this.passwordForm.get('passwordAgainFormControl').value
-          )
-        )
+        .resetPassword(passwordUpdateRequest)
         .subscribe(
           response => {
             console.log(response);
@@ -86,15 +85,15 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
 
   changePassword() {
     if (isFormValid(this.passwordForm) && !this.oldPasswordForm.invalid) {
+      const passwordUpdateRequest: PasswordUpdateRequest = {
+        email: this.email,
+        newPassword: this.passwordForm.get('passwordFormControl').value,
+        confirmPassword: this.passwordForm.get('passwordAgainFormControl')
+          .value,
+        currentPassword: this.oldPasswordForm.value,
+      };
       this.changePassSubscription = this.userService
-        .updatePassword(
-          new UserPasswordUpdateRequest(
-            this.user.email,
-            this.oldPasswordForm.value,
-            this.passwordForm.get('passwordFormControl').value,
-            this.passwordForm.get('passwordAgainFormControl').value
-          )
-        )
+        .updatePassword(passwordUpdateRequest)
         .subscribe(
           response => {
             this.authService.logOut();

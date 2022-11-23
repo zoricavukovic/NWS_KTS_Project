@@ -1,21 +1,22 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import * as L from 'leaflet';
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
-import { SearchingRoutesForm } from '../../../model/searching-routes-form';
-import { Location } from '../../../model/response/location';
+import { SearchingRoutesForm } from '../../../model/route/searching-routes-form';
 import { RouteService } from '../../../service/route.service';
-import { LocationsForRoutesRequest } from '../../../model/request/locations-for-routes-request';
-import { PossibleRoute } from '../../../model/response/possible-routes';
-import { User } from '../../../model/response/user/user';
+import { LocationsForRoutesRequest } from '../../../model/route/locations-for-routes-request';
+import { PossibleRoute } from '../../../model/route/possible-routes';
+import { User } from '../../../model/user/user';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../../service/auth.service';
-import { PossibleRoutesViaPoints } from '../../../model/response/possible-routes-via-points';
+import { PossibleRoutesViaPoints } from '../../../model/route/possible-routes-via-points';
 import {
   drawPolylineOnMap,
   removeLayer,
   removeMarker,
   removeOneLayer,
 } from '../../../util/map-functions';
+import { Location } from '../../../model/route/location';
+import { UserService } from 'src/app/service/user.service';
 
 @Component({
   selector: 'home-page',
@@ -23,8 +24,8 @@ import {
   styleUrls: ['./home-page.component.css'],
 })
 export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
-  routeChoiceView = false;
-  filterVehicleView = true;
+  routeChoiceView = true;
+  filterVehicleView = false;
 
   selectedRoute: PossibleRoute;
 
@@ -54,14 +55,8 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit(): void {
     this.searchingRoutesForm.push(new SearchingRoutesForm());
     this.searchingRoutesForm.push(new SearchingRoutesForm());
-    this.authSubscription = this.authService
-      .getCurrentUser()
-      .subscribe((user: User) => {
-        this.currentUser = user;
-        if (user !== null) {
-          this.currentUserIsDriver = user.userIsDriver();
-        }
-      });
+    this.currentUser = this.authService.getCurrentUser;
+    this.currentUserIsDriver = this.currentUser?.userIsDriver();
   }
 
   ngOnDestroy(): void {
@@ -139,15 +134,19 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getPossibleRoutes() {
     const locationsForCreateRoutes: Location[] = [];
+    console.log(this.searchingRoutesForm);
     this.searchingRoutesForm.forEach(searchingRoutesLocation =>
       locationsForCreateRoutes.push(searchingRoutesLocation.location)
     );
 
     this.routeSubscription = this.routeService
       .getPossibleRoutes(
-        new LocationsForRoutesRequest(locationsForCreateRoutes)
+        this.routeService.createLocationForRoutesRequest(
+          locationsForCreateRoutes
+        )
       )
       .subscribe(res => {
+        console.log(res);
         this.possibleRoutesViaPoints = res;
         if (res.length > 0) {
           this.changeCurrentRoutes(res);
@@ -213,11 +212,12 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private createLocation(place, index: number) {
-    let loc = new Location();
-    loc.city = place.value;
-    loc.lat = place.y;
-    loc.lon = place.x;
-    this.searchingRoutesForm.at(index).location = loc;
+    const location: Location = {
+      city: place.value,
+      lat: place.y,
+      lon: place.x,
+    };
+    this.searchingRoutesForm.at(index).location = location;
   }
 
   private getIconUrl(index: number): string {

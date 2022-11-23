@@ -5,6 +5,9 @@ import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.EntityType;
 import com.example.serbUber.model.Location;
 import com.example.serbUber.repository.LocationRepository;
+import com.example.serbUber.service.interfaces.ILocationService;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,8 +15,9 @@ import java.util.Optional;
 
 import static com.example.serbUber.dto.LocationDTO.fromLocations;
 
-@Service
-public class LocationService {
+@Component
+@Qualifier("locationServiceConfiguration")
+public class LocationService implements ILocationService {
 
     private final LocationRepository locationRepository;
 
@@ -34,7 +38,7 @@ public class LocationService {
 //            .orElseThrow(() ->  new EntityNotFoundException(city, EntityType.LOCATION));
 //    }
 
-    public void create(
+    public LocationDTO create(
         final String city,
         final String street,
         final String number,
@@ -43,6 +47,6 @@ public class LocationService {
         final double lat
     ) {
 
-        locationRepository.save(new Location(city, street, number, zipCode, lon, lat));
+        return new LocationDTO(locationRepository.save(new Location(city, street, number, zipCode, lon, lat)));
     }
 }

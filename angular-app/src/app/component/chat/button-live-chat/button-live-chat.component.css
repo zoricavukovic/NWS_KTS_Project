@@ -1,19 +1,35 @@
-
 div.live-chat-button {
-    position: absolute;
-    bottom: 3%;
-    right: 5%;
+  position: absolute;
+  bottom: 3%;
+  right: 5%;
 }
 
 .icon-live-chat {
-    transform: scale(1.5);
+  transform: scale(1.5);
+  color: var(--white);
 }
 
 button {
-    background-color: var(--red) !important;
+  background-color: var(--deep-blue) !important;
 }
 
 .icon-live-chat-container {
-    width: 4rem;
-    height: 4rem;
+  width: 4rem;
+  height: 4rem;
+}
+
+.badge {
+  box-sizing: border-box;
+  position: absolute;
+  width: 1.5rem;
+  height: 1.5rem;
+  text-align: center;
+  font-size: 1rem;
+  padding: 0.125rem;
+  border-radius: 1rem;
+
+  top: -0.5rem;
+  left: 2.5rem;
+  background: var(--gray);
+  color: var(--deep-blue);
 }

@@ -1,19 +1,18 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { VerifyService } from 'src/app/service/verify.service';
 import { Subscription } from 'rxjs';
-import { VerifyRequest } from 'src/app/model/request/verify-request';
+import { VerifyRequest } from 'src/app/model/user/verify-request';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/service/auth.service';
-import {ToastrService} from "ngx-toastr";
-import { User } from 'src/app/model/response/user/user';
+import { ToastrService } from 'ngx-toastr';
+import { User } from 'src/app/model/user/user';
 
 @Component({
   selector: 'app-verify',
   templateUrl: './verify.component.html',
-  styleUrls: ['./verify.component.css']
+  styleUrls: ['./verify.component.css'],
 })
 export class VerifyComponent implements OnInit, OnDestroy {
-
   firstDigit: string;
   secondDigit: string;
   thirdDigit: string;
@@ -36,21 +35,16 @@ export class VerifyComponent implements OnInit, OnDestroy {
   ) {}
 
   private checkRegistrationPurpose(user: User) {
-    if(user.isUserAdmin()){
-      this.verifyUserType = "ROLE_DRIVER";
-    }
-    else {
-      this.verifyUserType = "ROLE_REGULAR_USER";
+    if (user.isUserAdmin()) {
+      this.verifyUserType = 'ROLE_DRIVER';
+    } else {
+      this.verifyUserType = 'ROLE_REGULAR_USER';
     }
   }
 
   ngOnInit(): void {
     this.verifyId = this.route.snapshot.paramMap.get('id');
-    this.currentUserSubscription = this.authService.getCurrentUser().subscribe(
-      (user) => {
-        this.checkRegistrationPurpose(user);
-      }
-    )
+    this.checkRegistrationPurpose(this.authService.getCurrentUser);
   }
 
   containsOnlyNumbers(str: string) {
@@ -58,17 +52,21 @@ export class VerifyComponent implements OnInit, OnDestroy {
   }
 
   checkValidationCode(): boolean {
-    let securityCode: string = this.firstDigit + this.secondDigit + this.thirdDigit + this.fourthDigit;
+    let securityCode: string =
+      this.firstDigit + this.secondDigit + this.thirdDigit + this.fourthDigit;
     if (securityCode.length !== this.MAX_DIGIT_LENGTH) {
-      this.toast.error("You need to add 4 digits.", "Error")
+      this.toast.error('You need to add 4 digits.', 'Error');
 
       return false;
     } else if (!this.containsOnlyNumbers(securityCode)) {
-      this.toast.error("You can input only digits!", "Error")
+      this.toast.error('You can input only digits!', 'Error');
 
       return false;
     } else if (!this.containsOnlyNumbers(this.verifyId)) {
-      this.toast.error("Something happened with URL. Check again URL on email.", "Error")
+      this.toast.error(
+        'Something happened with URL. Check again URL on email.',
+        'Error'
+      );
 
       return false;
     }
@@ -78,30 +76,44 @@ export class VerifyComponent implements OnInit, OnDestroy {
 
   verify() {
     if (this.checkValidationCode()) {
-      let securityCode: string = this.firstDigit + this.secondDigit + this.thirdDigit + this.fourthDigit;
+      const securityCode: string =
+        this.firstDigit + this.secondDigit + this.thirdDigit + this.fourthDigit;
 
-      this.verifySubscription = this.verifyService.verify(new VerifyRequest(
-        Number(this.verifyId),
-        Number(securityCode),
-        this.verifyUserType
-      )).subscribe(
-        res => {
-          this.toast.success("You are verified!", "Verification successfully")
-          this.router.navigate(['/login']);
-        },
-        error => this.toast.error(error.error, "Verification failed")
-      );
+      this.verifySubscription = this.verifyService
+        .verify(
+          this.verifyService.createVerifyRequest(
+            Number(this.verifyId),
+            Number(securityCode),
+            this.verifyUserType
+          )
+        )
+        .subscribe(
+          res => {
+            this.toast.success(
+              'You are verified!',
+              'Verification successfully'
+            );
+            this.router.navigate(['/login']);
+          },
+          error => this.toast.error(error.error, 'Verification failed')
+        );
     }
   }
 
   sendCodeAgain() {
-    if (this.containsOnlyNumbers(this.verifyId)){
-      this.sendCodeAgainSubscription = this.verifyService.sendCodeAgain(Number(this.verifyId)).subscribe(
-        res => this.showForm = !this.showForm,
-        error => this.toast.error("Email cannot be sent.", "Code cannot be sent")
-    );
+    if (this.containsOnlyNumbers(this.verifyId)) {
+      this.sendCodeAgainSubscription = this.verifyService
+        .sendCodeAgain(Number(this.verifyId))
+        .subscribe(
+          res => (this.showForm = !this.showForm),
+          error =>
+            this.toast.error('Email cannot be sent.', 'Code cannot be sent')
+        );
     } else {
-      this.toast.error("Something happened with URL. Check again URL on email.","Code cannot be sent")
+      this.toast.error(
+        'Something happened with URL. Check again URL on email.',
+        'Code cannot be sent'
+      );
     }
   }
 
@@ -111,7 +123,6 @@ export class VerifyComponent implements OnInit, OnDestroy {
     }
 
     if (this.sendCodeAgainSubscription)
-    this.sendCodeAgainSubscription.unsubscribe();
+      this.sendCodeAgainSubscription.unsubscribe();
   }
-
 }

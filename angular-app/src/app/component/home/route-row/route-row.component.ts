@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { PossibleRoute } from '../../../model/response/possible-routes';
-
+import { Component, Input, OnInit, Output } from '@angular/core';
+import { PossibleRoute } from 'src/app/model/route/possible-routes';
+import { EventEmitter } from '@angular/core';
 @Component({
   selector: 'route-row',
   templateUrl: './route-row.component.html',

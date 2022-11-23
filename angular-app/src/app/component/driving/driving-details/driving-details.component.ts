@@ -1,4 +1,4 @@
-import { Driving } from 'src/app/model/response/driving';
+import { Driving } from 'src/app/model/driving/driving';
 import {
   AfterViewInit,
   Component,
@@ -10,15 +10,13 @@ import { ActivatedRoute } from '@angular/router';
 import { ConfigService } from 'src/app/service/config.service';
 import { AuthService } from 'src/app/service/auth.service';
 import { Subscription } from 'rxjs';
-import { User } from 'src/app/model/response/user/user';
-import { Driver } from 'src/app/model/response/user/driver';
-import { TooltipPosition } from '@angular/material/tooltip';
-import { FavouriteRouteRequest } from 'src/app/model/request/favourite-route-request';
+import { Driver } from 'src/app/model/user/driver';
+import { FavouriteRouteRequest } from 'src/app/model/route/favourite-route-request';
 import { UserService } from 'src/app/service/user.service';
 import { DrivingService } from 'src/app/service/driving.service';
 import { DriverService } from 'src/app/service/driver.service';
 import { drawPolyline } from '../../../util/map-functions';
-import { Vehicle } from 'src/app/model/response/vehicle';
+import { Vehicle } from 'src/app/model/vehicle/vehicle';
 
 @Component({
   selector: 'app-driving-details',
@@ -28,20 +26,15 @@ import { Vehicle } from 'src/app/model/response/vehicle';
     './driving-details.component.scss',
   ],
 })
-export class DrivingDetailsComponent
-  implements OnInit, OnDestroy, AfterViewInit
-{
+export class DrivingDetailsComponent implements OnInit, OnDestroy {
   @Input() map;
   id: number;
   vehicleRating: number;
-  driving: Driving = new Driving();
+  driving: Driving;
   driver: Driver;
   vehicle: Vehicle;
-  currentUser: User;
   destinations: string[] = [];
   favouriteRoute: boolean = false;
-  startPoint: string;
-  positionOption: TooltipPosition = 'above';
   isDriver: boolean;
   isRegularUser: boolean;
 
@@ -68,53 +61,46 @@ export class DrivingDetailsComponent
 
   ngOnInit(): void {
     this.id = +this.route.snapshot.paramMap.get('id');
-
     this.destinations = [];
     this.drivingsSubscription = this.drivingService
       .getDrivingDetails(this.id)
-      .subscribe((response: Driving) => {
-        this.driving = response;
+      .subscribe((driving: Driving) => {
+        this.driving = driving;
         console.log(this.driving);
-        for (const destination of response.route.locations) {
-          this.destinations.push(destination.street + ' ' + destination.number);
+        if (this.map) {
+          drawPolyline(this.map, this.driving.route);
         }
 
         this.driverSubscription = this.driverService
-          .getDriver(this.driving.driverId)
+          .getDriver(driving?.driverId)
           .subscribe((response: Driver) => {
             this.driver = response;
           });
 
-        this.currentUserSubscription = this.authService
-          .getCurrentUser()
-          .subscribe(user => {
-            this.isRegularUser = user.userIsRegular();
-            this.isDriver = user.userIsDriver();
-            this.currentUser = user;
-            this.favouriteRouteSubscription = this.userService
-              .isFavouriteRouteForUser(
-                this.driving.route.id,
-                this.currentUser.id
-              )
-              .subscribe(response => {
-                if (response) {
-                  this.favouriteRoute = true;
-                }
-              });
+        this.isRegularUser = this.authService.getCurrentUser?.userIsRegular();
+        this.isDriver = this.authService.getCurrentUser?.userIsDriver();
+
+        this.favouriteRouteSubscription = this.userService
+          .isFavouriteRouteForUser(
+            driving?.route?.id,
+            this.authService.getCurrentUser?.id
+          )
+          .subscribe(response => {
+            if (response) {
+              this.favouriteRoute = true;
+            }
           });
       });
   }
 
-  ngAfterViewInit() {
-    if (this.map) {
-      drawPolyline(this.map, this.driving.route);
-    }
-  }
   setFavouriteRoute() {
     if (this.favouriteRoute) {
       this.userService
         .removeFromFavouriteRoutes(
-          new FavouriteRouteRequest(this.currentUser.id, this.driving.route.id)
+          this.userService.createFavouriteRequest(
+            this.authService.getCurrentUserId,
+            this.driving.route.id
+          )
         )
         .subscribe(res => {
           this.favouriteRoute = false;
@@ -122,7 +108,10 @@ export class DrivingDetailsComponent
     } else {
       this.userService
         .addToFavouriteRoutes(
-          new FavouriteRouteRequest(this.currentUser.id, this.driving.route.id)
+          this.userService.createFavouriteRequest(
+            this.authService.getCurrentUserId,
+            this.driving.route.id
+          )
         )
         .subscribe(res => {
           this.favouriteRoute = true;

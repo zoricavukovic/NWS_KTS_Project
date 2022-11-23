@@ -4,18 +4,19 @@ import com.example.serbUber.dto.PossibleRouteDTO;
 import com.example.serbUber.dto.PossibleRoutesViaPointsDTO;
 import com.example.serbUber.dto.RouteDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
+import com.example.serbUber.model.DrivingLocationIndex;
 import com.example.serbUber.model.Location;
 import com.example.serbUber.model.Route;
 import com.example.serbUber.repository.RouteRepository;
 import com.example.serbUber.request.LocationsForRoutesRequest;
 import com.example.serbUber.request.LongLatRequest;
+import com.example.serbUber.service.interfaces.IRouteService;
 import com.graphhopper.ResponsePath;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.IntStream;
 
 import static com.example.serbUber.SerbUberApplication.hopper;
@@ -25,8 +26,9 @@ import static com.example.serbUber.util.Constants.getBeforeLastIndexOfList;
 import static com.example.serbUber.util.GraphHopperUtil.routing;
 import static com.example.serbUber.exception.EntityType.ROUTE;
 
-@Service
-public class RouteService {
+@Component
+@Qualifier("routeServiceConfiguration")
+public class RouteService implements IRouteService {
 
     private final RouteRepository routeRepository;
 
@@ -49,7 +51,7 @@ public class RouteService {
     }
 
     public RouteDTO create(
-            final Set<Location> locations,
+            final SortedSet<DrivingLocationIndex> locations,
             final double distance,
             final double time
     ) {

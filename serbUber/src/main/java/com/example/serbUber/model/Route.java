@@ -1,6 +1,10 @@
 package com.example.serbUber.model;
+import org.hibernate.annotations.SortNatural;
+
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
 
 @Entity
 @Table(name="routes")
@@ -9,12 +13,10 @@ public class Route {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "route_locations",
-            joinColumns = @JoinColumn(name = "route_id"),
-            inverseJoinColumns = @JoinColumn(name = "location_id")
-    )
-    private Set<Location> locations;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name="route_id", referencedColumnName = "id")
+    @SortNatural
+    private SortedSet<DrivingLocationIndex> locations;
 
     @Column(name="distance", nullable = false)
     private double distance;
@@ -26,7 +28,7 @@ public class Route {
     }
 
     public Route(
-        final Set<Location> locations,
+        final SortedSet<DrivingLocationIndex> locations,
         final double distance,
         final double timeInMin
     ) {
@@ -39,11 +41,11 @@ public class Route {
         return id;
     }
 
-    public Set<Location> getLocations() {
+    public SortedSet<DrivingLocationIndex> getLocations() {
         return locations;
     }
 
-    public void setLocations(Set<Location> locations) {
+    public void setLocations(SortedSet<DrivingLocationIndex> locations) {
         this.locations = locations;
     }
 

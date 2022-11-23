@@ -10,6 +10,9 @@ import com.example.serbUber.model.user.RegularUser;
 import com.example.serbUber.repository.user.RegularUserRepository;
 import com.example.serbUber.service.RouteService;
 import com.example.serbUber.service.VerifyService;
+import com.example.serbUber.service.interfaces.IRegularUserService;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,8 +25,9 @@ import static com.example.serbUber.util.Constants.ROLE_REGULAR_USER;
 import static com.example.serbUber.util.Constants.getProfilePicture;
 import static com.example.serbUber.util.JwtProperties.getHashedNewUserPassword;
 
-@Service
-public class RegularUserService {
+@Component
+@Qualifier("regularUserServiceConfiguration")
+public class RegularUserService implements IRegularUserService {
 
     private final RegularUserRepository regularUserRepository;
     private final VerifyService verifyService;

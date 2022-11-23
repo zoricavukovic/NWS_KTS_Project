@@ -1,16 +1,18 @@
 package com.example.serbUber.dto;
 
+import com.example.serbUber.model.DrivingLocationIndex;
 import com.example.serbUber.model.Location;
 import com.example.serbUber.model.Route;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
 
 public class RouteDTO {
 
     private Long id;
-    private Set<Location> locations;
+    private SortedSet<DrivingLocationIndex> locations;
     private double distance; //in metres
     private double timeInMin;
 
@@ -30,13 +32,13 @@ public class RouteDTO {
         return routeDTOs;
     }
 
-    public RouteDTO(Set<Location> locations, double distance, double timeInMs) {
+    public RouteDTO(SortedSet<DrivingLocationIndex> locations, double distance, double timeInMs) {
         this.locations = locations;
         this.distance = distance;
         this.timeInMin = getTimeInMinFromMs(timeInMs);
     }
 
-    public Set<Location> getLocations() {
+    public SortedSet<DrivingLocationIndex> getLocations() {
         return locations;
     }
 

@@ -3,10 +3,14 @@ package com.example.serbUber.service;
 import com.example.serbUber.exception.EntityUpdateException;
 import com.example.serbUber.model.user.DriverUpdateApproval;
 import com.example.serbUber.repository.user.DriverUpdateApprovalRepository;
+import com.example.serbUber.service.interfaces.IDriverUpdateApprovalService;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-@Service
-public class DriverUpdateApprovalService {
+@Component
+@Qualifier("driverUpdateApprovalServiceConfiguration")
+public class DriverUpdateApprovalService implements IDriverUpdateApprovalService {
 
     private final DriverUpdateApprovalRepository driverUpdateApprovalRepository;
 

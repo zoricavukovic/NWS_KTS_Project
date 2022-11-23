@@ -2,8 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/service/auth.service';
-import { Driving } from 'src/app/model/response/driving';
-import { User } from 'src/app/model/response/user/user';
+import { Driving } from 'src/app/model/driving/driving';
+import { User } from 'src/app/model/user/user';
 import { PageEvent } from '@angular/material/paginator';
 import { DrivingService } from 'src/app/service/driving.service';
 import { ReviewService } from 'src/app/service/review.service';
@@ -48,11 +48,7 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.userId = +this.route.snapshot.paramMap.get('id');
-    this.currentUserSubscription = this.authService
-      .getCurrentUser()
-      .subscribe(data => {
-        this.currentUser = data;
-      });
+    this.currentUser = this.authService.getCurrentUser;
 
     this.drivingsSubscription = this.drivingService
       .getDrivingsForUser(
@@ -64,6 +60,7 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
       )
       .subscribe((response: Driving[]) => {
         this.drivings = response;
+        console.log(this.drivings);
         this.reviewedDrivingsSubscription = this.reviewService
           .getReviewedDrivingsForUser(this.userId)
           .subscribe((response: number[]) => {

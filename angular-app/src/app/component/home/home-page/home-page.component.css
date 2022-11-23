@@ -1,14 +1,13 @@
 #map {
-  margin: 1% !important;
   height: 100% !important;
   z-index: 0 !important;
 }
 
-.delete-location-button{
+.delete-location-button {
   color: #2c4b61;
 }
 
-.place-options{
+.place-options {
   background-color: #b73e3e;
 }
 .mat-stepper-vertical {
@@ -24,4 +23,3 @@
   overflow-x: hidden;
   overflow-y: auto;
 }
-

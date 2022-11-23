@@ -1,31 +1,94 @@
-<mat-toolbar color="accent" class="mat-elevation-z3"> 
-    <a [routerLink]="['']" routerLinkActive='active'>
-        <img src="../../../assets/images/uber-icon.png" alt="SerbUber" style="height: 6rem; width: 6rem;"/>
-    </a>
-    
-    <div class="spacer">
-        <div *ngIf="currentUser">
-        &nbsp;&nbsp;
-        <a *ngIf="!isAdmin" [routerLink]="['/drivings', currentUser.id]" routerLinkActive='active' mat-button color="primary">Drivings</a>
-        <a *ngIf="isRegularUser" [routerLink]="['/favourite-routes']" routerLinkActive='active' mat-button color="primary">Favourite Routes</a>
-        <a *ngIf="isAdmin" [routerLink]="['/drivers']" routerLinkActive='active' mat-button color="primary">Drivers</a>
-        <a *ngIf="isAdmin" [routerLink]="['/users']" routerLinkActive='active' mat-button color="primary">Users</a>
-        </div>
-    </div>
-    
-    <a *ngIf="!currentUser" [routerLink]="['/login']" routerLinkActive='active' mat-button color="primary">Log in</a>
-    <a *ngIf="!currentUser" [routerLink]="['/registration']" routerLinkActive='active' mat-raised-button style="background-color: #f5e9de; margin-left: 0.5rem; color:#2c4b61">Sign up</a>
+<mat-toolbar color="accent" class="mat-elevation-z3">
+  <a [routerLink]="['']" routerLinkActive="active">
+    <img
+      src="../../../assets/images/uber-icon.png"
+      alt="SerbUber"
+      style="height: 10rem; width: 10rem" />
+  </a>
 
-
-    <div *ngIf="currentUser" class="temp">
-        <img mat-button [matMenuTriggerFor]="menu" [src]="configService.base64_show_photo_prefix + currentUser.profilePicture" alt="avatar" loading="lazy"  class="img-circle-small">
-        <span class="status bottomRight"></span>
+  <div class="spacer">
+    <div *ngIf="authService?.getCurrentUser">
+      &nbsp;&nbsp;
+      <a
+        *ngIf="!isAdmin"
+        [routerLink]="['/drivings', authService.getCurrentUser?.id]"
+        routerLinkActive="active"
+        mat-button
+        color="primary"
+        >Drivings</a
+      >
+      <a
+        *ngIf="isRegularUser"
+        [routerLink]="['/favourite-routes']"
+        routerLinkActive="active"
+        mat-button
+        color="primary"
+        >Favourite Routes</a
+      >
+      <a
+        *ngIf="isAdmin"
+        [routerLink]="['/drivers']"
+        routerLinkActive="active"
+        mat-button
+        color="primary"
+        >Drivers</a
+      >
+      <a
+        *ngIf="isAdmin"
+        [routerLink]="['/users']"
+        routerLinkActive="active"
+        mat-button
+        color="primary"
+        >Users</a
+      >
     </div>
-   
-    <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="redirectToProfilePage()"><mat-icon color="primary">account_circle</mat-icon><span>My profile</span></button>
-        <button mat-menu-item (click)="redirectToEditPage()"><mat-icon color="primary">edit</mat-icon><span>Edit profile</span></button>
-        <button mat-menu-item *ngIf="isAdmin" (click)="redirectToMessagesPage()"><mat-icon color="primary">chat</mat-icon><span>Messages</span></button>
-        <button mat-menu-item (click)="logOut()"><mat-icon color="primary">logout</mat-icon><span>Log out</span></button>
-    </mat-menu>
+  </div>
+
+  <a
+    *ngIf="!authService.getCurrentUser"
+    [routerLink]="['/login']"
+    routerLinkActive="active"
+    mat-button
+    color="primary"
+    >Log in</a
+  >
+  <a
+    *ngIf="!authService.getCurrentUser"
+    [routerLink]="['/registration']"
+    routerLinkActive="active"
+    mat-raised-button
+    >Sign up</a
+  >
+
+  <div *ngIf="authService.getCurrentUser" class="temp">
+    <img
+      mat-button
+      [matMenuTriggerFor]="menu"
+      [src]="
+        configService.base64_show_photo_prefix +
+        authService.getCurrentUser?.profilePicture
+      "
+      alt="avatar"
+      loading="lazy"
+      class="img-circle-small" />
+    <span class="status bottomRight"></span>
+  </div>
+
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item (click)="redirectToProfilePage()">
+      <mat-icon color="primary">account_circle</mat-icon><span>My profile</span>
+    </button>
+    <button mat-menu-item (click)="redirectToEditPage()">
+      <mat-icon color="primary">edit</mat-icon><span>Edit profile</span>
+    </button>
+    <button
+      mat-menu-item
+      *ngIf="this.authService.getCurrentUser?.isUserAdmin()"
+      (click)="redirectToMessagesPage()">
+      <mat-icon color="primary">chat</mat-icon><span>Messages</span>
+    </button>
+    <button mat-menu-item (click)="logOut()">
+      <mat-icon color="primary">logout</mat-icon><span>Log out</span>
+    </button>
+  </mat-menu>
 </mat-toolbar>

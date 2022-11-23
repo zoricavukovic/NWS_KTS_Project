@@ -8,11 +8,11 @@
                 <div class="contact" *ngFor="let chatRoom of chatRooms; index as i" [class]="(chatRoom.id === selectedChatRoom.id) ? 'active' : ''">
                     <div (click)="changedSelected(i)">
                         <div class="pic default-message"></div>
-                        <!--
-                                                <div class="badge">
-                                                    14
-                                                </div>
-                                            -->
+
+                        <div class="badge" *ngIf="showNotificationBadge(chatRoom)">
+                            {{getNumOfNotSeenMessages(chatRoom)}}
+                        </div>
+                    
                         <div class="name">
                             {{chatRoom.client.name + " " + chatRoom.client.surname}}
                             <span class="resolved-badge">{{(chatRoom.resolved) ? 'Closed' : 'Active'}}</span>
