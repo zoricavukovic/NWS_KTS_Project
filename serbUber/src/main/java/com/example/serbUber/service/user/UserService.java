@@ -6,6 +6,9 @@ import com.example.serbUber.model.user.User;
 import com.example.serbUber.repository.user.UserRepository;
 import com.example.serbUber.service.DriverUpdateApprovalService;
 import com.example.serbUber.service.EmailService;
+import com.example.serbUber.service.interfaces.IUserService;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,8 +22,9 @@ import static com.example.serbUber.util.JwtProperties.getHashedNewUserPassword;
 import static com.example.serbUber.util.JwtProperties.oldPasswordsMatch;
 import static com.example.serbUber.util.PictureHandler.checkPictureValidity;
 
-@Service
-public class UserService {
+@Component
+@Qualifier("userServiceConfiguration")
+public class UserService implements IUserService {
 
     private final UserRepository userRepository;
     private final DriverUpdateApprovalService driverUpdateApprovalService;

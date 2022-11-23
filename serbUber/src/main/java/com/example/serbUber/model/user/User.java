@@ -1,6 +1,7 @@
 package com.example.serbUber.model.user;
 import javax.persistence.*;
 
+import static com.example.serbUber.util.PictureHandler.convertPictureToBase64ByName;
 import static javax.persistence.InheritanceType.TABLE_PER_CLASS;
 
 @Entity

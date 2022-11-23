@@ -6,6 +6,7 @@ import com.example.serbUber.exception.NoAvailableAdminException;
 import com.example.serbUber.request.message.MessageRequest;
 import com.example.serbUber.request.message.MessageSeenRequest;
 import com.example.serbUber.service.message.ChatRoomService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,7 @@ public class ChatRoomController {
 
     private ChatRoomService chatRoomService;
 
-    public ChatRoomController(final ChatRoomService chatRoomService) {
+    public ChatRoomController(@Qualifier("chatRoomServiceConfiguration") final ChatRoomService chatRoomService) {
         this.chatRoomService = chatRoomService;
     }
 

@@ -1,6 +1,8 @@
 package com.example.serbUber.service.user;
 
 import com.example.serbUber.dto.RouteDTO;
+import com.example.serbUber.dto.VerifyDTO;
+import com.example.serbUber.dto.user.RegistrationDTO;
 import com.example.serbUber.dto.user.RegularUserDTO;
 import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.*;
@@ -10,6 +12,9 @@ import com.example.serbUber.model.user.RegularUser;
 import com.example.serbUber.repository.user.RegularUserRepository;
 import com.example.serbUber.service.RouteService;
 import com.example.serbUber.service.VerifyService;
+import com.example.serbUber.service.interfaces.IRegularUserService;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,8 +27,9 @@ import static com.example.serbUber.util.Constants.ROLE_REGULAR_USER;
 import static com.example.serbUber.util.Constants.getProfilePicture;
 import static com.example.serbUber.util.JwtProperties.getHashedNewUserPassword;
 
-@Service
-public class RegularUserService {
+@Component
+@Qualifier("regularUserServiceConfiguration")
+public class RegularUserService implements IRegularUserService {
 
     private final RegularUserRepository regularUserRepository;
     private final VerifyService verifyService;
@@ -61,7 +67,7 @@ public class RegularUserService {
             .orElseThrow(() -> new EntityNotFoundException(id, EntityType.USER));
     }
 
-    public RegularUserDTO create(
+    public RegistrationDTO create(
         final String email,
         final String password,
         final String confirmationPassword,
@@ -74,12 +80,11 @@ public class RegularUserService {
         if (passwordsDontMatch(password, confirmationPassword)) {
             throw new PasswordsDoNotMatchException();
         }
-        RegularUser regularUser = saveRegularUser(email, password, name, surname, phoneNumber, city, profilePicture);
 
-        return new RegularUserDTO(regularUser);
+        return registerRegularUser(email, password, name, surname, phoneNumber, city, profilePicture);
     }
 
-    private RegularUser saveRegularUser(
+    private RegistrationDTO registerRegularUser(
             final String email,
             final String password,
             final String name,
@@ -100,9 +105,9 @@ public class RegularUserService {
                 getProfilePicture(profilePicture),
                 roleService.get(ROLE_REGULAR_USER)
             ));
-            verifyService.sendEmail(regularUser.getId(), regularUser.getEmail());
+            VerifyDTO verifyDTO = verifyService.create(regularUser.getId(), regularUser.getEmail());
 
-            return regularUser;
+            return new RegistrationDTO(verifyDTO.getId(), email);
         } catch (EntityNotFoundException ex) {
             throw new EntityNotFoundException(ROLE_REGULAR_USER, EntityType.ROLE);
         } catch (IllegalArgumentException e) {

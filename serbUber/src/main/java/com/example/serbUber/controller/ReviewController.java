@@ -4,6 +4,7 @@ import com.example.serbUber.dto.ReviewDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.request.ReviewRequest;
 import com.example.serbUber.service.ReviewService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    public ReviewController(final ReviewService reviewService) {
+    public ReviewController(@Qualifier("reviewServiceConfiguration") final ReviewService reviewService) {
         this.reviewService = reviewService;
     }
 

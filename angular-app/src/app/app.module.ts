@@ -26,7 +26,7 @@ import { RatingDialogComponent } from './component/review/rating-dialog/rating-d
 import { MatDialogModule } from '@angular/material/dialog';
 import { SendResetPasswordEmailComponent } from './component/user/auth/send-reset-password-link/send-reset-password-link.component';
 import { ResetPasswordComponent } from './component/user/auth/reset-password/reset-password.component';
-import { HomePageComponent } from './component/home-page/home-page.component';
+import { HomePageComponent} from "./component/home/home-page/home-page.component";
 import { TimelineModule } from 'primeng/timeline';
 import { NavBarComponent } from './component/nav-bar/nav-bar.component';
 import { RatingModule } from 'primeng/rating';
@@ -40,6 +40,7 @@ import { NgToastModule } from 'ng-angular-popup';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatChipsModule } from '@angular/material/chips';
 import { ToastrModule } from 'ngx-toastr';
 import { ButtonLiveChatComponent } from './component/chat/button-live-chat/button-live-chat.component';
 import { PoupupLiveChatComponent } from './component/chat/poupup-live-chat/poupup-live-chat.component';
@@ -56,10 +57,11 @@ import { MapComponent } from './component/map/map.component';
 import { FavouriteRoutesComponent } from './component/favourite-route/favourite-routes/favourite-routes.component';
 import { FavouriteRouteRowComponent } from './component/favourite-route/favourite-route-row/favourite-route-row.component';
 import { UtilMessageComponent } from './component/util-message/util-message.component';
-import {ScrollingModule} from "@angular/cdk/scrolling";
-import { DriverHomePageContainerComponent } from './component/home-page/driver-home-page-container/driver-home-page-container.component';
-import {AvatarModule} from 'primeng/avatar';
-import {AvatarGroupModule} from 'primeng/avatargroup';
+import { FilterVehicleViewComponent } from './component/home/filter-vehicle-view/filter-vehicle-view.component';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { DriverHomePageContainerComponent } from './component/home/driver-home-page-container/driver-home-page-container.component';
+import { AvatarModule } from 'primeng/avatar';
+import { AvatarGroupModule } from 'primeng/avatargroup';
 
 @NgModule({
   declarations: [
@@ -94,6 +96,7 @@ import {AvatarGroupModule} from 'primeng/avatargroup';
     FavouriteRoutesComponent,
     FavouriteRouteRowComponent,
     UtilMessageComponent,
+    FilterVehicleViewComponent,
     DriverHomePageContainerComponent,
   ],
   imports: [
@@ -115,6 +118,7 @@ import {AvatarGroupModule} from 'primeng/avatargroup';
     MatTooltipModule,
     MatRadioModule,
     MatPaginatorModule,
+    MatChipsModule,
     ToastrModule.forRoot({
       timeOut: 4000,
       positionClass: 'toast-bottom-left',
@@ -123,7 +127,7 @@ import {AvatarGroupModule} from 'primeng/avatargroup';
     }),
     ScrollingModule,
     AvatarModule,
-    AvatarGroupModule
+    AvatarGroupModule,
   ],
   entryComponents: [EditProfileComponent],
   providers: [

@@ -1,44 +1,51 @@
 .form-container {
-    display: block;
-    max-width: 27rem;
-    margin: auto;
-    margin-top: .5rem;
-    background-color: rgba(171, 187, 174, 0.411);
-    padding: 5%;
-    border-radius: 15px;
-    overflow:hidden;
-    clear: both;
+  display: block;
+  max-width: 27rem;
+  margin: .5rem auto auto;
+  background-color: var(--gray-transparent);
+  padding: 5%;
+  border-radius: 15px;
+  overflow:hidden;
+  clear: both;
 }
 
 .mat-checkbox {
-    margin-right: 2rem;
-    margin-bottom: 1rem;
+  margin-right: 2rem;
+  margin-bottom: 1rem;
 }
 
 .vehicle-type-option {
-    display: block !important;
-    background-color: #f5e9de;
-    border-radius: 15px;
-    max-width: 27rem;
-    margin: auto;
-    margin-top: .5rem;
+  display: block !important;
+  background-color: var(--white);
+  border-radius: 15px;
+  max-width: 27rem;
+  margin: .5rem auto auto;
 }
 
-
-
 .product-item-content {
-    height: 5.5rem;
-    width: 6rem;
-    border: 2px solid;
-    border-radius: 15px;
-    background-color: #f5e9de;
-    margin: .3rem;
-    padding: 0.1rem;
-    padding-left: 0.9rem;
+  height: 5.5rem;
+  width: 6rem;
+  border: 2px solid;
+  border-radius: 15px;
+  background-color: var(--white);
+  margin: .3rem;
+  padding-right: 0.1rem;
+  padding-left: 0.1rem;
 }
 
 .product-image {
-    width: 50%;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23)
+  width: 50%;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23)
+}
+
+.img-vehicle-types {
+  width:5rem;
+  height: 5rem;
+}
+
+.text-vehicle-types-name {
+  position: absolute;
+  top:3.6rem;
+  left: 1.4rem;
 }
 

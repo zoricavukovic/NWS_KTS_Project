@@ -1,0 +1,37 @@
+#map {
+  height: 100% !important;
+  z-index: 0 !important;
+}
+
+.delete-location-button {
+  color: #2c4b61;
+}
+
+.place-options {
+  background-color: var(--gray);
+}
+.mat-stepper-vertical {
+  margin-top: 8px;
+}
+
+.mat-form-field {
+  margin-top: 16px;
+}
+
+.viewport {
+  height: 170px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.stepper-possible-routes {
+  background-color:var(--gray);
+}
+
+.confirm-ride-button {
+  background-color:var(--deep-blue);
+}
+
+.text-deep-blue {
+  color:var(--deep-blue);
+}

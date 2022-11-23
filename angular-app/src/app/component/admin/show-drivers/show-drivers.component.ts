@@ -1,6 +1,6 @@
 import { OnDestroy, OnInit } from '@angular/core';
 import { Component } from '@angular/core';
-import { Driver } from 'src/app/model/response/user/driver';
+import { Driver } from 'src/app/model/user/driver';
 import { Subscription } from 'rxjs';
 import { DriverService } from 'src/app/service/driver.service';
 

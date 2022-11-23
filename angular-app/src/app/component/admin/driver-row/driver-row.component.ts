@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Driver } from 'src/app/model/response/user/driver';
+import { Driver } from 'src/app/model/user/driver';
 import { ConfigService } from 'src/app/service/config.service';
 import { Router } from '@angular/router';
 

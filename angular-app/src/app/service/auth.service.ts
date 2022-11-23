@@ -1,13 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { LoginRequest } from '../model/request/user/login-request';
-import { LoginResponse } from '../model/response/user/login';
-import { User } from '../model/response/user/user';
-import { Route } from '../model/response/route';
+import { LoginRequest } from '../model/user/login-request';
+import { LoginResponse } from '../model/user/login-response';
+import { User } from '../model/user/user';
+import { Route } from '../model/route/route';
 import { ConfigService } from './config.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Router } from '@angular/router';
-import { ChatService } from './chat.service';
+import { WebSocketService } from './web-socket.service';
 
 @Injectable({
   providedIn: 'root',
@@ -20,13 +20,13 @@ export class AuthService {
     private http: HttpClient,
     private configService: ConfigService,
     private router: Router,
-    private chatService: ChatService
+    private chatService: WebSocketService
   ) {
-    this.currentUserSubject$ = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('user')));
+    this.currentUserSubject$ = new BehaviorSubject<User>(
+      JSON.parse(localStorage.getItem('user'))
+    );
     this.currentUser = this.currentUserSubject$.asObservable();
   }
-
-
 
   login(loginRequest: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(
@@ -52,7 +52,7 @@ export class AuthService {
   setLocalStorage(loginResponse: LoginResponse): void {
     localStorage.setItem('token', 'Bearer ' + loginResponse.token);
     localStorage.setItem('user', JSON.stringify(loginResponse.userDTO));
-    localStorage.setItem('email', JSON.stringify(loginResponse.userDTO.email));
+    localStorage.setItem('email', loginResponse.userDTO.email);
   }
 
   logOut() {
@@ -65,7 +65,7 @@ export class AuthService {
     return this.http.post<User>(
       this.configService.logout_url,
       this.getCurrentUser?.email,
-      {headers: this.configService.getHeader()}
+      { headers: this.configService.getHeader() }
     );
   }
 
@@ -96,7 +96,7 @@ export class AuthService {
     return this.currentUserSubject$.value;
   }
 
-  public get getCurrentUserId(): number{
+  public get getCurrentUserId(): number {
     const user = localStorage.getItem('user');
     if (user !== null && user !== undefined) {
       const parsedUser: User = JSON.parse(user);
@@ -116,7 +116,8 @@ export class AuthService {
 
   getFavouriteRoutesForUser(userId: number) {
     return this.http.get<Route[]>(
-      this.configService.get_favourite_routes(userId), {headers: this.configService.getHeader()}
+      this.configService.get_favourite_routes(userId),
+      { headers: this.configService.getHeader() }
     );
   }
 }

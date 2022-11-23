@@ -1,22 +1,42 @@
-<mat-card class="card">
-    <mat-card-header>
-      <img mat-card-avatar [src]="getBase64Prefix() + driver.profilePicture">
-      <mat-card-title>{{driver.name}} {{driver.surname}}</mat-card-title>
-    </mat-card-header>
-    <br>
-    <mat-card-content >
-        <div style="display:flex;">
-        <mat-icon style="display:inline-flex">email</mat-icon>&nbsp;{{driver.email}}
-        </div>
-        <br>
-        <div style="display:flex;">
-            <mat-icon style="display:inline-flex">phone</mat-icon>&nbsp;{{driver.phoneNumber}}
+<div style="background-color:var(--white); padding: 3rem 1rem 1rem;border-radius: 15px; margin-top: 3rem">
+  <div>
+    <mat-card class="card" style="position: relative;">
+      <img style="height:10rem; width:10rem; position: absolute; bottom:8.6rem; left:5rem"
+           src="../../../assets/images/{{driver?.vehicle?.vehicleTypeInfo.vehicleType.toLowerCase()}}.png"
+      >
+      <div style="display:flex; margin-top: 1.5rem">
+        <img mat-card-avatar class="img-user" [src]="getBase64Prefix() + driver.profilePicture">
+        <mat-card-content>
+          <div class="user-info-container">
+            <h1>{{driver.name}} {{driver.surname}}</h1>
+            <div style="display:flex;margin-top:0.4rem">
+              <mat-icon style="display:inline-flex">email</mat-icon>&nbsp;{{driver.email}}
             </div>
-        <div style="float:right">
-        ocene</div>
-    </mat-card-content>
+            <div style="display:flex; margin-top:0.4rem">
+              <mat-icon style="display:inline-flex">phone</mat-icon>&nbsp;{{driver.phoneNumber}}
+            </div>
+          </div>
+        </mat-card-content>
 
-    <mat-card-actions align="end">
-        <button mat-raised-button class="btn" (click)="viewDrivings()">View drivings</button>
-    </mat-card-actions>
-  </mat-card>
+      </div>
+      <mat-card-actions align="end">
+        <button mat-raised-button class="btn" (click)="viewDrivings()">
+          OCENEE SRKI MOLIM TE
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+  <br/>
+  <div>
+    <h2>{{driver.name}}'s car</h2>
+    <div style="display:flex">
+      <mat-icon style="display: inline-flex; margin-left: 5px; transform: scale(1.5);">people</mat-icon>
+      <h2>&nbsp;&nbsp;{{ driver?.vehicle?.vehicleTypeInfo?.numOfSeats }}</h2>
+    </div>
+  </div>
+  <mat-card-actions align="end">
+    <button mat-raised-button class="btn" (click)="viewDrivings()">
+      View drivings
+    </button>
+  </mat-card-actions>
+</div>

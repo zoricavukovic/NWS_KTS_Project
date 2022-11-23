@@ -1,9 +1,8 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { PasswordUpdateRequest } from 'src/app/model/request/user/user-profile-update';
-import { User } from 'src/app/model/response/user/user';
-import { UserPasswordUpdateRequest } from 'src/app/model/request/user/user-profile-update';
+import {ActivatedRoute, Router} from '@angular/router';
+import { PasswordUpdateRequest } from 'src/app/model/user/user-profile-update';
+import { User } from 'src/app/model/user/user';
 import { AuthService } from 'src/app/service/auth.service';
 import { UserService } from 'src/app/service/user.service';
 import { isFormValid } from 'src/app/util/validation-function';
@@ -11,6 +10,7 @@ import { matchPasswordsValidator } from '../registration/confirm-password.valida
 import { MyErrorStateMatcher } from '../registration/registration.component';
 import { Subscription } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
+import {ConfigService} from "../../../../service/config.service";
 
 @Component({
   selector: 'app-reset-password',
@@ -47,10 +47,12 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
   });
 
   constructor(
+    public authService: AuthService,
+    public configService: ConfigService,
     private route: ActivatedRoute,
     private userService: UserService,
-    private authService: AuthService,
-    private toast: ToastrService
+    private toast: ToastrService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -66,18 +68,18 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
 
   resetPasswordEmail() {
     if (isFormValid(this.passwordForm)) {
+      const passwordUpdateRequest: PasswordUpdateRequest = {
+        email: this.email,
+        newPassword: this.passwordForm.get('passwordFormControl').value,
+        confirmPassword: this.passwordForm.get('passwordAgainFormControl')
+          .value,
+      };
       this.resetSubscription = this.userService
-        .resetPassword(
-          new PasswordUpdateRequest(
-            this.email,
-            this.passwordForm.get('passwordFormControl').value,
-            this.passwordForm.get('passwordAgainFormControl').value
-          )
-        )
+        .resetPassword(passwordUpdateRequest)
         .subscribe(
           response => {
-            console.log(response);
-            this.authService.logOut();
+            this.toast.success("Password is changed successfully.", 'Changed password')
+            this.router.navigate(['/login']);
           },
           error => this.toast.error(error.error, 'Reset password failed')
         );
@@ -86,19 +88,20 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
 
   changePassword() {
     if (isFormValid(this.passwordForm) && !this.oldPasswordForm.invalid) {
+      const passwordUpdateRequest: PasswordUpdateRequest = {
+        email: this.email,
+        newPassword: this.passwordForm.get('passwordFormControl').value,
+        confirmPassword: this.passwordForm.get('passwordAgainFormControl')
+          .value,
+        currentPassword: this.oldPasswordForm.value,
+      };
       this.changePassSubscription = this.userService
-        .updatePassword(
-          new UserPasswordUpdateRequest(
-            this.user.email,
-            this.oldPasswordForm.value,
-            this.passwordForm.get('passwordFormControl').value,
-            this.passwordForm.get('passwordAgainFormControl').value
-          )
-        )
+        .updatePassword(passwordUpdateRequest)
         .subscribe(
           response => {
+            this.toast.success("Password is changed successfully.", 'Updated password')
             this.authService.logOut();
-            console.log(response);
+            this.router.navigate(['/login']);
           },
           error => this.toast.error(error.error, 'Reset password failed')
         );

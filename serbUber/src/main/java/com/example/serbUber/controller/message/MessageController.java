@@ -1,6 +1,7 @@
 package com.example.serbUber.controller.message;
 
 import com.example.serbUber.service.message.MessageService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -10,7 +11,7 @@ public class MessageController {
 
     private MessageService messageService;
 
-    public MessageController(final MessageService messageService) {
+    public MessageController(@Qualifier("messageServiceConfiguration") final MessageService messageService) {
         this.messageService = messageService;
     }
 

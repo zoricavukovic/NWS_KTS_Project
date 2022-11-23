@@ -3,15 +3,22 @@
   <mat-expansion-panel>
     <mat-expansion-panel-header>
       <mat-panel-title>
-        {{ destinations[0] }} <mat-icon>arrow_forward</mat-icon>
-        {{ destinations[destinations.length - 1] }}
+        {{ driving.route.locations.at(0).location.street }}
+        {{ driving.route.locations.at(0).location.number }}
+        <mat-icon>arrow_forward</mat-icon>
+        {{
+          driving.route.locations.at(driving.route.locations.length - 1).location.street
+        }}
+        {{
+          driving.route.locations.at(driving.route.locations.length - 1).location.number
+        }}
       </mat-panel-title>
     </mat-expansion-panel-header>
 
-    <mat-list-item *ngFor="let dest of destinations">
+    <mat-list-item *ngFor="let destination of driving.route.locations">
       <div style="display: flex; font-size: 15px">
         <mat-icon mat-list-icon class="icon">location_on</mat-icon>
-        <div mat-line>{{ dest }}</div>
+        <div mat-line>{{ destination.location.street }} {{ destination.location.number }}</div>
       </div>
       <br />
     </mat-list-item>

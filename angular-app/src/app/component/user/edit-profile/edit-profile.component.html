@@ -1,10 +1,14 @@
 <div class="form-container mat-elevation-z1">
     <h1 class="text-center">Change profile data</h1>
-    <div class="email-container">
-        <img src="../../../assets/images/email.png" alt="email icon" style="height: 2rem;width:2rem;" />
-        <h2 style="margin-left: 0.5rem;">
-            {{user.email}}
-        </h2>
+    <div  class="email-container">
+
+      <img mat-card-avatar
+           [src]="configService.base64_show_photo_prefix + authService.getCurrentUser?.profilePicture"
+           alt="user icon"
+           class="email-container-picture" />
+      <h3 style="margin-left: 0.5rem">
+        {{ user.email }}
+      </h3>
     </div>
 
     <form color="primary" [formGroup]="editDataForm">
@@ -19,8 +23,8 @@
                     Please enter a valid name
                 </mat-error>
             </mat-form-field>
-            
-            
+
+
             <mat-form-field class="colomn" appearance="fill">
                 <mat-label>Surname</mat-label>
                 <input type="text" matInput formControlName="surnameFormControl" [errorStateMatcher]="matcher"
@@ -32,8 +36,8 @@
                     Please enter a valid surname
                 </mat-error>
             </mat-form-field>
-            
-            
+
+
             <mat-form-field class="colomn" appearance="fill">
                 <mat-label>Phone number</mat-label>
                 <input type="tel" matInput formControlName="phoneNumberFormControl" [errorStateMatcher]="matcher"
@@ -42,10 +46,10 @@
                     Phone number is <strong>required</strong>
                 </mat-error>
                 <mat-error *ngIf="editDataForm.get('phoneNumberFormControl').hasError('pattern')">
-                    Please enter a valid phone number
+                    Please enter a valid phone number (8-12 digits)
                 </mat-error>
             </mat-form-field>
-        
+
             <mat-form-field class="colomn" appearance="fill">
                 <mat-label>City</mat-label>
                 <input type="text" matInput [errorStateMatcher]="matcher" aria-label="State" [matAutocomplete]="auto"
@@ -61,7 +65,7 @@
             </mat-form-field>
         </div>
         <div class="center">
-            <button mat-raised-button class="green-secondary-button" (click)="cancel()">
+            <button mat-button class="cancel-button" (click)="cancel()">
                 Cancel
             </button>
             <button mat-raised-button class="green-button" (click)="saveChanges()" [disabled]="checkValidForm()">

@@ -4,9 +4,10 @@
          matTooltip="Live chat support"  matTooltipPosition="above">
             <mat-icon class="icon-live-chat">{{showChatPoupup ? 'close' : 'question_answer'}}</mat-icon>
         </button>
-        <div class="badge">
-            7
+        <div *ngIf="numOfNotifications > 0" class="badge">
+            {{this.numOfNotifications}}
         </div>
     </div>
 </div>
-<app-poupup-live-chat *ngIf="showChatPoupup" (onCloseEvent)="showChatPoupup = $event" [loggedUser]="authService.getCurrentUser"></app-poupup-live-chat>
+<app-poupup-live-chat *ngIf="showChatPoupup" (onCloseEvent)="showChatPoupup = $event" [loggedUser]="authService.getCurrentUser"
+                        (onMessagesSeenEvent)="updateNotifications()"></app-poupup-live-chat>

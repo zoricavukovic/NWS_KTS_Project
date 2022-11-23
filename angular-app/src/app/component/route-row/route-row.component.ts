@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { PossibleRoute } from '../../model/response/possible-routes';
+import { PossibleRoute } from '../../model/route/possible-routes';
 
 @Component({
   selector: 'route-row',

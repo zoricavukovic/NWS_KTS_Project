@@ -19,7 +19,7 @@ public class DriverRegistrationRequest extends UserRequest {
 
     @NotNull(message = "Vehicle data must be added.")
     @Valid
-    private VehicleRequest vehicleRequest;
+    private VehicleRequest vehicle;
 
     public DriverRegistrationRequest(
             final String email,
@@ -30,18 +30,18 @@ public class DriverRegistrationRequest extends UserRequest {
             final String city,
             final String profilePicture,
             final String confirmPassword,
-            final VehicleRequest vehicleRequest
+            final VehicleRequest vehicle
     ) {
         super(email, password, name, surname, phoneNumber, city, profilePicture);
         this.confirmPassword = confirmPassword;
-        this.vehicleRequest = vehicleRequest;
+        this.vehicle = vehicle;
     }
 
     public String getConfirmPassword() {
         return confirmPassword;
     }
 
-    public VehicleRequest getVehicleRequest() {
-        return vehicleRequest;
+    public VehicleRequest getVehicle() {
+        return vehicle;
     }
 }

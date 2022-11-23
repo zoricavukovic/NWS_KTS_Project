@@ -6,10 +6,10 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class ConfigService {
-
   getHeader(): HttpHeaders {
     return new HttpHeaders().set(
-      'Authorization', localStorage.getItem('token')
+      'Authorization',
+      localStorage.getItem('token')
     );
   }
 
@@ -115,7 +115,7 @@ export class ConfigService {
   }
 
   now_future_drivings_url(id: number): string {
-    return this._drivings_pagination_url + "/" + id;
+    return this._drivings_pagination_url + '/' + id;
   }
 
   driving_details_url(id: number): string {

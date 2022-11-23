@@ -17,10 +17,10 @@ public interface DrivingRepository extends JpaRepository<Driving, Long> {
 //    @Query(value="select * from drivings d, routes r, route_destinations rd, locations l, drivings_users du, regular_users ru where d.route_id = r.id and r.id = rd.route_id and rd.location_id = l.id and d.id = du.driving_id and ru.id = du.user_id and ru.email='ana@gmail.com'",nativeQuery = true)
     List<Driving> findByUserId(Long id, Pageable pageable);
 
-    @Query(value = "select d from Driving d left join fetch d.route r left join fetch r.locations dest left join fetch d.usersPaid up left join fetch d.users u where d.driverId = ?1")
+    @Query(value = "select d from Driving d left join fetch d.route r left join fetch r.locations dest left join fetch d.usersPaid up left join fetch d.users u where d.driverId = ?1 order by dest.id")
     List<Driving> findByDriverId(Long id, Pageable pageable);
 
-    @Query("select d from Driving d left join fetch d.route r left join fetch r.locations dest left join fetch d.usersPaid up left join fetch d.users u where d.id=?1")
+    @Query("select d from Driving d left join fetch d.route r left join fetch r.locations dest left join fetch d.usersPaid up left join fetch d.users u where d.id=?1 order by dest.id")
     Optional<Driving> getDrivingById(Long id);
 
     @Query(value = "select distinct d from Driving d left join fetch d.route r left join fetch r.locations dest left join fetch d.users u " +

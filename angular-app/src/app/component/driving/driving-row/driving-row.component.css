@@ -1,40 +1,39 @@
-.card{
-    max-width: 60%;
-    margin-top: 20px;
-    margin-left: 20%;
-    padding: 20px;
+.card {
+  max-width: 60%;
+  margin-top: 20px;
+  margin-left: 20%;
+  padding: 20px;
 }
 
-.btn{
-    float: right;
+.btn {
+  float: right;
 }
 
-.price{
-    float: right;
+.price {
+  float: right;
+  color: var(--deep-blue);
 }
 
-.date{
-    float: right;
-    margin-right:12%;
+.date {
+  float: right;
+  margin-right: 12%;
 }
 
-
-p{
-    display: inline;
+p {
+  display: inline;
 }
 
-.line{
-    flex:1;
+.line {
+  flex: 1;
 }
 
-.divider{
-
-    display: inline-block;
-    border-top-width: 2px;
-    margin-left: 20%;
+.divider {
+  display: inline-block;
+  border-top-width: 2px;
+  margin-left: 20%;
 }
 
-.sortBtn{
-    float: right;
-    margin-right:5%;
+.sortBtn {
+  float: right;
+  margin-right: 5%;
 }

@@ -1,6 +1,6 @@
 
 h1, h2 {
-    color: var(--blue);
+    color: var(--deep-blue);
 }
 
 input[type="file"] {
@@ -8,8 +8,9 @@ input[type="file"] {
 }
 
 .custom-file-upload:hover {
-    background-color: var(--mint);
+    background-color: var(--deep-blue);
     transition: .5s;
+    color: var(--white);
 }
 
 .change-photo-container {
@@ -18,12 +19,12 @@ input[type="file"] {
 }
 
 .custom-file-upload {
-    border: 3px solid var(--blue);
+    border: 3px solid var(--deep-blue);
     display: inline-block;
     padding: 6px 12px;
     cursor: pointer;
     font-size: 1.5rem;
-    color: var(--blue);
+    color: var(--deep-blue);
     margin-top: 7%;
     border-radius: 1rem;
 }

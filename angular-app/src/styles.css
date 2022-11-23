@@ -1,12 +1,28 @@
-@import "~leaflet/dist/leaflet.css" ;
-@import "~leaflet-geosearch/dist/geosearch.css";
-html, body { height: 100%}
-body { margin: 0; font-size: 1rem; background-color: var(--blue); color: var(--blue);}
+@import '~leaflet/dist/leaflet.css';
+@import '~leaflet-geosearch/dist/geosearch.css';
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-size: 1rem;
+  background-color: var(--white);
+  color: var(--deep-blue);
+  background-image: url('./assets/app/night_novi_sad.png');
+  height: 100%;
 
-:root {
-    --mint: rgba(171, 187, 174);
-    --blue: #2c4b61;
-    --red: #b73e3e;
-    --cream: rgb(245, 233, 222);
+  /* Center and scale the image nicely */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
 }
 
+:root {
+  --gray: #cdd1d3;
+  --deep-blue: #283b50;
+  --red: #b73e3e;
+  --white: #ffffff;
+  --gray-transparent: rgba(231, 230, 230, 0.47)
+}

@@ -4,10 +4,14 @@ import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.EntityType;
 import com.example.serbUber.model.user.Role;
 import com.example.serbUber.repository.user.RoleRepository;
+import com.example.serbUber.service.interfaces.IRoleService;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-@Service
-public class RoleService {
+@Component
+@Qualifier("roleServiceConfiguration")
+public class RoleService implements IRoleService {
 
     private final RoleRepository roleRepository;
 

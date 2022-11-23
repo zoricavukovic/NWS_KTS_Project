@@ -13,6 +13,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -41,8 +42,8 @@ public class AuthenticationController {
 
     @Autowired
     public AuthenticationController(
-        final TokenService tokenService,
-        final UserService userService
+        @Qualifier("tokenServiceConfiguration") final TokenService tokenService,
+        @Qualifier("userServiceConfiguration") final UserService userService
     ) {
         this.tokenService = tokenService;
         this.userService = userService;

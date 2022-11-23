@@ -7,14 +7,17 @@ import com.example.serbUber.exception.MailCannotBeSentException;
 import com.example.serbUber.exception.WrongVerifyTryException;
 import com.example.serbUber.model.Verify;
 import com.example.serbUber.repository.VerifyRepository;
+import com.example.serbUber.service.interfaces.IVerifyService;
 import com.example.serbUber.util.Constants;
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import static com.example.serbUber.util.Constants.MAX_NUM_VERIFY_TRIES;
 import static com.example.serbUber.util.EmailConstants.FRONT_VERIFY_URL;
 
-@Service
-public class VerifyService {
+@Component
+@Qualifier("verifyServiceConfiguration")
+public class VerifyService implements IVerifyService {
 
     private final VerifyRepository verifyRepository;
 
@@ -34,26 +37,24 @@ public class VerifyService {
             .orElseThrow(() -> new EntityNotFoundException(id, EntityType.VERIFY));
     }
 
-    public void sendEmail(
+    public VerifyDTO create(
             final Long userId,
             final String email
     ) throws MailCannotBeSentException {
         try {
-            VerifyDTO verify = this.create(userId, email);
+            VerifyDTO verifyDTO = this.save(userId, email);
             emailService.sendMail(email, "Verification mail",
                     String.format("Your code is: %d \nClick here to activate your account: %s%s",
-                            verify.getSecurityCode(), FRONT_VERIFY_URL, verify.getId())
+                        verifyDTO.getSecurityCode(), FRONT_VERIFY_URL, verifyDTO.getId())
             );
+            return verifyDTO;
 
         } catch (Exception e) {
             throw new MailCannotBeSentException(email);
         }
     }
 
-    public VerifyDTO create(
-            final Long userId,
-            final String email
-    ) {
+    private VerifyDTO save(final Long userId, final String email) {
 
         return new VerifyDTO(verifyRepository.save(new Verify(
           userId,
@@ -86,15 +87,15 @@ public class VerifyService {
         }
     }
 
-    private void saveChanges(final Verify verify, final boolean used) {
-        verify.setUsed(used);
-        verifyRepository.save(verify);
-    }
-
     public void generateNewSecurityCode(final Long verifyId)
             throws EntityNotFoundException, MailCannotBeSentException {
         Verify verify = get(verifyId);
-        this.sendEmail(verify.getUserId(), verify.getEmail());
+        this.create(verify.getUserId(), verify.getEmail());
         verifyRepository.delete(verify);
+    }
+
+    private void saveChanges(final Verify verify, final boolean used) {
+        verify.setUsed(used);
+        verifyRepository.save(verify);
     }
 }

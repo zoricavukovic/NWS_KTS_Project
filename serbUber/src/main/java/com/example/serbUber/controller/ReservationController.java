@@ -3,6 +3,7 @@ package com.example.serbUber.controller;
 import com.example.serbUber.dto.ReservationDTO;
 import com.example.serbUber.request.ReservationRequest;
 import com.example.serbUber.service.ReservationService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +15,7 @@ import java.util.List;
 public class ReservationController {
     private final ReservationService reservationService;
 
-    public ReservationController(final ReservationService reservationService) { this.reservationService = reservationService; }
+    public ReservationController(@Qualifier("reservationServiceConfiguration") final ReservationService reservationService) { this.reservationService = reservationService; }
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)

@@ -1,10 +1,10 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { Driving } from 'src/app/model/response/driving';
+import { Driving } from 'src/app/model/driving/driving';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { RatingDialogComponent } from '../../review/rating-dialog/rating-dialog.component';
 import { Subscription } from 'rxjs';
-import { User } from 'src/app/model/response/user/user';
+import { User } from 'src/app/model/user/user';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -28,6 +28,10 @@ export class DrivingRowComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.isRegularUser = this.user.userIsRegular();
+    console.log(this.driving.route.locations);
+    console.log(
+      this.driving.route.locations.at(this.driving.route.locations.length - 1)
+    );
   }
 
   goToDetailsPage(id: number) {

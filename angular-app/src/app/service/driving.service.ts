@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ConfigService } from './config.service';
 import {Observable} from "rxjs";
-import {Driving} from "../model/response/driving";
+import { Driving} from "../model/driving/driving";
+
 @Injectable({
     providedIn: 'root'
   })

@@ -6,7 +6,7 @@ import {
   Output,
 } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { VehicleTypeInfo } from 'src/app/model/response/vehicle-type-info';
+import { VehicleTypeInfo } from 'src/app/model/vehicle/vehicle-type-info';
 import { VehicleService } from 'src/app/service/vehicle.service';
 
 @Component({
