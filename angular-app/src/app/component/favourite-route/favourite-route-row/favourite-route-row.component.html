@@ -1,20 +1,46 @@
-<mat-card class="card">
-  <mat-card-header>
-    <mat-card-title
-      >{{ startPoint }} &nbsp;<mat-icon>arrow_forward</mat-icon>&nbsp;
-      {{ endPoint }}</mat-card-title
-    >
-  </mat-card-header>
-  <mat-card-actions>
-    <button mat-raised-button class="btn">Request now</button>
-    <button mat-raised-button class="btn">Request later</button>
-    <button mat-icon-button color="warn" (click)="removeFromFavouriteRoutes()">
+<div class="card">
+  <!--<mat-card-header class="center">
+    <mat-card-title>
+      <mat-stepper [linear]="true">
+        <mat-step [label]="startPoint" matStepperIcon="location"></mat-step>
+        <mat-step [label]="startPoint" state="location"> </mat-step>
+        <ng-template matStepperIcon="location">
+          <mat-icon>location_on</mat-icon>
+        </ng-template>
+      </mat-stepper>
+    </mat-card-title>
+  </mat-card-header>-->
+
+  <div class="left">
+    <div style="display: flex; font-size: 20px; margin-top: 3rem">
+      <mat-icon mat-list-icon class="icon">location_on</mat-icon>
+      <div mat-line>
+        {{ startPoint }}
+      </div>
+    </div>
+    <div style="display: flex; font-size: 20px; margin-top: 1rem">
+      <mat-icon mat-list-icon class="icon">location_on</mat-icon>
+      <div mat-line>
+        {{ endPoint }}
+      </div>
+    </div>
+  </div>
+  <div class="center-div">mapaa</div>
+  <div class="right center">
+    <button
+      mat-icon-button
+      color="warn"
+      (click)="removeFromFavouriteRoutes()"
+      class="btn"
+      style="height: 30px; text-align: center">
       <mat-icon
         matTooltip="Remove from favourite routes"
         matTooltipClass="tooltip"
         matTooltipHideDelay="1000"
         >favorite</mat-icon
-      >
+      ><br />
+      <button mat-raised-button class="btn">Request now</button><br />
+      <button mat-raised-button class="btn">Request later</button>
     </button>
-  </mat-card-actions>
-</mat-card>
+  </div>
+</div>
