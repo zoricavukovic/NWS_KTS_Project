@@ -15,7 +15,7 @@
                     
                         <div class="name">
                             {{chatRoom.client.name + " " + chatRoom.client.surname}}
-                            <span class="resolved-badge">{{(chatRoom.resolved) ? 'Closed' : 'Active'}}</span>
+                            <span [class]="!chatRoom.resolved ? 'resolved-badge resolved-badge-color-active' : 'resolved-badge resolved-badge-color-closed'">{{(chatRoom.resolved) ? 'Closed' : 'Active'}}</span>
                         </div>
                         <div class="message">
                             {{

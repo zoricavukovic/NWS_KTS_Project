@@ -11,10 +11,11 @@ import { ChatRoomService } from 'src/app/service/chat-room.service';
 })
 export class ButtonLiveChatComponent implements OnInit, OnDestroy {
   showChatPoupup: boolean = false;
-  numOfNotifications: number = 0;
   chatRoom: ChatRoom;
+  numOfNotifications = 0;
   chatRoomSubscription: Subscription;
   isAdmin: boolean = false;
+  loggedUserEmail: string;
 
   constructor(
     public authService: AuthService,
@@ -22,27 +23,40 @@ export class ButtonLiveChatComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    if (this.isLoggedIn()) {
-      this.chatRoomSubscription = this.chatRoomService
+    if (this.isLoggedInRegularOrDriver()) {
+      this.loadChatRoom();
+    }
+  }
+
+  loadChatRoom() {
+    this.chatRoomSubscription = this.chatRoomService
         .getUserChatRoom(this.authService.getCurrentUser.email)
         .subscribe(res => {
           this.chatRoom = res;
+          this.loggedUserEmail = this.authService.getCurrentUser.email;
           if (!this.showChatPoupup && this.chatRoom) {
             this.updateNotifications();
           }
         });
+  }
+
+  isLoggedInRegularOrDriver(): boolean {
+    return this.authService.getCurrentUser !== null && !this.authService.getCurrentUser.isUserAdmin();
+  }
+
+  updateNotifications(): number {
+    if (this.isLoggedInRegularOrDriver()){
+      if (this.authService.getCurrentUser.email !== this.loggedUserEmail){
+        this.loadChatRoom();
+      }
+
+      this.numOfNotifications =  this.chatRoomService.getNumOfNotSeenMessages(
+        this.chatRoom,
+        this.isAdmin
+      );
     }
-  }
 
-  isLoggedIn(): boolean {
-    return this.authService.getCurrentUser !== null;
-  }
-
-  updateNotifications(): void {
-    this.numOfNotifications = this.chatRoomService.getNumOfNotSeenMessages(
-      this.chatRoom,
-      this.isAdmin
-    );
+    return this.numOfNotifications;
   }
 
   ngOnDestroy(): void {
