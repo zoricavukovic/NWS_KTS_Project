@@ -51,7 +51,7 @@ insert into driving_locations(location_id, index, route_id) values
 
 
 insert into drivers (id, email, password, name, surname, phone_number, city, profile_picture, role_id, active, blocked, start_shift, end_shift, last_active, rate, working_minutes, location_id, vehicle_id, verified, online) values
-    (nextval('users_id_gen'), 'mile@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Mile', 'Milic', '012345678', 'Novi Sad', 'default-user.png', 3, false, false, null, null, null, 0, 0, 1, 1, true, false);
+    (nextval('users_id_gen'), 'mile@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Mile', 'Milic', '012345678', 'Novi Sad', 'default-user.png', 3, false, false, null, null, null, 1.3, 0, 1, 1, true, false);
 
 insert into drivers (id, email, password, name, surname, phone_number, city, profile_picture, role_id, active, blocked, start_shift, end_shift, last_active, rate, working_minutes, location_id, vehicle_id, verified, online) values
     (nextval('users_id_gen'), 'milan@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Milan', 'Milanovic', '012345678', 'Novi Sad', 'default-user.png', 3, false, false, null, null, null, 0, 0, 1, 2, true, false);
