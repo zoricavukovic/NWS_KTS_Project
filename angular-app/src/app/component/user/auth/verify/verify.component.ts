@@ -2,9 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { VerifyService } from 'src/app/service/verify.service';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService } from 'src/app/service/auth.service';
 import { ToastrService } from 'ngx-toastr';
-import { User } from 'src/app/model/user/user';
+
 
 @Component({
   selector: 'app-verify',
@@ -17,7 +16,6 @@ export class VerifyComponent implements OnInit, OnDestroy {
   thirdDigit: string;
   fourthDigit: string;
   verifyId: string;
-  verifyUserType: string;
   showForm: boolean = true;
   MAX_DIGIT_LENGTH: number = 4;
 
@@ -27,23 +25,13 @@ export class VerifyComponent implements OnInit, OnDestroy {
 
   constructor(
     private verifyService: VerifyService,
-    private authService: AuthService,
     private route: ActivatedRoute,
     private toast: ToastrService,
     private router: Router
   ) {}
 
-  private checkRegistrationPurpose(user: User) {
-    if (user?.isUserAdmin()) {
-      this.verifyUserType = 'ROLE_DRIVER';
-    } else {
-      this.verifyUserType = 'ROLE_REGULAR_USER';
-    }
-  }
-
   ngOnInit(): void {
     this.verifyId = this.route.snapshot.paramMap.get('id');
-    this.checkRegistrationPurpose(this.authService.getCurrentUser);
   }
 
   containsOnlyNumbers(str: string) {
@@ -83,7 +71,6 @@ export class VerifyComponent implements OnInit, OnDestroy {
           this.verifyService.createVerifyRequest(
             Number(this.verifyId),
             Number(securityCode),
-            this.verifyUserType
           )
         )
         .subscribe(
@@ -92,7 +79,7 @@ export class VerifyComponent implements OnInit, OnDestroy {
               'You became a new member of SerbUber!',
               'Verification successfully'
             );
-            this.router.navigate(['/login']);
+            this.router.navigate(['/successfull-verification']);
           },
           error => this.toast.error(error.error, 'Verification failed')
         );

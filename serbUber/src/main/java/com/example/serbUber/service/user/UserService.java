@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.example.serbUber.dto.user.UserDTO.fromUsers;
 import static com.example.serbUber.model.user.User.passwordsDontMatch;
@@ -50,6 +51,12 @@ public class UserService implements IUserService {
 
         return userRepository.getUserByEmail(email)
             .orElseThrow(() -> new EntityNotFoundException(email, EntityType.USER));
+    }
+
+    public boolean checkIfUserAlreadyExists(String email) {
+        Optional<User> user = userRepository.getUserByEmail(email);
+
+        return user.isPresent();
     }
 
     public User getUserById(Long id) throws EntityNotFoundException {
@@ -201,5 +208,10 @@ public class UserService implements IUserService {
 
         return userRepository.findOnlineAdmin()
                 .orElseThrow(NoAvailableAdminException::new);
+    }
+
+    public UserDTO saveUser(User user) {
+
+        return new UserDTO(this.userRepository.save(user));
     }
 }

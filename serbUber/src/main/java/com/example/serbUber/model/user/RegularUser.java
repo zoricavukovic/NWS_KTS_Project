@@ -18,9 +18,6 @@ public class RegularUser extends User {
     @JoinColumn(name="blocked", nullable = false)
     private boolean blocked = false;
 
-    @JoinColumn(name="verified", nullable = false)
-    private boolean verified = false;
-
     @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Driving> drivings = new LinkedList<>();
@@ -70,14 +67,6 @@ public class RegularUser extends User {
 
     public void setBlocked(boolean blocked) {
         this.blocked = blocked;
-    }
-
-    public boolean isVerified() {
-        return verified;
-    }
-
-    public void setVerified(boolean verified) {
-        this.verified = verified;
     }
 
     public List<Driving> getDrivings() {
