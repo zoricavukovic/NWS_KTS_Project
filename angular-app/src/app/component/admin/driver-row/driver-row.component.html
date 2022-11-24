@@ -20,9 +20,7 @@
 
       </div>
       <mat-card-actions align="end">
-        <button mat-raised-button class="btn" (click)="viewDrivings()">
-          OCENEE SRKI MOLIM TE
-        </button>
+        <ngx-stars [readonly]="true" customSize="1.5rem" [initialStars]="driver.rate" color="#283b50"></ngx-stars>
       </mat-card-actions>
     </mat-card>
   </div>
@@ -32,6 +30,9 @@
     <div style="display:flex">
       <mat-icon style="display: inline-flex; margin-left: 5px; transform: scale(1.5);">people</mat-icon>
       <h2>&nbsp;&nbsp;{{ driver?.vehicle?.vehicleTypeInfo?.numOfSeats }}</h2>
+      <div class="vehicle-stars">
+        <ngx-stars [readonly]="true" customSize="1.5rem" [initialStars]="driver.vehicle.rate" color="#283b50"></ngx-stars>
+      </div>
     </div>
   </div>
   <mat-card-actions align="end">

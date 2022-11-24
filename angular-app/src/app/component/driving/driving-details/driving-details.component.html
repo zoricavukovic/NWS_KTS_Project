@@ -57,10 +57,16 @@
         <mat-card-title
           >{{ driver?.name }} {{ driver?.surname }}</mat-card-title
         >
-        <mat-card-subtitle>{{ driver?.email }} </mat-card-subtitle>
+        <mat-card-subtitle>
+          <div style="display:block">
+            <div>{{ driver?.email }}</div>
+            <div class="stars-driver">        
+              <ngx-stars [readonly]="true" customSize="1.5rem" [initialStars]="driver?.rate" color="#283b50"></ngx-stars>
+            </div>
+          </div>
+        </mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
-        <!--zvezdice za driver-a, vrednost pokupis sa driver.rate-->
       </mat-card-content>
     </mat-card>
   </div>
