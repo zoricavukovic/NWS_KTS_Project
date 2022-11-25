@@ -45,9 +45,6 @@ public class Driver extends User {
     @Column(name="active")
     private boolean active = false;
 
-    @Column(name="verified")
-    private boolean verified = false;
-
     @Column(name="rate")
     private double rate = Constants.START_RATE;
 
@@ -149,14 +146,6 @@ public class Driver extends User {
 
     public void setActive(boolean active) {
         this.active = active;
-    }
-
-    public boolean isVerified() {
-        return verified;
-    }
-
-    public void setVerified(boolean verified) {
-        this.verified = verified;
     }
 
     public double getRate() {

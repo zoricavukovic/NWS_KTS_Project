@@ -17,13 +17,9 @@ public class VerifyRequest {
     @Positive(message = WRONG_SECURITY_CODE)
     private int securityCode;
 
-    @NotBlank(message = "User role must be selected.")
-    private String userRole;
-
-    public VerifyRequest(Long verifyId, int securityCode, String userRole) {
+    public VerifyRequest(Long verifyId, int securityCode) {
         this.verifyId = verifyId;
         this.securityCode = securityCode;
-        this.userRole = userRole;
     }
 
     public Long getVerifyId() {
@@ -34,7 +30,4 @@ public class VerifyRequest {
         return securityCode;
     }
 
-    public String getUserRole() {
-        return userRole;
-    }
 }

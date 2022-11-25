@@ -14,6 +14,7 @@ import { ShowDriversComponent } from './component/admin/show-drivers/show-driver
 import { ShowUsersComponent } from './component/admin/show-users/show-users.component';
 import { MapComponent } from './component/map/map.component';
 import { FavouriteRoutesComponent } from './component/favourite-route/favourite-routes/favourite-routes.component';
+import { SuccessfullVerificationComponent } from './component/user/auth/successfull-verification/successfull-verification.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home-page', pathMatch: 'full' },
@@ -22,6 +23,7 @@ const routes: Routes = [
   { path: 'registration', component: RegistrationComponent },
   { path: 'forgot-password', component: SendResetPasswordEmailComponent },
   { path: 'verify/:id', component: VerifyComponent },
+  { path: 'successfull-verification', component: SuccessfullVerificationComponent },
   { path: 'drivings/:id', component: ShowDrivingsComponent },
   { path: 'driving-details/:id', component: MapComponent },
   { path: 'reset-password/:email', component: ResetPasswordComponent },

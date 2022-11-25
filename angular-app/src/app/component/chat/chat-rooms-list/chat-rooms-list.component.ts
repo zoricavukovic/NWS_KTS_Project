@@ -7,7 +7,6 @@ import {
   Output,
 } from '@angular/core';
 import { ChatRoom } from 'src/app/model/message/chat-room';
-import { MessageResponse } from 'src/app/model/message/message-response';
 import { ChatRoomService } from 'src/app/service/chat-room.service';
 
 @Component({

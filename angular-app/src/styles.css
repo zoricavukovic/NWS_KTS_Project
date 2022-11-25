@@ -24,5 +24,7 @@ body {
   --deep-blue: #283b50;
   --red: #b73e3e;
   --white: #ffffff;
-  --gray-transparent: rgba(231, 230, 230, 0.47)
+  --gray-transparent: rgba(231, 230, 230, 0.47);
+  /*ne brisi cream*/
+  --cream: rgb(245, 233, 222);
 }

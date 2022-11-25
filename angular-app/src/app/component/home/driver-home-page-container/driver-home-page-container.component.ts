@@ -2,6 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Driving } from '../../../model/driving/driving';
 import { Subscription } from 'rxjs';
 import { DrivingService } from '../../../service/driving.service';
+import { ConfigService } from 'src/app/service/config.service';
 
 @Component({
   selector: 'app-driver-home-page-container',
@@ -13,7 +14,10 @@ export class DriverHomePageContainerComponent implements OnInit, OnDestroy {
   drivingSubscription: Subscription;
   nowAndFutureDrivings: Driving[] = [];
   maxNumberOfShowedUsers: number = 3;
-  constructor(private drivingService: DrivingService) {}
+  constructor(
+    public configService: ConfigService,
+    private drivingService: DrivingService
+    ) {}
 
   ngOnInit(): void {
     this.drivingSubscription = this.drivingService

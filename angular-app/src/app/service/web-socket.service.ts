@@ -5,7 +5,8 @@ import { environment } from 'src/environments/environment';
 import { ChatRoomService } from './chat-room.service';
 import { ChatRoom } from '../model/message/chat-room';
 import { ChatRoomWithNotify } from '../model/message/chat-room-with-notify';
-import { connect } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
+
 
 @Injectable({
   providedIn: 'root',
@@ -14,8 +15,13 @@ export class WebSocketService {
   private stompClient = null;
   initialized: boolean = false;
 
-  constructor(private chatRoomService: ChatRoomService) {
+  constructor(
+    private chatRoomService: ChatRoomService, 
+    private toast: ToastrService
+  ) {
+
     if (!this.stompClient) {
+      this.initialized = false;
       this.connect();
     }
   }
@@ -34,12 +40,24 @@ export class WebSocketService {
           environment.publisherUrl + localStorage.getItem('email') + '/connect',
           message => {
             if (message !== null && message !== undefined) {
-              that.chatRoomService.addMessage(JSON.parse(message.body));
+              if (that.isMessageType(message.body)) {
+                that.chatRoomService.addMessage(JSON.parse(message.body));
+              }
             }
           }
         );
       });
     }
+  }
+
+  isMessageType(webSocketNotification: string): boolean {
+    try {
+      let parsed: ChatRoomWithNotify = JSON.parse(webSocketNotification);
+    } catch (e) {
+      return false;
+    }
+
+    return true;
   }
 
   disconnect(): void {
@@ -52,11 +70,15 @@ export class WebSocketService {
   }
 
   sendMessage(chatRoom: ChatRoom, notifyAdmin: boolean) {
+    if (!this.stompClient){
+      this.initialized = false;
+      this.connect();
+    }
     this.stompClient.send(
       '/app/send/message',
       {},
       JSON.stringify(this.createChatRoomWithNotify(chatRoom, notifyAdmin))
-    );
+    );  
   }
 
   createChatRoomWithNotify(

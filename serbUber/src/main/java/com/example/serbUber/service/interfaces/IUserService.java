@@ -51,5 +51,6 @@ public interface IUserService {
     UserDTO setOnlineStatus(final String email) throws EntityNotFoundException;
     UserDTO setOfflineStatus(final String email) throws EntityNotFoundException;
     User findOnlineAdmin() throws NoAvailableAdminException;
+    boolean checkIfUserAlreadyExists(String email);
 
 }

@@ -1,4 +1,5 @@
 $background: white;
+
 body{
   background-image: none;
 }
@@ -18,7 +19,6 @@ body{
 }
 
 .contact {
-    background-color: var(--gray-transparent) !important;
     position: relative;
     margin-bottom: 1rem;
     padding-left: 5rem;
@@ -42,12 +42,20 @@ body{
     }
 
     .resolved-badge {
-        background-color: #86BB71;
         font-size: 1rem;
         padding: 4px 8px;
         text-align: center;
         margin-right: 1rem;
         border-radius: 20px;
+        color: white;
+    }
+
+    .resolved-badge-color-active {
+        background-color: #86BB71;
+    }
+
+    .resolved-badge-color-closed {
+        background-color: var(--deep-blue);
     }
 
     .badge {
@@ -62,7 +70,7 @@ body{
 
         top: 0;
         left: 2.5rem;
-        background: var(--blue);
+        background: var(--deep-blue);
         color: white;
     }
 
@@ -87,13 +95,14 @@ body{
 
     h2 {
         display: flex;
-        font-size: 1.5rem;
+        font-size: 1.6rem;
+        font-weight: bold;
         justify-content: center;
     }
 
     .active {
-        background-color: $background;
-        width: 18.5rem;
+        background-color: rgb(228, 227, 227);
+        width: 18rem;
         border-radius: 2rem;
     }
 }
