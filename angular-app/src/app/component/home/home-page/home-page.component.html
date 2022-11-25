@@ -1,4 +1,4 @@
-<div id="map">
+<!--<div id="map">-->
   <div id="route-div" *ngIf="!currentUserIsDriver" class="box mat-elevation-z1">
     <h1><strong>Request a ride now</strong></h1>
 
@@ -88,5 +88,6 @@
 
   </div>
   <app-driver-home-page-container *ngIf="currentUserIsDriver" [driverId]="currentUser.id"></app-driver-home-page-container>
-</div>
+
+<!--</div>-->
 

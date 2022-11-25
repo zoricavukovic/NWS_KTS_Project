@@ -36,6 +36,7 @@ export class ConfigService {
 
   private _driver_info_url = this._api_url + '/drivers/';
   private _vehicle_rate_url = this._api_url + '/vehicles/rating/';
+  private _all_active_vehicles_url: string = this._api_url + '/vehicles/active';
   private _rate_vehicle_driver_url = this._api_url + '/reviews';
   private _have_driving_rate_url = this._api_url + '/reviews/haveDrivingRate/';
   private _reviewed_drivings_url = this._api_url + '/reviews/reviewedDrivings/';
@@ -132,6 +133,10 @@ export class ConfigService {
 
   get vehicle_rating_url(): string {
     return this._vehicle_rate_url;
+  }
+
+  get all_active_vehicles_url(): string {
+    return this._all_active_vehicles_url;
   }
 
   get rate_driver_vehicle_url(): string {

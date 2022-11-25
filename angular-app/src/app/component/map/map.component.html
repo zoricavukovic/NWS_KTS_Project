@@ -1,8 +1,11 @@
-<div style="display:flex">
-  <app-driving-details [map]="map"></app-driving-details>
-  <div id="map">
+<!--<div style="display:flex">-->
+
+  <div id="map" >
+    <app-driving-details *ngIf="tekst.at(0).path.startsWith('driving-details')" [map]="map"></app-driving-details>
+    <home-page *ngIf="!tekst.at(0).path.startsWith('driving-details')" [map]="map"></home-page>
   </div>
-</div>
+
+<!--</div>-->
 
 
 

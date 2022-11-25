@@ -5,8 +5,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
     @Query("select v.rate from Vehicle v where v.id = ?1")
     double getVehicleRatingById(Long id);
+
+    @Query("select v from Vehicle v left join fetch v.activeRoute r where v.activeRoute is not null")
+    List<Vehicle> getAllActiveVehicles();
 }

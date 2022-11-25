@@ -20,4 +20,8 @@ public interface IVehicleService {
     double getRatingForVehicle(Long id);
     Vehicle updateRate(Long id, double rate) throws EntityNotFoundException;
     void delete(Long id);
+
+    List<VehicleDTO> getAllActiveVehicles();
+
+    List<VehicleDTO> updateCurrentVehiclesLocation();
 }

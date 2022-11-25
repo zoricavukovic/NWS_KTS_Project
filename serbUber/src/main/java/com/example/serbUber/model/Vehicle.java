@@ -24,6 +24,13 @@ public class Vehicle {
     @Column(name="rate", nullable = false)
     private double rate = Constants.START_RATE;
 
+    @Column(name="location_index")
+    private int currentLocationIndex;
+
+    @OneToOne()
+    @JoinColumn(name = "active_route_id", referencedColumnName = "id")
+    private Route activeRoute;
+
     public Vehicle() {
     }
 
@@ -32,12 +39,31 @@ public class Vehicle {
             final boolean petFriendly,
             final boolean babySeat,
             final VehicleTypeInfo vehicleTypeInfo,
-            final double rate) {
+            final double rate
+    ) {
         this.id = id;
         this.petFriendly = petFriendly;
         this.babySeat = babySeat;
         this.vehicleTypeInfo = vehicleTypeInfo;
         this.rate = rate;
+    }
+
+    public Vehicle(
+        final Long id,
+        final boolean petFriendly,
+        final boolean babySeat,
+        final VehicleTypeInfo vehicleTypeInfo,
+        final double rate,
+        final int currentLocationIndex,
+        final Route activeRoute
+    ) {
+        this.id = id;
+        this.petFriendly = petFriendly;
+        this.babySeat = babySeat;
+        this.vehicleTypeInfo = vehicleTypeInfo;
+        this.rate = rate;
+        this.currentLocationIndex = currentLocationIndex;
+        this.activeRoute = activeRoute;
     }
 
     public Vehicle(
@@ -86,5 +112,21 @@ public class Vehicle {
 
     public void setRate(double rate) {
         this.rate = rate;
+    }
+
+    public int getCurrentLocationIndex() {
+        return currentLocationIndex;
+    }
+
+    public void setCurrentLocationIndex(int currentLocationIndex) {
+        this.currentLocationIndex = currentLocationIndex;
+    }
+
+    public Route getActiveRoute() {
+        return activeRoute;
+    }
+
+    public void setActiveRoute(Route activeRoute) {
+        this.activeRoute = activeRoute;
     }
 }

@@ -1,4 +1,6 @@
 import { VehicleTypeInfo } from './vehicle-type-info';
+import {Route} from "../route/route";
+
 export interface Vehicle {
   id?: number;
   petFriendly: boolean;
@@ -6,4 +8,6 @@ export interface Vehicle {
   vehicleType?: string;
   vehicleTypeInfo?: VehicleTypeInfo;
   rate?: number;
+  location_index?: number;
+  activeRoute?: Route;
 }

@@ -1,4 +1,5 @@
 import { Route } from '../model/route/route';
+import {Location} from "../model/route/location";
 declare let L;
 
 export function drawPolyline(map, route: Route) {
@@ -35,4 +36,22 @@ export function drawPolylineOnMap(map, latLongs, color, polylineList) {
 export function refreshMap(map){
   map.off();
   map.remove();
+}
+
+export function addCarMarker(map, location: Location){
+  const customIcon = L.icon({
+    iconUrl: '/assets/images/car.png',
+    iconSize: [45, 45],
+  });
+  const markerOptions = {
+    title: 'Car',
+    clickable: true,
+    icon: customIcon,
+  };
+
+  L.marker(
+    [location?.lat, location?.lon],
+    markerOptions
+  ).addTo(map);
+  map.panBy(L.point(location?.lat, location?.lon));
 }

@@ -21,13 +21,6 @@ insert into vehicle_type_infos (num_of_seats, start_price, vehicle_type) values
 insert into vehicle_type_infos (num_of_seats, start_price, vehicle_type) values
     (7, 150, 2);
 
-insert into vehicles (baby_seat, pet_friendly, rate, vehicle_type_id) values
-    (true, false, 0, 1);
-insert into vehicles (baby_seat, pet_friendly, rate, vehicle_type_id) values
-    (true, true, 0, 2);
-insert into vehicles (baby_seat, pet_friendly, rate, vehicle_type_id) values
-    (false, true, 0, 3);
-
 -- insert into routes (kilometres, location_id, )
 insert into locations (city, lat, lon, street, number, zip_code) values
     ('Novi Sad', 45.258300,19.833950, 'Bulevar Oslobodjenja', '55', '21000'),
@@ -39,6 +32,11 @@ insert into routes (distance, time) values
                              (3, 5),
                              (5, 2),
                              (6, 6);
+
+insert into vehicles (baby_seat, pet_friendly, rate, vehicle_type_id, location_index, active_route_id) values
+    (true, false, 0, 1, 0, 1),
+    (true, true, 0, 2, 0, 2),
+    (false, true, 0, 3, null, null);
 
 insert into driving_locations(location_id, index, route_id) values
       (1,1,1),

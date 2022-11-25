@@ -30,6 +30,20 @@ public class VehicleController {
         return this.vehicleService.getAll();
     }
 
+    @GetMapping("/active")
+    @ResponseStatus(HttpStatus.OK)
+    public List<VehicleDTO> getAllActiveVehicles() {
+
+        return vehicleService.getAllActiveVehicles();
+    }
+
+    @PutMapping("/update-current-location")
+    @ResponseStatus(HttpStatus.OK)
+    public List<VehicleDTO> updateCurrentVehiclesLocation() {
+
+        return vehicleService.updateCurrentVehiclesLocation();
+    }
+
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {

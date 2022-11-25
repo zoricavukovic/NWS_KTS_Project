@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.example.serbUber.dto.VehicleDTO.fromVehicles;
+import static com.example.serbUber.dto.VehicleDTO.fromVehiclesWithAdditionalFields;
 import static com.example.serbUber.dto.VehicleTypeInfoDTO.toVehicleTypeInfo;
 
 @Component
@@ -75,5 +76,29 @@ public class VehicleService implements IVehicleService {
     public void delete(Long id) {
 
         vehicleRepository.deleteById(id);
+    }
+
+    public List<VehicleDTO> getAllActiveVehicles() {
+
+        List<Vehicle> vehicles = vehicleRepository.getAllActiveVehicles();
+
+        return fromVehiclesWithAdditionalFields(vehicles);
+    }
+
+    public List<VehicleDTO> updateCurrentVehiclesLocation() {
+
+        List<Vehicle> vehicles = vehicleRepository.getAllActiveVehicles();
+        vehicles.forEach(this::saveCurrentVehicleLocation);
+
+        return fromVehiclesWithAdditionalFields(vehicles);
+    }
+
+    private void saveCurrentVehicleLocation(Vehicle vehicle) {
+        int currentLocationIndex = vehicle.getCurrentLocationIndex();
+        int nextLocationIndex = (vehicle.getActiveRoute().getLocations().size() - 1 == currentLocationIndex)?
+            currentLocationIndex :
+            currentLocationIndex + 1;
+        vehicle.setCurrentLocationIndex(nextLocationIndex);
+        vehicleRepository.save(vehicle);
     }
 }

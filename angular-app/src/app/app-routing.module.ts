@@ -17,7 +17,7 @@ import { FavouriteRoutesComponent } from './component/favourite-route/favourite-
 
 const routes: Routes = [
   { path: '', redirectTo: 'home-page', pathMatch: 'full' },
-  { path: 'home-page', component: HomePageComponent },
+  { path: 'home-page', component: MapComponent },
   { path: 'login', component: LoginComponent },
   { path: 'registration', component: RegistrationComponent },
   { path: 'forgot-password', component: SendResetPasswordEmailComponent },
