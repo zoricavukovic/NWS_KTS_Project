@@ -36,7 +36,7 @@
 }
 
 .app-icon {
-  margin-top:0.6rem;
+  margin-top: 0.6rem;
   height: 3.5rem;
   width: 3.5rem;
 }
@@ -47,11 +47,16 @@
 }
 
 .driver-registration-icon {
-
   height: 1.3rem;
   width: 1.3rem;
 }
 
 a {
   font-weight: bold;
+}
+.mat-toolbar {
+  position: sticky;
+  position: -webkit-sticky; /* For macOS/iOS Safari */
+  top: 0;
+  z-index: 1000;
 }

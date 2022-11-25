@@ -33,6 +33,7 @@ export class ConfigService {
 
   private _drivings_pagination_url = this._api_url + '/drivings';
   private _drivings_details_url = this._api_url + '/drivings/details/';
+  private _drivings_count_url = this._api_url + '/drivings/number/';
 
   private _driver_info_url = this._api_url + '/drivers/';
   private _vehicle_rate_url = this._api_url + '/vehicles/rating/';
@@ -214,10 +215,13 @@ export class ConfigService {
     return this._all_users_url;
   }
 
+  get_count_drivings(id: number): string {
+    return this._drivings_count_url + id;
+  }
+
   get_favourite_routes(userId: number): string {
     return this._get_favourite_routes + userId;
   }
-
 
   get_finish_driving_url(drivingId: number): string {
     return `${this._drivings_finish_driving_url}/${drivingId}`;

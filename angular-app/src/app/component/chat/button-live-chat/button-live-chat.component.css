@@ -1,7 +1,8 @@
-div.live-chat-button {
-  position: absolute;
-  bottom: 3%;
-  right: 5%;
+.live-chat-button {
+  right: 3%;
+  position: sticky;
+  bottom: 2rem;
+  float: right;
 }
 
 .icon-live-chat {

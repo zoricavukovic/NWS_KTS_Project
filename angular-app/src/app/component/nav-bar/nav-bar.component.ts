@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import {Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/service/auth.service';
 import { ConfigService } from 'src/app/service/config.service';
 
@@ -22,6 +22,7 @@ export class NavBarComponent implements OnInit {
 
   ngOnInit(): void {
     this.isAdmin = this.authService.getCurrentUser?.isUserAdmin();
+    console.log(this.isAdmin);
     this.isRegularUser = this.authService.getCurrentUser?.userIsRegular();
   }
 

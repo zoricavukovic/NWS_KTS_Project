@@ -7,6 +7,23 @@
   }
 }
 
-.form-container{
-  margin-left: 1rem;
+.mat-list {
+  background-color: var(--deep-blue);
+  border-radius: 15px;
+  overflow: auto;
+
+  max-height: 11rem;
+}
+
+.mat-list-item {
+  color: var(--white);
+}
+
+.form-container {
+  margin: 0.7rem;
+  width: 30rem;
+}
+
+h1 {
+  margin-bottom: 0.3rem;
 }
