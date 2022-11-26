@@ -1,6 +1,7 @@
 package com.example.serbUber.controller;
 
 
+import com.example.serbUber.dto.VehicleCurrentLocationDTO;
 import com.example.serbUber.dto.VehicleDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.request.VehicleRequest;
@@ -32,14 +33,14 @@ public class VehicleController {
 
     @GetMapping("/active")
     @ResponseStatus(HttpStatus.OK)
-    public List<VehicleDTO> getAllActiveVehicles() {
+    public List<VehicleCurrentLocationDTO> getAllActiveVehicles() {
 
-        return vehicleService.getAllActiveVehicles();
+        return vehicleService.getAllVehiclesForActiveDriver();
     }
 
     @PutMapping("/update-current-location")
     @ResponseStatus(HttpStatus.OK)
-    public List<VehicleDTO> updateCurrentVehiclesLocation() {
+    public List<VehicleCurrentLocationDTO> updateCurrentVehiclesLocation() {
 
         return vehicleService.updateCurrentVehiclesLocation();
     }

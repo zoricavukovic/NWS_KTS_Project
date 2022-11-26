@@ -35,17 +35,20 @@ public class RegularUserService implements IRegularUserService {
     private final VerifyService verifyService;
     private final RoleService roleService;
     private final RouteService routeService;
+    private final UserService userService;
 
     public RegularUserService(
             final RegularUserRepository regularUserRepository,
             final VerifyService verifyService,
             final RouteService routeService,
-            final RoleService roleService
+            final RoleService roleService,
+            final UserService userService
     ) {
         this.regularUserRepository = regularUserRepository;
         this.verifyService = verifyService;
         this.routeService = routeService;
         this.roleService = roleService;
+        this.userService = userService;
     }
 
     public List<RegularUserDTO> getAll() {
@@ -79,6 +82,8 @@ public class RegularUserService implements IRegularUserService {
     ) throws PasswordsDoNotMatchException, EntityAlreadyExistsException, MailCannotBeSentException, EntityNotFoundException {
         if (passwordsDontMatch(password, confirmationPassword)) {
             throw new PasswordsDoNotMatchException();
+        } else if (userService.checkIfUserAlreadyExists(email)) {
+            throw new EntityAlreadyExistsException(String.format("User with %s already exists.", email));
         }
 
         return registerRegularUser(email, password, name, surname, phoneNumber, city, profilePicture);
@@ -110,7 +115,7 @@ public class RegularUserService implements IRegularUserService {
             return new RegistrationDTO(verifyDTO.getId(), email);
         } catch (EntityNotFoundException ex) {
             throw new EntityNotFoundException(ROLE_REGULAR_USER, EntityType.ROLE);
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             throw new EntityAlreadyExistsException(String.format("User with %s already exists.", email));
         }
     }
@@ -153,16 +158,6 @@ public class RegularUserService implements IRegularUserService {
             return fromRoutes(u.get().getFavouriteRoutes());
         }
         throw new EntityNotFoundException(id, EntityType.USER);
-    }
-
-    public UserDTO activate(final Long verifyId, final int securityCode)
-            throws EntityNotFoundException, WrongVerifyTryException
-    {
-        Verify verify = verifyService.update(verifyId, securityCode);
-        RegularUser regularUser = getRegularById(verify.getUserId());
-        regularUser.setVerified(true);
-
-        return new UserDTO(regularUserRepository.save(regularUser));
     }
 
 }

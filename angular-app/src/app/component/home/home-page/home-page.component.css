@@ -1,8 +1,3 @@
-#map {
-  height: 100% !important;
-  z-index: 0 !important;
-}
-
 .delete-location-button {
   color: #2c4b61;
 }

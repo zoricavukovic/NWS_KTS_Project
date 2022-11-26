@@ -9,14 +9,14 @@ body {
   font-size: 1rem;
   background-color: var(--white);
   color: var(--deep-blue);
-  /*background-image: url('./assets/app/night_novi_sad.png');*/
-  /*height: 100%;*/
+  background-image: url('./assets/app/night_novi_sad.png');
+  height: 100%;
 
   /* Center and scale the image nicely */
-  /*background-position: center;*/
-  /*background-repeat: no-repeat;*/
-  /*background-size: cover;*/
-  /*background-attachment: fixed;*/
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
 }
 
 :root {
@@ -24,5 +24,7 @@ body {
   --deep-blue: #283b50;
   --red: #b73e3e;
   --white: #ffffff;
-  --gray-transparent: rgba(231, 230, 230, 0.47)
+  --gray-transparent: rgba(231, 230, 230, 0.47);
+  /*ne brisi cream*/
+  --cream: rgb(245, 233, 222);
 }

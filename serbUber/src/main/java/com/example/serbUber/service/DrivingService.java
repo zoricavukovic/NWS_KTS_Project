@@ -3,7 +3,9 @@ package com.example.serbUber.service;
 import com.example.serbUber.dto.DrivingDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.EntityType;
-import com.example.serbUber.model.*;
+import com.example.serbUber.model.Driving;
+import com.example.serbUber.model.DrivingStatus;
+import com.example.serbUber.model.Route;
 import com.example.serbUber.model.user.User;
 import com.example.serbUber.repository.DrivingRepository;
 import com.example.serbUber.service.interfaces.IDrivingService;
@@ -15,7 +17,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
 
 import static com.example.serbUber.dto.DrivingDTO.fromDrivings;
 
@@ -43,7 +48,7 @@ public class DrivingService implements IDrivingService {
             final double price
     ) {
         Driving driving = drivingRepository.save(
-            new Driving(active, duration, started, payingLimit, route, drivingStatus, driverId, usersPaid, price)
+                new Driving(active, duration, started, payingLimit, route, drivingStatus, driverId, usersPaid, price)
         );
 
         return new DrivingDTO(driving);
@@ -56,31 +61,31 @@ public class DrivingService implements IDrivingService {
     }
 
     public List<DrivingDTO> getDrivingsForUser(
-        final Long id,
-        final int pageNumber,
-        final int pageSize,
-        final String parameter,
-        final String sortOrder
+            final Long id,
+            final int pageNumber,
+            final int pageSize,
+            final String parameter,
+            final String sortOrder
     ) throws EntityNotFoundException {
         User user = userService.getUserById(id);
         Pageable page = PageRequest.of(pageNumber, pageSize, Sort.by(getSortOrder(sortOrder), getSortBy(parameter)));
-
         return user.getRole().isDriver() ?
                 fromDrivings(drivingRepository.findByDriverId(id, page)) :
                 fromDrivings(drivingRepository.findByUserId(id, page));
     }
 
-    private String getSortBy(final String sortBy){
+
+    private String getSortBy(final String sortBy) {
         Dictionary<String, String> sortByDict = new Hashtable<>();
-        sortByDict.put("Date","started");
-        sortByDict.put("Departure","route.startPoint");
-        sortByDict.put("Destination","route.locations"); //ne znam ovo kako da pristupi??
-        sortByDict.put("Price","price");
+        sortByDict.put("Date", "started");
+        sortByDict.put("Departure", "route.startPoint");
+        sortByDict.put("Destination", "route.locations"); //ne znam ovo kako da pristupi??
+        sortByDict.put("Price", "price");
 
         return sortByDict.get(sortBy);
     }
 
-    private Sort.Direction getSortOrder(final String sortOrder){
+    private Sort.Direction getSortOrder(final String sortOrder) {
         Dictionary<String, Sort.Direction> sortOrderDict = new Hashtable<>();
         sortOrderDict.put("Descending", Sort.Direction.DESC);
         sortOrderDict.put("Ascending", Sort.Direction.ASC);
@@ -96,7 +101,7 @@ public class DrivingService implements IDrivingService {
     public Driving getDriving(final Long id) throws EntityNotFoundException {
 
         return drivingRepository.getDrivingById(id)
-            .orElseThrow(() -> new EntityNotFoundException(id, EntityType.DRIVING));
+                .orElseThrow(() -> new EntityNotFoundException(id, EntityType.DRIVING));
     }
 
     public List<DrivingDTO> getAllNowAndFutureDrivings(final Long id) {
@@ -110,5 +115,12 @@ public class DrivingService implements IDrivingService {
         drivingRepository.save(driving);
 
         return new DrivingDTO(driving);
+    }
+
+    public int getNumberOfAllDrivingsForUser(final Long id) throws EntityNotFoundException {
+        User user = userService.getUserById(id);
+        return user.getRole().isDriver() ?
+                drivingRepository.getNumberOfAllDrivingsForDriver(id).size() :
+                drivingRepository.getNumberOfAllDrivingsForRegularUser(id).size();
     }
 }

@@ -1,11 +1,7 @@
-<!--<div style="display:flex">-->
-
-  <div id="map" >
-    <app-driving-details *ngIf="tekst.at(0).path.startsWith('driving-details')" [map]="map"></app-driving-details>
-    <home-page *ngIf="!tekst.at(0).path.startsWith('driving-details')" [map]="map"></home-page>
-  </div>
-
-<!--</div>-->
+<div id="map">
+  <app-driving-details *ngIf="actRoute.snapshot.paramMap.get('id') !== '-1'" [map]="map"></app-driving-details>
+  <home-page *ngIf="actRoute.snapshot.paramMap.get('id') === '-1'" [map]="map"></home-page>
+</div>
 
 
 

@@ -29,6 +29,4 @@ public interface IRegularUserService {
     boolean removeFromFavouriteRoutes(Long userId, Long routeId) throws EntityNotFoundException;
     boolean isFavouriteRoute(Long routeId, Long userId);
     List<RouteDTO> getFavouriteRoutes(Long id) throws EntityNotFoundException;
-    UserDTO activate(final Long verifyId, final int securityCode)
-            throws EntityNotFoundException, WrongVerifyTryException;
 }

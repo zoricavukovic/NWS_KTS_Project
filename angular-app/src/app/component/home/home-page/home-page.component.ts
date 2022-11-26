@@ -9,7 +9,7 @@ import { Subscription } from 'rxjs';
 import { AuthService } from '../../../service/auth.service';
 import { PossibleRoutesViaPoints } from '../../../model/route/possible-routes-via-points';
 import {
-  addCarMarker,
+  addCarMarker, changeOrAddMarker,
   drawPolylineOnMap, refreshMap,
   removeLayer,
   removeMarker,
@@ -24,7 +24,7 @@ import {Vehicle} from "../../../model/vehicle/vehicle";
   templateUrl: './home-page.component.html',
   styleUrls: ['./home-page.component.css'],
 })
-export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
+export class HomePageComponent implements OnInit, OnDestroy {
   routeChoiceView = true;
   filterVehicleView = false;
 
@@ -38,6 +38,7 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
   searchingRoutesForm: SearchingRoutesForm[] = [];
   currentUserIsDriver: boolean;
   vehicles: Vehicle[];
+  carMarkers: L.Marker[] = []
   /* autocompleteForm = new FormGroup({
     startDest: new FormControl(undefined, [this.requireMatch.bind(this)]),
     endDest: new FormControl(undefined, [this.requireMatch.bind(this)]),
@@ -47,15 +48,23 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
   private authSubscription: Subscription;
   private routeSubscription: Subscription;
 
+  a: string[];
+
   constructor(
     private routeService: RouteService,
     private authService: AuthService,
     private vehicleService: VehicleService
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
-    this.vehicleService.getAllActiveVehicles().subscribe(vehicles =>
-      vehicles.forEach(vehicle => addCarMarker(this.map, vehicle?.activeRoute?.locations.at(vehicle?.location_index)?.location))
+    // this.vehicleService.getAllActiveVehicles().subscribe(vehicles =>
+    //   vehicles.forEach(vehicle => this.carMarkers.push(addCarMarker(this.map, vehicle?.activeRoute?.locations.at(vehicle?.location_index)?.location)))
+    // )
+
+    this.vehicleService.getAllVehicle().subscribe(vehicleCurrentLocation => {
+      this.carMarkers = changeOrAddMarker(this.map, this.carMarkers, this.vehicles, vehicleCurrentLocation)
+      }
     )
     this.searchingRoutesForm.push(new SearchingRoutesForm());
     this.searchingRoutesForm.push(new SearchingRoutesForm());
@@ -64,7 +73,12 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnDestroy(): void {
-    // refreshMap(this.map);
+    for (let i; i < this.searchingRoutesForm.length; i++){
+      this.deleteMarker(i);
+    }
+
+    this.carMarkers.forEach(marker => removeMarker(this.map, marker))
+    this.removeAllPolylines();
     if (this.authSubscription) {
       this.authSubscription.unsubscribe();
     }
@@ -73,9 +87,6 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  ngAfterViewInit(): void {
-
-  }
 
   async initMap() {
     this.map = L.map('map').setView([45.25167, 19.83694], 13);

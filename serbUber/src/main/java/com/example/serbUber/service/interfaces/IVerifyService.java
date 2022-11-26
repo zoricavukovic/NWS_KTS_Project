@@ -1,6 +1,7 @@
 package com.example.serbUber.service.interfaces;
 
 import com.example.serbUber.dto.VerifyDTO;
+import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.MailCannotBeSentException;
 import com.example.serbUber.exception.WrongVerifyTryException;
@@ -24,4 +25,6 @@ public interface IVerifyService {
     void generateNewSecurityCode(final Long verifyId)
             throws EntityNotFoundException, MailCannotBeSentException;
 
+    boolean activate(final Long verifyId, final int securityCode)
+            throws EntityNotFoundException, WrongVerifyTryException;
 }

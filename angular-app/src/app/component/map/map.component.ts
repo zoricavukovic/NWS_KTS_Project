@@ -6,7 +6,7 @@ import {refreshMap} from "../../util/map-functions";
 import {Router, UrlSegment} from '@angular/router';
 import {ActivatedRoute} from "@angular/router";
 import {HomePageComponent} from "../home/home-page/home-page.component";
-
+declare let L;
 
 import "leaflet/dist/leaflet.css";
 import "esri-leaflet-geocoder/dist/esri-leaflet-geocoder";
@@ -20,42 +20,30 @@ delete L.Icon.Default.prototype._getIconUrl;
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.css']
 })
-export class MapComponent implements OnInit, OnDestroy, AfterViewInit {
+export class MapComponent implements OnInit, OnDestroy {
   map: L.Map;
   provider1 = new OpenStreetMapProvider();
   @ViewChild(DrivingDetailsComponent) private drivingDetailsComponent: DrivingDetailsComponent;
   @ViewChild(HomePageComponent) private homePageComponent: HomePageComponent;
 
-  marker;
-  tekst: UrlSegment[];
   constructor(public router: Router, public actRoute: ActivatedRoute) {
-    this.actRoute.url.subscribe(url =>{
-      this.tekst = url;
-      console.log(this.tekst.at(0).path);
-
-    });
+    // this.actRoute.url.subscribe(url =>{
+    //   this.tekst = url;
+    //   var container = L.DomUtil.get('map');
+    //   if(container != null){
+    //     container = null;
+    //   }
+    // });
   }
 
   ngOnInit(): void {
-    if (this.map !== undefined) { this.map = this.map.remove(); }
+    // if (this.map !== undefined) { this.map = this.map.remove(); }
     // this.map?.off();
     // this.map.remove();
     this.initMap();
   }
 
-  ngAfterViewInit(): void {
-
-    // if (this.router.url.startsWith("/driving-details")){
-    //   this.drivingDetailsComponent.ngOnInit();
-    // }
-    // else{
-    //   this.homePageComponent.ngOnInit();
-    // }
-    // refreshMap(this.map);
-
-  }
-
-  async initMap(){
+  initMap(){
     this.map = L.map('map').setView([45.25167, 19.83694], 13);
     L.control.zoom({
       position: 'topright'

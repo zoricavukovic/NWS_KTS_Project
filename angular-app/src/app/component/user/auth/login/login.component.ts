@@ -55,7 +55,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           authService.setLocalStorage(loggedUser);
           chatService.connect();
           authService.currentUserSubject$.next(loggedUser.userDTO);
-          router.navigate(['/home-page']);
+          router.navigate(['/map-view/-1']);
         },
         error(): void {
           toast.error('Email or password is not correct!', 'Login failed');
@@ -75,7 +75,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           authService.setLocalStorage(loggedUser);
           chatService.connect();
           authService.currentUserSubject$.next(loggedUser.userDTO);
-          router.navigate(['/home-page']);
+          router.navigate(['/map-view/-1']);
         },
         error(): void {
           toast.error('Email or password is not correct!', 'Login failed');
@@ -109,7 +109,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           authService.setLocalStorage(loggedUser);
           chatService.connect();
           authService.currentUserSubject$.next(loggedUser.userDTO);
-          router.navigate(['/home-page']);
+          router.navigate(['/map-view/-1']);
         },
         error(): void {
           toast.error('Email or password is not correct!', 'Login failed');

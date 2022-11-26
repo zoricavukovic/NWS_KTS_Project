@@ -32,17 +32,20 @@ public class DriverService implements IDriverService{
     private final VehicleService vehicleService;
     private final RoleService roleService;
     private final VerifyService verifyService;
+    private final UserService userService;
 
     public DriverService(
             final DriverRepository driverRepository,
             final VehicleService vehicleService,
             final VerifyService verifyService,
-            final RoleService roleService
+            final RoleService roleService,
+            final UserService userService
     ) {
         this.driverRepository = driverRepository;
         this.vehicleService = vehicleService;
         this.verifyService = verifyService;
         this.roleService = roleService;
+        this.userService = userService;
     }
 
     public List<DriverDTO> getAll() {
@@ -79,7 +82,10 @@ public class DriverService implements IDriverService{
     ) throws PasswordsDoNotMatchException, EntityNotFoundException, EntityAlreadyExistsException, MailCannotBeSentException {
         if (passwordsDontMatch(password, confirmPassword)) {
             throw new PasswordsDoNotMatchException();
+        } else if (userService.checkIfUserAlreadyExists(email)) {
+            throw new EntityAlreadyExistsException(String.format("User with %s already exists.", email));
         }
+
         Vehicle vehicle = vehicleService.create(petFriendly, babySeat, vehicleType);
         Driver driver = saveDriver(email, password, name, surname, phoneNumber, city, profilePicture, vehicle);
 
@@ -112,10 +118,10 @@ public class DriverService implements IDriverService{
             verifyService.create(driver.getId(), driver.getEmail());
 
             return driver;
-        } catch (IllegalArgumentException e) {
-            throw new EntityAlreadyExistsException(String.format("User with %s already exists.", email));
         } catch (EntityNotFoundException e) {
             throw new EntityNotFoundException(ROLE_DRIVER, EntityType.ROLE);
+        } catch (Exception e) {
+            throw new EntityAlreadyExistsException(String.format("User with %s already exists.", email));
         }
     }
 
@@ -130,12 +136,4 @@ public class DriverService implements IDriverService{
         return driverRepository.getRatingForDriver(id);
     }
 
-    public UserDTO activate(final Long verifyId, final int securityCode)
-            throws EntityNotFoundException, WrongVerifyTryException {
-        Verify verify = verifyService.update(verifyId, securityCode);
-        Driver driver = getDriverById(verify.getUserId());
-        driver.setVerified(true);
-
-        return new UserDTO(driverRepository.save(driver));
-    }
 }

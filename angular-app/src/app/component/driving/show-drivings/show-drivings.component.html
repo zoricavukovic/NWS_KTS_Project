@@ -1,12 +1,17 @@
-<div>
+<div class="allDrivings">
   <div class="sortDiv" *ngIf="drivings.length !== 0">
     <div>
       <label id="sort-order-radio-group-label">Pick sort order</label>
-     <mat-radio-group
+      <mat-radio-group
         aria-labelledby="sort-order-radio-group-label"
         class="example-radio-group">
-        <mat-radio-button class="example-radio-button" *ngFor="let order of sortOrder;let i = index" [value]="i" [checked]="i === 0" (change)="selectSortOrder(order.name)">
-          {{order.name}} 
+        <mat-radio-button
+          class="example-radio-button"
+          *ngFor="let order of sortOrder; let i = index"
+          [value]="i"
+          [checked]="i === 0"
+          (change)="selectSortOrder(order.name)">
+          {{ order.name }}
         </mat-radio-button>
       </mat-radio-group>
     </div>
@@ -18,27 +23,37 @@
       <mat-radio-group
         aria-labelledby="sort-radio-group-label"
         class="example-radio-group">
-        <mat-radio-button class="example-radio-button" *ngFor="let sort of sortBy" [value]="sort.name" [checked]="sort.checked" (change)="selectSort(sort.name)">
-          {{sort.name}}
+        <mat-radio-button
+          class="example-radio-button"
+          *ngFor="let sort of sortBy"
+          [value]="sort.name"
+          [checked]="sort.checked"
+          (change)="selectSort(sort.name)">
+          {{ sort.name }}
         </mat-radio-button>
       </mat-radio-group>
-  </div>
-  </div>
-
-  <div *ngFor="let driving of drivings; let i=index" class="div">
-    <driving-row [driving]="driving" [index]="i" [user]="currentUser"></driving-row>
+    </div>
   </div>
 
-  <util-message message="User don't have any drivings." *ngIf="drivings.length === 0"></util-message>
-
-  <div class="paginator" *ngIf="drivings.length !== 0">
-    <mat-paginator appPaginator
-                [length]="3"
-                [pageSize]="pageSize"
-                hidePageSize="true"
-                aria-label="Select page"
-                (page)="onPaginate($event)">
-    </mat-paginator>
+  <div *ngFor="let driving of drivings; let i = index" class="div">
+    <driving-row
+      [driving]="driving"
+      [index]="i"
+      [user]="currentUser"></driving-row>
   </div>
+
+  <util-message
+    message="User don't have any drivings."
+    *ngIf="drivings.length === 0"></util-message>
 </div>
 
+<div class="paginator" *ngIf="drivings.length !== 0">
+  <mat-paginator
+    appPaginator
+    [length]="totalPages"
+    [pageSize]="pageSize"
+    hidePageSize="true"
+    aria-label="Select page"
+    (page)="onPaginate($event)">
+  </mat-paginator>
+</div>

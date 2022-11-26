@@ -27,18 +27,10 @@ public class VerifyController {
 
     private final VerifyService verifyService;
 
-    private final RegularUserService regularUserService;
-
-    private final DriverService driverService;
-
     public VerifyController(
-            @Qualifier("verifyServiceConfiguration") final VerifyService verifyService,
-            @Qualifier("regularUserServiceConfiguration") final RegularUserService regularUserService,
-            @Qualifier("driverServiceConfiguration") final DriverService driverService
+            @Qualifier("verifyServiceConfiguration") final VerifyService verifyService
         ) {
         this.verifyService = verifyService;
-        this.regularUserService = regularUserService;
-        this.driverService = driverService;
     }
 
     @PostMapping("/send-code-again")
@@ -52,15 +44,10 @@ public class VerifyController {
 
     @PutMapping()
     @ResponseStatus(HttpStatus.OK)
-    public UserDTO update(@Valid @RequestBody VerifyRequest verifyRequest)
+    public boolean update(@Valid @RequestBody VerifyRequest verifyRequest)
             throws EntityNotFoundException, WrongVerifyTryException {
 
-        return (verifyRequest.getUserRole().equalsIgnoreCase(ROLE_DRIVER)) ? driverService.activate(
-                verifyRequest.getVerifyId(),
-                verifyRequest.getSecurityCode()) : regularUserService.activate(
-                verifyRequest.getVerifyId(),
-                verifyRequest.getSecurityCode()
-        );
+        return verifyService.activate(verifyRequest.getVerifyId(), verifyRequest.getSecurityCode());
     }
 
 }

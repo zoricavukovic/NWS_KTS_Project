@@ -19,6 +19,7 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
   userId: number;
   pageSize = 1;
   pageNumber = 0;
+  totalPages: number;
   selectedSortBy = 'Date';
   selectedSortOrder = 'Descending';
 
@@ -38,6 +39,7 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
   drivingsSubscription: Subscription;
   reviewSubscription: Subscription;
   reviewedDrivingsSubscription: Subscription;
+  drivingCountSubscription: Subscription;
 
   constructor(
     private authService: AuthService,
@@ -49,6 +51,13 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.userId = +this.route.snapshot.paramMap.get('id');
     this.currentUser = this.authService.getCurrentUser;
+
+    this.drivingCountSubscription = this.drivingService
+      .getCountDrivings(this.userId)
+      .subscribe(response => {
+        console.log(response);
+        this.totalPages = response / this.pageSize;
+      });
 
     this.drivingsSubscription = this.drivingService
       .getDrivingsForUser(

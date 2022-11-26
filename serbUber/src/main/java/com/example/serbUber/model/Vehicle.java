@@ -24,12 +24,15 @@ public class Vehicle {
     @Column(name="rate", nullable = false)
     private double rate = Constants.START_RATE;
 
-    @Column(name="location_index")
+    @Column(name="location_index", nullable = false)
     private int currentLocationIndex;
 
     @OneToOne()
-    @JoinColumn(name = "active_route_id", referencedColumnName = "id")
+    @JoinColumn(name = "active_route_id", referencedColumnName = "id", nullable = false)
     private Route activeRoute;
+
+    @Column(name="in_drive", nullable = false)
+    private boolean inDrive;
 
     public Vehicle() {
     }
@@ -55,7 +58,8 @@ public class Vehicle {
         final VehicleTypeInfo vehicleTypeInfo,
         final double rate,
         final int currentLocationIndex,
-        final Route activeRoute
+        final Route activeRoute,
+        final boolean inDrive
     ) {
         this.id = id;
         this.petFriendly = petFriendly;
@@ -64,6 +68,7 @@ public class Vehicle {
         this.rate = rate;
         this.currentLocationIndex = currentLocationIndex;
         this.activeRoute = activeRoute;
+        this.inDrive = inDrive;
     }
 
     public Vehicle(
@@ -76,6 +81,23 @@ public class Vehicle {
         this.babySeat = babySeat;
         this.vehicleTypeInfo = vehicleTypeInfo;
         this.rate = rate;
+    }
+
+    public boolean hasRoute(){
+        return this.activeRoute != null;
+    }
+
+    public Location getLocationForIndexInRoute(){
+        int index = 0;
+        for (DrivingLocationIndex location : this.activeRoute.getLocations()) {
+            if (this.currentLocationIndex == index) {
+
+                return location.getLocation();
+            }
+            index++;
+        }
+
+        return null;
     }
 
     public Long getId() {
@@ -128,5 +150,13 @@ public class Vehicle {
 
     public void setActiveRoute(Route activeRoute) {
         this.activeRoute = activeRoute;
+    }
+
+    public boolean isInDrive() {
+        return inDrive;
+    }
+
+    public void setInDrive(boolean inDrive) {
+        this.inDrive = inDrive;
     }
 }

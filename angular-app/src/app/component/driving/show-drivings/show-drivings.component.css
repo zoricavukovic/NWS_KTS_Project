@@ -36,6 +36,7 @@ p {
   float: left;
   color: #f5e9de;
   margin-left: 30px;
+  position: fixed;
 }
 
 .sortByDiv {
@@ -49,6 +50,11 @@ p {
 
 .mat-radio-button {
   margin-bottom: 5px;
+}
+
+.allDrivings {
+  position: relative;
+  min-height: 80%;
 }
 
 ::ng-deep .mat-radio-button.mat-accent .mat-radio-inner-circle {
@@ -66,8 +72,8 @@ mat-paginator {
 }
 
 .paginator {
-  bottom: 0px;
-  position: absolute;
+  bottom: 0;
+  position: relative;
   width: 100%;
 }
 

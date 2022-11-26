@@ -1,11 +1,10 @@
 <mat-toolbar color="accent" class="mat-elevation-z3">
-  <a [routerLink]="['']" routerLinkActive="active">
+  <a [routerLink]="['/map-view/-1']" routerLinkActive="active">
     <img
       src="../../../assets/images/uber-icon.png"
       alt="SerbUber"
       class="app-icon" />
   </a>
-
   <div class="spacer">
     <div *ngIf="authService?.getCurrentUser">
       &nbsp;&nbsp;
@@ -48,7 +47,7 @@
         routerLinkActive="active"
         mat-button
         color="primary"
-      >Messages</a
+        >Messages</a
       >
 
       <a
@@ -56,12 +55,9 @@
         [routerLink]="['/registration']"
         routerLinkActive="active"
         mat-button
-        color="primary"
-      >
+        color="primary">
         Driver registration
       </a>
-
-
     </div>
   </div>
 

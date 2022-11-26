@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { User } from 'src/app/model/user/user';
 import { AuthService } from 'src/app/service/auth.service';
 import { ChatRoom } from 'src/app/model/message/chat-room';
 import { ChatRoomService } from 'src/app/service/chat-room.service';
@@ -12,7 +11,6 @@ import { MessageSeenRequest } from 'src/app/model/message/message-request';
   styleUrls: ['./history-live-chat.component.css'],
 })
 export class HistoryLiveChatComponent implements OnInit, OnDestroy {
-  loggedUser: User;
   chatRooms: ChatRoom[];
   selectedChatRoom: ChatRoom;
 
@@ -28,10 +26,8 @@ export class HistoryLiveChatComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.loggedUser = this.authService.getCurrentUser;
-
     this.chatRoomSubscription = this.chatRoomService
-      .getAllChatRooms(this.loggedUser.email)
+      .getAllChatRooms(this.authService.getCurrentUser.email)
       .subscribe(
         res => {
           this.chatRooms = res;

@@ -22,3 +22,8 @@ h1 {
   width: 6rem;
   height: 6rem;
 }
+
+.vehicle-stars {
+  display: flex;
+  margin-left: auto;
+}

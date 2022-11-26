@@ -1,9 +1,10 @@
 import { Route } from '../model/route/route';
 import {Location} from "../model/route/location";
-declare let L;
+import * as L from 'leaflet';
+import {Vehicle} from "../model/vehicle/vehicle";
+import {VehicleCurrentLocation} from "../model/vehicle/vehicle-current-location";
 
-export function drawPolyline(map, route: Route) {
-  console.log(route);
+export function drawPolyline(map, route: Route): L.Polyline {
   let latLongs = [];
   route.locations.forEach(locationIndex =>
     latLongs.push([locationIndex.location.lat, locationIndex.location.lon])
@@ -13,6 +14,8 @@ export function drawPolyline(map, route: Route) {
     map
   );
   map.fitBounds(currentPolyline.getBounds());
+
+  return currentPolyline;
 }
 
 export function removeLayer(map, drawPolyline) {
@@ -35,12 +38,26 @@ export function drawPolylineOnMap(map, latLongs, color, polylineList) {
 
 export function refreshMap(map){
   map.off();
-  map.remove();
+  // map.remove();
+  map.eachLayer((layer) => {
+
+      map.removeLayer(layer);
+
+  })
 }
 
-export function addCarMarker(map, location: Location){
+export function removeSpecificPolyline(map, polyline: L.Polyline){
+  map.off();
+  map.eachLayer((layer) => {
+    if (  layer === polyline) {
+      map.removeLayer(layer);
+    }
+  })
+}
+
+export function addCarMarker(map, location: Location, iconName: string): L.Marker {
   const customIcon = L.icon({
-    iconUrl: '/assets/images/car.png',
+    iconUrl: iconName,
     iconSize: [45, 45],
   });
   const markerOptions = {
@@ -49,9 +66,31 @@ export function addCarMarker(map, location: Location){
     icon: customIcon,
   };
 
-  L.marker(
+  const carMarker = L.marker(
     [location?.lat, location?.lon],
     markerOptions
-  ).addTo(map);
-  map.panBy(L.point(location?.lat, location?.lon));
+  );
+  carMarker.addTo(map);
+
+  return carMarker;
+}
+
+export function changeOrAddMarker(
+  map, carMarkers: L.Marker[], vehicles: Vehicle[], vehicleCurrentLocation: VehicleCurrentLocation[]
+): L.Marker[] {
+  if (map !== undefined){
+    carMarkers.forEach(marker => removeMarker(map, marker));
+    let markers: L.Marker = [];
+    vehicleCurrentLocation.forEach(currentVehicle => {
+      markers.push(currentVehicle.inDrive === true ?
+        addCarMarker(map, currentVehicle?.currentLocation, '/assets/images/car.png'):
+        addCarMarker(map, currentVehicle?.currentLocation, '/assets/images/car-unactive.png')
+      );
+    })
+
+    return markers;
+  }
+
+  return carMarkers;
+
 }
