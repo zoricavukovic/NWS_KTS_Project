@@ -1,7 +1,6 @@
-<div style="display:flex">
-  <app-driving-details [map]="map"></app-driving-details>
-  <div id="map">
-  </div>
+<div id="map">
+  <app-driving-details *ngIf="actRoute.snapshot.paramMap.get('id') !== '-1'" [map]="map"></app-driving-details>
+  <home-page *ngIf="actRoute.snapshot.paramMap.get('id') === '-1'" [map]="map"></home-page>
 </div>
 
 

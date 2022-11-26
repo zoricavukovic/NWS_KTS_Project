@@ -15,17 +15,17 @@ import { ShowUsersComponent } from './component/admin/show-users/show-users.comp
 import { MapComponent } from './component/map/map.component';
 import { FavouriteRoutesComponent } from './component/favourite-route/favourite-routes/favourite-routes.component';
 import { SuccessfullVerificationComponent } from './component/user/auth/successfull-verification/successfull-verification.component';
+import {DrivingDetailsComponent} from "./component/driving/driving-details/driving-details.component";
 
 const routes: Routes = [
-  { path: '', redirectTo: 'home-page', pathMatch: 'full' },
-  { path: 'home-page', component: HomePageComponent },
+  { path: '', redirectTo: 'map-view/-1', pathMatch: 'full' },
+  { path: 'map-view/:id', component: MapComponent },
   { path: 'login', component: LoginComponent },
   { path: 'registration', component: RegistrationComponent },
   { path: 'forgot-password', component: SendResetPasswordEmailComponent },
   { path: 'verify/:id', component: VerifyComponent },
   { path: 'successfull-verification', component: SuccessfullVerificationComponent },
   { path: 'drivings/:id', component: ShowDrivingsComponent },
-  { path: 'driving-details/:id', component: MapComponent },
   { path: 'reset-password/:email', component: ResetPasswordComponent },
   { path: 'profile-page', component: ProfilePageComponent },
   { path: 'verify/:id', component: VerifyComponent },

@@ -5,7 +5,8 @@ import { environment } from 'src/environments/environment';
 import { ChatRoomService } from './chat-room.service';
 import { ChatRoom } from '../model/message/chat-room';
 import { ChatRoomWithNotify } from '../model/message/chat-room-with-notify';
-import { ToastrService } from 'ngx-toastr';
+import {VehicleService} from "./vehicle.service";
+import {VehicleCurrentLocation} from "../model/vehicle/vehicle-current-location";
 
 
 @Injectable({
@@ -13,16 +14,23 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class WebSocketService {
   private stompClient = null;
+  private globalStompClient = null;
   initialized: boolean = false;
+  initializedGlobal: boolean = false;
 
   constructor(
-    private chatRoomService: ChatRoomService, 
-    private toast: ToastrService
+    private chatRoomService: ChatRoomService,
+    private vehicleService: VehicleService
   ) {
 
     if (!this.stompClient) {
       this.initialized = false;
       this.connect();
+    }
+
+    if (!this.globalStompClient) {
+      this.initializedGlobal = false;
+      this.globalConnect();
     }
   }
 
@@ -49,6 +57,30 @@ export class WebSocketService {
       });
     }
   }
+
+  globalConnect() {
+    if (!this.initializedGlobal) {
+      this.initializedGlobal = true;
+      const serverUrl = environment.webSocketUrl;
+      const ws = new SockJS(serverUrl);
+      this.globalStompClient = Stomp.over(ws);
+
+      const that = this;
+
+      this.globalStompClient.connect({}, function (frame) {
+        that.globalStompClient.subscribe(
+          environment.publisherUrl + 'global/connect',
+          message => {
+            if (message !== null && message !== undefined || message?.body !== null) {
+              const vehicleCurrentLocation:VehicleCurrentLocation[] = JSON.parse(message.body);
+              that.vehicleService.addVehicle(vehicleCurrentLocation);
+            }
+          }
+        );
+      });
+    }
+  }
+
 
   isMessageType(webSocketNotification: string): boolean {
     try {
@@ -78,7 +110,7 @@ export class WebSocketService {
       '/app/send/message',
       {},
       JSON.stringify(this.createChatRoomWithNotify(chatRoom, notifyAdmin))
-    );  
+    );
   }
 
   createChatRoomWithNotify(

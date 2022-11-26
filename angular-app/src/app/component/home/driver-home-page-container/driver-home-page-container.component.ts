@@ -3,6 +3,7 @@ import { Driving } from '../../../model/driving/driving';
 import { Subscription } from 'rxjs';
 import { DrivingService } from '../../../service/driving.service';
 import { ConfigService } from 'src/app/service/config.service';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-driver-home-page-container',
@@ -16,8 +17,9 @@ export class DriverHomePageContainerComponent implements OnInit, OnDestroy {
   maxNumberOfShowedUsers: number = 3;
   constructor(
     public configService: ConfigService,
-    private drivingService: DrivingService
-    ) {}
+    private drivingService: DrivingService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.drivingSubscription = this.drivingService
@@ -67,7 +69,9 @@ export class DriverHomePageContainerComponent implements OnInit, OnDestroy {
     return `+${driving.users.length - this.maxNumberOfShowedUsers}`;
   }
 
-  showDrivingDetails(drivingId: number): void {}
+  showDrivingDetails(drivingId: number): void {
+    this.router.navigate([`/map-view/${drivingId}`]);
+  }
 
   hasNotFutureDrivings(): boolean {
     return (

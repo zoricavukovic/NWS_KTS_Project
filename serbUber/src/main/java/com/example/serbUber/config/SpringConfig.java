@@ -60,6 +60,12 @@ public class SpringConfig extends WebSecurityConfigurerAdapter {
             .permitAll()
             .antMatchers("/users/reset-password")
             .permitAll()
+            .antMatchers("/vehicles/active")
+            .permitAll()
+            .antMatchers("/vehicles/update-current-location")
+            .permitAll()
+            .antMatchers("/users/**")
+            .permitAll()
             .antMatchers("/routes/possible")
             .permitAll()
             .antMatchers("/verify/**")
@@ -71,8 +77,7 @@ public class SpringConfig extends WebSecurityConfigurerAdapter {
             .and()
             .httpBasic()
             .and()
-            .exceptionHandling()
-        ;
+            .exceptionHandling();
     }
     @Bean
     DaoAuthenticationProvider authenticationProvider(){

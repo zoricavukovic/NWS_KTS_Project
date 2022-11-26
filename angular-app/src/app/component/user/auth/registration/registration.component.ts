@@ -134,7 +134,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
                 'Please go to ' + res.email + ' to verify account!',
                 'Registration successfully'
               );
-              this.router.navigate(['/home-page']);
+              this.router.navigate(['/map-view/-1']);
             },
             error => this.toast.error(error.error, 'Registration failed')
           );

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import {AfterViewInit, Component, Input, OnDestroy, OnInit} from '@angular/core';
 import * as L from 'leaflet';
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
 import { SearchingRoutesForm } from '../../../model/route/searching-routes-form';
@@ -9,23 +9,26 @@ import { Subscription } from 'rxjs';
 import { AuthService } from '../../../service/auth.service';
 import { PossibleRoutesViaPoints } from '../../../model/route/possible-routes-via-points';
 import {
+  addCarMarker, changeOrAddMarker,
   drawPolylineOnMap, refreshMap,
   removeLayer,
   removeMarker,
   removeOneLayer,
 } from '../../../util/map-functions';
 import { Location } from '../../../model/route/location';
+import {VehicleService} from "../../../service/vehicle.service";
+import {Vehicle} from "../../../model/vehicle/vehicle";
 
 @Component({
   selector: 'home-page',
   templateUrl: './home-page.component.html',
   styleUrls: ['./home-page.component.css'],
 })
-export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
+export class HomePageComponent implements OnInit, OnDestroy {
   routeChoiceView = true;
   filterVehicleView = false;
 
-  private map: L.Map;
+  @Input() map;
   currentUser: User;
   provider1: OpenStreetMapProvider = new OpenStreetMapProvider();
 
@@ -34,6 +37,8 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
   drawPolylineList = [];
   searchingRoutesForm: SearchingRoutesForm[] = [];
   currentUserIsDriver: boolean;
+  vehicles: Vehicle[];
+  carMarkers: L.Marker[] = []
   /* autocompleteForm = new FormGroup({
     startDest: new FormControl(undefined, [this.requireMatch.bind(this)]),
     endDest: new FormControl(undefined, [this.requireMatch.bind(this)]),
@@ -43,12 +48,24 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
   private authSubscription: Subscription;
   private routeSubscription: Subscription;
 
+  a: string[];
+
   constructor(
     private routeService: RouteService,
-    private authService: AuthService
-  ) {}
+    private authService: AuthService,
+    private vehicleService: VehicleService
+  ) {
+  }
 
   ngOnInit(): void {
+    // this.vehicleService.getAllActiveVehicles().subscribe(vehicles =>
+    //   vehicles.forEach(vehicle => this.carMarkers.push(addCarMarker(this.map, vehicle?.activeRoute?.locations.at(vehicle?.location_index)?.location)))
+    // )
+
+    this.vehicleService.getAllVehicle().subscribe(vehicleCurrentLocation => {
+      this.carMarkers = changeOrAddMarker(this.map, this.carMarkers, this.vehicles, vehicleCurrentLocation)
+      }
+    )
     this.searchingRoutesForm.push(new SearchingRoutesForm());
     this.searchingRoutesForm.push(new SearchingRoutesForm());
     this.currentUser = this.authService.getCurrentUser;
@@ -56,7 +73,12 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnDestroy(): void {
-    refreshMap(this.map);
+    for (let i; i < this.searchingRoutesForm.length; i++){
+      this.deleteMarker(i);
+    }
+
+    this.carMarkers.forEach(marker => removeMarker(this.map, marker))
+    this.removeAllPolylines();
     if (this.authSubscription) {
       this.authSubscription.unsubscribe();
     }
@@ -65,16 +87,15 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  ngAfterViewInit(): void {
-    if (this.map != undefined) { this.map = this.map.remove(); }
-    this.initMap();
-  }
 
   async initMap() {
     this.map = L.map('map').setView([45.25167, 19.83694], 13);
 
     L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       crossOrigin: true,
+    }).addTo(this.map);
+    L.control.zoom({
+      position: 'topright'
     }).addTo(this.map);
     let div = L.DomUtil.get('route-div');
     L.DomEvent.on(div, 'mousewheel', L.DomEvent.stopPropagation);

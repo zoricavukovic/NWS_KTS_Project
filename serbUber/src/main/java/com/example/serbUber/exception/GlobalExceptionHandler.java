@@ -79,7 +79,7 @@ public class GlobalExceptionHandler {
         return noAvailableAdminException.getMessage();
     }
 
-    @ExceptionHandler({ AuthenticationException.class })
+    @ExceptionHandler({ AuthenticationException.class, AccessDeniedException.class })
     @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
     public final String handleAccessDeniedException(Exception ex) {
 

@@ -1,4 +1,4 @@
-<div *ngIf="driving" class="form-container mat-elevation-z1">
+<div *ngIf="driving" class="box mat-elevation-z1">
   <h1><b>Driving</b></h1>
   <!-- <mat-expansion-panel>
     <mat-expansion-panel-header>
@@ -68,14 +68,14 @@
           mat-card-avatar
           style="height: 5rem; width: 5rem"
           [src]="getBase64Prefix() + driver?.profilePicture" />
-    
+
         <mat-card-title
           >{{ driver?.name }} {{ driver?.surname }}</mat-card-title
         >
         <mat-card-subtitle>
           <div style="display:block">
             <div>{{ driver?.email }}</div>
-            <div class="stars-driver">        
+            <div class="stars-driver">
               <ngx-stars *ngIf="driver?.rate > 0; else noRatingBlock" [readonly]="true" customSize="1.5rem" [initialStars]="driver?.rate" color="#283b50"></ngx-stars>
               <ng-template #noRatingBlock><span class="no-rating-block">No ratings yet</span></ng-template>
             </div>

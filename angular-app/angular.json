@@ -30,7 +30,8 @@
               "src/styles.css",
               "node_modules/primeng/resources/primeng.min.css",
               "./node_modules/leaflet/dist/leaflet.css",
-              "node_modules/ngx-toastr/toastr.css"
+              "node_modules/ngx-toastr/toastr.css",
+              "esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css"
             ],
             "scripts": []
           },
@@ -102,7 +103,8 @@
               "node_modules/font-awesome/css/font-awesome.min.css",
               "node_modules/primeng/resources/primeng.min.css",
               "node_modules/leaflet/dist/leaflet.css",
-              "node_modules/ngx-toastr/toastr.css"
+              "node_modules/ngx-toastr/toastr.css",
+              "esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css"
             ],
             "scripts": []
           }

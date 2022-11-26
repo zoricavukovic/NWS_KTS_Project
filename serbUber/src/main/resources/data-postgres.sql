@@ -21,29 +21,44 @@ insert into vehicle_type_infos (num_of_seats, start_price, vehicle_type) values
 insert into vehicle_type_infos (num_of_seats, start_price, vehicle_type) values
     (7, 150, 2);
 
-insert into vehicles (baby_seat, pet_friendly, rate, vehicle_type_id) values
-    (true, false, 0, 1);
-insert into vehicles (baby_seat, pet_friendly, rate, vehicle_type_id) values
-    (true, true, 0, 2);
-insert into vehicles (baby_seat, pet_friendly, rate, vehicle_type_id) values
-    (false, true, 0, 3);
-
 -- insert into routes (kilometres, location_id, )
 insert into locations (city, lat, lon, street, number, zip_code) values
     ('Novi Sad', 45.258300,19.833950, 'Bulevar Oslobodjenja', '55', '21000'),
     ('Novi Sad', 45.246710, 19.848760, 'Bulevar Cara Lazara', '5', '21000'),
     ('Novi Sad', 45.256420, 19.811140, 'Bulevar Evrope', '10', '21000'),
-    ('Novi Sad', 45.247460, 19.839030, 'Lasla Gala', '2', '21000');
+    ('Novi Sad', 45.247460, 19.839030, 'Lasla Gala', '2', '21000'),
+    ('Novi Sad', 45.245720,19.837379, 'Lasla Gala', '21', '21000'),
+    ('Novi Sad', 45.245540,19.836470, 'Gogoljeva', '2', '21000'),
+    ('Novi Sad', 45.245736,19.835760, 'Gogoljeva', '10', '21000'),
+    ('Novi Sad', 45.246382,19.834196, 'Gogoljeva', '22', '21000'),
+    ('Novi Sad', 45.246611,19.833666, 'Gogoljeva', '28', '21000'),
+    ('Novi Sad', 45.246956,19.833697, 'Mise Dimitrijevica', '3c', '21000'),
+    ('Novi Sad', 45.247748,19.834440, 'Mise Dimitrijevica', '1a', '21000'),
+    ('Novi Sad', 45.248048,19.834964, 'Brace Ribnikara', '29', '21000'),
+    ('Novi Sad', 45.247868,19.835635, 'Brace Ribnikara', '25b', '21000'),
+    ('Novi Sad', 45.247785,19.836022, 'Brace Ribnikara', '25a', '21000');
 
 insert into routes (distance, time) values
                              (3, 5),
                              (5, 2),
                              (6, 6);
 
+insert into vehicles (baby_seat, pet_friendly, rate, vehicle_type_id, location_index, active_route_id, in_drive) values
+    (true, false, 0, 1, 0, 1, true),
+    (true, true, 0, 2, 0, 2, true),
+    (false, true, 0, 3, 1, 3, false);
+
 insert into driving_locations(location_id, index, route_id) values
-      (1,1,1),
-      (4,2,1),
-      (2,3,1),
+      (5,1,1),
+      (6,2,1),
+      (7,3,1),
+      (8,4,1),
+      (9,5,1),
+      (10,6,1),
+      (11,7,1),
+      (12,8,1),
+      (13,9,1),
+      (14,10,1),
       (2,1,2),
       (1,2,2),
       (4,1,3),
@@ -51,10 +66,14 @@ insert into driving_locations(location_id, index, route_id) values
 
 
 insert into drivers (id, email, password, name, surname, phone_number, city, profile_picture, role_id, active, blocked, start_shift, end_shift, last_active, rate, working_minutes, location_id, vehicle_id, verified, online) values
-    (nextval('users_id_gen'), 'mile@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Mile', 'Milic', '012345678', 'Novi Sad', 'default-user.png', 3, false, false, null, null, null, 1.3, 0, 1, 1, true, false);
+    (nextval('users_id_gen'), 'mile@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Mile', 'Milic', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, null, null, null, 1.3, 0, 1, 1, true, true);
 
 insert into drivers (id, email, password, name, surname, phone_number, city, profile_picture, role_id, active, blocked, start_shift, end_shift, last_active, rate, working_minutes, location_id, vehicle_id, verified, online) values
-    (nextval('users_id_gen'), 'milan@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Milan', 'Milanovic', '012345678', 'Novi Sad', 'default-user.png', 3, false, false, null, null, null, 0, 0, 1, 2, true, false);
+    (nextval('users_id_gen'), 'milan@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Milan', 'Milanovic', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, null, null, null, 0, 0, 1, 2, true, true);
+
+insert into drivers (id, email, password, name, surname, phone_number, city, profile_picture, role_id, active, blocked, start_shift, end_shift, last_active, rate, working_minutes, location_id, vehicle_id, verified, online) values
+    (nextval('users_id_gen'), 'eki@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Esad', 'Esadic', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, null, null, null, 0, 0, 1, 3, true, true);
+
 
 
 insert into drivings (active, driver_id, driving_status, duration, paying_limit, price, started, route_id) values

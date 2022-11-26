@@ -47,4 +47,9 @@ export class NavBarComponent implements OnInit {
     this.authService.logOut();
     this.router.navigate(['/login']);
   }
+
+  doga() {
+    this.router.navigate(['/mapa/-1']);
+  }
+
 }
