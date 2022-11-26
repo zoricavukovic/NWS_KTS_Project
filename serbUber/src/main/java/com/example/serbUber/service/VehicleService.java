@@ -1,5 +1,6 @@
 package com.example.serbUber.service;
 
+import com.example.serbUber.dto.VehicleCurrentLocationDTO;
 import com.example.serbUber.dto.VehicleDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.EntityType;
@@ -11,12 +12,13 @@ import com.example.serbUber.model.VehicleType;
 import com.example.serbUber.repository.VehicleRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+import static com.example.serbUber.dto.VehicleCurrentLocationDTO.fromVehiclesToVehicleCurrentLocationDTO;
 import static com.example.serbUber.dto.VehicleDTO.fromVehicles;
+import static com.example.serbUber.dto.VehicleDTO.fromVehiclesWithAdditionalFields;
 import static com.example.serbUber.dto.VehicleTypeInfoDTO.toVehicleTypeInfo;
 
 @Component
@@ -25,13 +27,16 @@ public class VehicleService implements IVehicleService {
 
     private final VehicleRepository vehicleRepository;
     private final VehicleTypeInfoService vehicleTypeInfoService;
+    private final WebSocketService webSocketService;
 
     public VehicleService(
             final VehicleRepository vehicleRepository,
-            final VehicleTypeInfoService vehicleTypeInfoService
+            final VehicleTypeInfoService vehicleTypeInfoService,
+            final WebSocketService webSocketService
     ) {
         this.vehicleRepository = vehicleRepository;
         this.vehicleTypeInfoService = vehicleTypeInfoService;
+        this.webSocketService = webSocketService;
     }
 
     public Vehicle create(
@@ -75,5 +80,32 @@ public class VehicleService implements IVehicleService {
     public void delete(Long id) {
 
         vehicleRepository.deleteById(id);
+    }
+
+    public List<VehicleCurrentLocationDTO> getAllVehiclesForActiveDriver() {
+
+        List<Vehicle> vehicles = vehicleRepository.getAllVehiclesForActiveDriver();
+
+        return fromVehiclesToVehicleCurrentLocationDTO(vehicles);
+    }
+
+    public List<VehicleCurrentLocationDTO> updateCurrentVehiclesLocation() {
+        List<Vehicle> vehicles = vehicleRepository.getAllVehiclesForActiveDriver();
+        vehicles.forEach(this::saveCurrentVehicleLocation);
+//
+//        List<VehicleDTO> vehicleDTOs = fromVehiclesWithAdditionalFields(vehicles);
+        List<VehicleCurrentLocationDTO> vehicleCurrentLocationDTOs = fromVehiclesToVehicleCurrentLocationDTO(vehicles);
+        webSocketService.send(vehicleCurrentLocationDTOs);
+
+        return vehicleCurrentLocationDTOs;
+    }
+
+    private void saveCurrentVehicleLocation(Vehicle vehicle) {
+        int currentLocationIndex = vehicle.getCurrentLocationIndex();
+        int nextLocationIndex = (vehicle.getActiveRoute().getLocations().size() - 1 == currentLocationIndex)?
+            currentLocationIndex :
+            currentLocationIndex + 1;
+        vehicle.setCurrentLocationIndex(nextLocationIndex);
+        vehicleRepository.save(vehicle);
     }
 }

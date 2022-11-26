@@ -10,9 +10,11 @@
           <mat-card-title
             >{{ vehicle?.vehicleTypeInfo?.vehicleType }}
           </mat-card-title>
-          <mat-icon style="display: inline-flex; margin-left: 5px"
+          <mat-icon style="display: inline-flex; margin-left: 2rem"
             >people</mat-icon
-          >&nbsp;<span>{{ vehicle?.vehicleTypeInfo?.numOfSeats }}</span>
+          >&nbsp;<span style="font-size: 1.2rem; margin-top: 0.1rem">{{
+            vehicle?.vehicleTypeInfo?.numOfSeats
+          }}</span>
         </div>
         <div *ngIf="vehicle?.petFriendly" style="display: flex">
           <p style="font-size: 1.2rem">Pet friendly</p>

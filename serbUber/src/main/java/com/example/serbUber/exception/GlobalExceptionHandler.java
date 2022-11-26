@@ -1,13 +1,21 @@
 package com.example.serbUber.exception;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+
+import static com.example.serbUber.exception.ErrorMessagesConstants.UNAUTHORIZED_MESSAGE;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -56,12 +64,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    protected Map<String, String> handleMethodArgumentNotValid(MethodArgumentNotValidException methodArgumentNotValidException) {
-        Map<String, String> errorMap = new HashMap<>();
-        methodArgumentNotValidException.getBindingResult().getFieldErrors().forEach(error ->
-            errorMap.put(error.getField(), error.getDefaultMessage())
-        );
-        return errorMap;
+    protected String handleMethodArgumentNotValid(MethodArgumentNotValidException methodArgumentNotValidException) {
+        Optional<FieldError> error = methodArgumentNotValidException.getBindingResult().getFieldErrors().stream().findFirst();
+
+        return error.map(
+            fieldError -> String.format("%s", fieldError.getDefaultMessage()))
+            .orElse("Error not found");
     }
 
     @ExceptionHandler(value = NoAvailableAdminException.class)
@@ -69,5 +77,12 @@ public class GlobalExceptionHandler {
     public String NoAvailableAdminException(NoAvailableAdminException noAvailableAdminException) {
 
         return noAvailableAdminException.getMessage();
+    }
+
+    @ExceptionHandler({ AuthenticationException.class, AccessDeniedException.class })
+    @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+    public final String handleAccessDeniedException(Exception ex) {
+
+        return UNAUTHORIZED_MESSAGE;
     }
 }

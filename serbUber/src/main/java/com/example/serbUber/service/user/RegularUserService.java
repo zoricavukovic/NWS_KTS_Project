@@ -1,6 +1,8 @@
 package com.example.serbUber.service.user;
 
 import com.example.serbUber.dto.RouteDTO;
+import com.example.serbUber.dto.VerifyDTO;
+import com.example.serbUber.dto.user.RegistrationDTO;
 import com.example.serbUber.dto.user.RegularUserDTO;
 import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.*;
@@ -33,17 +35,20 @@ public class RegularUserService implements IRegularUserService {
     private final VerifyService verifyService;
     private final RoleService roleService;
     private final RouteService routeService;
+    private final UserService userService;
 
     public RegularUserService(
             final RegularUserRepository regularUserRepository,
             final VerifyService verifyService,
             final RouteService routeService,
-            final RoleService roleService
+            final RoleService roleService,
+            final UserService userService
     ) {
         this.regularUserRepository = regularUserRepository;
         this.verifyService = verifyService;
         this.routeService = routeService;
         this.roleService = roleService;
+        this.userService = userService;
     }
 
     public List<RegularUserDTO> getAll() {
@@ -65,12 +70,16 @@ public class RegularUserService implements IRegularUserService {
             .orElseThrow(() -> new EntityNotFoundException(id, EntityType.USER));
     }
 
+<<<<<<< HEAD
     public RegularUser getRegularByEmail(String email) throws EntityNotFoundException {
         return regularUserRepository.getRegularUserByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException(email, EntityType.USER));
     }
 
     public RegularUserDTO create(
+=======
+    public RegistrationDTO create(
+>>>>>>> developer
         final String email,
         final String password,
         final String confirmationPassword,
@@ -82,13 +91,14 @@ public class RegularUserService implements IRegularUserService {
     ) throws PasswordsDoNotMatchException, EntityAlreadyExistsException, MailCannotBeSentException, EntityNotFoundException {
         if (passwordsDontMatch(password, confirmationPassword)) {
             throw new PasswordsDoNotMatchException();
+        } else if (userService.checkIfUserAlreadyExists(email)) {
+            throw new EntityAlreadyExistsException(String.format("User with %s already exists.", email));
         }
-        RegularUser regularUser = saveRegularUser(email, password, name, surname, phoneNumber, city, profilePicture);
 
-        return new RegularUserDTO(regularUser);
+        return registerRegularUser(email, password, name, surname, phoneNumber, city, profilePicture);
     }
 
-    private RegularUser saveRegularUser(
+    private RegistrationDTO registerRegularUser(
             final String email,
             final String password,
             final String name,
@@ -109,12 +119,12 @@ public class RegularUserService implements IRegularUserService {
                 getProfilePicture(profilePicture),
                 roleService.get(ROLE_REGULAR_USER)
             ));
-            verifyService.sendEmail(regularUser.getId(), regularUser.getEmail());
+            VerifyDTO verifyDTO = verifyService.create(regularUser.getId(), regularUser.getEmail());
 
-            return regularUser;
+            return new RegistrationDTO(verifyDTO.getId(), email);
         } catch (EntityNotFoundException ex) {
             throw new EntityNotFoundException(ROLE_REGULAR_USER, EntityType.ROLE);
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             throw new EntityAlreadyExistsException(String.format("User with %s already exists.", email));
         }
     }
@@ -157,16 +167,6 @@ public class RegularUserService implements IRegularUserService {
             return fromRoutes(u.get().getFavouriteRoutes());
         }
         throw new EntityNotFoundException(id, EntityType.USER);
-    }
-
-    public UserDTO activate(final Long verifyId, final int securityCode)
-            throws EntityNotFoundException, WrongVerifyTryException
-    {
-        Verify verify = verifyService.update(verifyId, securityCode);
-        RegularUser regularUser = getRegularById(verify.getUserId());
-        regularUser.setVerified(true);
-
-        return new UserDTO(regularUserRepository.save(regularUser));
     }
 
 }

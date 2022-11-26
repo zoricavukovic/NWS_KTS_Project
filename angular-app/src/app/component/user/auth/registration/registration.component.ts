@@ -76,7 +76,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   vehicleType: string;
 
   ngOnInit(): void {
-    this.authService.getCurrentUser.isUserAdmin();
+    this.showDriverForm = this.authService.getCurrentUser?.isUserAdmin();
   }
 
   constructor(
@@ -134,7 +134,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
                 'Please go to ' + res.email + ' to verify account!',
                 'Registration successfully'
               );
-              this.router.navigate(['/home-page']);
+              this.router.navigate(['/map-view/-1']);
             },
             error => this.toast.error(error.error, 'Registration failed')
           );
@@ -154,12 +154,11 @@ export class RegistrationComponent implements OnInit, OnDestroy {
           .registerRegularUser(regularUser)
           .subscribe(
             response => {
-              console.log(response);
               this.toast.success(
-                'You become new member of SerbUber',
+                'Please go to ' + response.email + ' to verify account!',
                 'Registration successfully'
               );
-              this.router.navigate(['/login']);
+              this.router.navigate([`/verify/${response.verifyId}`]);
             },
             error => this.toast.error(error.error, 'Registration failed')
           );

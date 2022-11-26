@@ -1,6 +1,7 @@
 package com.example.serbUber.service.interfaces;
 
 import com.example.serbUber.dto.RouteDTO;
+import com.example.serbUber.dto.user.RegistrationDTO;
 import com.example.serbUber.dto.user.RegularUserDTO;
 import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.*;
@@ -14,7 +15,7 @@ public interface IRegularUserService {
     List<RegularUserDTO> getAll();
     RegularUserDTO get(Long id) throws EntityNotFoundException;
     RegularUser getRegularById(Long id) throws EntityNotFoundException;
-    RegularUserDTO create(
+    RegistrationDTO create(
             final String email,
             final String password,
             final String confirmationPassword,
@@ -28,6 +29,4 @@ public interface IRegularUserService {
     boolean removeFromFavouriteRoutes(Long userId, Long routeId) throws EntityNotFoundException;
     boolean isFavouriteRoute(Long routeId, Long userId);
     List<RouteDTO> getFavouriteRoutes(Long id) throws EntityNotFoundException;
-    UserDTO activate(final Long verifyId, final int securityCode)
-            throws EntityNotFoundException, WrongVerifyTryException;
 }

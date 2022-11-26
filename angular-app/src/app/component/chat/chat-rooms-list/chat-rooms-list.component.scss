@@ -1,5 +1,8 @@
 $background: white;
 
+body{
+  background-image: none;
+}
 .center {
     position: absolute;
     top: 50%;
@@ -39,12 +42,20 @@ $background: white;
     }
 
     .resolved-badge {
-        background-color: var(--mint);
         font-size: 1rem;
         padding: 4px 8px;
         text-align: center;
         margin-right: 1rem;
         border-radius: 20px;
+        color: white;
+    }
+
+    .resolved-badge-color-active {
+        background-color: #86BB71;
+    }
+
+    .resolved-badge-color-closed {
+        background-color: var(--deep-blue);
     }
 
     .badge {
@@ -59,7 +70,7 @@ $background: white;
 
         top: 0;
         left: 2.5rem;
-        background: var(--blue);
+        background: var(--deep-blue);
         color: white;
     }
 
@@ -78,19 +89,20 @@ $background: white;
     box-sizing: border-box;
     border-radius: 1rem 0 0 1rem;
 
-    background: var(--cream);
+    background: var(--white);
     overflow-y: auto;
     overflow-x: hidden;
 
     h2 {
         display: flex;
-        font-size: 1.5rem;
+        font-size: 1.6rem;
+        font-weight: bold;
         justify-content: center;
     }
 
     .active {
-        background-color: $background !important;
-        width: 18.5rem;
+        background-color: rgb(228, 227, 227);
+        width: 18rem;
         border-radius: 2rem;
     }
 }

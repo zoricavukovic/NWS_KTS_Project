@@ -13,10 +13,7 @@ import { ToastrService } from 'ngx-toastr';
 import { WebSocketService } from 'src/app/service/web-socket.service';
 import { ChatRoom } from 'src/app/model/message/chat-room';
 import { ChatRoomService } from 'src/app/service/chat-room.service';
-import {
-  MessageRequest,
-  MessageSeenRequest,
-} from 'src/app/model/message/message-request';
+import {MessageSeenRequest} from 'src/app/model/message/message-request';
 
 @Component({
   selector: 'app-poupup-live-chat',

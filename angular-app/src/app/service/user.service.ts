@@ -10,6 +10,7 @@ import { FavouriteRouteRequest } from '../model/route/favourite-route-request';
 import { User } from '../model/user/user';
 import { Observable } from 'rxjs';
 import { Role } from '../model/user/role';
+import {RegistrationResponse} from "../model/user/registration-response";
 
 @Injectable({
   providedIn: 'root',
@@ -28,9 +29,7 @@ export class UserService {
   ): Observable<User> {
     return this.http.put<User>(
       this.configService.reset_password,
-      passwordUpdateRequest,
-      { headers: this.configService.getHeader() }
-    );
+      passwordUpdateRequest);
   }
 
   updateProfileData(data: UserDetails): Observable<User> {
@@ -53,11 +52,11 @@ export class UserService {
     });
   }
 
-  registerRegularUser(registrationRequest: RegularUser): Observable<User> {
-    return this.http.post<User>(
+  registerRegularUser(registrationRequest: RegularUser): Observable<RegistrationResponse> {
+
+    return this.http.post<RegistrationResponse>(
       this.configService.registration_url,
-      registrationRequest,
-      { headers: this.configService.getHeader() }
+      registrationRequest
     );
   }
 

@@ -1,8 +1,8 @@
 package com.example.serbUber.controller;
 
 import com.example.serbUber.dto.DrivingDTO;
+import com.example.serbUber.dto.DrivingPageDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
-import com.example.serbUber.model.Driving;
 import com.example.serbUber.request.DrivingRequest;
 import com.example.serbUber.service.DrivingService;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -10,11 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
-import java.util.LinkedList;
 import java.util.List;
 
 import static com.example.serbUber.exception.ErrorMessagesConstants.*;
@@ -57,7 +55,7 @@ public class DrivingController {
     @GetMapping("/{id}/{pageNumber}/{pageSize}/{parameter}/{sortOrder}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
-    public List<DrivingDTO> getAllDrivingsForUserWithPaginationAndSort(
+    public List<DrivingPageDTO> getAllDrivingsForUserWithPaginationAndSort(
             @Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable Long id,
             @Valid @NotNull(message = NOT_NULL_MESSAGE) @PositiveOrZero(message = POSITIVE_OR_ZERO_MESSAGE) @PathVariable int pageNumber,
             @Valid @NotNull(message = NOT_NULL_MESSAGE) @Positive(message = POSITIVE_MESSAGE) @PathVariable int pageSize,
@@ -67,6 +65,13 @@ public class DrivingController {
     {
 
         return drivingService.getDrivingsForUser(id, pageNumber, pageSize, parameter, sortOrder);
+    }
+
+    @GetMapping("/number/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
+    public int getNumberOfAllDrivingsForUser(@PathVariable Long id) throws EntityNotFoundException {
+        return drivingService.getNumberOfAllDrivingsForUser(id);
     }
 
     @GetMapping("/{id}")
@@ -85,5 +90,13 @@ public class DrivingController {
     public DrivingDTO getDriving(@PathVariable Long id) throws EntityNotFoundException {
 
         return drivingService.getDrivingDto(id);
+    }
+
+    @PutMapping("/finish-driving/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
+    public DrivingDTO finishDriving(@PathVariable Long id) throws EntityNotFoundException {
+        
+        return drivingService.finishDriving(id);
     }
 }

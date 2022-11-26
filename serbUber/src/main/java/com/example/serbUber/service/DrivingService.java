@@ -1,27 +1,31 @@
 package com.example.serbUber.service;
 
 import com.example.serbUber.dto.DrivingDTO;
+import com.example.serbUber.dto.DrivingPageDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.EntityType;
-import com.example.serbUber.model.*;
+import com.example.serbUber.model.Driving;
+import com.example.serbUber.model.DrivingStatus;
+import com.example.serbUber.model.Route;
 import com.example.serbUber.model.user.User;
 import com.example.serbUber.repository.DrivingRepository;
-import com.example.serbUber.repository.user.UserRepository;
 import com.example.serbUber.service.interfaces.IDrivingService;
 import com.example.serbUber.service.user.UserService;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
 
 import static com.example.serbUber.dto.DrivingDTO.fromDrivings;
-import static com.example.serbUber.util.Constants.ROLE_DRIVER;
+import static com.example.serbUber.dto.DrivingPageDTO.fromDrivingsPage;
 
 @Component
 @Qualifier("drivingServiceConfiguration")
@@ -46,18 +50,9 @@ public class DrivingService implements IDrivingService {
             final HashMap<Long, Boolean> usersPaid,
             final double price
     ) {
-
-        Driving driving = drivingRepository.save(new Driving(
-                active,
-                duration,
-                started,
-                payingLimit,
-                route,
-                drivingStatus,
-                driverId,
-                usersPaid,
-                price
-        ));
+        Driving driving = drivingRepository.save(
+                new Driving(active, duration, started, payingLimit, route, drivingStatus, driverId, usersPaid, price)
+        );
 
         return new DrivingDTO(driving);
     }
@@ -68,26 +63,46 @@ public class DrivingService implements IDrivingService {
         return fromDrivings(drivings);
     }
 
-    public List<DrivingDTO> getDrivingsForUser(Long id, int pageNumber, int pageSize, String parameter, String sortOrder) throws EntityNotFoundException {
-        User user = userService.getUserById(id);
+    public List<DrivingPageDTO> getDrivingsForUser(
+            final Long id,
+            final int pageNumber,
+            final int pageSize,
+            final String parameter,
+            final String sortOrder
+    ) throws EntityNotFoundException {
         Pageable page = PageRequest.of(pageNumber, pageSize, Sort.by(getSortOrder(sortOrder), getSortBy(parameter)));
-        return user.getRole().isDriver() ?
-                fromDrivings(drivingRepository.findByDriverId(id, page)) :
-                fromDrivings(drivingRepository.findByUserId(id, page));
+        Page<Driving> results = getDrivingPage(id, page);
+        //int numberOfPages = calculateTotalNumberOfPages(results.getTotalPages(), results.getSize());
+        return fromDrivingsPage(results.getContent(), results.getSize(), results.getTotalPages());
+    }
+
+    private int calculateTotalNumberOfPages(final int totalNumber, final int pageSize){
+        return totalNumber % pageSize == 0 ?
+                totalNumber / pageSize :
+                totalNumber / pageSize + 1;
     }
 
 
-    private String getSortBy(String sortBy){
+    private Page<Driving> getDrivingPage(Long id, Pageable page) throws EntityNotFoundException {
+        User user = userService.getUserById(id);
+        Page<Driving> drivings = drivingRepository.findByUserId(id, page);
+        return user.getRole().isDriver() ?
+                drivingRepository.findByDriverId(id, page) :
+                drivingRepository.findByUserId(id, page);
+    }
+
+
+    private String getSortBy(final String sortBy) {
         Dictionary<String, String> sortByDict = new Hashtable<>();
-        sortByDict.put("Date","started");
-        sortByDict.put("Departure","route.startPoint");
-        sortByDict.put("Destination","route.locations"); //ne znam ovo kako da pristupi??
-        sortByDict.put("Price","price");
+        sortByDict.put("Date", "started");
+        sortByDict.put("Departure", "route.startPoint");
+        sortByDict.put("Destination", "route.locations"); //ne znam ovo kako da pristupi??
+        sortByDict.put("Price", "price");
 
         return sortByDict.get(sortBy);
     }
 
-    private Sort.Direction getSortOrder(String sortOrder){
+    private Sort.Direction getSortOrder(final String sortOrder) {
         Dictionary<String, Sort.Direction> sortOrderDict = new Hashtable<>();
         sortOrderDict.put("Descending", Sort.Direction.DESC);
         sortOrderDict.put("Ascending", Sort.Direction.ASC);
@@ -95,19 +110,34 @@ public class DrivingService implements IDrivingService {
         return sortOrderDict.get(sortOrder);
     }
 
-    public DrivingDTO getDrivingDto(Long id) throws EntityNotFoundException {
+    public DrivingDTO getDrivingDto(final Long id) throws EntityNotFoundException {
 
         return new DrivingDTO(getDriving(id));
     }
 
-    public Driving getDriving(Long id) throws EntityNotFoundException {
+    public Driving getDriving(final Long id) throws EntityNotFoundException {
 
         return drivingRepository.getDrivingById(id)
-            .orElseThrow(() -> new EntityNotFoundException(id, EntityType.DRIVING));
+                .orElseThrow(() -> new EntityNotFoundException(id, EntityType.DRIVING));
     }
 
-    public List<DrivingDTO> getAllNowAndFutureDrivings(Long id) {
+    public List<DrivingDTO> getAllNowAndFutureDrivings(final Long id) {
 
         return fromDrivings(drivingRepository.getAllNowAndFutureDrivings(id));
+    }
+
+    public DrivingDTO finishDriving(final Long id) throws EntityNotFoundException {
+        Driving driving = getDriving(id);
+        driving.setActive(false);
+        drivingRepository.save(driving);
+
+        return new DrivingDTO(driving);
+    }
+
+    public int getNumberOfAllDrivingsForUser(final Long id) throws EntityNotFoundException {
+        User user = userService.getUserById(id);
+        return user.getRole().isDriver() ?
+                drivingRepository.getNumberOfAllDrivingsForDriver(id).size() :
+                drivingRepository.getNumberOfAllDrivingsForRegularUser(id).size();
     }
 }

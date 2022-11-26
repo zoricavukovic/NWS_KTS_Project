@@ -1,9 +1,10 @@
 <div>
-  
-    <div *ngFor="let driver of drivers; let i=index" class="div">
-        <driver-row [driver]="driver" [index]="i"></driver-row>
+  <div *ngFor="let driver of drivers; let i=index" style="margin-left: 19%">
+    <div *ngIf="i%2 === 0" style="display:flex">
+      <driver-row [driver]="driver" [index]="i" ></driver-row>
+      <driver-row style="margin-left: 2rem" *ngIf="i < drivers.length-1" [driver]="drivers.at(i + 1)" [index]="i + 1" ></driver-row>
     </div>
-
   </div>
-  
-  
+</div>
+
+

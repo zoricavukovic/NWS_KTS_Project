@@ -35,7 +35,7 @@ export class DrivingRowComponent implements OnInit, OnDestroy {
   }
 
   goToDetailsPage(id: number) {
-    this.router.navigate(['/driving-details', id]);
+    this.router.navigate([`/map-view/${id}`]);
   }
 
   isDisabledBtnRate(date): boolean {

@@ -3,6 +3,8 @@ package com.example.serbUber.config;
 import com.example.serbUber.config.jwt.JwtAuthorizationFilter;
 import com.example.serbUber.service.user.CustomUserDetailsService;
 import com.example.serbUber.service.user.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +20,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
@@ -51,6 +54,18 @@ public class SpringConfig extends WebSecurityConfigurerAdapter {
             .permitAll()
             .antMatchers("/auth/**")
             .permitAll()
+            .antMatchers("/regular-users/register")
+            .permitAll()
+            .antMatchers("/users/send-rest-password-link/**")
+            .permitAll()
+            .antMatchers("/users/reset-password")
+            .permitAll()
+            .antMatchers("/vehicles/active")
+            .permitAll()
+            .antMatchers("/vehicles/update-current-location")
+            .permitAll()
+            .antMatchers("/users/**")
+            .permitAll()
             .antMatchers("/routes/possible")
             .permitAll()
             .antMatchers("/verify/**")
@@ -60,7 +75,9 @@ public class SpringConfig extends WebSecurityConfigurerAdapter {
             .anyRequest()
             .authenticated()
             .and()
-            .httpBasic();
+            .httpBasic()
+            .and()
+            .exceptionHandling();
     }
     @Bean
     DaoAuthenticationProvider authenticationProvider(){

@@ -24,6 +24,16 @@ public class Vehicle {
     @Column(name="rate", nullable = false)
     private double rate = Constants.START_RATE;
 
+    @Column(name="location_index", nullable = false)
+    private int currentLocationIndex;
+
+    @OneToOne()
+    @JoinColumn(name = "active_route_id", referencedColumnName = "id", nullable = false)
+    private Route activeRoute;
+
+    @Column(name="in_drive", nullable = false)
+    private boolean inDrive;
+
     public Vehicle() {
     }
 
@@ -32,12 +42,33 @@ public class Vehicle {
             final boolean petFriendly,
             final boolean babySeat,
             final VehicleTypeInfo vehicleTypeInfo,
-            final double rate) {
+            final double rate
+    ) {
         this.id = id;
         this.petFriendly = petFriendly;
         this.babySeat = babySeat;
         this.vehicleTypeInfo = vehicleTypeInfo;
         this.rate = rate;
+    }
+
+    public Vehicle(
+        final Long id,
+        final boolean petFriendly,
+        final boolean babySeat,
+        final VehicleTypeInfo vehicleTypeInfo,
+        final double rate,
+        final int currentLocationIndex,
+        final Route activeRoute,
+        final boolean inDrive
+    ) {
+        this.id = id;
+        this.petFriendly = petFriendly;
+        this.babySeat = babySeat;
+        this.vehicleTypeInfo = vehicleTypeInfo;
+        this.rate = rate;
+        this.currentLocationIndex = currentLocationIndex;
+        this.activeRoute = activeRoute;
+        this.inDrive = inDrive;
     }
 
     public Vehicle(
@@ -50,6 +81,23 @@ public class Vehicle {
         this.babySeat = babySeat;
         this.vehicleTypeInfo = vehicleTypeInfo;
         this.rate = rate;
+    }
+
+    public boolean hasRoute(){
+        return this.activeRoute != null;
+    }
+
+    public Location getLocationForIndexInRoute(){
+        int index = 0;
+        for (DrivingLocationIndex location : this.activeRoute.getLocations()) {
+            if (this.currentLocationIndex == index) {
+
+                return location.getLocation();
+            }
+            index++;
+        }
+
+        return null;
     }
 
     public Long getId() {
@@ -86,5 +134,29 @@ public class Vehicle {
 
     public void setRate(double rate) {
         this.rate = rate;
+    }
+
+    public int getCurrentLocationIndex() {
+        return currentLocationIndex;
+    }
+
+    public void setCurrentLocationIndex(int currentLocationIndex) {
+        this.currentLocationIndex = currentLocationIndex;
+    }
+
+    public Route getActiveRoute() {
+        return activeRoute;
+    }
+
+    public void setActiveRoute(Route activeRoute) {
+        this.activeRoute = activeRoute;
+    }
+
+    public boolean isInDrive() {
+        return inDrive;
+    }
+
+    public void setInDrive(boolean inDrive) {
+        this.inDrive = inDrive;
     }
 }

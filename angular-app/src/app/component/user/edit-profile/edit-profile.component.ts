@@ -5,10 +5,10 @@ import { map, Observable, startWith, Subscription } from 'rxjs';
 import { UserService } from 'src/app/service/user.service';
 import { User } from 'src/app/model/user/user';
 import { isFormValid } from 'src/app/util/validation-function';
-import { UserDetails } from 'src/app/model/user/user-details';
 import { AuthService } from 'src/app/service/auth.service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import {ConfigService} from "../../../service/config.service";
 
 @Component({
   selector: 'app-edit-profile',
@@ -24,7 +24,7 @@ export class EditProfileComponent implements OnInit, OnDestroy {
   editDataForm = new FormGroup({
     phoneNumberFormControl: new FormControl('', [
       Validators.required,
-      Validators.pattern('[0-9]*'),
+      Validators.pattern('[0-9]{8,12}'),
     ]),
     nameFormControl: new FormControl('', [
       Validators.required,
@@ -45,8 +45,9 @@ export class EditProfileComponent implements OnInit, OnDestroy {
   filteredCities: Observable<string[]>;
 
   constructor(
+    public authService: AuthService,
+    public configService: ConfigService,
     private userService: UserService,
-    private authService: AuthService,
     private router: Router,
     private toast: ToastrService
   ) {
@@ -60,9 +61,6 @@ export class EditProfileComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.user = this.authService.getCurrentUser;
-    // this.authSubscription = this.authService.getCurrentUser().subscribe(
-    //   user => this.user = user
-    // );
   }
 
   saveChanges() {

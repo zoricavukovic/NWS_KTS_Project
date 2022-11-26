@@ -1,11 +1,5 @@
 .form-container {
-  padding: 5%;
-  padding-top: 2%;
-  padding-bottom: 2%;
-}
-
-h1 {
-  font-size: 2rem;
+  padding: 2% 5%;
 }
 
 .colomn {
@@ -24,14 +18,26 @@ button {
 }
 
 .email-container {
-  margin-top: 5%;
-  margin-bottom: 5%;
   display: flex;
   justify-content: center;
-  border: 1px solid;
   border-radius: 15px;
-  padding-top: 1rem;
   margin-left: 3.2rem;
   margin-right: 3.2rem;
-  background-color: #283b5073;
+  color: var(--deep-blue);
+}
+
+.email-container-picture {
+  height: 2rem;
+  width: 2rem;
+  border-radius:50%;
+}
+
+h3 {
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
+h1 {
+  font-size: 1.6rem;
+  font-weight: bold;
 }

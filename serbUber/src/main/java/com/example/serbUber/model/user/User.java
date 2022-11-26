@@ -41,6 +41,9 @@ public abstract class User {
     @Column(name = "online", nullable = false)
     private boolean online = false;
 
+    @JoinColumn(name="verified", nullable = false)
+    private boolean verified = false;
+
     public User() {}
 
     public User(
@@ -159,6 +162,14 @@ public abstract class User {
 
     public void setOnline(boolean online) {
         this.online = online;
+    }
+
+    public boolean isVerified() {
+        return verified;
+    }
+
+    public void setVerified(boolean verified) {
+        this.verified = verified;
     }
 
     public static boolean passwordsMatch(String password, String confirmationPassword){

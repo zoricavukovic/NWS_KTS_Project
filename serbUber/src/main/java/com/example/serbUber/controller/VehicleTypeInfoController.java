@@ -8,6 +8,7 @@ import com.example.serbUber.request.VehicleTypeInfoRequest;
 import com.example.serbUber.service.VehicleTypeInfoService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -25,6 +26,7 @@ public class VehicleTypeInfoController {
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
     public List<VehicleTypeInfoDTO> getAll() {
 
         return this.vehicleTypeInfoService.getAll();

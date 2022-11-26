@@ -6,3 +6,32 @@
     transform: rotate(0deg) scale(1.2) !important;
   }
 }
+
+.mat-list {
+  background-color: var(--deep-blue);
+  border-radius: 15px;
+  overflow: auto;
+
+  max-height: 11rem;
+}
+
+.mat-list-item {
+  color: var(--white);
+}
+
+.form-container {
+  margin: 0.7rem;
+  width: 30rem;
+}
+
+h1 {
+  margin-bottom: 0.3rem;
+}
+
+.stars-driver {
+  margin-top: 0.3rem;
+}
+
+.no-rating-block {
+  font-size: 1rem;
+}

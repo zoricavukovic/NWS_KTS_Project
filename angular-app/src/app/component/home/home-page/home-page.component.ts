@@ -1,43 +1,52 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  Input,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import * as L from 'leaflet';
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
 import { SearchingRoutesForm } from '../../../model/route/searching-routes-form';
 import { RouteService } from '../../../service/route.service';
-import { LocationsForRoutesRequest } from '../../../model/route/locations-for-routes-request';
 import { PossibleRoute } from '../../../model/route/possible-routes';
 import { User } from '../../../model/user/user';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../../service/auth.service';
 import { PossibleRoutesViaPoints } from '../../../model/route/possible-routes-via-points';
 import {
+  addCarMarker,
+  changeOrAddMarker,
   drawPolylineOnMap,
+  refreshMap,
   removeLayer,
   removeMarker,
   removeOneLayer,
 } from '../../../util/map-functions';
 import { Location } from '../../../model/route/location';
-import { UserService } from 'src/app/service/user.service';
+import { VehicleService } from '../../../service/vehicle.service';
+import { Vehicle } from '../../../model/vehicle/vehicle';
 
 @Component({
   selector: 'home-page',
   templateUrl: './home-page.component.html',
   styleUrls: ['./home-page.component.css'],
 })
-export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
+export class HomePageComponent implements OnInit, OnDestroy {
   routeChoiceView = true;
   filterVehicleView = false;
 
-  selectedRoute: PossibleRoute;
-
-  private map: L.Map;
+  @Input() map;
   currentUser: User;
   provider1: OpenStreetMapProvider = new OpenStreetMapProvider();
-
+  selectedRoute: PossibleRoute;
   maxNumberOfLocations = 5;
   possibleRoutesViaPoints: PossibleRoutesViaPoints[] = [];
   drawPolylineList = [];
   searchingRoutesForm: SearchingRoutesForm[] = [];
   currentUserIsDriver: boolean;
+  vehicles: Vehicle[];
+  carMarkers: L.Marker[] = [];
   /* autocompleteForm = new FormGroup({
     startDest: new FormControl(undefined, [this.requireMatch.bind(this)]),
     endDest: new FormControl(undefined, [this.requireMatch.bind(this)]),
@@ -47,12 +56,27 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
   private authSubscription: Subscription;
   private routeSubscription: Subscription;
 
+  a: string[];
+
   constructor(
     private routeService: RouteService,
-    private authService: AuthService
+    private authService: AuthService,
+    private vehicleService: VehicleService
   ) {}
 
   ngOnInit(): void {
+    // this.vehicleService.getAllActiveVehicles().subscribe(vehicles =>
+    //   vehicles.forEach(vehicle => this.carMarkers.push(addCarMarker(this.map, vehicle?.activeRoute?.locations.at(vehicle?.location_index)?.location)))
+    // )
+
+    this.vehicleService.getAllVehicle().subscribe(vehicleCurrentLocation => {
+      this.carMarkers = changeOrAddMarker(
+        this.map,
+        this.carMarkers,
+        this.vehicles,
+        vehicleCurrentLocation
+      );
+    });
     this.searchingRoutesForm.push(new SearchingRoutesForm());
     this.searchingRoutesForm.push(new SearchingRoutesForm());
     this.currentUser = this.authService.getCurrentUser;
@@ -60,6 +84,12 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnDestroy(): void {
+    for (let i; i < this.searchingRoutesForm.length; i++) {
+      this.deleteMarker(i);
+    }
+
+    this.carMarkers.forEach(marker => removeMarker(this.map, marker));
+    this.removeAllPolylines();
     if (this.authSubscription) {
       this.authSubscription.unsubscribe();
     }
@@ -68,16 +98,17 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  ngAfterViewInit(): void {
-    this.initMap();
-  }
-
   async initMap() {
     this.map = L.map('map').setView([45.25167, 19.83694], 13);
 
     L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       crossOrigin: true,
     }).addTo(this.map);
+    L.control
+      .zoom({
+        position: 'topright',
+      })
+      .addTo(this.map);
     let div = L.DomUtil.get('route-div');
     L.DomEvent.on(div, 'mousewheel', L.DomEvent.stopPropagation);
     L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation);
@@ -96,6 +127,15 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
     this.deleteMarker(index);
     this.removeAllPolylines();
     this.searchingRoutesForm.splice(index, 1);
+    if (this.checkIfDeletedLocationIsDestination(index)) {
+      this.deleteMarker(index - 1);
+      this.addMarkerWithLonAndLat(
+        index - 1,
+        this.searchingRoutesForm.at(index - 1).location.lon,
+        this.searchingRoutesForm.at(index - 1).location.lat
+      );
+    }
+    this.possibleRoutesViaPoints = [];
   }
 
   async filterPlaces(searchParam: string) {
@@ -239,6 +279,10 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
     );
   }
 
+  currentUserIsRegular() {
+    return this.authService.getCurrentUser?.userIsRegular();
+  }
+
   private addMarker(index: number, place) {
     const customIcon = L.icon({
       iconUrl: this.getIconUrl(index),
@@ -256,6 +300,25 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
     );
     this.searchingRoutesForm.at(index).marker.addTo(this.map);
     this.map.panBy(L.point(place.y, place.x));
+  }
+
+  private addMarkerWithLonAndLat(index: number, lat: number, lon: number) {
+    const customIcon = L.icon({
+      iconUrl: this.getIconUrl(index),
+      iconSize: [30, 30],
+    });
+    const markerOptions = {
+      title: 'Location',
+      clickable: true,
+      icon: customIcon,
+    };
+
+    this.searchingRoutesForm.at(index).marker = L.marker(
+      [lon, lat],
+      markerOptions
+    );
+    this.searchingRoutesForm.at(index).marker.addTo(this.map);
+    this.map.panBy(L.point(lon, lat));
   }
 
   private deleteMarker(index: number) {
@@ -292,5 +355,8 @@ export class HomePageComponent implements OnInit, OnDestroy, AfterViewInit {
     this.routeChoiceView = false;
     this.filterVehicleView = true;
     this.selectedRoute = route;
+  }
+  private checkIfDeletedLocationIsDestination(index: number) {
+    return this.searchingRoutesForm.length === index;
   }
 }

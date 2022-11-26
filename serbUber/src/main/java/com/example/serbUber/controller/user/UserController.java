@@ -47,7 +47,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
+//    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
     public UserDTO get(
             @Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable Long id
     ) throws EntityNotFoundException {
@@ -98,7 +98,6 @@ public class UserController {
 
     @PutMapping("reset-password")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
     public UserDTO resetPassword(@Valid @RequestBody PasswordResetRequest passwordResetRequest)
         throws PasswordsDoNotMatchException, EntityNotFoundException {
 
@@ -111,7 +110,6 @@ public class UserController {
 
     @GetMapping("/send-rest-password-link/{email}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
     public boolean sendResetPasswordLink(@Valid @PathVariable("email") UserEmailRequest userEmailRequest)
         throws EntityNotFoundException {
 

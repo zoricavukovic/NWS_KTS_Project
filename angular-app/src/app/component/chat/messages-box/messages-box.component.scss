@@ -8,8 +8,8 @@ $background: white;
 
 .send-button {
     font-size: 1.3rem;
-    color: white;
-    background-color: $green;
+    color: var(--white);
+    background-color: var(--deep-blue);
     border-radius: 10px;
     border: none;
     padding: 5px;
@@ -31,17 +31,17 @@ $background: white;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    border-color: 1px solid black;
+    border-color: 1px solid var(--deep-blue);
 
     width: 30rem;
     height: 38rem;
     box-sizing: border-box;
     border-radius: 1rem;
 
-    background: var(--cream);
+    background: var(--white);
 
     .name {
-        font-size: 1.2rem;
+        font-size: 1.4rem;
         font-weight: bold;
     }
 
@@ -68,8 +68,8 @@ $background: white;
         margin-right: 0.5rem;
         border: 0.1rem solid $text-2;
 
-        .name-data {
-            font-size: 0.8rem;
+        .date-data {
+            font-size: 0.9rem;
             background: var(--cream);
             padding: 0.25rem 1rem;
             border-radius: 2rem;

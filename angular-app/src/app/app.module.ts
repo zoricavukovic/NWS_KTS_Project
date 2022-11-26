@@ -61,7 +61,9 @@ import { FilterVehicleViewComponent } from './component/home/filter-vehicle-view
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { DriverHomePageContainerComponent } from './component/home/driver-home-page-container/driver-home-page-container.component';
 import { AvatarModule } from 'primeng/avatar';
+import { NgxPaginationModule } from 'ngx-pagination';
 import { AvatarGroupModule } from 'primeng/avatargroup';
+import { SuccessfullVerificationComponent } from './component/user/auth/successfull-verification/successfull-verification.component';
 
 @NgModule({
   declarations: [
@@ -98,6 +100,7 @@ import { AvatarGroupModule } from 'primeng/avatargroup';
     UtilMessageComponent,
     FilterVehicleViewComponent,
     DriverHomePageContainerComponent,
+    SuccessfullVerificationComponent,
   ],
   imports: [
     BrowserModule,
@@ -128,6 +131,7 @@ import { AvatarGroupModule } from 'primeng/avatargroup';
     ScrollingModule,
     AvatarModule,
     AvatarGroupModule,
+    NgxPaginationModule,
   ],
   entryComponents: [EditProfileComponent],
   providers: [

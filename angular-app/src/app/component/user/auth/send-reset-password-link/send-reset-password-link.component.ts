@@ -25,11 +25,11 @@ export class SendResetPasswordEmailComponent implements OnDestroy {
         .sendResetPasswordEmail(this.enterEmailForm.get('email').value)
         .subscribe(
           response => {
-            console.log(response);
             this.toast.success(
               'Reset link is sent to email successfully.',
               'Reset link sent'
             );
+            this.resetForm();
           },
           error => this.toast.error(error.error, 'Reset link not sent')
         );
@@ -50,5 +50,12 @@ export class SendResetPasswordEmailComponent implements OnDestroy {
     if (this.sendResetPassEmailSubscription) {
       this.sendResetPassEmailSubscription.unsubscribe();
     }
+  }
+
+  private resetForm() {
+    this.enterEmailForm.reset();
+    Object.keys(this.enterEmailForm.controls).forEach(key => {
+      this.enterEmailForm.get(key).setErrors(null);
+    });
   }
 }

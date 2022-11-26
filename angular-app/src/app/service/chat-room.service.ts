@@ -9,9 +9,9 @@ import {
 } from '../model/message/message-request';
 import { ChatRoomWithNotify } from '../model/message/chat-room-with-notify';
 import { ToastrService } from 'ngx-toastr';
-import { UserService } from './user.service';
 import { User } from '../model/user/user';
 import { MessageResponse } from '../model/message/message-response';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -24,17 +24,17 @@ export class ChatRoomService {
     private http: HttpClient,
     private configService: ConfigService,
     private toast: ToastrService,
-    private userService: UserService
+    private router: Router
   ) {}
 
   getUserChatRoom(email: string): BehaviorSubject<ChatRoom> {
     this.http
-      .get<ChatRoom>(this.configService.chat_rooms_url + '/' + email, {
-        headers: this.configService.getHeader(),
-      })
-      .subscribe(res => {
-        this.chatRoomClient$.next(res);
-      });
+    .get<ChatRoom>(this.configService.chat_rooms_url + '/' + email, {
+      headers: this.configService.getHeader(),
+    })
+    .subscribe(res => {
+      this.chatRoomClient$.next(res);
+    });
 
     return this.chatRoomClient$;
   }
@@ -100,11 +100,13 @@ export class ChatRoomService {
     adminLogged: boolean
   ): number {
     let notificationsNum: number = 0;
-    for (let mes of currentChatRoom.messages) {
-      if (adminLogged && this.clientMessageNotSeen(mes)) {
-        notificationsNum += 1;
-      } else if (!adminLogged && this.adminMessageNotSeen(mes)) {
-        notificationsNum += 1;
+    if (currentChatRoom) {
+      for (let mes of currentChatRoom.messages) {
+        if (adminLogged && this.clientMessageNotSeen(mes)) {
+          notificationsNum += 1;
+        } else if (!adminLogged && this.adminMessageNotSeen(mes)) {
+          notificationsNum += 1;
+        }
       }
     }
 
@@ -123,6 +125,10 @@ export class ChatRoomService {
           '' +
           chatRoomWithNotify.chatRoom.client.surname
         }.`
+      ).onTap.subscribe(
+        (res) => {
+          this.router.navigate(['/messages'])
+        }
       );
     }
   }

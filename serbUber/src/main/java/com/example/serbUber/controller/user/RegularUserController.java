@@ -1,8 +1,8 @@
 package com.example.serbUber.controller.user;
 
 import com.example.serbUber.dto.RouteDTO;
+import com.example.serbUber.dto.user.RegistrationDTO;
 import com.example.serbUber.dto.user.RegularUserDTO;
-import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.EntityAlreadyExistsException;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.MailCannotBeSentException;
@@ -70,7 +70,7 @@ public class RegularUserController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDTO create(@Valid @RequestBody RegularUserRequest regularUserRequest)
+    public RegistrationDTO create(@Valid @RequestBody RegularUserRequest regularUserRequest)
             throws EntityNotFoundException, PasswordsDoNotMatchException, EntityAlreadyExistsException, MailCannotBeSentException {
 
         return regularUserService.create(
