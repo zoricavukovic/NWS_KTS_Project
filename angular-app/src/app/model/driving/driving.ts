@@ -14,4 +14,6 @@ export class Driving {
   users: User[];
   price: number;
   hasReviewForUser: boolean;
+  pageSize?: number;
+  pageNumber?: number;
 }

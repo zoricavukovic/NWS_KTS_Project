@@ -1,6 +1,7 @@
 package com.example.serbUber.service;
 
 import com.example.serbUber.dto.DrivingDTO;
+import com.example.serbUber.dto.DrivingPageDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.EntityType;
 import com.example.serbUber.model.Driving;
@@ -11,6 +12,7 @@ import com.example.serbUber.repository.DrivingRepository;
 import com.example.serbUber.service.interfaces.IDrivingService;
 import com.example.serbUber.service.user.UserService;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -23,6 +25,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 import static com.example.serbUber.dto.DrivingDTO.fromDrivings;
+import static com.example.serbUber.dto.DrivingPageDTO.fromDrivingsPage;
 
 @Component
 @Qualifier("drivingServiceConfiguration")
@@ -60,18 +63,31 @@ public class DrivingService implements IDrivingService {
         return fromDrivings(drivings);
     }
 
-    public List<DrivingDTO> getDrivingsForUser(
+    public List<DrivingPageDTO> getDrivingsForUser(
             final Long id,
             final int pageNumber,
             final int pageSize,
             final String parameter,
             final String sortOrder
     ) throws EntityNotFoundException {
-        User user = userService.getUserById(id);
         Pageable page = PageRequest.of(pageNumber, pageSize, Sort.by(getSortOrder(sortOrder), getSortBy(parameter)));
+        Page<Driving> results = getDrivingPage(id, page);
+        //int numberOfPages = calculateTotalNumberOfPages(results.getTotalPages(), results.getSize());
+        return fromDrivingsPage(results.getContent(), results.getSize(), results.getTotalPages());
+    }
+
+    private int calculateTotalNumberOfPages(final int totalNumber, final int pageSize){
+        return totalNumber % pageSize == 0 ?
+                totalNumber / pageSize :
+                totalNumber / pageSize + 1;
+    }
+
+    private Page<Driving> getDrivingPage(Long id, Pageable page) throws EntityNotFoundException {
+        User user = userService.getUserById(id);
+        Page<Driving> drivings = drivingRepository.findByUserId(id, page);
         return user.getRole().isDriver() ?
-                fromDrivings(drivingRepository.findByDriverId(id, page)) :
-                fromDrivings(drivingRepository.findByUserId(id, page));
+                drivingRepository.findByDriverId(id, page) :
+                drivingRepository.findByUserId(id, page);
     }
 
 

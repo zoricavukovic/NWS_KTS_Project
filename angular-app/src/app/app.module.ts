@@ -26,7 +26,7 @@ import { RatingDialogComponent } from './component/review/rating-dialog/rating-d
 import { MatDialogModule } from '@angular/material/dialog';
 import { SendResetPasswordEmailComponent } from './component/user/auth/send-reset-password-link/send-reset-password-link.component';
 import { ResetPasswordComponent } from './component/user/auth/reset-password/reset-password.component';
-import { HomePageComponent} from "./component/home/home-page/home-page.component";
+import { HomePageComponent } from './component/home/home-page/home-page.component';
 import { TimelineModule } from 'primeng/timeline';
 import { NavBarComponent } from './component/nav-bar/nav-bar.component';
 import { RatingModule } from 'primeng/rating';
@@ -61,6 +61,7 @@ import { FilterVehicleViewComponent } from './component/home/filter-vehicle-view
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { DriverHomePageContainerComponent } from './component/home/driver-home-page-container/driver-home-page-container.component';
 import { AvatarModule } from 'primeng/avatar';
+import { NgxPaginationModule } from 'ngx-pagination';
 import { AvatarGroupModule } from 'primeng/avatargroup';
 import { SuccessfullVerificationComponent } from './component/user/auth/successfull-verification/successfull-verification.component';
 
@@ -130,6 +131,7 @@ import { SuccessfullVerificationComponent } from './component/user/auth/successf
     ScrollingModule,
     AvatarModule,
     AvatarGroupModule,
+    NgxPaginationModule,
   ],
   entryComponents: [EditProfileComponent],
   providers: [
