@@ -34,7 +34,17 @@ public class DrivingNotification{
     @JoinTable(name = "users_driving_notifications", joinColumns = @JoinColumn(name = "notification_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
     private Set<RegularUser> users;
 
-    public DrivingNotification(double lonStarted, double latStarted, double lonEnd, double latEnd, double price, RegularUser sender, Set<RegularUser> users) {
+    @Column(name="answered_passengers")
+    private int answeredPassengers;
+
+    public DrivingNotification(final double lonStarted,
+                               final double latStarted,
+                               final double lonEnd,
+                               final double latEnd,
+                               final double price,
+                               final RegularUser sender,
+                               final Set<RegularUser> users,
+                               final int answeredPassengers) {
         this.lonStarted = lonStarted;
         this.latStarted = latStarted;
         this.lonEnd = lonEnd;
@@ -42,6 +52,7 @@ public class DrivingNotification{
         this.price = price;
         this.sender = sender;
         this.users = users;
+        this.answeredPassengers = answeredPassengers;
     }
 
     public DrivingNotification() {
@@ -109,5 +120,13 @@ public class DrivingNotification{
 
     public void setUsers(Set<RegularUser> users) {
         this.users = users;
+    }
+
+    public int getAnsweredPassengers() {
+        return answeredPassengers;
+    }
+
+    public void setAnsweredPassengers(int answeredPassengers) {
+        this.answeredPassengers = answeredPassengers;
     }
 }

@@ -19,11 +19,23 @@ export class DrivingNotificationService {
   ) {
     return this.http.post<DrivingNotificationRequest>(
       this.configService.driving_notifications_url,
-      drivingNotificationRequest
+      drivingNotificationRequest,
+      { headers: this.configService.getHeader() }
     );
   }
 
+  accept() {
+    alert('bla');
+  }
+
   showNotification(drivingNotificationRequest: DrivingNotificationRequest) {
-    this.toast.success('uspesnoooo' + drivingNotificationRequest.price);
+    console.log(drivingNotificationRequest);
+
+    this.toast
+      .info(
+        `User ${drivingNotificationRequest.senderEmail} add you as linked passenger. 
+        Tap to accept!`
+      )
+      .onTap.subscribe(action => console.log(action));
   }
 }

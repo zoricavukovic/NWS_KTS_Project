@@ -25,6 +25,7 @@ export class ChatService {
       const serverUrl = environment.webSocketUrl;
       const ws = new SockJS(serverUrl);
       this.stompClient = Stomp.over(ws);
+      console.log(this.stompClient);
       const that = this;
       this.stompClient.connect({}, function (frame) {
         that.stompClient.subscribe(
@@ -60,14 +61,11 @@ export class ChatService {
 
   sendNotification(drivingNotificationRequest: DrivingNotificationRequest) {
     console.log(drivingNotificationRequest);
+    console.log(this.stompClient);
     this.stompClient.send(
       '/app/send/notification',
       {},
       JSON.stringify(drivingNotificationRequest)
     );
-  }
-
-  showMessage(message) {
-    //this.messages.push(message);
   }
 }

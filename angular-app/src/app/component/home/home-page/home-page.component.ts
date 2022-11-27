@@ -33,8 +33,8 @@ import { Vehicle } from '../../../model/vehicle/vehicle';
   styleUrls: ['./home-page.component.css'],
 })
 export class HomePageComponent implements OnInit, OnDestroy {
-  routeChoiceView = true;
-  filterVehicleView = false;
+  routeChoiceView = false;
+  filterVehicleView = true;
 
   @Input() map;
   currentUser: User;

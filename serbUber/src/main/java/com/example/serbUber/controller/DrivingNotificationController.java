@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +25,7 @@ public class DrivingNotificationController {
     }
 
     @MessageMapping("/send/notification")
-//    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
+    //@PreAuthorize("hasAnyRole('ROLE_REGULAR_USER')")
     public void send(@Payload @Valid DrivingNotificationRequest drivingNotificationRequest) {
         System.out.println(drivingNotificationRequest.getPrice() + "blaaaa");
         for(String email : drivingNotificationRequest.getPassengers()) {
@@ -34,6 +35,7 @@ public class DrivingNotificationController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyRole('ROLE_REGULAR_USER')")
     public void create(@Valid @RequestBody DrivingNotificationRequest drivingNotificationRequest) throws EntityNotFoundException {
         this.drivingNotificationService.create(
                 drivingNotificationRequest.getLonStarted(),
@@ -44,5 +46,11 @@ public class DrivingNotificationController {
                 drivingNotificationRequest.getPrice(),
                 drivingNotificationRequest.getPassengers()
         );
+    }
+
+    @PostMapping("/answered/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    private int setDrivingNotificationAnswered(@PathVariable Long id) throws EntityNotFoundException {
+        return this.drivingNotificationService.setDrivingNotificationAnswered(id);
     }
 }

@@ -5,11 +5,11 @@ import { DrivingNotificationRequest } from 'src/app/model/request/driving-notifi
 import { PossibleRoute } from 'src/app/model/route/possible-routes';
 import { User } from 'src/app/model/user/user';
 import { AuthService } from 'src/app/service/auth.service';
-import { ChatService } from 'src/app/service/chat.service';
 import { DrivingNotificationService } from 'src/app/service/driving-notification.service';
 import { UserService } from 'src/app/service/user.service';
 import { VehicleService } from 'src/app/service/vehicle.service';
 import { ToastrService } from 'ngx-toastr';
+import { WebSocketService } from 'src/app/service/web-socket.service';
 
 @Component({
   selector: 'app-filter-vehicle-view',
@@ -39,7 +39,7 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private toast: ToastrService,
     private authService: AuthService,
-    private chatService: ChatService,
+    private webSocketService: WebSocketService,
     private vehicleService: VehicleService,
     private drivingNotificationService: DrivingNotificationService
   ) {}
@@ -112,7 +112,7 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
       this.drivingNotificationSubscription = this.drivingNotificationService
         .saveDrivingNotification(drivingNotification)
         .subscribe(response => {
-          this.chatService.sendNotification(drivingNotification);
+          this.webSocketService.sendNotification(drivingNotification);
         });
     }
   }

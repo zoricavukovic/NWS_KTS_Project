@@ -25,7 +25,8 @@ export class VehicleService {
   getPriceForVehicleAndRoute(type: string, kilometers: number) {
     console.log(this.configService.get_price_for_driving(type, kilometers));
     return this.http.get<number>(
-      this.configService.get_price_for_driving(type, kilometers)
+      this.configService.get_price_for_driving(type, kilometers),
+      { headers: this.configService.getHeader() }
     );
   }
 
