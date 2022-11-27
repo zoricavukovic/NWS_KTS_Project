@@ -20,6 +20,7 @@ export class ConfigService {
   private _drivings_url = `${this._api_url}/drivings`;
 
   private _drivings_finish_driving_url = `${this._drivings_url}/finish-driving`;
+  private _reject_driving_url = `${this._drivings_url}/reject`;
 
   private _login_user = this._api_url + '/auth/login';
   private _logout_user = this._api_url + '/users/logout';
@@ -230,5 +231,9 @@ export class ConfigService {
 
   get_finish_driving_url(drivingId: number): string {
     return `${this._drivings_finish_driving_url}/${drivingId}`;
+  }
+
+  reject_driving_url(drivingId: number): string {
+    return `${this._reject_driving_url}/${drivingId}`;
   }
 }

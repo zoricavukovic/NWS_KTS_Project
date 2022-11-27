@@ -58,10 +58,6 @@ export class HomePageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // this.vehicleService.getAllActiveVehicles().subscribe(vehicles =>
-    //   vehicles.forEach(vehicle => this.carMarkers.push(addCarMarker(this.map, vehicle?.activeRoute?.locations.at(vehicle?.location_index)?.location)))
-    // )
-
     this.vehicleService.getAllVehicle().subscribe(vehicleCurrentLocation => {
       this.carMarkers = changeOrAddMarker(this.map, this.carMarkers, this.vehicles, vehicleCurrentLocation)
       }
@@ -70,6 +66,9 @@ export class HomePageComponent implements OnInit, OnDestroy {
     this.searchingRoutesForm.push(new SearchingRoutesForm());
     this.currentUser = this.authService.getCurrentUser;
     this.currentUserIsDriver = this.currentUser?.userIsDriver();
+    // let div = L.DomUtil.get('route-div');
+    // L.DomEvent.on(div, 'mousewheel', L.DomEvent.stopPropagation);
+    // L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation);
   }
 
   ngOnDestroy(): void {

@@ -1,0 +1,30 @@
+<h1 mat-dialog-title>Rejecting driving</h1>
+<mat-radio-group aria-labelledby="example-radio-group-label"
+                 class="example-radio-group" [(ngModel)]="defaultReason">
+  <mat-radio-button class="mat-radio-button-first-option" value="There is no passenger at the departure point">There is no passenger at the departure point</mat-radio-button>
+  <mat-radio-button value="I do not feel well">I do not feel well.</mat-radio-button>
+</mat-radio-group>
+
+<div class="devider-container">
+  <div class="devider-line"><mat-divider></mat-divider></div>
+  <div class="devider-text mat-typography"><b>Or</b></div>
+  <div class="devider-line"><mat-divider></mat-divider></div>
+</div>
+
+<div mat-dialog-content>
+  <textarea
+    matInput
+    rows="5"
+    placeholder="Enter reason..."
+    [(ngModel)]="customReason"></textarea>
+</div>
+
+<mat-error *ngIf="confirmIsPress && !isValidForm()">You must choose or enter reason for rejecting driving.</mat-error>
+<div mat-dialog-actions class="center-buttons">
+  <button mat-button (click)="cancel()" style="margin-right:3rem">Cancel</button>
+  <button mat-button (click)="confirm()" cdkFocusInitial style="background-color: var(--deep-blue);">
+    Confirm
+  </button>
+
+</div>
+

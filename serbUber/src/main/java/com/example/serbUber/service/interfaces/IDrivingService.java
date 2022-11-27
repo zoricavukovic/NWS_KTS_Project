@@ -31,4 +31,5 @@ public interface IDrivingService {
     List<DrivingDTO> getAllNowAndFutureDrivings(Long id);
 
 
+    DrivingDTO rejectDriving(Long id, String reason) throws EntityNotFoundException;
 }

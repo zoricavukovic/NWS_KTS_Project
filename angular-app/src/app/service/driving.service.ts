@@ -55,4 +55,10 @@ export class DrivingService {
       headers: this.configService.getHeader(),
     });
   }
+
+  rejectDriving(drivingId: number, reason: string): Observable<Driving> {
+    return this.http.put<Driving>(this.configService.reject_driving_url(drivingId), reason, {
+      headers: this.configService.getHeader(),
+    });
+  }
 }

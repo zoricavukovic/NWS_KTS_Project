@@ -112,6 +112,7 @@ public class DrivingService implements IDrivingService {
     public DrivingDTO finishDriving(final Long id) throws EntityNotFoundException {
         Driving driving = getDriving(id);
         driving.setActive(false);
+
         drivingRepository.save(driving);
 
         return new DrivingDTO(driving);
@@ -122,5 +123,14 @@ public class DrivingService implements IDrivingService {
         return user.getRole().isDriver() ?
                 drivingRepository.getNumberOfAllDrivingsForDriver(id).size() :
                 drivingRepository.getNumberOfAllDrivingsForRegularUser(id).size();
+    }
+
+    public DrivingDTO rejectDriving(Long id, String reason) throws EntityNotFoundException {
+        Driving driving = getDriving(id);
+        driving.setDrivingStatus(DrivingStatus.REJECTED);
+
+        drivingRepository.save(driving);
+
+        return null;
     }
 }

@@ -2,18 +2,17 @@
   display: block;
   max-width: 30rem;
   margin: 1rem auto auto;
-  background-color: rgb(245,233,222);
+  background-color: var(--gray);
   padding: 2%;
   border-radius: 15px;
   overflow:hidden;
   clear: both;
-  border: 2px solid var(--blue);
 }
 
 .finish-button {
   font-size: 1rem;
   background-color: var(--red);
-  color:var(--cream);
+  color:var(--white);
   float: right;
   margin-top: 0.5rem;
   margin-right: 0.7rem;

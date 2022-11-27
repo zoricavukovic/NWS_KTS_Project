@@ -165,25 +165,6 @@ public class UserService implements IUserService {
         return new UserDTO(user);
     }
 
-    private void updateAndSavePassword(String newPassword, User user) {
-        user.setPassword(getHashedNewUserPassword(newPassword));
-        userRepository.save(user);
-    }
-
-    private void checkPasswordCondition(
-        String currentPassword,
-        String newPassword,
-        String confirmPassword,
-        User user
-    ) throws PasswordsDoNotMatchException {
-        if (passwordsDontMatch(newPassword, confirmPassword)) {
-            throw new PasswordsDoNotMatchException("New and confirm password aren't same.");
-        }
-        if (!oldPasswordsMatch(currentPassword, user.getPassword())) {
-            throw new PasswordsDoNotMatchException("Your old password is not correct.");
-        }
-    }
-
     public User findFirstAdmin() throws EntityNotFoundException {
 
         return userRepository.getFirstAdmin()
@@ -213,5 +194,24 @@ public class UserService implements IUserService {
     public UserDTO saveUser(User user) {
 
         return new UserDTO(this.userRepository.save(user));
+    }
+
+    private void updateAndSavePassword(String newPassword, User user) {
+        user.setPassword(getHashedNewUserPassword(newPassword));
+        userRepository.save(user);
+    }
+
+    private void checkPasswordCondition(
+        String currentPassword,
+        String newPassword,
+        String confirmPassword,
+        User user
+    ) throws PasswordsDoNotMatchException {
+        if (passwordsDontMatch(newPassword, confirmPassword)) {
+            throw new PasswordsDoNotMatchException("New and confirm password aren't same.");
+        }
+        if (!oldPasswordsMatch(currentPassword, user.getPassword())) {
+            throw new PasswordsDoNotMatchException("Your old password is not correct.");
+        }
     }
 }
