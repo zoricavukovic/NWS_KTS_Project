@@ -142,10 +142,8 @@ public class DriverService implements IDriverService{
     {
         Driver driver = this.getDriverById(id);
 
-        if (!active) {
-          driver.setActive(false);
-        } else if (canChangeStatus(active, driver.getWorkingMinutes(), driver.getEndShift(), driver.getDrivings())) {
-            driver.setActive(true);
+        if (canChangeStatus(active, driver.getWorkingMinutes(), driver.getEndShift(), driver.getDrivings())) {
+            driver.setActive(active);
         } else if (checkIfStartingNewShift(driver.getEndShift())) {
             driver.setActive(true);
             driver.setStartShift(LocalDateTime.now());
@@ -181,7 +179,6 @@ public class DriverService implements IDriverService{
         if (this.checkWorkingHoursOvertime(driver.getWorkingMinutes(), driver.getEndShift())
                 && !this.checkIfDrivingInProgress(driver.getDrivings())) {
             driver.setActive(false);
-            driver.setWorkingMinutes(START_WORKING_MINUTES);
         }
 
         return driverRepository.save(driver);
@@ -196,6 +193,10 @@ public class DriverService implements IDriverService{
             driver.setStartShift(LocalDateTime.now());
             driver.setWorkingMinutes(START_WORKING_MINUTES);
             driver.setEndShift(LocalDateTime.now().plusHours(HOURS_IN_A_DAY));
+        } else if (!checkWorkingHoursOvertime(driver.getWorkingMinutes(), driver.getEndShift())) {
+            driver.setActive(true);
+        } else {
+            driver.setActive(false);
         }
         driver.setOnline(true);
 

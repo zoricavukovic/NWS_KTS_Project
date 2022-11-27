@@ -30,9 +30,6 @@ public class Driver extends User {
     @JoinColumn(name = "vehicle_id", referencedColumnName = "id")
     private Vehicle vehicle;
 
-    @Column(name="last_active")
-    private LocalDateTime lastActive = null;
-
     @Column(name="start_shift")
     private LocalDateTime startShift = null;
 
@@ -106,14 +103,6 @@ public class Driver extends User {
 
     public void setVehicle(Vehicle vehicle) {
         this.vehicle = vehicle;
-    }
-
-    public LocalDateTime getLastActive() {
-        return lastActive;
-    }
-
-    public void setLastActive(LocalDateTime lastActive) {
-        this.lastActive = lastActive;
     }
 
     public LocalDateTime getStartShift() {

@@ -20,7 +20,7 @@ public interface DriverRepository extends JpaRepository<Driver, Long> {
     @Query("select d.rate from Driver d where d.id = ?1")
     double getRatingForDriver(Long id);
 
-    @Query("select d from Driver d left join fetch d.drivings dr")
+    @Query("select distinct d from Driver d left join fetch d.drivings dr")
     List<Driver> getAllWithDrivings();
 
 }

@@ -5,6 +5,8 @@ import { Driver } from 'src/app/model/user/driver';
 import { AuthService } from 'src/app/service/auth.service';
 import { ConfigService } from 'src/app/service/config.service';
 import { DriverService } from 'src/app/service/driver.service';
+import { ToastrService } from 'ngx-toastr';
+
 
 @Component({
   selector: 'nav-bar',
@@ -22,7 +24,8 @@ export class NavBarComponent implements OnInit {
     public authService: AuthService,
     private router: Router,
     private driverService: DriverService,
-    public configService: ConfigService
+    public configService: ConfigService,
+    private toast: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -36,8 +39,10 @@ export class NavBarComponent implements OnInit {
 
   loadDriver(): void {
     this.driverService.getDriver(this.authService.getCurrentUser.id)
-      .subscribe((response: Driver) => {
-        this.driverData = response;
+      .subscribe(
+        (response: Driver) => {
+          console.log("PODACI" + response);
+          this.driverData = response;
       });
   }
 
@@ -46,8 +51,11 @@ export class NavBarComponent implements OnInit {
       this.driverService.createDriverUpdateActivityRequest(this.driverData.id, !this.driverData.active)
     ).subscribe((response: Driver) => {
       this.driverData = response;
-      console.log("Promenilo" + this.driverData.active)
-    });
+      },
+      error => {
+        this.driverData.active = !this.driverData.active;
+        this.toast.error(error.error, 'Changing activity status failed');
+      });
   }
 
   redirectToEditPage() {
@@ -65,7 +73,7 @@ export class NavBarComponent implements OnInit {
   loggedUserIsDriver(): boolean {
     //ako je driver null ucitaj ga, ako je u medjuvremenu ulogovan neko drugi, osvezi
     if (this.driverData) {
-      if ((this.authService.getCurrentUser?.email !== this.driverData?.email) && this.authService.getCurrentUser?.userIsDriver()) {
+      if (this.authService.getCurrentUser?.userIsDriver() && this.isUserChanged()) {
         this.loadDriver();
       }
     } else if (!this.driverData && this.authService.getCurrentUser?.userIsDriver()){
@@ -75,15 +83,21 @@ export class NavBarComponent implements OnInit {
     return this.driverData && this.authService.getCurrentUser.userIsDriver();
   }
 
+  isUserChanged(): boolean {
+    
+    return this.authService.getCurrentUser?.email !== this.driverData?.email;
+  }
+
   logOut() {
     this.logoutSubscription = this.authService
       .setOfflineStatus()
       .subscribe(response => {
-        console.log(response);
+        this.authService.logOut();
+        this.driverData = null;
+        this.router.navigate(['/login']);
+      }, error => {
+        this.toast.error(error.error, 'Cannot log out!');
       });
-    this.authService.logOut();
-    this.driverData = null;
-    this.router.navigate(['/login']);
   }
 
   doga() {

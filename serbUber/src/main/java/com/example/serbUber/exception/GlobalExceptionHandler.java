@@ -85,4 +85,11 @@ public class GlobalExceptionHandler {
 
         return UNAUTHORIZED_MESSAGE;
     }
+
+    @ExceptionHandler(value = ActivityStatusCannotBeChangedException.class)
+    @ResponseStatus(HttpStatus.EXPECTATION_FAILED)
+    public String ActivityStatusCannotBeChangedException(ActivityStatusCannotBeChangedException ex) {
+
+        return ex.getMessage();
+    }
 }

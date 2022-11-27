@@ -3,6 +3,7 @@ package com.example.serbUber.controller.user;
 import com.example.serbUber.dto.user.DriverDTO;
 import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.*;
+import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.request.user.DriverActivityStatusRequest;
 import com.example.serbUber.request.user.DriverRegistrationRequest;
 import com.example.serbUber.service.user.DriverService;

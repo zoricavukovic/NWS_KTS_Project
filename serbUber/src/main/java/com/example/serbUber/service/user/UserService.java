@@ -199,6 +199,7 @@ public class UserService implements IUserService {
 
     public UserDTO setOnlineStatus(final String email) throws EntityNotFoundException {
         User user = getUserByEmail(email);
+        user.setOnline(true);
 
         return new UserDTO((user.getRole().isDriver()) ? driverService.onDriverLogin(user.getId()) :
                 userRepository.save(user));
@@ -208,6 +209,7 @@ public class UserService implements IUserService {
             throws EntityNotFoundException, ActivityStatusCannotBeChangedException
     {
         User user = getUserByEmail(email);
+        user.setOnline(false);
 
         return new UserDTO(user.getRole().isDriver() ? driverService.onDriverLogout(user.getId()) :
                 userRepository.save(user));
