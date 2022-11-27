@@ -56,7 +56,7 @@ public class DriverService implements IDriverService{
     }
 
     public DriverDTO get(final Long id) throws EntityNotFoundException {
-        Optional<Driver> optionalDriver = driverRepository.findById(id);
+        Optional<Driver> optionalDriver = driverRepository.getDriverById(id);
 
         return optionalDriver.map(DriverDTO::new)
             .orElseThrow(() ->  new EntityNotFoundException(id, EntityType.USER));

@@ -27,20 +27,23 @@ export class NavBarComponent implements OnInit {
 
   ngOnInit(): void {
     this.isAdmin = this.authService.getCurrentUser?.isUserAdmin();
-    console.log(this.isAdmin);
     this.isRegularUser = this.authService.getCurrentUser?.userIsRegular();
     
     if (this.authService.getCurrentUser?.userIsDriver()) {
-      this.driverService.getDriver(this.authService.getCurrentUser.id)
+      this.loadDriver();
+    }
+  }
+
+  loadDriver(): void {
+    this.driverService.getDriver(this.authService.getCurrentUser.id)
       .subscribe((response: Driver) => {
         this.driverData = response;
       });
-    }
   }
 
   changeDriverStatus() {
     this.driverUpdateSubscription = this.driverService.updateActivityStatus(
-      this.driverService.createDriverUpdateActivityRequest(this.driverData.id, this.driverData.active)
+      this.driverService.createDriverUpdateActivityRequest(this.driverData.id, !this.driverData.active)
     ).subscribe((response: Driver) => {
       this.driverData = response;
       console.log("Promenilo" + this.driverData.active)
@@ -59,6 +62,19 @@ export class NavBarComponent implements OnInit {
     this.router.navigate(['/messages']);
   }
 
+  loggedUserIsDriver(): boolean {
+    //ako je driver null ucitaj ga, ako je u medjuvremenu ulogovan neko drugi, osvezi
+    if (this.driverData) {
+      if ((this.authService.getCurrentUser?.email !== this.driverData?.email) && this.authService.getCurrentUser?.userIsDriver()) {
+        this.loadDriver();
+      }
+    } else if (!this.driverData && this.authService.getCurrentUser?.userIsDriver()){
+      this.loadDriver();
+    }
+    
+    return this.driverData && this.authService.getCurrentUser.userIsDriver();
+  }
+
   logOut() {
     this.logoutSubscription = this.authService
       .setOfflineStatus()
@@ -66,6 +82,7 @@ export class NavBarComponent implements OnInit {
         console.log(response);
       });
     this.authService.logOut();
+    this.driverData = null;
     this.router.navigate(['/login']);
   }
 

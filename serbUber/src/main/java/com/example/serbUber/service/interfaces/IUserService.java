@@ -49,5 +49,7 @@ public interface IUserService {
     UserDTO setOfflineStatus(final String email) throws EntityNotFoundException, ActivityStatusCannotBeChangedException;
     User findOnlineAdmin() throws NoAvailableAdminException;
     boolean checkIfUserAlreadyExists(String email);
+    boolean activate(final Long verifyId, final int securityCode)
+            throws EntityNotFoundException, WrongVerifyTryException;
 
 }

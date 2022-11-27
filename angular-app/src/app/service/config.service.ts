@@ -27,7 +27,7 @@ export class ConfigService {
   private _login_with_facebook_user = this._api_url + '/auth/login/facebook';
   private _register_user = this._api_url + '/regular-users/register';
   private _register_driver = this._api_url + '/drivers/register';
-  private _verify_url = this._api_url + '/verify';
+  private _verify_url = this._api_url + '/users/activate-account';
   private _send_verify_code_again = this._api_url + '/verify/send-code-again';
   private _vehicle_type_infos = this._api_url + '/vehicle-type-infos';
 

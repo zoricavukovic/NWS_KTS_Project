@@ -4,6 +4,8 @@ import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.EntityUpdateException;
 import com.example.serbUber.exception.PasswordsDoNotMatchException;
+import com.example.serbUber.exception.WrongVerifyTryException;
+import com.example.serbUber.request.VerifyRequest;
 import com.example.serbUber.request.user.*;
 import com.example.serbUber.service.user.UserService;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -105,4 +107,13 @@ public class UserController {
 
         return userService.sendEmailForResetPassword(userEmailRequest.getEmail());
     }
+
+    @PutMapping("/activate-account")
+    @ResponseStatus(HttpStatus.OK)
+    public boolean update(@Valid @RequestBody VerifyRequest verifyRequest)
+            throws EntityNotFoundException, WrongVerifyTryException {
+
+        return userService.activate(verifyRequest.getVerifyId(), verifyRequest.getSecurityCode());
+    }
+
 }

@@ -2,10 +2,12 @@ package com.example.serbUber.service.user;
 
 import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.*;
+import com.example.serbUber.model.Verify;
 import com.example.serbUber.model.user.User;
 import com.example.serbUber.repository.user.UserRepository;
 import com.example.serbUber.service.DriverUpdateApprovalService;
 import com.example.serbUber.service.EmailService;
+import com.example.serbUber.service.VerifyService;
 import com.example.serbUber.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -30,17 +32,20 @@ public class UserService implements IUserService {
     private final DriverUpdateApprovalService driverUpdateApprovalService;
     private final EmailService emailService;
     private final DriverService driverService;
+    private final VerifyService verifyService;
 
     public UserService(
         final UserRepository userRepository,
         final DriverUpdateApprovalService driverUpdateApprovalService,
         final EmailService emailService,
-        final DriverService driverService
+        final DriverService driverService,
+        final VerifyService verifyService
     ) {
         this.userRepository = userRepository;
         this.driverUpdateApprovalService = driverUpdateApprovalService;
         this.emailService = emailService;
         this.driverService = driverService;
+        this.verifyService = verifyService;
     }
 
     public List<UserDTO> getAll() {
@@ -218,4 +223,15 @@ public class UserService implements IUserService {
 
         return new UserDTO(this.userRepository.save(user));
     }
+
+    public boolean activate(final Long verifyId, final int securityCode)
+            throws EntityNotFoundException, WrongVerifyTryException {
+        Verify verify = verifyService.update(verifyId, securityCode);
+        User user = this.getUserById(verify.getUserId());
+        user.setVerified(true);
+        this.saveUser(user);
+
+        return true;
+    }
+
 }
