@@ -2,10 +2,8 @@ package com.example.serbUber.controller.user;
 
 import com.example.serbUber.dto.user.DriverDTO;
 import com.example.serbUber.dto.user.UserDTO;
-import com.example.serbUber.exception.EntityAlreadyExistsException;
-import com.example.serbUber.exception.EntityNotFoundException;
-import com.example.serbUber.exception.MailCannotBeSentException;
-import com.example.serbUber.exception.PasswordsDoNotMatchException;
+import com.example.serbUber.exception.*;
+import com.example.serbUber.request.user.DriverActivityStatusRequest;
 import com.example.serbUber.request.user.DriverRegistrationRequest;
 import com.example.serbUber.service.user.DriverService;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -46,6 +44,13 @@ public class DriverController {
         return driverService.get(id);
     }
 
+    @GetMapping("/rating/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
+    public double getRating(@Valid @NotNull(message=NOT_NULL_MESSAGE) @PathVariable Long id) throws EntityNotFoundException{
+        return driverService.getDriverRating(id);
+    }
+
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
@@ -67,11 +72,18 @@ public class DriverController {
         );
     }
 
-    @GetMapping("/rating/{id}")
+    @PutMapping("/activity")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
-    public double getRating(@Valid @NotNull(message=NOT_NULL_MESSAGE) @PathVariable Long id) throws EntityNotFoundException{
-        return driverService.getDriverRating(id);
+    @PreAuthorize("hasAnyRole('ROLE_DRIVER')")
+    public DriverDTO updateActivityStatus(@Valid @RequestBody DriverActivityStatusRequest driverActivityStatusRequest)
+            throws ActivityStatusCannotBeChangedException, EntityNotFoundException
+    {
+
+        return driverService.updateActivityStatus(
+               driverActivityStatusRequest.getId(),
+               driverActivityStatusRequest.isActive()
+        );
     }
+
 }
 

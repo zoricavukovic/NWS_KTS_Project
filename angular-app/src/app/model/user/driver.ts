@@ -14,4 +14,5 @@ export interface Driver {
   rate?: number;
   confirmPassword?: string;
   vehicle: Vehicle;
+  active?: boolean;
 }

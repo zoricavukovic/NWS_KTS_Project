@@ -13,6 +13,7 @@ export class User {
   city: string;
   role: Role;
   profilePicture: string;
+  online?: boolean;
 
   constructor(
     id: number,
@@ -22,7 +23,8 @@ export class User {
     phoneNumber: string,
     city: string,
     role: Role,
-    profilePicture: string
+    profilePicture: string,
+    online?: boolean
   ) {
     this.id = id;
     this.email = email;
@@ -32,6 +34,9 @@ export class User {
     this.city = city;
     this.role = role;
     this.profilePicture = profilePicture;
+    if (online) {
+      this.online = online;
+    }
   }
 
   public isUserAdmin(): boolean {

@@ -28,16 +28,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/logout")
-    @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
-    public UserDTO logout(@RequestBody final String email)
-            throws EntityNotFoundException
-    {
-
-        return userService.setOfflineStatus(email);
-    }
-
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
     public List<UserDTO> getAll() {

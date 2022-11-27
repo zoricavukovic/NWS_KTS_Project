@@ -26,6 +26,8 @@ public class Constants {
     public static final String EMAIL_ADDRESS = "mail_za_isa_mrs@yahoo.com";
     public static final String EMAIL_PASSWORD = "qmnbsxeitomdwqmg";
     public static final int MAX_NUM_VERIFY_TRIES = 3;
+    public static final int MAX_WORKING_MINUTES = 480;
+    public static final int HOURS_IN_A_DAY = 24;
 
     public static final String ROLE_DRIVER = "ROLE_DRIVER";
 

@@ -18,11 +18,11 @@ export class ConfigService {
 
   private _api_url = environment.apiUrl;
   private _drivings_url = `${this._api_url}/drivings`;
-
+  private _drivers_url = `${this._api_url}/drivers`;
   private _drivings_finish_driving_url = `${this._drivings_url}/finish-driving`;
 
   private _login_user = this._api_url + '/auth/login';
-  private _logout_user = this._api_url + '/users/logout';
+  private _logout_user = this._api_url + '/auth/logout';
   private _login_with_gmail_user = this._api_url + '/auth/login/google';
   private _login_with_facebook_user = this._api_url + '/auth/login/facebook';
   private _register_user = this._api_url + '/regular-users/register';
@@ -170,6 +170,10 @@ export class ConfigService {
 
   get users_update_password(): string {
     return this._users_url + '/password';
+  }
+
+  get driver_update_activity(): string {
+    return `${this._drivers_url}/activity`;
   }
 
   get all_messages(): string {

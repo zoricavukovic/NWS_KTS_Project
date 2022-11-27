@@ -20,7 +20,8 @@ public class UserDTO{
     private final String city;
     private final String profilePicture;
     private Role role;
-    private String password;
+    private final String password;
+    private boolean online = false;
 
     public UserDTO(final User user) {
         this.id = user.getId();
@@ -32,6 +33,7 @@ public class UserDTO{
         this.profilePicture = convertPictureToBase64ByName(user.getProfilePicture());
         this.role = user.getRole();
         this.password = user.getPassword();
+        this.online = user.isOnline();
     }
 
     public UserDTO(
@@ -66,6 +68,7 @@ public class UserDTO{
         this.profilePicture = convertPictureToBase64ByName(driver.getProfilePicture());
         this.role = driver.getRole();
         this.password = driver.getPassword();
+        this.online = driver.isOnline();
     }
 
     public UserDTO(final RegularUser regularUser) {
@@ -78,6 +81,7 @@ public class UserDTO{
         this.profilePicture = convertPictureToBase64ByName(regularUser.getProfilePicture());
         this.role = regularUser.getRole();
         this.password = regularUser.getPassword();
+        this.online = regularUser.isOnline();
     }
 
     public static List<UserDTO> fromUsers(final List<User> users){
@@ -129,5 +133,7 @@ public class UserDTO{
         return id;
     }
 
-
+    public boolean isOnline() {
+        return online;
+    }
 }
