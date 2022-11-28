@@ -77,6 +77,7 @@ insert into drivers (id, email, password, name, surname, phone_number, city, pro
 
 
 insert into drivings (active, driver_id, driving_status, duration, paying_limit, price, started, route_id) values
+    (true, 5, 1, 5, null, 600, to_timestamp('16.11.2022. 18:00', 'DD.MM.YYYY HH24:MI'), 3),
     (false, 5, 1, 3, null, 400, to_timestamp('06.11.2022. 14:00', 'DD.MM.YYYY HH24:MI'), 1),
     (false, 5, 1, 2, null, 300, to_timestamp('16.11.2022. 14:00', 'DD.MM.YYYY HH24:MI'), 2),
     (true, 5, 1, 5, null, 600, to_timestamp('16.11.2022. 18:00', 'DD.MM.YYYY HH24:MI'), 1),
@@ -96,7 +97,9 @@ insert into drivings_users(driving_id, user_id) values
     (3, 2),
     (4, 4),
     (4, 2),
-    (4, 3);
+    (5, 2),
+    (5, 4),
+    (5, 3);
 
 
 insert into chat_rooms(client_id, admin_id, resolved) values

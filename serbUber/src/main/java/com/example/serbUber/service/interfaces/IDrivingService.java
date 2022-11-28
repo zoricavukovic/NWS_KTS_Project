@@ -1,6 +1,7 @@
 package com.example.serbUber.service.interfaces;
 
 import com.example.serbUber.dto.DrivingDTO;
+import com.example.serbUber.dto.DrivingPageDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.model.Driving;
 import com.example.serbUber.model.DrivingStatus;
@@ -25,7 +26,7 @@ public interface IDrivingService {
 
     List<DrivingDTO> getAll();
 
-    List<DrivingDTO> getDrivingsForUser(Long id, int pageNumber, int pageSize, String parameter, String sortOrder) throws EntityNotFoundException;
+    List<DrivingPageDTO> getDrivingsForUser(Long id, int pageNumber, int pageSize, String parameter, String sortOrder) throws EntityNotFoundException;
     DrivingDTO getDrivingDto(Long id) throws EntityNotFoundException;
     Driving getDriving(Long id) throws EntityNotFoundException;
     List<DrivingDTO> getAllNowAndFutureDrivings(Long id);

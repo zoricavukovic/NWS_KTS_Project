@@ -17,7 +17,9 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
   drivings: Driving[] = [];
   currentUser: User;
   userId: number;
-  pageSize = 1;
+  pageSize = 3;
+  pageIndex = 0;
+  pageSizeDefault = 3;
   pageNumber = 0;
   totalPages: number;
   selectedSortBy = 'Date';
@@ -52,12 +54,12 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
     this.userId = +this.route.snapshot.paramMap.get('id');
     this.currentUser = this.authService.getCurrentUser;
 
-    this.drivingCountSubscription = this.drivingService
+    /*this.drivingCountSubscription = this.drivingService
       .getCountDrivings(this.userId)
       .subscribe(response => {
         console.log(response);
         this.totalPages = response / this.pageSize;
-      });
+      });*/
 
     this.drivingsSubscription = this.drivingService
       .getDrivingsForUser(
@@ -69,6 +71,7 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
       )
       .subscribe((response: Driving[]) => {
         this.drivings = response;
+        this.totalPages = this.drivings.at(0).pageNumber;
         console.log(this.drivings);
         this.reviewedDrivingsSubscription = this.reviewService
           .getReviewedDrivingsForUser(this.userId)
@@ -113,8 +116,18 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
   }
 
   onPaginate(pageEvent: PageEvent) {
-    this.pageSize = +pageEvent.pageSize;
+    //this.pageSize = +pageEvent.pageSize;
+    console.log(pageEvent.previousPageIndex);
     this.pageNumber = +pageEvent.pageIndex;
+    this.pageIndex = +pageEvent.pageIndex;
+    if (pageEvent.previousPageIndex < this.pageNumber) {
+      if ((this.pageNumber + 1) * this.pageSize > this.totalPages) {
+        this.pageSize = this.totalPages % this.pageSize;
+      }
+    } else {
+      this.pageSize = this.pageSizeDefault;
+    }
+    console.log(this.pageNumber);
     this.drivingService
       .getDrivingsForUser(
         this.userId,
@@ -125,6 +138,7 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
       )
       .subscribe((response: Driving[]) => {
         this.drivings = response;
+        console.log(this.totalPages);
       });
   }
 

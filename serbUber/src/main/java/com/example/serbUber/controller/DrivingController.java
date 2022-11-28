@@ -1,6 +1,7 @@
 package com.example.serbUber.controller;
 
 import com.example.serbUber.dto.DrivingDTO;
+import com.example.serbUber.dto.DrivingPageDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.request.DrivingRequest;
 import com.example.serbUber.service.DrivingService;
@@ -53,7 +54,7 @@ public class DrivingController {
     @GetMapping("/{id}/{pageNumber}/{pageSize}/{parameter}/{sortOrder}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
-    public List<DrivingDTO> getAllDrivingsForUserWithPaginationAndSort(
+    public List<DrivingPageDTO> getAllDrivingsForUserWithPaginationAndSort(
             @Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable Long id,
             @Valid @NotNull(message = NOT_NULL_MESSAGE) @PositiveOrZero(message = POSITIVE_OR_ZERO_MESSAGE) @PathVariable int pageNumber,
             @Valid @NotNull(message = NOT_NULL_MESSAGE) @Positive(message = POSITIVE_MESSAGE) @PathVariable int pageSize,
@@ -104,7 +105,7 @@ public class DrivingController {
     public DrivingDTO rejectDriving(
         @PathVariable Long id,
         @Valid @NotBlank(message="Reason must be added")
-        @Size(max=NUM_OF_LETTERS_REASON_TOO_LONG, message=REASON_TOO_LONG) String reason
+        @Size(max=NUM_OF_LETTERS_REASON_TOO_LONG, message=REASON_TOO_LONG) @RequestBody String reason
     ) throws EntityNotFoundException {
 
         return drivingService.rejectDriving(id, reason);

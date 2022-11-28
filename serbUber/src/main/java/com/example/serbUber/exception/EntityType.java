@@ -10,7 +10,8 @@ public enum EntityType {
     DRIVING,
     CHAT_ROOM,
     ROUTE,
-    ROLE;
+    ROLE,
+    DRIVING_NOTIFICATION;
 
     public static String getEntityErrorMessage(String id, EntityType entityType){
         switch (entityType){
@@ -40,6 +41,10 @@ public enum EntityType {
             case DRIVING -> {
 
                 return "Driving: " + id + " is not found";
+            }
+            case DRIVING_NOTIFICATION -> {
+
+                return "Driving notification: " + id + " is not found";
             }
             case ROLE -> {
 

@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -18,4 +19,6 @@ public interface DriverRepository extends JpaRepository<Driver, Long> {
     @Query("select d.rate from Driver d where d.id = ?1")
     double getRatingForDriver(Long id);
 
+    @Query("select d from Driver d left join fetch d.drivings drivings where d.active = true and drivings.active = false")
+    List<Driver> getActiveAndFreeDrivers();
 }

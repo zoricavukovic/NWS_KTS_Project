@@ -144,6 +144,7 @@ export class ChatRoomService {
   addMessage(chatRoomWithNotify: ChatRoomWithNotify): void {
     let chatRoom = chatRoomWithNotify.chatRoom;
     this.chatRoomClient$.next(chatRoom);
+
     let copyChatRoom: ChatRoom[] = this.adminChatRooms$.value;
 
     for (let i = 0; i < copyChatRoom.length; i++) {

@@ -1162,7 +1162,7 @@ textarea.cdk-textarea-autosize-measuring-firefox {
 .mat-button.mat-button-disabled .mat-button-focus-overlay,
 .mat-icon-button.mat-button-disabled .mat-button-focus-overlay,
 .mat-stroked-button.mat-button-disabled .mat-button-focus-overlay {
-  background-color: rgba(0, 0, 0, 0);
+  background-color: var(--gray);
 }
 .mat-button .mat-ripple-element,
 .mat-icon-button .mat-ripple-element,
@@ -1171,10 +1171,10 @@ textarea.cdk-textarea-autosize-measuring-firefox {
   background-color: currentColor;
 }
 .mat-button-focus-overlay {
-  background: #000;
+  background: var(--gray);
 }
 .mat-stroked-button:not(.mat-button-disabled) {
-  border-color: rgba(0, 0, 0, 0.12);
+  border-color: rgba(124, 121, 121, 0.827);
 }
 .mat-flat-button,
 .mat-raised-button,

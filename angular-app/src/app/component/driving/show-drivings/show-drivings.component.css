@@ -75,6 +75,11 @@ mat-paginator {
   bottom: 0;
   position: relative;
   width: 100%;
+  color: var(--white);
+}
+
+.mat-paginator-icon {
+  fill: white;
 }
 
 .mat-button,

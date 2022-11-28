@@ -17,6 +17,7 @@ export class DrivingService {
     selectedSortBy: string,
     selectedSortOrder: string
   ) {
+    console.log(this.configService.getHeader());
     return this.http.get(
       this.configService.drivings_url_with_pagination_and_sort(
         id,

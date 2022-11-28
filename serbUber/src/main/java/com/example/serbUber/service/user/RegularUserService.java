@@ -70,6 +70,11 @@ public class RegularUserService implements IRegularUserService {
             .orElseThrow(() -> new EntityNotFoundException(id, EntityType.USER));
     }
 
+    public RegularUser getRegularByEmail(String email) throws EntityNotFoundException {
+        return regularUserRepository.getRegularUserByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException(email, EntityType.USER));
+    }
+
     public RegistrationDTO create(
         final String email,
         final String password,

@@ -26,7 +26,7 @@ import { RatingDialogComponent } from './component/review/rating-dialog/rating-d
 import { MatDialogModule } from '@angular/material/dialog';
 import { SendResetPasswordEmailComponent } from './component/user/auth/send-reset-password-link/send-reset-password-link.component';
 import { ResetPasswordComponent } from './component/user/auth/reset-password/reset-password.component';
-import { HomePageComponent} from "./component/home/home-page/home-page.component";
+import { HomePageComponent } from './component/home/home-page/home-page.component';
 import { TimelineModule } from 'primeng/timeline';
 import { NavBarComponent } from './component/nav-bar/nav-bar.component';
 import { RatingModule } from 'primeng/rating';
@@ -47,7 +47,7 @@ import { PoupupLiveChatComponent } from './component/chat/poupup-live-chat/poupu
 import { HistoryLiveChatComponent } from './component/chat/history-live-chat/history-live-chat.component';
 import { ChatRoomsListComponent } from './component/chat/chat-rooms-list/chat-rooms-list.component';
 import { MessagesBoxComponent } from './component/chat/messages-box/messages-box.component';
-import { RouteRowComponent } from './component/route-row/route-row.component';
+import { RouteRowComponent } from './component/home/route-row/route-row.component';
 import { ShowDriversComponent } from './component/admin/show-drivers/show-drivers.component';
 import { DriverRowComponent } from './component/admin/driver-row/driver-row.component';
 import { ShowUsersComponent } from './component/admin/show-users/show-users.component';
@@ -61,6 +61,7 @@ import { FilterVehicleViewComponent } from './component/home/filter-vehicle-view
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { DriverHomePageContainerComponent } from './component/home/driver-home-page-container/driver-home-page-container.component';
 import { AvatarModule } from 'primeng/avatar';
+import { NgxPaginationModule } from 'ngx-pagination';
 import { AvatarGroupModule } from 'primeng/avatargroup';
 import { SuccessfullVerificationComponent } from './component/user/auth/successfull-verification/successfull-verification.component';
 import { RejectDrivingComponent } from './component/driving/reject-driving/reject-driving.component';
@@ -132,6 +133,7 @@ import { RejectDrivingComponent } from './component/driving/reject-driving/rejec
     ScrollingModule,
     AvatarModule,
     AvatarGroupModule,
+    NgxPaginationModule,
   ],
   entryComponents: [EditProfileComponent],
   providers: [

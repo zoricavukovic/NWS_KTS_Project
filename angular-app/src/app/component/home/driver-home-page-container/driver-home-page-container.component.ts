@@ -119,6 +119,13 @@ export class DriverHomePageContainerComponent implements OnInit, OnDestroy {
   }
 
   private rejectDriving(drivingId: number, index: number, reason: string) {
-    this.drivingService.rejectDriving(drivingId, reason);
+    this.drivingService.rejectDriving(drivingId, reason).subscribe(response =>
+    {
+      this.removeRejectedDriving(index);
+    }, error => this.toast.error(error.error, 'Reject driving failed'));
+  }
+
+  private removeRejectedDriving(index: number): void {
+    this.nowAndFutureDrivings.splice(index, 1);
   }
 }

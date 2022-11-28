@@ -45,15 +45,15 @@
   <util-message
     message="User don't have any drivings."
     *ngIf="drivings.length === 0"></util-message>
-</div>
 
-<div class="paginator" *ngIf="drivings.length !== 0">
-  <mat-paginator
-    appPaginator
-    [length]="totalPages"
-    [pageSize]="pageSize"
-    hidePageSize="true"
-    aria-label="Select page"
-    (page)="onPaginate($event)">
-  </mat-paginator>
+  <div class="paginator" *ngIf="drivings.length !== 0">
+    <mat-paginator
+      appPaginator
+      [length]="totalPages"
+      [pageSize]="pageSize"
+      hidePageSize="true"
+      aria-label="Select page"
+      (page)="onPaginate($event)">
+    </mat-paginator>
+  </div>
 </div>
