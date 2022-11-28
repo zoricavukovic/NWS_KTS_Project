@@ -57,10 +57,16 @@ export class EditProfileComponent implements OnInit, OnDestroy {
         startWith(''),
         map(city => (city ? this._filterCities(city) : this.cities.slice()))
       );
+
+    this.user = null;
   }
 
   ngOnInit(): void {
-    this.user = this.authService.getCurrentUser;
+    this.authSubscription = this.authService.getSubjectCurrentUser().subscribe(
+      user => {
+        this.user = user
+      }
+    );
   }
 
   saveChanges() {
@@ -79,7 +85,7 @@ export class EditProfileComponent implements OnInit, OnDestroy {
           const parsedUser = res as User;
           this.authService.setUserInLocalStorage(parsedUser);
           this.router.navigate(['/profile-page']);
-          this.authService.getCurrentUser?.userIsDriver()
+          this.authService.userIsDriver()
             ? this.toast.success(
                 'Update request is sent to admin!',
                 'Update request completed'

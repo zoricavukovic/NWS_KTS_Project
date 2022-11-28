@@ -35,21 +35,21 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = EntityAlreadyExistsException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public String entityAlreadyExistsException(EntityAlreadyExistsException entityAlreadyExists) {
 
         return entityAlreadyExists.getMessage();
     }
 
     @ExceptionHandler(value = MailCannotBeSentException.class)
-    @ResponseStatus(HttpStatus.EXPECTATION_FAILED)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public String mailCannotBeSentException(MailCannotBeSentException mailCannotBeSentException) {
 
         return mailCannotBeSentException.getMessage();
     }
 
     @ExceptionHandler(value = WrongVerifyTryException.class)
-    @ResponseStatus(HttpStatus.EXPECTATION_FAILED)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String wrongVerifyTryException(WrongVerifyTryException wrongVerifyTryException) {
 
         return wrongVerifyTryException.getMessage();

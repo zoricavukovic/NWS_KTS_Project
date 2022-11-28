@@ -57,7 +57,7 @@ public class UserController {
 
     @PutMapping()
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_DRIVER', 'ROLE_REGULAR_USER')")
+    @PreAuthorize("hasAnyRole('ROLE_DRIVER', 'ROLE_REGULAR_USER', 'ROLE_ADMIN')")
     public UserDTO update(@Valid @RequestBody UsersProfileUpdateRequest userData) throws EntityUpdateException, EntityNotFoundException {
 
         return userService.update(

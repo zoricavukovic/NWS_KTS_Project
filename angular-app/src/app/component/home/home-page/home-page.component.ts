@@ -1,5 +1,4 @@
 import {
-  AfterViewInit,
   Component,
   Input,
   OnDestroy,
@@ -15,10 +14,8 @@ import { Subscription } from 'rxjs';
 import { AuthService } from '../../../service/auth.service';
 import { PossibleRoutesViaPoints } from '../../../model/route/possible-routes-via-points';
 import {
-  addCarMarker,
   changeOrAddMarker,
   drawPolylineOnMap,
-  refreshMap,
   removeLayer,
   removeMarker,
   removeOneLayer,
@@ -36,15 +33,18 @@ export class HomePageComponent implements OnInit, OnDestroy {
   routeChoiceView = false;
   filterVehicleView = true;
 
-  @Input() map;
-  currentUser: User;
+  @Input() map: L.Map;
+
+  currentUser: User = null;
+  isDriver: boolean;
+  isRegular: boolean;
+
   provider1: OpenStreetMapProvider = new OpenStreetMapProvider();
   selectedRoute: PossibleRoute;
-  maxNumberOfLocations = 5;
+  maxNumberOfLocations: number = 5;
   possibleRoutesViaPoints: PossibleRoutesViaPoints[] = [];
   drawPolylineList = [];
   searchingRoutesForm: SearchingRoutesForm[] = [];
-  currentUserIsDriver: boolean;
   vehicles: Vehicle[];
   carMarkers: L.Marker[] = [];
   /* autocompleteForm = new FormGroup({
@@ -55,8 +55,6 @@ export class HomePageComponent implements OnInit, OnDestroy {
   rgbDeepBlue: number[] = [44, 75, 97];
   private authSubscription: Subscription;
   private routeSubscription: Subscription;
-
-  a: string[];
 
   constructor(
     private routeService: RouteService,
@@ -75,26 +73,15 @@ export class HomePageComponent implements OnInit, OnDestroy {
     });
     this.searchingRoutesForm.push(new SearchingRoutesForm());
     this.searchingRoutesForm.push(new SearchingRoutesForm());
-    this.currentUser = this.authService.getCurrentUser;
-    this.currentUserIsDriver = this.currentUser?.userIsDriver();
-    // let div = L.DomUtil.get('route-div');
-    // L.DomEvent.on(div, 'mousewheel', L.DomEvent.stopPropagation);
-    // L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation);
-  }
+        
+    this.authSubscription = this.authService.getSubjectCurrentUser().subscribe(
+      user => {
+        this.currentUser = user;
+        this.isDriver = this.authService.userIsDriver();
+        this.isRegular = this.authService.userIsRegular();
+      }
+    );
 
-  ngOnDestroy(): void {
-    for (let i; i < this.searchingRoutesForm.length; i++) {
-      this.deleteMarker(i);
-    }
-
-    this.carMarkers.forEach(marker => removeMarker(this.map, marker));
-    this.removeAllPolylines();
-    if (this.authSubscription) {
-      this.authSubscription.unsubscribe();
-    }
-    if (this.routeSubscription) {
-      this.routeSubscription.unsubscribe();
-    }
   }
 
   async initMap() {
@@ -204,6 +191,21 @@ export class HomePageComponent implements OnInit, OnDestroy {
     });
   }
 
+  ngOnDestroy(): void {
+    for (let i; i < this.searchingRoutesForm.length; i++) {
+      this.deleteMarker(i);
+    }
+
+    this.carMarkers.forEach(marker => removeMarker(this.map, marker));
+    this.removeAllPolylines();
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
+    }
+    if (this.routeSubscription) {
+      this.routeSubscription.unsubscribe();
+    }
+  }
+
   private getLatLongsForFirstRoute(route: PossibleRoutesViaPoints) {
     let latLongs = [];
     route.possibleRouteDTOList
@@ -278,10 +280,6 @@ export class HomePageComponent implements OnInit, OnDestroy {
     );
   }
 
-  currentUserIsRegular() {
-    return this.authService.getCurrentUser?.userIsRegular();
-  }
-
   private addMarker(index: number, place) {
     const customIcon = L.icon({
       iconUrl: this.getIconUrl(index),
@@ -350,7 +348,6 @@ export class HomePageComponent implements OnInit, OnDestroy {
   }
 
   chooseVehicleAndPassengers(route: PossibleRoute) {
-    console.log('blaaaaaaaaa');
     this.routeChoiceView = false;
     this.filterVehicleView = true;
     this.selectedRoute = route;

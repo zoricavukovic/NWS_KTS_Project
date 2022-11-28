@@ -54,7 +54,6 @@ export class LoginComponent implements OnInit, OnDestroy {
         next(loggedUser: LoginResponse): void {
           authService.setLocalStorage(loggedUser);
           chatService.connect();
-          authService.currentUserSubject$.next(loggedUser.userDTO);
           router.navigate(['/map-view/-1']);
         },
         error(): void {
@@ -74,7 +73,6 @@ export class LoginComponent implements OnInit, OnDestroy {
         next(loggedUser: LoginResponse): void {
           authService.setLocalStorage(loggedUser);
           chatService.connect();
-          authService.currentUserSubject$.next(loggedUser.userDTO);
           router.navigate(['/map-view/-1']);
         },
         error(): void {
@@ -108,7 +106,6 @@ export class LoginComponent implements OnInit, OnDestroy {
         next(loggedUser: LoginResponse): void {
           authService.setLocalStorage(loggedUser);
           chatService.connect();
-          authService.currentUserSubject$.next(loggedUser.userDTO);
           router.navigate(['/map-view/-1']);
         },
         error(): void {

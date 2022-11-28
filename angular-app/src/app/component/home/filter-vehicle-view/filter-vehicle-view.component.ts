@@ -8,8 +8,6 @@ import { AuthService } from 'src/app/service/auth.service';
 import { DrivingNotificationService } from 'src/app/service/driving-notification.service';
 import { UserService } from 'src/app/service/user.service';
 import { VehicleService } from 'src/app/service/vehicle.service';
-import { ToastrService } from 'ngx-toastr';
-import { WebSocketService } from 'src/app/service/web-socket.service';
 
 @Component({
   selector: 'app-filter-vehicle-view',
@@ -19,16 +17,16 @@ import { WebSocketService } from 'src/app/service/web-socket.service';
 export class FilterVehicleViewComponent implements OnInit, OnDestroy {
   @Input() route: PossibleRoute;
 
-  petFriendly = false;
-  babySeat = false;
-  vehicleType: string;
-  price = 0;
-  currentUser: User;
+  petFriendly: boolean = false;
+  babySeat: boolean = false;
+  vehicleType: string = "";
+  price: number = 0;
+  currentUser: User = null;
 
   allRegularUsers: string[]= [];
   selectedPassengers: string[] = [];
 
-  passengerCtrl = new FormControl();
+  passengerCtrl: FormControl = new FormControl();
 
   private allUsersSubscription: Subscription;
   private priceSubscription: Subscription;
@@ -37,15 +35,17 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
 
   constructor(
     private userService: UserService,
-    private toast: ToastrService,
     private authService: AuthService,
-    private webSocketService: WebSocketService,
     private vehicleService: VehicleService,
     private drivingNotificationService: DrivingNotificationService
   ) {}
 
   ngOnInit(): void {
-    this.currentUser = this.authService.getCurrentUser;
+    this.authSubscription = this.authService.getSubjectCurrentUser().subscribe(
+      user => {
+        this.currentUser = user;
+      }
+    );
 
     this.allUsersSubscription = this.userService
       .getAllRegularUsers()
@@ -56,38 +56,30 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy(): void {
-    if (this.allUsersSubscription) {
-      this.allUsersSubscription.unsubscribe();
-    }
-    if (this.priceSubscription) {
-      this.priceSubscription.unsubscribe();
-    }
-  }
-
+  
   addSelectedPassenger(email: string) {
     this.selectedPassengers.push(email);
     this.passengerCtrl.setValue(null);
   }
-
+  
   removePassengerFromSelected(passenger: string): void {
     const index = this.selectedPassengers.indexOf(passenger);
-
+    
     if (index >= 0) {
       this.selectedPassengers.splice(index, 1);
     }
   }
-
+  
   setVehicleTypeAndShowPrice(vehicleType: string) {
     this.vehicleType = vehicleType;
     console.log(this.vehicleType);
     this.priceSubscription = this.vehicleService
-      .getPriceForVehicleAndRoute(this.vehicleType, 3800)
-      .subscribe(response => {
-        this.price = response;
-      });
+    .getPriceForVehicleAndRoute(this.vehicleType, 3800)
+    .subscribe(response => {
+      this.price = response;
+    });
   }
-
+  
   findDriver() {
     if (this.selectedPassengers.length === 0) {
       console.log('nisuu, trazi vozaca');
@@ -95,7 +87,7 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
       /*const first_route = this.route.pointList.at(0);
       const end_route = this.route.pointList.at(
         this.route.pointList.length - 1
-      );*/
+        );*/
       const first_route = [45.262402102988666, 19.83108921294311];
       const end_route = [45.2431212554299, 19.820428580417126];
       const drivingNotification = new DrivingNotificationRequest(
@@ -106,13 +98,32 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
         this.currentUser.email,
         this.price,
         this.selectedPassengers
-      );
-      console.log(drivingNotification);
-      this.drivingNotificationSubscription = this.drivingNotificationService
+        );
+        console.log(drivingNotification);
+        this.drivingNotificationSubscription = this.drivingNotificationService
         .saveDrivingNotification(drivingNotification)
         .subscribe(response => {
           console.log("usppelo");
         });
     }
   }
+
+  ngOnDestroy(): void {
+    if (this.allUsersSubscription) {
+      this.allUsersSubscription.unsubscribe();
+    }
+
+    if (this.priceSubscription) {
+      this.priceSubscription.unsubscribe();
+    }
+
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
+    }
+
+    if (this.drivingNotificationSubscription) {
+      this.drivingNotificationSubscription.unsubscribe();
+    }
+  }
+
 }

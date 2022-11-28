@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { User } from 'src/app/model/user/user';
 import { AuthService } from 'src/app/service/auth.service';
 import { ConfigService } from 'src/app/service/config.service';
 
@@ -9,21 +10,29 @@ import { ConfigService } from 'src/app/service/config.service';
   templateUrl: './nav-bar.component.html',
   styleUrls: ['./nav-bar.component.css'],
 })
-export class NavBarComponent implements OnInit {
-  isAdmin = false;
-  isRegularUser = false;
+export class NavBarComponent implements OnInit, OnDestroy {
   logoutSubscription: Subscription;
+  authSubscription: Subscription;
+  loggedUser: User = null;
+  isAdmin: boolean;
+  isRegular: boolean;
+  isDriver: boolean;
 
   constructor(
-    public authService: AuthService,
+    public configService: ConfigService,
+    private authService: AuthService,
     private router: Router,
-    public configService: ConfigService
   ) {}
 
   ngOnInit(): void {
-    this.isAdmin = this.authService.getCurrentUser?.isUserAdmin();
-    console.log(this.isAdmin);
-    this.isRegularUser = this.authService.getCurrentUser?.userIsRegular();
+    this.authSubscription = this.authService.getSubjectCurrentUser().subscribe(
+      user => {
+        this.loggedUser = user;
+        this.isAdmin = this.authService.userIsAdmin();
+        this.isRegular = this.authService.userIsRegular();
+        this.isDriver = this.authService.userIsDriver();
+      }
+    );
   }
 
   redirectToEditPage() {
@@ -48,8 +57,10 @@ export class NavBarComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
-  doga() {
-    this.router.navigate(['/mapa/-1']);
+  ngOnDestroy(): void {
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
+    }
   }
 
 }

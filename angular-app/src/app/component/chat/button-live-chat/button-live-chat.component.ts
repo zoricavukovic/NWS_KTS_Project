@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ChatRoom } from 'src/app/model/message/chat-room';
+import { User } from 'src/app/model/user/user';
 import { AuthService } from 'src/app/service/auth.service';
 import { ChatRoomService } from 'src/app/service/chat-room.service';
 
@@ -15,7 +16,9 @@ export class ButtonLiveChatComponent implements OnInit, OnDestroy {
   numOfNotifications = 0;
   chatRoomSubscription: Subscription;
   isAdmin: boolean = false;
-  loggedUserEmail: string;
+  loggedUser: User = null;
+
+  authSubscription: Subscription;
 
   constructor(
     public authService: AuthService,
@@ -23,17 +26,21 @@ export class ButtonLiveChatComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    if (this.isLoggedInRegularOrDriver()) {
-      this.loadChatRoom();
-    }
+    this.authSubscription = this.authService.getSubjectCurrentUser().subscribe(
+      user => {
+        this.loggedUser = user;
+        if (this.isLoggedInRegularOrDriver()) {
+          this.loadChatRoom();
+        }
+      }
+    );
   }
 
   loadChatRoom() {
     this.chatRoomSubscription = this.chatRoomService
-        .getUserChatRoom(this.authService.getCurrentUser.email)
+        .getUserChatRoom(this.loggedUser?.email)
         .subscribe(res => {
           this.chatRoom = res;
-          this.loggedUserEmail = this.authService.getCurrentUser.email;
           if (!this.showChatPoupup && this.chatRoom) {
             this.updateNotifications();
           }
@@ -41,14 +48,14 @@ export class ButtonLiveChatComponent implements OnInit, OnDestroy {
   }
 
   isLoggedInRegularOrDriver(): boolean {
-    return this.authService.getCurrentUser !== null && !this.authService.getCurrentUser.isUserAdmin();
+    return this.loggedUser && !(this.loggedUser?.role.name === "ROLE_ADMIN");
   }
 
   updateNotifications(): number {
     if (this.isLoggedInRegularOrDriver()){
-      if (this.authService.getCurrentUser.email !== this.loggedUserEmail){
-        this.loadChatRoom();
-      }
+      // if (this.authService.getCurrentUser.email !== this.loggedUserEmail){
+      //   this.loadChatRoom();
+      // }
 
       this.numOfNotifications =  this.chatRoomService.getNumOfNotSeenMessages(
         this.chatRoom,
@@ -63,6 +70,10 @@ export class ButtonLiveChatComponent implements OnInit, OnDestroy {
     if (this.chatRoomSubscription) {
       this.chatRoomSubscription.unsubscribe();
       this.chatRoomService.resetDataRegularAndDriver();
+    }
+
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
     }
   }
 }

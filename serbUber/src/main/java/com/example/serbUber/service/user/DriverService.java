@@ -56,7 +56,7 @@ public class DriverService implements IDriverService{
 
 
     public List<DriverDTO> getAll() {
-        List<Driver> drivers = driverRepository.findAll();
+        List<Driver> drivers = driverRepository.findAllVerified();
 
         return fromDrivers(drivers);
     }

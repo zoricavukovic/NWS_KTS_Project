@@ -18,6 +18,7 @@ import { Vehicle } from 'src/app/model/vehicle/vehicle';
 import { isFormValid } from 'src/app/util/validation-function';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
+import { User } from 'src/app/model/user/user';
 
 @Component({
   selector: 'app-registration',
@@ -65,18 +66,23 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   registrationSubscription: Subscription;
   currentUserSubscription: Subscription;
 
-  submitted = false;
+  submitted: boolean = false;
 
-  showDriverForm = false;
-  hidePassword = true;
-  hideConfirmPassword = true;
+  showDriverForm: boolean = false;
+  hidePassword: boolean = true;
+  hideConfirmPassword: boolean = true;
 
-  petFriendly = false;
-  babySeat = false;
+  petFriendly: boolean = false;
+  babySeat: boolean = false;
   vehicleType: string;
+  authSubscription: Subscription;
 
   ngOnInit(): void {
-    this.showDriverForm = this.authService.getCurrentUser?.isUserAdmin();
+    this.authSubscription = this.authService.getSubjectCurrentUser().subscribe(
+      user => {
+        this.showDriverForm = this.authService.userIsAdmin();
+      }
+    );
   }
 
   constructor(
@@ -131,7 +137,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
           .subscribe(
             res => {
               this.toast.success(
-                'Please go to ' + res.email + ' to verify account!',
+                'Driver is created and waiting for verification!',
                 'Registration successfully'
               );
               this.router.navigate(['/map-view/-1']);
@@ -169,6 +175,10 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.registrationSubscription) {
       this.registrationSubscription.unsubscribe();
+    }
+
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
     }
   }
 }

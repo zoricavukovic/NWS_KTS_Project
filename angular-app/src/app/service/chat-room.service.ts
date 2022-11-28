@@ -17,15 +17,18 @@ import { Router } from '@angular/router';
   providedIn: 'root',
 })
 export class ChatRoomService {
-  chatRoomClient$ = new BehaviorSubject<ChatRoom>(null);
-  adminChatRooms$ = new BehaviorSubject<ChatRoom[]>([]);
+  chatRoomClient$: BehaviorSubject<ChatRoom>;
+  adminChatRooms$: BehaviorSubject<ChatRoom[]>;
 
   constructor(
     private http: HttpClient,
     private configService: ConfigService,
     private toast: ToastrService,
     private router: Router
-  ) {}
+  ) {
+    this.chatRoomClient$ = new BehaviorSubject<ChatRoom>(null);
+    this.adminChatRooms$ = new BehaviorSubject<ChatRoom[]>([]);
+  }
 
   getUserChatRoom(email: string): BehaviorSubject<ChatRoom> {
     this.http

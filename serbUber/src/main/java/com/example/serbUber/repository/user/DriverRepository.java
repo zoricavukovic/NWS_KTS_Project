@@ -21,4 +21,7 @@ public interface DriverRepository extends JpaRepository<Driver, Long> {
 
     @Query("select d from Driver d left join fetch d.drivings drivings where d.active = true and drivings.active = false")
     List<Driver> getActiveAndFreeDrivers();
+
+    @Query("select d from Driver d left join fetch d.drivings drivings left join fetch d.vehicle v where d.verified = true")
+    List<Driver> findAllVerified();
 }
