@@ -13,20 +13,24 @@ export class FavouriteRoutesComponent implements OnInit, OnDestroy {
   currentUser: User;
   favouriteRoutes: Route[] = [];
 
-  currentUserSubscription: Subscription;
   favouriteRoutesSubscription: Subscription;
+  authSubscription: Subscription;
 
   constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
-    this.currentUser = this.authService.getCurrentUser;
-    this.favouriteRoutesSubscription = this.authService
-      .getFavouriteRoutesForUser(this.currentUser.id)
-      .subscribe(data => {
-        console.log(this.favouriteRoutes);
-        this.favouriteRoutes = data;
-        console.log(this.favouriteRoutes);
+    this.authSubscription = this.authService.getSubjectCurrentUser().subscribe(
+      user => {
+        this.currentUser = user;
+        this.favouriteRoutesSubscription = this.authService
+        .getFavouriteRoutesForUser(user?.id)
+        .subscribe(data => {
+          console.log(this.favouriteRoutes);
+          this.favouriteRoutes = data;
+          console.log(this.favouriteRoutes);
       });
+      }
+    );
   }
 
   removeFromFavourites() {
@@ -39,12 +43,12 @@ export class FavouriteRoutesComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.currentUserSubscription) {
-      this.currentUserSubscription.unsubscribe();
-    }
-
     if (this.favouriteRoutesSubscription) {
       this.favouriteRoutesSubscription.unsubscribe();
+    }
+
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
     }
   }
 }

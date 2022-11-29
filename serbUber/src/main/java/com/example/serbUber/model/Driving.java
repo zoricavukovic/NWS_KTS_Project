@@ -1,10 +1,13 @@
 package com.example.serbUber.model;
 
 import com.example.serbUber.model.user.RegularUser;
+import org.hibernate.annotations.Fetch;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.*;
+
+import static org.hibernate.annotations.FetchMode.SELECT;
 
 @Entity
 @Table(name="drivings")
@@ -35,7 +38,7 @@ public class Driving {
     @Column(name="driver_id", nullable = false)
     private Long driverId;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "drivings_users", joinColumns = @JoinColumn(name = "driving_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
     private Set<RegularUser> users;
 

@@ -44,6 +44,7 @@ public abstract class User {
     @JoinColumn(name="verified", nullable = false)
     private boolean verified = false;
 
+
     public User() {}
 
     public User(

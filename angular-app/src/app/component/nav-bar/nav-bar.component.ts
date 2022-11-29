@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Driver } from 'src/app/model/user/driver';
+import { User } from 'src/app/model/user/user';
 import { AuthService } from 'src/app/service/auth.service';
 import { ConfigService } from 'src/app/service/config.service';
 import { DriverService } from 'src/app/service/driver.service';
@@ -13,35 +14,44 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './nav-bar.component.html',
   styleUrls: ['./nav-bar.component.css'],
 })
-export class NavBarComponent implements OnInit {
-  isAdmin = false;
-  isRegularUser = false;
+export class NavBarComponent implements OnInit, OnDestroy {
+  
   logoutSubscription: Subscription;
   driverData: Driver;
   driverUpdateSubscription: Subscription;
 
+  authSubscription: Subscription;
+  loggedUser: User = null;
+  isAdmin: boolean;
+  isRegular: boolean;
+  isDriver: boolean;
+
   constructor(
-    public authService: AuthService,
+    public configService: ConfigService,
+    private authService: AuthService,
     private router: Router,
     private driverService: DriverService,
-    public configService: ConfigService,
     private toast: ToastrService
   ) {}
 
   ngOnInit(): void {
-    this.isAdmin = this.authService.getCurrentUser?.isUserAdmin();
-    this.isRegularUser = this.authService.getCurrentUser?.userIsRegular();
-    
-    if (this.authService.getCurrentUser?.userIsDriver()) {
-      this.loadDriver();
-    }
+    this.authSubscription = this.authService.getSubjectCurrentUser().subscribe(
+      user => {
+        this.loggedUser = user;
+        this.isAdmin = this.authService.userIsAdmin();
+        this.isRegular = this.authService.userIsRegular();
+        this.isDriver = this.authService.userIsDriver();
+        if (this.isDriver) {
+          this.loadDriver();
+        }
+      }
+    );
   }
 
   loadDriver(): void {
-    this.driverService.getDriver(this.authService.getCurrentUser.id)
+    this.driverService.getDriver(this.loggedUser.id)
       .subscribe(
         (response: Driver) => {
-          console.log("PODACI" + response);
           this.driverData = response;
       });
   }
@@ -56,7 +66,7 @@ export class NavBarComponent implements OnInit {
         this.driverData.active = !this.driverData.active;
         this.toast.error(error.error, 'Changing activity status failed');
       });
-  }
+    }
 
   redirectToEditPage() {
     this.router.navigate(['/edit-profile-data']);
@@ -68,24 +78,6 @@ export class NavBarComponent implements OnInit {
 
   redirectToMessagesPage() {
     this.router.navigate(['/messages']);
-  }
-
-  loggedUserIsDriver(): boolean {
-    //ako je driver null ucitaj ga, ako je u medjuvremenu ulogovan neko drugi, osvezi
-    if (this.driverData) {
-      if (this.authService.getCurrentUser?.userIsDriver() && this.isUserChanged()) {
-        this.loadDriver();
-      }
-    } else if (!this.driverData && this.authService.getCurrentUser?.userIsDriver()){
-      this.loadDriver();
-    }
-    
-    return this.driverData && this.authService.getCurrentUser.userIsDriver();
-  }
-
-  isUserChanged(): boolean {
-    
-    return this.authService.getCurrentUser?.email !== this.driverData?.email;
   }
 
   logOut() {
@@ -100,8 +92,10 @@ export class NavBarComponent implements OnInit {
       });
   }
 
-  doga() {
-    this.router.navigate(['/mapa/-1']);
+  ngOnDestroy(): void {
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
+    }
   }
 
 }

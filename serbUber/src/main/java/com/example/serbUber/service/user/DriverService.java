@@ -1,5 +1,6 @@
 package com.example.serbUber.service.user;
 
+import com.example.serbUber.dto.DrivingNotificationDTO;
 import com.example.serbUber.dto.user.DriverDTO;
 import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.*;
@@ -8,6 +9,7 @@ import com.example.serbUber.model.Vehicle;
 import com.example.serbUber.model.VehicleType;
 import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.repository.user.DriverRepository;
+import com.example.serbUber.service.DrivingNotificationService;
 import com.example.serbUber.service.VehicleService;
 import com.example.serbUber.service.VerifyService;
 import com.example.serbUber.service.interfaces.IDriverService;
@@ -36,21 +38,27 @@ public class DriverService implements IDriverService{
     private final VerifyService verifyService;
     //private final UserService userService;
 
+    private final DrivingNotificationService drivingNotificationService;
+
     public DriverService(
             final DriverRepository driverRepository,
             final VehicleService vehicleService,
             final VerifyService verifyService,
-            final RoleService roleService
-    ) {
+            final RoleService roleService,
+            final UserService userService,
+            final DrivingNotificationService drivingNotificationService
+            ) {
         this.driverRepository = driverRepository;
         this.vehicleService = vehicleService;
         this.verifyService = verifyService;
         this.roleService = roleService;
-        //this.userService = userService;
+        this.userService = userService;
+        this.drivingNotificationService = drivingNotificationService;
     }
 
+
     public List<DriverDTO> getAll() {
-        List<Driver> drivers = driverRepository.findAll();
+        List<Driver> drivers = driverRepository.findAllVerified();
 
         return fromDrivers(drivers);
     }
@@ -269,4 +277,17 @@ public class DriverService implements IDriverService{
 
         return false;
     }
+
+    public DriverDTO getDriverForDriving(Long id) throws EntityNotFoundException {
+        DrivingNotificationDTO drivingNotificationDTO = drivingNotificationService.getDrivingNotification(id);
+
+        return null;
+    }
+
+    private List<DriverDTO> getActiveAndFreeDrivers(){
+        driverRepository.getActiveAndFreeDrivers();
+
+        return null;
+    }
+
 }

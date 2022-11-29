@@ -5,9 +5,10 @@ import { environment } from 'src/environments/environment';
 import { ChatRoomService } from './chat-room.service';
 import { ChatRoom } from '../model/message/chat-room';
 import { ChatRoomWithNotify } from '../model/message/chat-room-with-notify';
-import {VehicleService} from "./vehicle.service";
-import {VehicleCurrentLocation} from "../model/vehicle/vehicle-current-location";
-
+import { VehicleService } from './vehicle.service';
+import { VehicleCurrentLocation } from '../model/vehicle/vehicle-current-location';
+import { DrivingNotificationRequest } from '../model/request/driving-notification-request';
+import { DrivingNotificationService } from './driving-notification.service';
 
 @Injectable({
   providedIn: 'root',
@@ -20,9 +21,9 @@ export class WebSocketService {
 
   constructor(
     private chatRoomService: ChatRoomService,
-    private vehicleService: VehicleService
+    private vehicleService: VehicleService,
+    private drivingNotificationService: DrivingNotificationService
   ) {
-
     if (!this.stompClient) {
       this.initialized = false;
       this.connect();
@@ -48,9 +49,9 @@ export class WebSocketService {
           environment.publisherUrl + localStorage.getItem('email') + '/connect',
           message => {
             if (message !== null && message !== undefined) {
-              if (that.isMessageType(message.body)) {
-                that.chatRoomService.addMessage(JSON.parse(message.body));
-              }
+              that.isMessageType(message.body) ?
+                that.chatRoomService.addMessage(JSON.parse(message.body)) :
+                that.drivingNotificationService.showNotification(JSON.parse(message.body))
             }
           }
         );
@@ -71,8 +72,12 @@ export class WebSocketService {
         that.globalStompClient.subscribe(
           environment.publisherUrl + 'global/connect',
           message => {
-            if (message !== null && message !== undefined || message?.body !== null) {
-              const vehicleCurrentLocation:VehicleCurrentLocation[] = JSON.parse(message.body);
+            if (
+              (message !== null && message !== undefined) ||
+              message?.body !== null
+            ) {
+              const vehicleCurrentLocation: VehicleCurrentLocation[] =
+                JSON.parse(message.body);
               that.vehicleService.addVehicle(vehicleCurrentLocation);
             }
           }
@@ -81,15 +86,13 @@ export class WebSocketService {
     }
   }
 
-
-  isMessageType(webSocketNotification: string): boolean {
+  private isMessageType(webSocketNotification: string): boolean {
     try {
-      let parsed: ChatRoomWithNotify = JSON.parse(webSocketNotification);
+       const parsed: ChatRoomWithNotify = JSON.parse(webSocketNotification);
+       return (parsed.notifyAdmin !== null && parsed.notifyAdmin !== undefined)
     } catch (e) {
       return false;
     }
-
-    return true;
   }
 
   disconnect(): void {
@@ -102,7 +105,7 @@ export class WebSocketService {
   }
 
   sendMessage(chatRoom: ChatRoom, notifyAdmin: boolean) {
-    if (!this.stompClient){
+    if (!this.stompClient) {
       this.initialized = false;
       this.connect();
     }
@@ -110,6 +113,18 @@ export class WebSocketService {
       '/app/send/message',
       {},
       JSON.stringify(this.createChatRoomWithNotify(chatRoom, notifyAdmin))
+    );
+  }
+
+  sendNotification(drivingNotificationRequest: DrivingNotificationRequest) {
+    if (!this.stompClient) {
+      this.initialized = false;
+      this.connect();
+    }
+    this.stompClient.send(
+      '/app/send/notification',
+      {},
+      JSON.stringify(drivingNotificationRequest)
     );
   }
 

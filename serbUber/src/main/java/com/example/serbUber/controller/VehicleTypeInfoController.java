@@ -1,6 +1,9 @@
 package com.example.serbUber.controller;
 
 import com.example.serbUber.dto.VehicleTypeInfoDTO;
+import com.example.serbUber.exception.EntityNotFoundException;
+import com.example.serbUber.model.VehicleType;
+import com.example.serbUber.model.VehicleTypeInfo;
 import com.example.serbUber.request.VehicleTypeInfoRequest;
 import com.example.serbUber.service.VehicleTypeInfoService;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -27,6 +30,14 @@ public class VehicleTypeInfoController {
     public List<VehicleTypeInfoDTO> getAll() {
 
         return this.vehicleTypeInfoService.getAll();
+    }
+
+    @GetMapping("/price/{type}/{kilometers}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
+    public double getPriceForSelectedRouteAndVehicle(@PathVariable VehicleType type, @PathVariable double kilometers) throws EntityNotFoundException {
+        double priceForType = this.vehicleTypeInfoService.getPriceForVehicle(type);
+        return priceForType + (kilometers/1000)*120;
     }
 
     @PostMapping()

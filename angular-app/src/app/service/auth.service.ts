@@ -13,8 +13,11 @@ import { WebSocketService } from './web-socket.service';
   providedIn: 'root',
 })
 export class AuthService {
-  public currentUserSubject$: BehaviorSubject<User>;
-  public currentUser: Observable<User>;
+  public currentUser$: BehaviorSubject<User>;
+
+  ROLE_ADMIN: string = 'ROLE_ADMIN';
+  ROLE_REGULAR_USER: string = 'ROLE_REGULAR_USER';
+  ROLE_DRIVER: string = 'ROLE_DRIVER';
 
   constructor(
     private http: HttpClient,
@@ -22,10 +25,7 @@ export class AuthService {
     private router: Router,
     private chatService: WebSocketService
   ) {
-    this.currentUserSubject$ = new BehaviorSubject<User>(
-      JSON.parse(localStorage.getItem('user'))
-    );
-    this.currentUser = this.currentUserSubject$.asObservable();
+    this.currentUser$ = new BehaviorSubject<User>(null);
   }
 
   login(loginRequest: LoginRequest): Observable<LoginResponse> {
@@ -53,48 +53,113 @@ export class AuthService {
     localStorage.setItem('token', 'Bearer ' + loginResponse.token);
     localStorage.setItem('user', JSON.stringify(loginResponse.userDTO));
     localStorage.setItem('email', loginResponse.userDTO.email);
+    this.currentUser$.next(loginResponse.userDTO);
   }
 
   logOut() {
     this.chatService.disconnect();
-    this.currentUserSubject$.next(null);
+    this.currentUser$.next(null);
     localStorage.clear();
   }
 
   setOfflineStatus(): Observable<User> {
     return this.http.post<User>(
       this.configService.logout_url,
-      this.getCurrentUser?.email,
+      this.currentUser$?.value?.email,
       { headers: this.configService.getHeader() }
     );
   }
 
-  setUserInLocalStorage(user: User): void {
-    localStorage.setItem('user', JSON.stringify(user));
-    this.currentUserSubject$.next(user);
+  getLoggedParsedUser(): User {
+    const userString = localStorage.getItem('user');
+    if (userString !== null && userString !== undefined){
+      const user: User = JSON.parse(userString);
+
+      return user;
+    }
+
+    return null;
   }
 
-  public get getCurrentUser(): User {
-    const user = localStorage.getItem('user');
-    if (user !== null && user !== undefined) {
-      const parsedUser: User = JSON.parse(user);
-      this.currentUserSubject$.next(
-        new User(
-          parsedUser.id,
-          parsedUser.email,
-          parsedUser.name,
-          parsedUser.surname,
-          parsedUser.phoneNumber,
-          parsedUser.city,
-          parsedUser.role,
-          parsedUser.profilePicture
-        )
-      );
-    } else {
-      this.currentUserSubject$.next(null);
+  userIsAdmin(): boolean {
+    const user: User = this.getLoggedParsedUser();
+    if (user && user.role.name === this.ROLE_ADMIN) {
+
+      return true;
     }
-    return this.currentUserSubject$.value;
+
+    return false;
   }
+
+  userIsRegular(): boolean {
+    const user: User = this.getLoggedParsedUser();
+    if (user && user.role.name === this.ROLE_REGULAR_USER) {
+
+      return true;
+    }
+
+    return false;
+  }
+
+  userIsDriver(): boolean {
+    const user: User = this.getLoggedParsedUser();
+    if (user && user.role.name === this.ROLE_DRIVER) {
+
+      return true;
+    }
+
+    return false;
+  }
+
+  setUserInLocalStorage(user: User): void {
+    localStorage.setItem('user', JSON.stringify(user));
+    this.currentUser$.next(user);
+  }
+
+  getSubjectCurrentUser(): BehaviorSubject<User> {
+    let user = localStorage.getItem('user');
+    if (user !== null && user !== undefined) {
+        const parsedUser: User = JSON.parse(user);
+        const currentUser: User = new User(
+            parsedUser.id,
+            parsedUser.email,
+            parsedUser.name,
+            parsedUser.surname,
+            parsedUser.phoneNumber,
+            parsedUser.city,
+            parsedUser.role,
+            parsedUser.profilePicture
+          )
+        this.currentUser$.next(currentUser);
+    } else {
+
+      this.currentUser$.next(null);
+    }
+
+    return this.currentUser$;
+  }
+
+  // public get getCurrentUser(): User {
+  //   const user = localStorage.getItem('user');
+  //   if (user !== null && user !== undefined) {
+  //     const parsedUser: User = JSON.parse(user);
+  //     this.currentUserSubject$.next(
+  //       new User(
+  //         parsedUser.id,
+  //         parsedUser.email,
+  //         parsedUser.name,
+  //         parsedUser.surname,
+  //         parsedUser.phoneNumber,
+  //         parsedUser.city,
+  //         parsedUser.role,
+  //         parsedUser.profilePicture
+  //       )
+  //     );
+  //   } else {
+  //     this.currentUserSubject$.next(null);
+  //   }
+  //   return this.currentUserSubject$.value;
+  // }
 
   public get getCurrentUserId(): number {
     const user = localStorage.getItem('user');

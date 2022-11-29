@@ -1,9 +1,5 @@
 import { Role } from './role';
 
-const ROLE_ADMIN = 'ROLE_ADMIN';
-const ROLE_REGULAR_USER = 'ROLE_REGULAR_USER';
-const ROLE_DRIVER = 'ROLE_DRIVER';
-
 export class User {
   id: number;
   email: string;
@@ -39,15 +35,4 @@ export class User {
     }
   }
 
-  public isUserAdmin(): boolean {
-    return this.role.name === ROLE_ADMIN;
-  }
-
-  public userIsRegular(): boolean {
-    return this.role.name === ROLE_REGULAR_USER;
-  }
-
-  public userIsDriver(): boolean {
-    return this.role.name === ROLE_DRIVER;
-  }
 }

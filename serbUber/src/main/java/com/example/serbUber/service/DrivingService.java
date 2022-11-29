@@ -1,10 +1,12 @@
 package com.example.serbUber.service;
 
 import com.example.serbUber.dto.DrivingDTO;
+import com.example.serbUber.dto.DrivingNotificationDTO;
 import com.example.serbUber.dto.DrivingPageDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.EntityType;
 import com.example.serbUber.model.Driving;
+import com.example.serbUber.model.DrivingNotificationType;
 import com.example.serbUber.model.DrivingStatus;
 import com.example.serbUber.model.Route;
 import com.example.serbUber.model.user.User;
@@ -33,10 +35,19 @@ public class DrivingService implements IDrivingService {
 
     private final DrivingRepository drivingRepository;
     private final UserService userService;
+    private final DrivingNotificationService drivingNotificationService;
+    private final WebSocketService webSocketService;
 
-    public DrivingService(final DrivingRepository drivingRepository, final UserService userService) {
+    public DrivingService(
+        final DrivingRepository drivingRepository,
+        final UserService userService,
+        final DrivingNotificationService drivingNotificationService,
+        final WebSocketService webSocketService
+    ) {
         this.drivingRepository = drivingRepository;
         this.userService = userService;
+        this.drivingNotificationService = drivingNotificationService;
+        this.webSocketService = webSocketService;
     }
 
     public DrivingDTO create(
@@ -81,6 +92,7 @@ public class DrivingService implements IDrivingService {
                 totalNumber / pageSize :
                 totalNumber / pageSize + 1;
     }
+
 
     private Page<Driving> getDrivingPage(Long id, Pageable page) throws EntityNotFoundException {
         User user = userService.getUserById(id);
@@ -128,6 +140,7 @@ public class DrivingService implements IDrivingService {
     public DrivingDTO finishDriving(final Long id) throws EntityNotFoundException {
         Driving driving = getDriving(id);
         driving.setActive(false);
+
         drivingRepository.save(driving);
 
         return new DrivingDTO(driving);
@@ -138,5 +151,26 @@ public class DrivingService implements IDrivingService {
         return user.getRole().isDriver() ?
                 drivingRepository.getNumberOfAllDrivingsForDriver(id).size() :
                 drivingRepository.getNumberOfAllDrivingsForRegularUser(id).size();
+    }
+
+    public DrivingDTO rejectDriving(Long id, String reason) throws EntityNotFoundException {
+        Driving driving = getDriving(id);
+        User driver = userService.getUserById(driving.getDriverId());
+        driving.setDrivingStatus(DrivingStatus.REJECTED);
+        drivingRepository.save(driving);
+
+        List<DrivingNotificationDTO> notifications = drivingNotificationService.createNotifications(
+            driving.getRoute().getLocations().first().getLocation(),
+            driving.getRoute().getLocations().last().getLocation(),
+            driving.getPrice(),
+            driver,
+            driving.getUsers(),
+            DrivingNotificationType.REJECT_DRIVING,
+            reason
+        );
+
+        webSocketService.sendDrivingNotification(notifications);
+
+        return new DrivingDTO(driving);
     }
 }

@@ -28,13 +28,10 @@ public class Constants {
     public static final int MAX_NUM_VERIFY_TRIES = 3;
     public static final int MAX_WORKING_MINUTES = 480;
     public static final int HOURS_IN_A_DAY = 24;
-
+    public static final int NUM_OF_LETTERS_REASON_TOO_LONG = 50;
     public static final String ROLE_DRIVER = "ROLE_DRIVER";
-
     public static final String ROLE_REGULAR_USER = "ROLE_REGULAR_USER";
-
     public static final String ROLE_ADMIN = "ROLE_ADMIN";
-
     public static final int START_LIST_INDEX = 0;
 
     public static int generateSecurityCode() {

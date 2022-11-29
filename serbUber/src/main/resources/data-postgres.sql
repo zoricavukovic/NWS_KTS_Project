@@ -75,7 +75,6 @@ insert into drivers (id, email, password, name, surname, phone_number, city, pro
     (nextval('users_id_gen'), 'eki@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Esad', 'Esadic', '012345678', 'Novi Sad', 'default-user.png', 3, false, false, null, null, 0, 0, 1, 3, true, false);
 
 
-
 insert into drivings (active, driver_id, driving_status, duration, paying_limit, price, started, route_id, driving_id) values
     (false, 5, 1, 3, null, 400, to_timestamp('06.11.2022. 14:00', 'DD.MM.YYYY HH24:MI'), 1, 5),
     (false, 5, 1, 2, null, 300, to_timestamp('16.11.2022. 14:00', 'DD.MM.YYYY HH24:MI'), 2, 5),
@@ -96,7 +95,9 @@ insert into drivings_users(driving_id, user_id) values
     (3, 2),
     (4, 4),
     (4, 2),
-    (4, 3);
+    (5, 2),
+    (5, 4),
+    (5, 3);
 
 
 insert into chat_rooms(client_id, admin_id, resolved) values
@@ -106,7 +107,7 @@ insert into chat_rooms(client_id, admin_id, resolved) values
 insert into chat_rooms(client_id, admin_id, resolved) values
     (3,1, false);
 insert into chat_rooms(client_id, admin_id, resolved) values
-    (6,7, false);
+    (6,8, false);
 
 
 insert into messages(message, time_stamp, admin_response, chat_room_id, seen) values

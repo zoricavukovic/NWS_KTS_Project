@@ -20,6 +20,7 @@ export class ConfigService {
   private _drivings_url = `${this._api_url}/drivings`;
   private _drivers_url = `${this._api_url}/drivers`;
   private _drivings_finish_driving_url = `${this._drivings_url}/finish-driving`;
+  private _reject_driving_url = `${this._drivings_url}/reject`;
 
   private _login_user = this._api_url + '/auth/login';
   private _logout_user = this._api_url + '/auth/logout';
@@ -61,6 +62,10 @@ export class ConfigService {
   private _send_reset_password_email =
     this._api_url + '/users/send-rest-password-link';
   private _reset_password = this._api_url + '/users/reset-password';
+
+  private _price_for_driving_url = this._api_url + '/vehicle-type-infos/price';
+
+  private _driving_notifications_url = this._api_url + '/driving-notifications';
 
   get login_url(): string {
     return this._login_user;
@@ -234,5 +239,17 @@ export class ConfigService {
 
   get_finish_driving_url(drivingId: number): string {
     return `${this._drivings_finish_driving_url}/${drivingId}`;
+  }
+
+  reject_driving_url(drivingId: number): string {
+    return `${this._reject_driving_url}/${drivingId}`;
+  }
+
+  get_price_for_driving(type: string, kilometers: number) {
+    return this._price_for_driving_url + '/' + type + '/' + kilometers;
+  }
+
+  get driving_notifications_url(): string {
+    return this._driving_notifications_url;
   }
 }

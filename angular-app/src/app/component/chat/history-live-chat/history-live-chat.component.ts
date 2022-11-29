@@ -4,6 +4,7 @@ import { AuthService } from 'src/app/service/auth.service';
 import { ChatRoom } from 'src/app/model/message/chat-room';
 import { ChatRoomService } from 'src/app/service/chat-room.service';
 import { MessageSeenRequest } from 'src/app/model/message/message-request';
+import { User } from 'src/app/model/user/user';
 
 @Component({
   selector: 'app-history-live-chat',
@@ -19,6 +20,7 @@ export class HistoryLiveChatComponent implements OnInit, OnDestroy {
   firstChatRoomIndex: number = 0;
   initialized: boolean = false;
   lastSelectedIndex: number;
+  loggedUser: User = null;
 
   constructor(
     private authService: AuthService,
@@ -26,8 +28,14 @@ export class HistoryLiveChatComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.authSubscription = this.authService.getSubjectCurrentUser().subscribe(
+      user => {
+        this.loggedUser = user;
+      }
+    );
+
     this.chatRoomSubscription = this.chatRoomService
-      .getAllChatRooms(this.authService.getCurrentUser.email)
+      .getAllChatRooms(this.loggedUser?.email)
       .subscribe(
         res => {
           this.chatRooms = res;

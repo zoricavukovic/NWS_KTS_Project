@@ -70,6 +70,11 @@ public class RegularUserService implements IRegularUserService {
             .orElseThrow(() -> new EntityNotFoundException(id, EntityType.USER));
     }
 
+    public RegularUser getRegularByEmail(String email) throws EntityNotFoundException {
+        return regularUserRepository.getRegularUserByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException(email, EntityType.USER));
+    }
+
     public RegistrationDTO create(
         final String email,
         final String password,
@@ -82,7 +87,9 @@ public class RegularUserService implements IRegularUserService {
     ) throws PasswordsDoNotMatchException, EntityAlreadyExistsException, MailCannotBeSentException, EntityNotFoundException {
         if (passwordsDontMatch(password, confirmationPassword)) {
             throw new PasswordsDoNotMatchException();
-        } else if (userService.checkIfUserAlreadyExists(email)) {
+        }
+
+        if (userService.checkIfUserAlreadyExists(email)) {
             throw new EntityAlreadyExistsException(String.format("User with %s already exists.", email));
         }
 
