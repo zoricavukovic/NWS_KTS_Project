@@ -66,7 +66,7 @@ insert into driving_locations(location_id, index, route_id) values
 
 
 insert into drivers (id, email, password, name, surname, phone_number, city, profile_picture, role_id, active, blocked, start_shift, end_shift, rate, working_minutes, location_id, vehicle_id, verified, online) values
-    (nextval('users_id_gen'), 'mile@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Mile', 'Milic', '012345678', 'Novi Sad', 'default-user.png', 3, false, false, '2022-11-27 19:48:37.942161', '2022-11-28 19:48:37.942161', 1.3, 478, 1, 1, true, false);
+    (nextval('users_id_gen'), 'mile@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Mile', 'Milic', '012345678', 'Novi Sad', 'default-user.png', 3, false, false, null, null, 1.3, 0, 1, 1, true, false);
 
 insert into drivers (id, email, password, name, surname, phone_number, city, profile_picture, role_id, active, blocked, start_shift, end_shift, rate, working_minutes, location_id, vehicle_id, verified, online) values
     (nextval('users_id_gen'), 'milan@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Milan', 'Milanovic', '012345678', 'Novi Sad', 'default-user.png', 3, false, false, null, null, 0, 0, 1, 2, true, false);
@@ -107,7 +107,7 @@ insert into chat_rooms(client_id, admin_id, resolved) values
 insert into chat_rooms(client_id, admin_id, resolved) values
     (3,1, false);
 insert into chat_rooms(client_id, admin_id, resolved) values
-    (6,8, false);
+    (6,1, false);
 
 
 insert into messages(message, time_stamp, admin_response, chat_room_id, seen) values

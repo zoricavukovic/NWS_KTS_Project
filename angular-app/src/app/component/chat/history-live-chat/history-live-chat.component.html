@@ -1,3 +1,6 @@
 <div>
-    <app-chat-rooms-list [chatRooms]="chatRooms" [selectedChatRoom]="selectedChatRoom" (seenMessagesEvent)="setChatRoomMessagesToSeen($event)"></app-chat-rooms-list>
+    <app-chat-rooms-list *ngIf="chatRooms?.length > 0" [chatRooms]="chatRooms" [selectedChatRoom]="selectedChatRoom" (seenMessagesEvent)="setChatRoomMessagesToSeen($event)"></app-chat-rooms-list>
+    <div *ngIf="chatRooms?.length <= 0" class="form-container">
+        <h2>You have no messages in inbox right now.</h2>
+    </div>
 </div>

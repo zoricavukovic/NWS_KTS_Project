@@ -27,6 +27,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
   isAdmin: boolean;
   isRegular: boolean;
   isDriver: boolean;
+  driverActivityStatus: boolean = false;
 
   constructor(
     public configService: ConfigService,
@@ -43,7 +44,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
         this.isAdmin = this.authService.userIsAdmin();
         this.isRegular = this.authService.userIsRegular();
         this.isDriver = this.authService.userIsDriver();
-        if (this.isDriver) {
+        if (this.isDriver && this.loggedUser) {
           this.loadDriver();
         } else {
           this.driverService.resetGlobalDriver();
@@ -59,7 +60,10 @@ export class NavBarComponent implements OnInit, OnDestroy {
   followDriverChanges(): void {
     this.driverSubscription = this.driverService.getGlobalDriver().subscribe(
       driver => {
-        this.driverData = driver;
+        if (driver) {
+          this.driverData = driver;
+          this.driverActivityStatus = this.driverData.active;
+        }
       }
     )
   }
@@ -69,18 +73,20 @@ export class NavBarComponent implements OnInit, OnDestroy {
       .subscribe(
         (response: Driver) => {
           this.driverData = response;
+          this.driverActivityStatus = this.driverData.active;
           this.driverService.setGlobalDriver(response);
       });
   }
 
   changeDriverStatus() {
     this.driverUpdateSubscription = this.driverService.updateActivityStatus(
-      this.driverService.createDriverUpdateActivityRequest(this.driverData.id, !this.driverData.active)
+      this.driverService.createDriverUpdateActivityRequest(this.driverData.id, !this.driverActivityStatus)
     ).subscribe((response: Driver) => {
       this.driverData = response;
+      this.driverActivityStatus = this.driverData.active;
       },
       error => {
-        this.driverData.active = !this.driverData.active;
+        this.driverActivityStatus = !this.driverActivityStatus;
         this.toast.error(error.error, 'Changing activity status failed');
       });
     }

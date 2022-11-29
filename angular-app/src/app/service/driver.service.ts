@@ -44,8 +44,10 @@ export class DriverService {
     });
   }
 
-  showActivityStatusResetNotification(driver: Driver): void {
-    this.toast.error("Your activity status is changed to not active.", 'Working overrtime!');
+  showActivityStatusResetNotification(notification: DriverActivityStatusRequest): void {
+    this.toast.info("Your activity status is changed to not active.", 'Working overrtime!');
+    let driver: Driver = this.currentDriver$.value;
+    driver.active = notification.active;
     this.currentDriver$.next(driver);
   }
 

@@ -152,4 +152,6 @@ public class Driver extends User {
     public void setWorkingMinutes(int workingMinutes) {
         this.workingMinutes = workingMinutes;
     }
+
+    public void incementWorkingMinutes() {this.workingMinutes += 1;}
 }

@@ -1,5 +1,6 @@
 package com.example.serbUber.service.user;
 
+import com.example.serbUber.dto.DriverActivityResetNotificationDTO;
 import com.example.serbUber.dto.user.DriverDTO;
 import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.*;
@@ -8,7 +9,6 @@ import com.example.serbUber.model.Vehicle;
 import com.example.serbUber.model.VehicleType;
 import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.repository.user.DriverRepository;
-import com.example.serbUber.service.DrivingNotificationService;
 import com.example.serbUber.service.VehicleService;
 import com.example.serbUber.service.VerifyService;
 import com.example.serbUber.service.WebSocketService;
@@ -171,30 +171,40 @@ public class DriverService implements IDriverService{
 
     public void resetActivityForDrivers() {
         List<Driver> drivers = driverRepository.getAllWithDrivings();
-        for (Driver driver : drivers) {
+        drivers.forEach(driver -> {
             if (driver.isActive()) {
-                driver.setWorkingMinutes(driver.getWorkingMinutes() + 1);
+                driver.incementWorkingMinutes();
                 changeStatusIfNeeded(driver);
             }
-        }//foreach + increment + spojiti iz 183 linije
+        });
     }
 
     private Driver changeStatusIfNeeded(final Driver driver) {
-        if (this.checkWorkingHoursOvertime(driver.getWorkingMinutes(), driver.getEndShift())
-                && !this.checkIfDrivingInProgress(driver.getDrivings())) {
+        if (this.canResetDriverStatus(driver)) {
             driver.setActive(false);
-            this.webSocketService.sendActivityResetNotification(new DriverDTO(driver));
+            this.webSocketService.sendActivityResetNotification(new DriverActivityResetNotificationDTO(driver));
         }
 
         return driverRepository.save(driver);
+    }
+
+    private boolean canResetDriverStatus(final Driver driver) {
+
+        return this.checkWorkingHoursOvertime(driver.getWorkingMinutes(), driver.getEndShift())
+                && !this.checkIfDrivingInProgress(driver.getDrivings());
     }
 
     public Driver onDriverLogin(final Long id)
             throws EntityNotFoundException
     {
         Driver driver = getDriverById(id);
+        driver = this.setDriverLoginData(driver);
+        driver.setOnline(true);
 
-        //Izdvojiti u posebnu funkciju
+        return driverRepository.save(driver);
+    }
+
+    private Driver setDriverLoginData(final Driver driver) {
         if (checkIfStartShiftEmptyOrPassed(driver.getStartShift(), driver.getEndShift())) {
             driver.setActive(true);
             driver.setStartShift(LocalDateTime.now());
@@ -203,9 +213,8 @@ public class DriverService implements IDriverService{
         } else {
             driver.setActive(!checkWorkingHoursOvertime(driver.getWorkingMinutes(), driver.getEndShift()));
         }
-        driver.setOnline(true);
 
-        return driverRepository.save(driver);
+        return driver;
     }
 
     private boolean checkIfStartShiftEmptyOrPassed(
