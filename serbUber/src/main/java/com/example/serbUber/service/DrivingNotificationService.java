@@ -35,7 +35,9 @@ public class DrivingNotificationService implements IDrivingNotificationService {
             final double latEnd,
             final String senderEmail,
             final double price,
-            final List<String> passengers
+            final List<String> passengers,
+            final LocalDateTime started,
+            final int duration
     ) throws EntityNotFoundException {
         RegularUser sender = regularUserService.getRegularByEmail(senderEmail);
         Set<RegularUser> users = new HashSet<>();
@@ -43,7 +45,7 @@ public class DrivingNotificationService implements IDrivingNotificationService {
             users.add(regularUserService.getRegularByEmail(email));
         }
 
-        drivingNotificationRepository.save(new DrivingNotification(lonStarted, latStarted, lonEnd, latEnd, price, sender, users,0));
+        drivingNotificationRepository.save(new DrivingNotification(lonStarted, latStarted, lonEnd, latEnd, price, sender, users, started, duration,0));
 
 
     }

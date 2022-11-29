@@ -48,6 +48,9 @@ public class Driver extends User {
     @Column(name="rate")
     private double rate = Constants.START_RATE;
 
+    @Column(name="drive")
+    private boolean drive = false;
+
     @Column(name="working_minutes")
     private int workingMinutes = Constants.START_WORKING_MINUTES;
 
@@ -162,5 +165,13 @@ public class Driver extends User {
 
     public void setWorkingMinutes(int workingMinutes) {
         this.workingMinutes = workingMinutes;
+    }
+
+    public boolean isDrive() {
+        return drive;
+    }
+
+    public void setDrive(boolean drive) {
+        this.drive = drive;
     }
 }

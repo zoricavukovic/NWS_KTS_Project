@@ -7,6 +7,8 @@ import com.example.serbUber.exception.EntityAlreadyExistsException;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.MailCannotBeSentException;
 import com.example.serbUber.exception.PasswordsDoNotMatchException;
+import com.example.serbUber.model.DrivingNotification;
+import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.request.user.DriverRegistrationRequest;
 import com.example.serbUber.service.DrivingNotificationService;
 import com.example.serbUber.service.user.DriverService;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.example.serbUber.exception.ErrorMessagesConstants.NOT_NULL_MESSAGE;
@@ -83,5 +86,6 @@ public class DriverController {
     public DriverDTO getDriverForDriving(@PathVariable Long id) throws EntityNotFoundException {
         return driverService.getDriverForDriving(id);
     }
+
 }
 

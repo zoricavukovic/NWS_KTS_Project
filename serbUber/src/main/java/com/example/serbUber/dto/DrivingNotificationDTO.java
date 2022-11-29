@@ -3,6 +3,7 @@ package com.example.serbUber.dto;
 import com.example.serbUber.model.DrivingNotification;
 import com.example.serbUber.model.user.RegularUser;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 public class DrivingNotificationDTO {
@@ -15,6 +16,10 @@ public class DrivingNotificationDTO {
     private RegularUser sender;
     private Set<RegularUser> users;
 
+    private LocalDateTime started;
+
+    private int duration;
+
     public DrivingNotificationDTO(final DrivingNotification drivingNotification){
         this.lonStarted = drivingNotification.getLonStarted();
         this.lonEnd = drivingNotification.getLonEnd();
@@ -23,6 +28,8 @@ public class DrivingNotificationDTO {
         this.price = drivingNotification.getPrice();
         this.sender = drivingNotification.getSender();
         this.users = drivingNotification.getUsers();
+        this.started = drivingNotification.getStarted();
+        this.duration = drivingNotification.getDuration();
     }
 
     public double getLonStarted() {
@@ -79,5 +86,21 @@ public class DrivingNotificationDTO {
 
     public void setUsers(Set<RegularUser> users) {
         this.users = users;
+    }
+
+    public LocalDateTime getStarted() {
+        return started;
+    }
+
+    public void setStarted(LocalDateTime started) {
+        this.started = started;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 }

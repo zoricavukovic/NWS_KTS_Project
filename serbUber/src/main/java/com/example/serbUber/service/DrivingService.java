@@ -50,8 +50,9 @@ public class DrivingService implements IDrivingService {
             final HashMap<Long, Boolean> usersPaid,
             final double price
     ) {
+        LocalDateTime end = started.plusMinutes(duration);
         Driving driving = drivingRepository.save(
-                new Driving(active, duration, started, payingLimit, route, drivingStatus, driverId, usersPaid, price)
+                new Driving(active, duration, started, end, payingLimit, route, drivingStatus, driverId, usersPaid, price)
         );
 
         return new DrivingDTO(driving);

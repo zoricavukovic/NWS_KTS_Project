@@ -84,6 +84,8 @@ public class DrivingController {
         return drivingService.getAllNowAndFutureDrivings(id);
     }
 
+
+
     @GetMapping("/details/{id}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")

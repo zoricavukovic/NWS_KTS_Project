@@ -4,22 +4,28 @@ import com.example.serbUber.dto.DrivingNotificationDTO;
 import com.example.serbUber.dto.user.DriverDTO;
 import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.*;
-import com.example.serbUber.model.Vehicle;
-import com.example.serbUber.model.VehicleType;
-import com.example.serbUber.model.Verify;
+import com.example.serbUber.model.*;
 import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.repository.user.DriverRepository;
 import com.example.serbUber.service.DrivingNotificationService;
 import com.example.serbUber.service.VehicleService;
 import com.example.serbUber.service.VerifyService;
 import com.example.serbUber.service.interfaces.IDriverService;
+import com.graphhopper.GHRequest;
+import com.graphhopper.GHResponse;
+import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.example.serbUber.SerbUberApplication.hopper;
 import static com.example.serbUber.dto.user.DriverDTO.fromDrivers;
 import static com.example.serbUber.model.user.User.passwordsDontMatch;
 import static com.example.serbUber.util.Constants.ROLE_DRIVER;
@@ -145,11 +151,56 @@ public class DriverService implements IDriverService{
 
     public DriverDTO getDriverForDriving(Long id) throws EntityNotFoundException {
         DrivingNotificationDTO drivingNotificationDTO = drivingNotificationService.getDrivingNotification(id);
+        LocalDateTime startDate = drivingNotificationDTO.getStarted();
+        LocalDateTime endDate = drivingNotificationDTO.getStarted().plusMinutes(drivingNotificationDTO.getDuration());
+        List<Driver> activeAndFreeDrivers = getActiveAndFreeDrivers(startDate, endDate);
+        if(activeAndFreeDrivers.size() == 0) { // nema trenutno slobodnih aktivnih vozaca
 
+            return getFutureFreeDriver(startDate, endDate);
+        }
+        return findNearestDriver(activeAndFreeDrivers, drivingNotificationDTO.getLonStarted(), drivingNotificationDTO.getLatStarted());
     }
 
-    private List<DriverDTO> getActiveAndFreeDrivers(){
-        driverRepository.getActiveAndFreeDrivers();
+
+    private DriverDTO findNearestDriver(List<Driver> activeAndFreeDrivers, double lonStart, double latStart){
+        Location locationFirstDriver = activeAndFreeDrivers.get(0).getCurrentLocation();
+        double latEnd = locationFirstDriver.getLat();
+        double lonEnd = locationFirstDriver.getLon();
+        double minDistance = getDistance(lonStart, latStart, lonEnd, latEnd);
+        Driver nearestDriver = activeAndFreeDrivers.get(0);
+        for(Driver driver : activeAndFreeDrivers){
+            double newMinDistance = getDistance(lonStart, latStart, driver.getCurrentLocation().getLon(), driver.getCurrentLocation().getLat());
+            if(newMinDistance < minDistance){
+                minDistance = newMinDistance;
+                nearestDriver = driver;
+            }
+        }
+        return new DriverDTO(nearestDriver);
+    }
+
+    private double getDistance(double lonStart, double latStart, double lonEnd, double latEnd){
+        GHRequest request = new GHRequest(latStart, lonStart, latEnd, lonEnd);
+        request.setProfile("car");
+        GHResponse route = hopper.route(request);
+        return route.getBest().getDistance();
+    }
+
+
+    private DriverDTO getFutureFreeDriver(LocalDateTime startDate, LocalDateTime endDate){
+        List<Driver> busyDriversNow = driverRepository.getBusyDriversNow(startDate);
+        for(Driver driver : busyDriversNow){
+            for(Driving driving : driver.getDrivings()){
+                if(driving.isActive() && driving.getEnd().isBefore(startDate.plusMinutes(3))){
+                    return new DriverDTO(driver);
+                }
+            }
+        }
+        return null;
+    }
+
+    private List<Driver> getActiveAndFreeDrivers(LocalDateTime startDate, LocalDateTime endDate) {
+        return driverRepository.getActiveAndFreeDrivers(startDate, endDate);
+
     }
 
 }

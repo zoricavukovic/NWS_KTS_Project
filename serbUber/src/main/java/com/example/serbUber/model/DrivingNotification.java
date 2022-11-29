@@ -2,8 +2,10 @@ package com.example.serbUber.model;
 
 import com.example.serbUber.model.user.RegularUser;
 import com.example.serbUber.model.user.User;
+import net.bytebuddy.asm.Advice;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
@@ -34,6 +36,12 @@ public class DrivingNotification{
     @JoinTable(name = "users_driving_notifications", joinColumns = @JoinColumn(name = "notification_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
     private Set<RegularUser> users;
 
+    @Column(name="started")
+    private LocalDateTime started;
+
+    @Column(name="duration")
+    private int duration;
+
     @Column(name="answered_passengers")
     private int answeredPassengers;
 
@@ -44,6 +52,8 @@ public class DrivingNotification{
                                final double price,
                                final RegularUser sender,
                                final Set<RegularUser> users,
+                               final LocalDateTime started,
+                               final int duration,
                                final int answeredPassengers) {
         this.lonStarted = lonStarted;
         this.latStarted = latStarted;
@@ -52,6 +62,8 @@ public class DrivingNotification{
         this.price = price;
         this.sender = sender;
         this.users = users;
+        this.started = started;
+        this.duration = duration;
         this.answeredPassengers = answeredPassengers;
     }
 
@@ -128,5 +140,21 @@ public class DrivingNotification{
 
     public void setAnsweredPassengers(int answeredPassengers) {
         this.answeredPassengers = answeredPassengers;
+    }
+
+    public LocalDateTime getStarted() {
+        return started;
+    }
+
+    public void setStarted(LocalDateTime started) {
+        this.started = started;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 }

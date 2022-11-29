@@ -44,7 +44,9 @@ public class DrivingNotificationController {
                 drivingNotificationRequest.getLatEnd(),
                 drivingNotificationRequest.getSenderEmail(),
                 drivingNotificationRequest.getPrice(),
-                drivingNotificationRequest.getPassengers()
+                drivingNotificationRequest.getPassengers(),
+                drivingNotificationRequest.getStarted(),
+                drivingNotificationRequest.getDuration()
         );
     }
 
