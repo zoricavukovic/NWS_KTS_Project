@@ -21,6 +21,8 @@ export class NavBarComponent implements OnInit, OnDestroy {
   driverUpdateSubscription: Subscription;
 
   authSubscription: Subscription;
+  driverSubscription: Subscription;
+
   loggedUser: User = null;
   isAdmin: boolean;
   isRegular: boolean;
@@ -43,9 +45,23 @@ export class NavBarComponent implements OnInit, OnDestroy {
         this.isDriver = this.authService.userIsDriver();
         if (this.isDriver) {
           this.loadDriver();
+        } else {
+          this.driverService.resetGlobalDriver();
         }
       }
     );
+
+    if (this.isDriver) {
+      this.followDriverChanges();
+    }
+  }
+
+  followDriverChanges(): void {
+    this.driverSubscription = this.driverService.getGlobalDriver().subscribe(
+      driver => {
+        this.driverData = driver;
+      }
+    )
   }
 
   loadDriver(): void {
@@ -53,6 +69,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
       .subscribe(
         (response: Driver) => {
           this.driverData = response;
+          this.driverService.setGlobalDriver(response);
       });
   }
 
@@ -86,6 +103,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
       .subscribe(response => {
         this.authService.logOut();
         this.driverData = null;
+        this.driverService.resetGlobalDriver();
         this.router.navigate(['/login']);
       }, error => {
         this.toast.error(error.error, 'Cannot log out!');
@@ -95,6 +113,11 @@ export class NavBarComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.authSubscription) {
       this.authSubscription.unsubscribe();
+    }
+
+    if (this.driverSubscription) {
+      this.driverSubscription.unsubscribe();
+      this.driverService.resetGlobalDriver();
     }
   }
 

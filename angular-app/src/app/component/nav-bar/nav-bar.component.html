@@ -99,7 +99,7 @@
     <button mat-menu-item (click)="redirectToEditPage()">
       <mat-icon color="primary">edit</mat-icon><span>Edit profile</span>
     </button>
-    <div mat-menu-item (click) = "$event.stopPropagation()" *ngIf="loggedUserIsDriver()">
+    <div mat-menu-item (click) = "$event.stopPropagation()" *ngIf="isDriver">
       <mat-slide-toggle class="toggle"
       [(ngModel)] = "this.driverData.active"
       (click) = "changeDriverStatus()"

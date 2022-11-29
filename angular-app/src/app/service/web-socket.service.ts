@@ -9,7 +9,8 @@ import { VehicleService } from './vehicle.service';
 import { VehicleCurrentLocation } from '../model/vehicle/vehicle-current-location';
 import { DrivingNotificationRequest } from '../model/request/driving-notification-request';
 import { DrivingNotificationService } from './driving-notification.service';
-
+import { DriverService } from './driver.service';
+import { Driver } from '../model/user/driver';
 @Injectable({
   providedIn: 'root',
 })
@@ -22,7 +23,8 @@ export class WebSocketService {
   constructor(
     private chatRoomService: ChatRoomService,
     private vehicleService: VehicleService,
-    private drivingNotificationService: DrivingNotificationService
+    private drivingNotificationService: DrivingNotificationService,
+    private driverService: DriverService
   ) {
     if (!this.stompClient) {
       this.initialized = false;
@@ -52,6 +54,10 @@ export class WebSocketService {
               that.isMessageType(message.body) ?
                 that.chatRoomService.addMessage(JSON.parse(message.body)) :
                 that.drivingNotificationService.showNotification(JSON.parse(message.body))
+                
+                if (that.isActivityResetNotification(message.body)) {
+                  that.driverService.showActivityStatusResetNotification(message.body);
+                }
             }
           }
         );
@@ -83,6 +89,16 @@ export class WebSocketService {
           }
         );
       });
+    }
+  }
+
+  private isActivityResetNotification(message: string): boolean {
+    try {
+      const parsed: Driver = JSON.parse(message);
+      return (parsed.email !== null && parsed.email !== undefined 
+        && (parsed.id !== null || parsed.id !== undefined))
+    } catch (e) {
+      return false;
     }
   }
 

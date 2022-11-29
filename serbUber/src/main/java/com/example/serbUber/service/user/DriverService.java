@@ -12,6 +12,7 @@ import com.example.serbUber.repository.user.DriverRepository;
 import com.example.serbUber.service.DrivingNotificationService;
 import com.example.serbUber.service.VehicleService;
 import com.example.serbUber.service.VerifyService;
+import com.example.serbUber.service.WebSocketService;
 import com.example.serbUber.service.interfaces.IDriverService;
 import com.example.serbUber.util.Constants;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -37,23 +38,23 @@ public class DriverService implements IDriverService{
     private final RoleService roleService;
     private final VerifyService verifyService;
     //private final UserService userService;
-
     private final DrivingNotificationService drivingNotificationService;
+    private final WebSocketService webSocketService;
 
     public DriverService(
             final DriverRepository driverRepository,
             final VehicleService vehicleService,
             final VerifyService verifyService,
             final RoleService roleService,
-            final UserService userService,
-            final DrivingNotificationService drivingNotificationService
+            final DrivingNotificationService drivingNotificationService,
+            final WebSocketService webSocketService
             ) {
         this.driverRepository = driverRepository;
         this.vehicleService = vehicleService;
         this.verifyService = verifyService;
         this.roleService = roleService;
-        this.userService = userService;
         this.drivingNotificationService = drivingNotificationService;
+        this.webSocketService = webSocketService;
     }
 
 
@@ -187,6 +188,7 @@ public class DriverService implements IDriverService{
         if (this.checkWorkingHoursOvertime(driver.getWorkingMinutes(), driver.getEndShift())
                 && !this.checkIfDrivingInProgress(driver.getDrivings())) {
             driver.setActive(false);
+            this.webSocketService.sendActivityResetNotification(new DriverDTO(driver));
         }
 
         return driverRepository.save(driver);
