@@ -85,11 +85,11 @@ public class DriverController {
         );
     }
 
-    @GetMapping("/findDriver/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_REGULAR_USER')")
-    public DriverDTO getDriverForDriving(@PathVariable Long id) throws EntityNotFoundException {
-        return driverService.getDriverForDriving(id);
-    }
+//    @GetMapping("/findDriver/{id}")
+//    @ResponseStatus(HttpStatus.OK)
+//    @PreAuthorize("hasAnyRole('ROLE_REGULAR_USER')")
+//    public DriverDTO getDriverForDriving(@PathVariable Long id) throws EntityNotFoundException {
+//        return driverService.getDriverForDriving(id);
+//    }
 }
 

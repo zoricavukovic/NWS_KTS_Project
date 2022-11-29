@@ -71,7 +71,6 @@ public class UserService implements IUserService {
                 .orElseThrow(() -> new EntityNotFoundException(id, EntityType.USER));
     }
 
-
     public UserDTO get(Long id) throws EntityNotFoundException {
 
         return new UserDTO(getUserById(id));
