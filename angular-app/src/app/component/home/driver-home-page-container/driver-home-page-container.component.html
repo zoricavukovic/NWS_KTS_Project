@@ -11,8 +11,8 @@
       <div class="devider-text mat-typography"><b>In future</b></div>
       <div class="devider-line"><mat-divider></mat-divider></div>
     </div>
-    <div class="driving-container">
-      <table style="table-layout: fixed;font-size: large; font-family:Georgia, 'Helvetica Neue', sans-serif;">
+    <div class="driving-container mat-elevation-z2">
+      <table style="table-layout: fixed;font-size: large;">
         <tr >
           <td nowrap="nowrap" style="padding: 0 1rem;">{{getDrivingStartLocation(driving)}}</td>
           <td nowrap="nowrap" style="padding: 0 1rem;">{{getDrivingDestination(driving)}}</td>
@@ -42,8 +42,9 @@
       </div>
       <div *ngIf="driving.drivingStatus === 'PENDING'">
 
-        <button mat-button (click)="finishDriving(driving?.id, i)" class="finish-button" style="background-color: var(--mint)">Accept</button>
-        <button mat-button (click)="finishDriving(driving?.id, i)" class="finish-button">Reject</button>
+<!--        <button mat-button (click)="finishDriving(driving?.id, i)" class="finish-button" style="background-color: var(&#45;&#45;deep-blue)">Accept</button>-->
+        <button mat-button (click)="openRejectDrivingDialog(driving?.id, i)" class="finish-button">Reject</button>
+
       </div>
     </div>
     <div *ngIf="i === 0 && !hasNoActiveDriving(driving)" class="devider-container">

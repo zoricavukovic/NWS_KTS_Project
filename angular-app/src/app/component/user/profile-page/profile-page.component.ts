@@ -29,12 +29,11 @@ export class ProfilePageComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.loggedUser = this.authService.getCurrentUser;
-    // this.authSubscription = this.authService.getCurrentUser().subscribe(
-    //   user => {
-    //     this.loggedUser = user
-    //   }
-    // );
+    this.authSubscription = this.authService.getSubjectCurrentUser().subscribe(
+      user => {
+        this.loggedUser = user
+      }
+    );
   }
 
   showEditProfile(): void {

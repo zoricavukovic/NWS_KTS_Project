@@ -4,6 +4,8 @@ import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.EntityUpdateException;
 import com.example.serbUber.exception.PasswordsDoNotMatchException;
+import com.example.serbUber.exception.WrongVerifyTryException;
+import com.example.serbUber.request.VerifyRequest;
 import com.example.serbUber.request.user.*;
 import com.example.serbUber.service.user.UserService;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -28,16 +30,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/logout")
-    @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
-    public UserDTO logout(@RequestBody final String email)
-            throws EntityNotFoundException
-    {
-
-        return userService.setOfflineStatus(email);
-    }
-
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
     public List<UserDTO> getAll() {
@@ -57,7 +49,7 @@ public class UserController {
 
     @PutMapping()
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_DRIVER', 'ROLE_REGULAR_USER')")
+    @PreAuthorize("hasAnyRole('ROLE_DRIVER', 'ROLE_REGULAR_USER', 'ROLE_ADMIN')")
     public UserDTO update(@Valid @RequestBody UsersProfileUpdateRequest userData) throws EntityUpdateException, EntityNotFoundException {
 
         return userService.update(
@@ -115,4 +107,13 @@ public class UserController {
 
         return userService.sendEmailForResetPassword(userEmailRequest.getEmail());
     }
+
+    @PutMapping("/activate-account")
+    @ResponseStatus(HttpStatus.OK)
+    public boolean update(@Valid @RequestBody VerifyRequest verifyRequest)
+            throws EntityNotFoundException, WrongVerifyTryException {
+
+        return userService.activate(verifyRequest.getVerifyId(), verifyRequest.getSecurityCode());
+    }
+
 }

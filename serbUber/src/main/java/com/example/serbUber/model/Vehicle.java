@@ -24,15 +24,15 @@ public class Vehicle {
     @Column(name="rate", nullable = false)
     private double rate = Constants.START_RATE;
 
-    @Column(name="location_index", nullable = false)
-    private int currentLocationIndex;
+    @Column(name="location_index")
+    private int currentLocationIndex = -1;
 
     @OneToOne()
-    @JoinColumn(name = "active_route_id", referencedColumnName = "id", nullable = false)
-    private Route activeRoute;
+    @JoinColumn(name = "active_route_id", referencedColumnName = "id")
+    private Route activeRoute = null;
 
-    @Column(name="in_drive", nullable = false)
-    private boolean inDrive;
+    @Column(name="in_drive")
+    private boolean inDrive = false;
 
     public Vehicle() {
     }
@@ -89,12 +89,14 @@ public class Vehicle {
 
     public Location getLocationForIndexInRoute(){
         int index = 0;
-        for (DrivingLocationIndex location : this.activeRoute.getLocations()) {
-            if (this.currentLocationIndex == index) {
+        if (this.activeRoute != null) {
+            for (DrivingLocationIndex location : this.activeRoute.getLocations()) {
+                if (this.currentLocationIndex == index) {
 
-                return location.getLocation();
+                    return location.getLocation();
+                }
+                index++;
             }
-            index++;
         }
 
         return null;

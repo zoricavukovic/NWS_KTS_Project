@@ -4,15 +4,15 @@ import com.example.serbUber.dto.DrivingNotificationDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.EntityType;
 import com.example.serbUber.model.DrivingNotification;
-import com.example.serbUber.model.Route;
+import com.example.serbUber.model.DrivingNotificationType;
+import com.example.serbUber.model.Location;
 import com.example.serbUber.model.user.RegularUser;
+import com.example.serbUber.model.user.User;
 import com.example.serbUber.repository.DrivingNotificationRepository;
-import com.example.serbUber.request.RouteRequest;
 import com.example.serbUber.service.interfaces.IDrivingNotificationService;
 import com.example.serbUber.service.user.RegularUserService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -22,13 +22,19 @@ import java.util.*;
 public class DrivingNotificationService implements IDrivingNotificationService {
     private final DrivingNotificationRepository drivingNotificationRepository;
     private final RegularUserService regularUserService;
+    private final WebSocketService webSocketService;
 
-    public DrivingNotificationService(final DrivingNotificationRepository drivingNotificationRepository, final RegularUserService regularUserService){
+    public DrivingNotificationService(
+        final DrivingNotificationRepository drivingNotificationRepository,
+        final RegularUserService regularUserService,
+        final WebSocketService webSocketService
+    ){
         this.drivingNotificationRepository = drivingNotificationRepository;
         this.regularUserService = regularUserService;
+        this.webSocketService = webSocketService;
     }
 
-    public void create( ///driving dto
+    public List<DrivingNotificationDTO> createNotifications(
             final double lonStarted,
             final double latStarted,
             final double lonEnd,
@@ -40,31 +46,102 @@ public class DrivingNotificationService implements IDrivingNotificationService {
             final int duration
     ) throws EntityNotFoundException {
         RegularUser sender = regularUserService.getRegularByEmail(senderEmail);
-        Set<RegularUser> users = new HashSet<>();
-        for(String email : passengers){
-            users.add(regularUserService.getRegularByEmail(email));
-        }
+        List<DrivingNotificationDTO> notificationDTOs = new ArrayList<>();
 
-        drivingNotificationRepository.save(new DrivingNotification(lonStarted, latStarted, lonEnd, latEnd, price, sender, users, started, duration,0));
+        passengers.forEach(passengerEmail -> {
+            try {
+                notificationDTOs.add(
+                    createDrivingNotification(lonStarted, latStarted, lonEnd, latEnd, price, passengerEmail, sender, started, duration)
+                );
+            } catch (EntityNotFoundException e) {
+                System.out.println("User: " + passengerEmail + " is not found");
+            }
 
+        });
 
+        webSocketService.sendDrivingNotification(notificationDTOs);
+
+        return notificationDTOs;
     }
 
-    public int setDrivingNotificationAnswered(Long id) throws EntityNotFoundException {
-        Optional<DrivingNotification> drivingNotification = drivingNotificationRepository.findById(id);
-        if(drivingNotification.isPresent()){
-            drivingNotification.get().setAnsweredPassengers(drivingNotification.get().getAnsweredPassengers()+1);
-            drivingNotificationRepository.save(drivingNotification.get());
-            return drivingNotification.get().getAnsweredPassengers();
-        }
-        throw new EntityNotFoundException(id, EntityType.DRIVING); ///niej drivingg
+    public DrivingNotificationDTO setDrivingNotificationAnswered(final Long id) throws EntityNotFoundException {
+        DrivingNotification drivingNotification = drivingNotificationRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(id, EntityType.DRIVING_NOTIFICATION));
+
+        drivingNotification.setRead(true);
+        drivingNotificationRepository.save(drivingNotification);
+
+        return new DrivingNotificationDTO(drivingNotification);
+    }
+
+    public List<DrivingNotificationDTO> createNotifications(
+        final Location startLocation,
+        final Location destination,
+        final double price,
+        final User sender,
+        final Set<RegularUser> receivers,
+        final DrivingNotificationType notificationType,
+        final String reason
+    ) {
+        List<DrivingNotificationDTO> notificationDTOs = new ArrayList<>();
+        receivers.forEach(receiver ->
+            notificationDTOs.add(
+                createDrivingNotification(startLocation, destination, price, sender, receiver, notificationType, reason)
+            )
+        );
+
+        return notificationDTOs;
+    }
+
+    private DrivingNotificationDTO createDrivingNotification(
+        final Location startLocation,
+        final Location destination,
+        final double price,
+        final User sender,
+        final User receiver,
+        final DrivingNotificationType notificationType,
+        final String reason
+    ) {
+        DrivingNotification drivingNotification =  drivingNotificationRepository.save(
+            new DrivingNotification(
+                startLocation.getLon(),
+                startLocation.getLat(),
+                destination.getLon(),
+                destination.getLat(),
+                price,
+                sender,
+                receiver,
+                notificationType,
+                reason
+            ));
+
+        return new DrivingNotificationDTO(drivingNotification);
     }
 
     public DrivingNotificationDTO getDrivingNotification(Long id) throws EntityNotFoundException {
-        Optional<DrivingNotification> drivingNotification = drivingNotificationRepository.findById(id);
-        if(drivingNotification.isPresent()){
-            return new DrivingNotificationDTO(drivingNotification.get());
-        }
-        throw new EntityNotFoundException(id, EntityType.DRIVING_NOTIFICATION);
+        DrivingNotification drivingNotification =  drivingNotificationRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(id, EntityType.DRIVING_NOTIFICATION));
+
+        return new DrivingNotificationDTO(drivingNotification);
+    }
+
+    private DrivingNotificationDTO createDrivingNotification(
+        final double lonStarted,
+        final double latStarted,
+        final double lonEnd,
+        final double latEnd,
+        final double price,
+        final String passengerEmail,
+        final User sender,
+        final LocalDateTime started,
+        final int duration
+    ) throws EntityNotFoundException {
+        RegularUser passenger = regularUserService.getRegularByEmail(passengerEmail);
+
+        DrivingNotification drivingNotification =  drivingNotificationRepository.save(
+            new DrivingNotification(lonStarted, latStarted, lonEnd, latEnd, price, sender, passenger, DrivingNotificationType.LINKED_USER, started, duration)
+        );
+
+        return new DrivingNotificationDTO(drivingNotification);
     }
 }

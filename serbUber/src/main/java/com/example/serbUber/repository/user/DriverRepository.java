@@ -16,6 +16,7 @@ public interface DriverRepository extends JpaRepository<Driver, Long> {
     @Query("select d from Driver d left join fetch d.drivings dr left join fetch d.vehicle v left join fetch d.currentLocation l where d.email=?1")
     Optional<Driver> getDriverByEmail(String email);
 
+    @Query("select d from Driver d left join fetch d.drivings dr left join fetch d.vehicle v left join fetch d.currentLocation l where d.id=?1")
     Optional<Driver> getDriverById(Long id);
 
     @Query("select d.rate from Driver d where d.id = ?1")
@@ -31,6 +32,9 @@ public interface DriverRepository extends JpaRepository<Driver, Long> {
             "and d.drive = true and dr.active = false and dr.started < ?1")
     List<Driver> getBusyDriversNow(LocalDateTime start);
 
-     // @Query(value="select distinct d from drivers d, drivings dr where dr.driver_id = d.id and d.active = true and dr.active = false and (?2 + ?1 * interval '1 minute' < dr.started or dr.started < ?2)", nativeQuery = true)
-    // List<Driver> getOccupiedDriversWithoutFutureDrivings(LocalDateTime date);
+    @Query("select distinct d from Driver d left join fetch d.drivings dr")
+    List<Driver> getAllWithDrivings();
+
+    @Query("select d from Driver d left join fetch d.drivings drivings left join fetch d.vehicle v where d.verified = true")
+    List<Driver> findAllVerified();
 }

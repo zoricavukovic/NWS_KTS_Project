@@ -3,6 +3,7 @@ package com.example.serbUber.controller.user;
 import com.example.serbUber.dto.user.JwtLogin;
 import com.example.serbUber.dto.user.LoginDTO;
 import com.example.serbUber.dto.user.UserDTO;
+import com.example.serbUber.exception.ActivityStatusCannotBeChangedException;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.request.user.LoginRequest;
 import com.example.serbUber.request.user.TokenRequest;
@@ -94,6 +95,15 @@ public class AuthenticationController {
         userService.setOnlineStatus(loginDTO.getUserDTO().getEmail());
 
         return loginDTO;
+    }
+
+    @PostMapping("/logout")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
+    public UserDTO logout(@RequestBody final String email)
+            throws EntityNotFoundException, ActivityStatusCannotBeChangedException {
+
+        return userService.setOfflineStatus(email);
     }
 
     private LoginDTO getLoginDTO(final String email, final String password)

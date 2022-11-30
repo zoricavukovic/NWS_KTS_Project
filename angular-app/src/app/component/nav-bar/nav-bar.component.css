@@ -60,3 +60,14 @@ a {
   top: 0;
   z-index: 1000;
 }
+
+.toggle-activity-status {
+  color: white;
+  margin-left: 0.4rem;
+}
+
+.toggle {
+  margin-left: -0.2rem;
+  transform: scale(0.9);
+}
+

@@ -9,7 +9,9 @@ import { VehicleService } from './vehicle.service';
 import { VehicleCurrentLocation } from '../model/vehicle/vehicle-current-location';
 import { DrivingNotificationRequest } from '../model/request/driving-notification-request';
 import { DrivingNotificationService } from './driving-notification.service';
-
+import { DriverService } from './driver.service';
+import { Driver } from '../model/user/driver';
+import { DriverActivityResetNotification } from '../model/notification/driver-activity-reset-notification';
 @Injectable({
   providedIn: 'root',
 })
@@ -22,7 +24,8 @@ export class WebSocketService {
   constructor(
     private chatRoomService: ChatRoomService,
     private vehicleService: VehicleService,
-    private drivingNotificationService: DrivingNotificationService
+    private drivingNotificationService: DrivingNotificationService,
+    private driverService: DriverService
   ) {
     if (!this.stompClient) {
       this.initialized = false;
@@ -48,18 +51,22 @@ export class WebSocketService {
         that.stompClient.subscribe(
           environment.publisherUrl + localStorage.getItem('email') + '/connect',
           message => {
-            /* if (message !== null && message !== undefined) {
-              if (that.isMessageType(message.body)) {
-                that.chatRoomService.addMessage(JSON.parse(message.body));
-              } else {*/
-            that.drivingNotificationService.showNotification(
-              JSON.parse(message.body)
-            );
+            if (message !== null && message !== undefined) {
+              that.checkNotificationType(message.body);
+            }
           }
-          /*}
-          }*/
         );
       });
+    }
+  }
+
+  checkNotificationType(message: string) {
+    if (this.isActivityResetNotification(message)) {
+      this.driverService.showActivityStatusResetNotification(JSON.parse(message));
+    } else {
+      this.isMessageType(message) ?
+        this.chatRoomService.addMessage(JSON.parse(message)) :
+        this.drivingNotificationService.showNotification(JSON.parse(message))
     }
   }
 
@@ -90,14 +97,23 @@ export class WebSocketService {
     }
   }
 
-  isMessageType(webSocketNotification: string): boolean {
+  private isActivityResetNotification(message: string): boolean {
     try {
-      let parsed: ChatRoomWithNotify = JSON.parse(webSocketNotification);
+      const parsed: DriverActivityResetNotification = JSON.parse(message);
+      return (parsed.email !== null && parsed.email !== undefined 
+        && (parsed.active !== null || parsed.active !== undefined))
     } catch (e) {
       return false;
     }
+  }
 
-    return true;
+  private isMessageType(webSocketNotification: string): boolean {
+    try {
+       const parsed: ChatRoomWithNotify = JSON.parse(webSocketNotification);
+       return (parsed.notifyAdmin !== null && parsed.notifyAdmin !== undefined)
+    } catch (e) {
+      return false;
+    }
   }
 
   disconnect(): void {

@@ -53,7 +53,9 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private toast: ToastrService,
     private router: Router
-  ) {}
+  ) {
+    this.user = null;
+  }
 
   ngOnInit(): void {
     this.email = this.route.snapshot.paramMap.get('email');

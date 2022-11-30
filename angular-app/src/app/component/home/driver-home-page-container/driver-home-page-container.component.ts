@@ -4,21 +4,30 @@ import { Subscription } from 'rxjs';
 import { DrivingService } from '../../../service/driving.service';
 import { ConfigService } from 'src/app/service/config.service';
 import {Router} from "@angular/router";
+import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
+import {RatingDialogComponent} from "../../review/rating-dialog/rating-dialog.component";
+import {ToastrService} from "ngx-toastr";
+import {RejectDrivingComponent} from "../../driving/reject-driving/reject-driving.component";
+
 
 @Component({
   selector: 'app-driver-home-page-container',
   templateUrl: './driver-home-page-container.component.html',
-  styleUrls: ['./driver-home-page-container.component.css'],
+  styleUrls: ['./driver-home-page-container.component.css']
 })
 export class DriverHomePageContainerComponent implements OnInit, OnDestroy {
   @Input() driverId: number;
   drivingSubscription: Subscription;
   nowAndFutureDrivings: Driving[] = [];
   maxNumberOfShowedUsers: number = 3;
+  reasonForRejectingDriving: string = '';
+
   constructor(
     public configService: ConfigService,
     private drivingService: DrivingService,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog,
+    private toast: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -87,5 +96,36 @@ export class DriverHomePageContainerComponent implements OnInit, OnDestroy {
 
   private updateDrivingStatus(drivingIndex: number) {
     this.nowAndFutureDrivings.splice(drivingIndex, 1);
+  }
+
+  openRejectDrivingDialog(drivingId: number | undefined, index: number) {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.data = {
+      reasonForRejectingDriving: this.reasonForRejectingDriving
+    };
+    const dialogRef = this.dialog.open(RejectDrivingComponent, dialogConfig);
+
+
+    dialogRef.afterClosed().subscribe(reason => {
+      if (this.reasonEntered(reason)){
+        this.rejectDriving(drivingId, index, reason)
+      }
+    })
+  }
+
+  private reasonEntered(reason: string){
+    return reason !== '' || reason !== undefined;
+  }
+
+  private rejectDriving(drivingId: number, index: number, reason: string) {
+    this.drivingService.rejectDriving(drivingId, reason).subscribe(response =>
+    {
+      this.removeRejectedDriving(index);
+    }, error => this.toast.error(error.error, 'Reject driving failed'));
+  }
+
+  private removeRejectedDriving(index: number): void {
+    this.nowAndFutureDrivings.splice(index, 1);
   }
 }

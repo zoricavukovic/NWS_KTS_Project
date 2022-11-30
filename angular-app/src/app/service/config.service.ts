@@ -18,16 +18,17 @@ export class ConfigService {
 
   private _api_url = environment.apiUrl;
   private _drivings_url = `${this._api_url}/drivings`;
-
+  private _drivers_url = `${this._api_url}/drivers`;
   private _drivings_finish_driving_url = `${this._drivings_url}/finish-driving`;
+  private _reject_driving_url = `${this._drivings_url}/reject`;
 
   private _login_user = this._api_url + '/auth/login';
-  private _logout_user = this._api_url + '/users/logout';
+  private _logout_user = this._api_url + '/auth/logout';
   private _login_with_gmail_user = this._api_url + '/auth/login/google';
   private _login_with_facebook_user = this._api_url + '/auth/login/facebook';
   private _register_user = this._api_url + '/regular-users/register';
   private _register_driver = this._api_url + '/drivers/register';
-  private _verify_url = this._api_url + '/verify';
+  private _verify_url = this._api_url + '/users/activate-account';
   private _send_verify_code_again = this._api_url + '/verify/send-code-again';
   private _vehicle_type_infos = this._api_url + '/vehicle-type-infos';
 
@@ -176,6 +177,10 @@ export class ConfigService {
     return this._users_url + '/password';
   }
 
+  get driver_update_activity(): string {
+    return `${this._drivers_url}/activity`;
+  }
+
   get all_messages(): string {
     return this._all_messages;
   }
@@ -234,6 +239,10 @@ export class ConfigService {
 
   get_finish_driving_url(drivingId: number): string {
     return `${this._drivings_finish_driving_url}/${drivingId}`;
+  }
+
+  reject_driving_url(drivingId: number): string {
+    return `${this._reject_driving_url}/${drivingId}`;
   }
 
   get_price_for_driving(type: string, kilometers: number) {

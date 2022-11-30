@@ -1,15 +1,21 @@
 package com.example.serbUber.service.interfaces;
 
+import com.example.serbUber.dto.DrivingNotificationDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
+import com.example.serbUber.model.DrivingNotificationType;
+import com.example.serbUber.model.Location;
+import com.example.serbUber.model.user.RegularUser;
+import com.example.serbUber.model.user.User;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public interface IDrivingNotificationService {
 
-    void create( ///driving dto
+    List<DrivingNotificationDTO> createNotifications( ///driving dto
                         final double lonStarted,
                         final double latStarted,
                         final double lonEnd,
@@ -21,7 +27,15 @@ public interface IDrivingNotificationService {
                         final int duration
     ) throws EntityNotFoundException;
 
-    int setDrivingNotificationAnswered(Long id) throws EntityNotFoundException;
+    DrivingNotificationDTO setDrivingNotificationAnswered(final Long id) throws EntityNotFoundException;
 
-
+    List<DrivingNotificationDTO> createNotifications(
+        final Location startLocation,
+        final Location destination,
+        final double price,
+        final User sender,
+        final Set<RegularUser> receivers,
+        final DrivingNotificationType rejectDriving,
+        final String reason
+    );
 }

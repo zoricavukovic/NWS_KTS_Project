@@ -1,6 +1,5 @@
 import { Driving } from 'src/app/model/driving/driving';
 import {
-  AfterViewInit,
   Component,
   Input,
   OnDestroy,
@@ -17,6 +16,7 @@ import { DriverService } from 'src/app/service/driver.service';
 import {drawPolyline, refreshMap, removeSpecificPolyline} from '../../../util/map-functions';
 import { Vehicle } from 'src/app/model/vehicle/vehicle';
 import * as L from 'leaflet';
+import { User } from 'src/app/model/user/user';
 
 @Component({
   selector: 'app-driving-details',
@@ -38,6 +38,7 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
   isDriver: boolean;
   isRegularUser: boolean;
   routePolyline: L.Polyline;
+  loggedUser: User = null;
 
   currentUserSubscription: Subscription;
   drivingsSubscription: Subscription;
@@ -76,14 +77,19 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
           .subscribe((response: Driver) => {
             this.driver = response;
           });
-
-        this.isRegularUser = this.authService.getCurrentUser?.userIsRegular();
-        this.isDriver = this.authService.getCurrentUser?.userIsDriver();
+        
+        this.currentUserSubscription = this.authService.getSubjectCurrentUser().subscribe(
+          user => {
+            this.loggedUser = user;
+            this.isRegularUser = this.authService.userIsRegular();
+            this.isDriver = this.authService.userIsDriver();
+          }
+        );
 
         this.favouriteRouteSubscription = this.userService
           .isFavouriteRouteForUser(
             driving?.route?.id,
-            this.authService.getCurrentUser?.id
+            this.loggedUser?.id
           )
           .subscribe(response => {
             if (response) {
@@ -91,6 +97,10 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
             }
           });
       });
+
+    let div = L.DomUtil.get('route-div');
+    L.DomEvent.on(div, 'mousewheel', L.DomEvent.stopPropagation);
+    L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation);
   }
 
   setFavouriteRoute() {

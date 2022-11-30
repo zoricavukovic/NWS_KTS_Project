@@ -21,10 +21,14 @@ public class ErrorMessagesConstants {
     public static final String WRONG_VERIFY_ID = "Verify id must be added.";
     public static final String NO_AVAILABLE_ADMIN_EXC = "Chat cannot be created right now, all out admins are busy.";
     public static final String ADDING_MESSAGE_TO_RESOLVED_CHAT_ROOM = "You cannot add message to resolved chat room.";
-    public static final String NOT_NULL_MESSAGE = "Field must not be  null.";
+    public static final String NOT_NULL_MESSAGE = "Field must not be null.";
     public static final String POSITIVE_OR_ZERO_MESSAGE = "Value must be positive or zero.";
     public static final String POSITIVE_MESSAGE = "Value must be positive.";
     public static final String SEEN_NOT_EXIST = "Seen must exist in message.";
     public static final String MISSING_ID = "Id value cannot be empty.";
+    public static final String REASON_TOO_LONG = "Entered reason must contain less than 50 letters.";
     public static final String UNAUTHORIZED_MESSAGE = "You are not authorized to perform this action.";
+    public static final String ACTIVITY_STATUS_CANNOT_BE_CHANGED_MESSAGE = "Activity status cannot be changed, you worked 8 hours.";
+    public static final String ACTIVE_DRIVING_IN_PROGRESS_MESSAGE = "You cannot change status to not active, you have active driving in progress.";
+
 }

@@ -3,7 +3,7 @@
     <div  class="email-container">
 
       <img mat-card-avatar
-           [src]="configService.base64_show_photo_prefix + authService.getCurrentUser?.profilePicture"
+           [src]="configService.base64_show_photo_prefix + this.user?.profilePicture"
            alt="user icon"
            class="email-container-picture" />
       <h3 style="margin-left: 0.5rem">

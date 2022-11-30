@@ -1,10 +1,7 @@
 package com.example.serbUber.service.interfaces;
 
 import com.example.serbUber.dto.user.UserDTO;
-import com.example.serbUber.exception.EntityNotFoundException;
-import com.example.serbUber.exception.EntityUpdateException;
-import com.example.serbUber.exception.NoAvailableAdminException;
-import com.example.serbUber.exception.PasswordsDoNotMatchException;
+import com.example.serbUber.exception.*;
 import com.example.serbUber.model.user.User;
 
 import java.util.List;
@@ -49,8 +46,10 @@ public interface IUserService {
             throws EntityNotFoundException, PasswordsDoNotMatchException;
     User findFirstAdmin() throws EntityNotFoundException;
     UserDTO setOnlineStatus(final String email) throws EntityNotFoundException;
-    UserDTO setOfflineStatus(final String email) throws EntityNotFoundException;
+    UserDTO setOfflineStatus(final String email) throws EntityNotFoundException, ActivityStatusCannotBeChangedException;
     User findOnlineAdmin() throws NoAvailableAdminException;
     boolean checkIfUserAlreadyExists(String email);
+    boolean activate(final Long verifyId, final int securityCode)
+            throws EntityNotFoundException, WrongVerifyTryException;
 
 }

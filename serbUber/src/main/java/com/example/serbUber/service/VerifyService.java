@@ -27,16 +27,13 @@ public class VerifyService implements IVerifyService {
 
     private final EmailService emailService;
 
-    private final UserService userService;
 
     public VerifyService(
             final VerifyRepository verifyRepository,
-            final EmailService emailService,
-            final UserService userService
+            final EmailService emailService
         ) {
         this.verifyRepository = verifyRepository;
         this.emailService = emailService;
-        this.userService = userService;
     }
 
     public Verify get(Long id) throws EntityNotFoundException {
@@ -100,16 +97,6 @@ public class VerifyService implements IVerifyService {
         Verify verify = get(verifyId);
         this.create(verify.getUserId(), verify.getEmail());
         verifyRepository.delete(verify);
-    }
-
-    public boolean activate(final Long verifyId, final int securityCode)
-            throws EntityNotFoundException, WrongVerifyTryException {
-        Verify verify = this.update(verifyId, securityCode);
-        User user = userService.getUserById(verify.getUserId());
-        user.setVerified(true);
-        userService.saveUser(user);
-
-        return true;
     }
 
     private void saveChanges(final Verify verify, final boolean used) {

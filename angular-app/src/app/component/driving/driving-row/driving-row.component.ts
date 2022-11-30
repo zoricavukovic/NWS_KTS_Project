@@ -23,11 +23,11 @@ export class DrivingRowComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private dialog: MatDialog,
-    private toast: ToastrService
+    private toast: ToastrService,
   ) {}
 
   ngOnInit(): void {
-    this.isRegularUser = this.user.userIsRegular();
+    this.isRegularUser = this.user?.role.name === "ROLE_DRIVER";
     console.log(this.driving.route.locations);
     console.log(
       this.driving.route.locations.at(this.driving.route.locations.length - 1)

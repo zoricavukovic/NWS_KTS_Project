@@ -4,7 +4,6 @@ import com.example.serbUber.dto.VehicleCurrentLocationDTO;
 import com.example.serbUber.dto.VehicleDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.EntityType;
-import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.service.interfaces.IVehicleService;
 import com.example.serbUber.util.Constants;
 import com.example.serbUber.model.Vehicle;
@@ -14,12 +13,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.example.serbUber.dto.VehicleCurrentLocationDTO.fromVehiclesToVehicleCurrentLocationDTO;
 import static com.example.serbUber.dto.VehicleDTO.fromVehicles;
-import static com.example.serbUber.dto.VehicleDTO.fromVehiclesWithAdditionalFields;
-import static com.example.serbUber.dto.VehicleTypeInfoDTO.toVehicleTypeInfo;
 
 @Component
 @Qualifier("vehicleServiceConfiguration")
@@ -95,7 +91,7 @@ public class VehicleService implements IVehicleService {
 //
 //        List<VehicleDTO> vehicleDTOs = fromVehiclesWithAdditionalFields(vehicles);
         List<VehicleCurrentLocationDTO> vehicleCurrentLocationDTOs = fromVehiclesToVehicleCurrentLocationDTO(vehicles);
-        webSocketService.send(vehicleCurrentLocationDTOs);
+        webSocketService.sendVehicleCurrentLocation(vehicleCurrentLocationDTOs);
 
         return vehicleCurrentLocationDTOs;
     }

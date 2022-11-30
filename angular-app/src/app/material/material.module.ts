@@ -18,6 +18,7 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatStepperModule} from '@angular/material/stepper';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 const MaterialConstants = [
   MatButtonModule,
@@ -40,7 +41,8 @@ const MaterialConstants = [
   MatTabsModule,
   MatDialogModule,
   MatStepperModule,
-  MatTooltipModule
+  MatTooltipModule,
+  MatSlideToggleModule
 ]
 
 @NgModule({

@@ -64,6 +64,7 @@ import { AvatarModule } from 'primeng/avatar';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { AvatarGroupModule } from 'primeng/avatargroup';
 import { SuccessfullVerificationComponent } from './component/user/auth/successfull-verification/successfull-verification.component';
+import { RejectDrivingComponent } from './component/driving/reject-driving/reject-driving.component';
 
 @NgModule({
   declarations: [
@@ -101,6 +102,7 @@ import { SuccessfullVerificationComponent } from './component/user/auth/successf
     FilterVehicleViewComponent,
     DriverHomePageContainerComponent,
     SuccessfullVerificationComponent,
+    RejectDrivingComponent,
   ],
   imports: [
     BrowserModule,

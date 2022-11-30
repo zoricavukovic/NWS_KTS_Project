@@ -24,7 +24,4 @@ public interface IVerifyService {
 
     void generateNewSecurityCode(final Long verifyId)
             throws EntityNotFoundException, MailCannotBeSentException;
-
-    boolean activate(final Long verifyId, final int securityCode)
-            throws EntityNotFoundException, WrongVerifyTryException;
 }

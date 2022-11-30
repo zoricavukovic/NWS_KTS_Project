@@ -10,31 +10,40 @@ import java.util.Set;
 
 @Entity
 @Table(name="driving_notifications")
-public class DrivingNotification{
+public class DrivingNotification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="lon_started")
+    @Column(name = "lon_started")
     private double lonStarted;
-    @Column(name="lat_started")
+    @Column(name = "lat_started")
     private double latStarted;
-    @Column(name="lon_end")
+    @Column(name = "lon_end")
     private double lonEnd;
-    @Column(name="lat_end")
+    @Column(name = "lat_end")
     private double latEnd;
 
-    @Column(name="price")
+    @Column(name = "price")
     private double price;
+
+    @Column(name = "read")
+    private boolean read;
+
+    @Column(name = "reason")
+    private String reason;
+
+    @Column(name = "driving_notification_type", nullable = false)
+    private DrivingNotificationType drivingNotificationType;
 
     @OneToOne()
     @JoinColumn(name = "sender_id", referencedColumnName = "id")
-    private RegularUser sender;
+    private User sender;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "users_driving_notifications", joinColumns = @JoinColumn(name = "notification_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
-    private Set<RegularUser> users;
+    @OneToOne()
+    @JoinColumn(name = "receiver_id", referencedColumnName = "id")
+    private User receiver;
 
     @Column(name="started")
     private LocalDateTime started;
@@ -42,40 +51,59 @@ public class DrivingNotification{
     @Column(name="duration")
     private int duration;
 
-    @Column(name="answered_passengers")
-    private int answeredPassengers;
 
-    public DrivingNotification(final double lonStarted,
-                               final double latStarted,
-                               final double lonEnd,
-                               final double latEnd,
-                               final double price,
-                               final RegularUser sender,
-                               final Set<RegularUser> users,
-                               final LocalDateTime started,
-                               final int duration,
-                               final int answeredPassengers) {
+    public DrivingNotification(
+            final double lonStarted,
+            final double latStarted,
+            final double lonEnd,
+            final double latEnd,
+            final double price,
+            final User sender,
+            final User receiver,
+            final DrivingNotificationType type,
+            final LocalDateTime started,
+            final int duration
+            ) {
         this.lonStarted = lonStarted;
         this.latStarted = latStarted;
         this.lonEnd = lonEnd;
         this.latEnd = latEnd;
         this.price = price;
         this.sender = sender;
-        this.users = users;
         this.started = started;
         this.duration = duration;
-        this.answeredPassengers = answeredPassengers;
+        this.receiver = receiver;
+        this.read = false;
+        this.drivingNotificationType = type;
     }
 
-    public DrivingNotification() {
+    public DrivingNotification(
+        final double lonStarted,
+        final double latStarted,
+        final double lonEnd,
+        final double latEnd,
+        final double price,
+        final User sender,
+        final User receiver,
+        final DrivingNotificationType type,
+        final String reason
+    ) {
+        this.lonStarted = lonStarted;
+        this.latStarted = latStarted;
+        this.lonEnd = lonEnd;
+        this.latEnd = latEnd;
+        this.price = price;
+        this.sender = sender;
+        this.receiver = receiver;
+        this.read = false;
+        this.drivingNotificationType = type;
+        this.reason = reason;
     }
+
+    public DrivingNotification() {}
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public double getLonStarted() {
@@ -118,28 +146,44 @@ public class DrivingNotification{
         this.price = price;
     }
 
-    public RegularUser getSender() {
+    public DrivingNotificationType getDrivingNotificationType() {
+        return drivingNotificationType;
+    }
+
+    public void setDrivingNotificationType(DrivingNotificationType drivingNotificationType) {
+        this.drivingNotificationType = drivingNotificationType;
+    }
+
+    public User getSender() {
         return sender;
     }
 
-    public void setSender(RegularUser sender) {
+    public void setSender(User sender) {
         this.sender = sender;
     }
 
-    public Set<RegularUser> getUsers() {
-        return users;
+    public User getReceiver() {
+        return receiver;
     }
 
-    public void setUsers(Set<RegularUser> users) {
-        this.users = users;
+    public void setReceiver(User receiver) {
+        this.receiver = receiver;
     }
 
-    public int getAnsweredPassengers() {
-        return answeredPassengers;
+    public boolean isRead() {
+        return read;
     }
 
-    public void setAnsweredPassengers(int answeredPassengers) {
-        this.answeredPassengers = answeredPassengers;
+    public void setRead(boolean read) {
+        this.read = read;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
     }
 
     public LocalDateTime getStarted() {
@@ -158,3 +202,4 @@ public class DrivingNotification{
         this.duration = duration;
     }
 }
+

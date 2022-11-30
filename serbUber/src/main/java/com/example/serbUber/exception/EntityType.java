@@ -42,6 +42,10 @@ public enum EntityType {
 
                 return "Driving: " + id + " is not found";
             }
+            case DRIVING_NOTIFICATION -> {
+
+                return "Driving notification: " + id + " is not found";
+            }
             case ROLE -> {
 
                 return "Role: " + id + " is not found";

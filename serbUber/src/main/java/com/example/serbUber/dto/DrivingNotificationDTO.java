@@ -1,7 +1,9 @@
 package com.example.serbUber.dto;
 
 import com.example.serbUber.model.DrivingNotification;
+import com.example.serbUber.model.DrivingNotificationType;
 import com.example.serbUber.model.user.RegularUser;
+import com.example.serbUber.model.user.User;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -13,8 +15,11 @@ public class DrivingNotificationDTO {
     private double lonEnd;
     private double latEnd;
     private double price;
-    private RegularUser sender;
-    private Set<RegularUser> users;
+    private String senderEmail;
+    private String receiverEmail;
+    private boolean read;
+    private DrivingNotificationType drivingNotificationType;
+    private String reason;
 
     private LocalDateTime started;
 
@@ -26,10 +31,11 @@ public class DrivingNotificationDTO {
         this.latStarted = drivingNotification.getLatStarted();
         this.latEnd = drivingNotification.getLatEnd();
         this.price = drivingNotification.getPrice();
-        this.sender = drivingNotification.getSender();
-        this.users = drivingNotification.getUsers();
-        this.started = drivingNotification.getStarted();
-        this.duration = drivingNotification.getDuration();
+        this.senderEmail = drivingNotification.getSender().getEmail();
+        this.receiverEmail = drivingNotification.getReceiver().getEmail();
+        this.read = drivingNotification.isRead();
+        this.drivingNotificationType = drivingNotification.getDrivingNotificationType();
+        this.reason = drivingNotification.getReason();
     }
 
     public double getLonStarted() {
@@ -72,20 +78,44 @@ public class DrivingNotificationDTO {
         this.price = price;
     }
 
-    public RegularUser getSender() {
-        return sender;
+    public String getSenderEmail() {
+        return senderEmail;
     }
 
-    public void setSender(RegularUser sender) {
-        this.sender = sender;
+    public void setSenderEmail(String senderEmail) {
+        this.senderEmail = senderEmail;
     }
 
-    public Set<RegularUser> getUsers() {
-        return users;
+    public String getReceiverEmail() {
+        return receiverEmail;
     }
 
-    public void setUsers(Set<RegularUser> users) {
-        this.users = users;
+    public void setReceiverEmail(String receiverEmail) {
+        this.receiverEmail = receiverEmail;
+    }
+
+    public boolean isRead() {
+        return read;
+    }
+
+    public void setRead(boolean read) {
+        this.read = read;
+    }
+
+    public DrivingNotificationType getDrivingNotificationType() {
+        return drivingNotificationType;
+    }
+
+    public void setDrivingNotificationType(DrivingNotificationType drivingNotificationType) {
+        this.drivingNotificationType = drivingNotificationType;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
     }
 
     public LocalDateTime getStarted() {

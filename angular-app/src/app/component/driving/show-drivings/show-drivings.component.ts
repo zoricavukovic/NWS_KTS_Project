@@ -15,15 +15,15 @@ import { ReviewService } from 'src/app/service/review.service';
 })
 export class ShowDrivingsComponent implements OnInit, OnDestroy {
   drivings: Driving[] = [];
-  currentUser: User;
+  currentUser: User = null;
   userId: number;
-  pageSize = 3;
-  pageIndex = 0;
-  pageSizeDefault = 3;
-  pageNumber = 0;
+  pageSize: number = 3;
+  pageIndex: number = 0;
+  pageSizeDefault: number = 3;
+  pageNumber: number = 0;
   totalPages: number;
-  selectedSortBy = 'Date';
-  selectedSortOrder = 'Descending';
+  selectedSortBy: string = 'Date';
+  selectedSortOrder: string = 'Descending';
 
   sortOrder = [
     { name: 'Descending', checked: true },
@@ -52,7 +52,11 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.userId = +this.route.snapshot.paramMap.get('id');
-    this.currentUser = this.authService.getCurrentUser;
+    this.currentUserSubscription = this.authService.getSubjectCurrentUser().subscribe(
+      user => {
+        this.currentUser = user;
+      }
+    );
 
     /*this.drivingCountSubscription = this.drivingService
       .getCountDrivings(this.userId)
