@@ -1,10 +1,8 @@
 package com.example.serbUber.controller.user;
 
+import com.example.serbUber.dto.user.RegistrationDTO;
 import com.example.serbUber.dto.user.UserDTO;
-import com.example.serbUber.exception.EntityNotFoundException;
-import com.example.serbUber.exception.EntityUpdateException;
-import com.example.serbUber.exception.PasswordsDoNotMatchException;
-import com.example.serbUber.exception.WrongVerifyTryException;
+import com.example.serbUber.exception.*;
 import com.example.serbUber.request.VerifyRequest;
 import com.example.serbUber.request.user.*;
 import com.example.serbUber.service.user.UserService;
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -114,6 +111,24 @@ public class UserController {
             throws EntityNotFoundException, WrongVerifyTryException {
 
         return userService.activate(verifyRequest.getVerifyId(), verifyRequest.getSecurityCode());
+    }
+
+
+    @PostMapping("/create/regular-user")
+    @ResponseStatus(HttpStatus.CREATED)
+    public RegistrationDTO createRegularUser(@Valid @RequestBody RegularUserRequest regularUserRequest)
+        throws EntityNotFoundException, PasswordsDoNotMatchException, EntityAlreadyExistsException, MailCannotBeSentException {
+
+        return userService.createRegularUser(
+            regularUserRequest.getEmail(),
+            regularUserRequest.getPassword(),
+            regularUserRequest.getConfirmPassword(),
+            regularUserRequest.getName(),
+            regularUserRequest.getSurname(),
+            regularUserRequest.getPhoneNumber(),
+            regularUserRequest.getCity(),
+            regularUserRequest.getProfilePicture()
+        );
     }
 
 }

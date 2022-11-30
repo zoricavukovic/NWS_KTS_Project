@@ -1,8 +1,12 @@
 package com.example.serbUber.request;
 
+
+import com.example.serbUber.model.Route;
+
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Positive;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.example.serbUber.exception.ErrorMessagesConstants.POSITIVE_MESSAGE;
@@ -22,10 +26,13 @@ public class DrivingNotificationRequest {
     private String senderEmail;
     private List<String> passengers;
 
+    private LocalDateTime started;
+    private int duration;
+
     public DrivingNotificationRequest() {
     }
 
-    public DrivingNotificationRequest(double lonStarted, double latStarted, double lonEnd, double latEnd, double price, String senderEmail, List<String> passengers) {
+    public DrivingNotificationRequest(double lonStarted, double latStarted, double lonEnd, double latEnd, double price, String senderEmail, List<String> passengers, LocalDateTime started, int duration) {
         this.lonStarted = lonStarted;
         this.latStarted = latStarted;
         this.lonEnd = lonEnd;
@@ -33,6 +40,8 @@ public class DrivingNotificationRequest {
         this.price = price;
         this.senderEmail = senderEmail;
         this.passengers = passengers;
+        this.started = started;
+        this.duration = duration;
     }
 
     public double getLonStarted() {
@@ -89,5 +98,21 @@ public class DrivingNotificationRequest {
 
     public void setPassengers(List<String> passengers) {
         this.passengers = passengers;
+    }
+
+    public LocalDateTime getStarted() {
+        return started;
+    }
+
+    public void setStarted(LocalDateTime started) {
+        this.started = started;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 }

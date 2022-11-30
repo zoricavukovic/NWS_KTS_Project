@@ -67,21 +67,4 @@ public class RegularUserController {
     public List<RouteDTO> getFavouriteRoutes(@Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable Long id) throws EntityNotFoundException {
         return regularUserService.getFavouriteRoutes(id);
     }
-
-    @PostMapping("/register")
-    @ResponseStatus(HttpStatus.CREATED)
-    public RegistrationDTO create(@Valid @RequestBody RegularUserRequest regularUserRequest)
-            throws EntityNotFoundException, PasswordsDoNotMatchException, EntityAlreadyExistsException, MailCannotBeSentException {
-
-        return regularUserService.create(
-                regularUserRequest.getEmail(),
-                regularUserRequest.getPassword(),
-                regularUserRequest.getConfirmPassword(),
-                regularUserRequest.getName(),
-                regularUserRequest.getSurname(),
-                regularUserRequest.getPhoneNumber(),
-                regularUserRequest.getCity(),
-                regularUserRequest.getProfilePicture()
-        );
-    }
 }

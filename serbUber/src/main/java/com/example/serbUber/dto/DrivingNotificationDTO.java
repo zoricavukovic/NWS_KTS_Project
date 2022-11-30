@@ -5,6 +5,7 @@ import com.example.serbUber.model.DrivingNotificationType;
 import com.example.serbUber.model.user.RegularUser;
 import com.example.serbUber.model.user.User;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 public class DrivingNotificationDTO {
@@ -19,6 +20,10 @@ public class DrivingNotificationDTO {
     private boolean read;
     private DrivingNotificationType drivingNotificationType;
     private String reason;
+
+    private LocalDateTime started;
+
+    private int duration;
 
     public DrivingNotificationDTO(final DrivingNotification drivingNotification){
         this.lonStarted = drivingNotification.getLonStarted();
@@ -111,5 +116,21 @@ public class DrivingNotificationDTO {
 
     public void setReason(String reason) {
         this.reason = reason;
+    }
+
+    public LocalDateTime getStarted() {
+        return started;
+    }
+
+    public void setStarted(LocalDateTime started) {
+        this.started = started;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 }

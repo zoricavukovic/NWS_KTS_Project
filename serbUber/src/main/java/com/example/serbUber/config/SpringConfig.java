@@ -54,7 +54,7 @@ public class SpringConfig extends WebSecurityConfigurerAdapter {
             .permitAll()
             .antMatchers("/auth/**")
             .permitAll()
-            .antMatchers("/regular-users/register")
+            .antMatchers("/users/create/regular-user")
             .permitAll()
             .antMatchers("/users/send-rest-password-link/**")
             .permitAll()

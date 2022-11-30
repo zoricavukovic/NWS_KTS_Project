@@ -1,27 +1,32 @@
 package com.example.serbUber.service.user;
 
 import com.example.serbUber.dto.DriverActivityResetNotificationDTO;
+import com.example.serbUber.dto.DrivingNotificationDTO;
 import com.example.serbUber.dto.user.DriverDTO;
 import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.*;
 import com.example.serbUber.model.Driving;
+import com.example.serbUber.model.Location;
 import com.example.serbUber.model.Vehicle;
 import com.example.serbUber.model.VehicleType;
 import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.repository.user.DriverRepository;
+import com.example.serbUber.service.DrivingNotificationService;
 import com.example.serbUber.service.VehicleService;
 import com.example.serbUber.service.VerifyService;
 import com.example.serbUber.service.WebSocketService;
 import com.example.serbUber.service.interfaces.IDriverService;
 import com.example.serbUber.util.Constants;
+import com.graphhopper.GHRequest;
+import com.graphhopper.GHResponse;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static com.example.serbUber.SerbUberApplication.hopper;
 import static com.example.serbUber.dto.user.DriverDTO.fromDrivers;
 import static com.example.serbUber.exception.ErrorMessagesConstants.ACTIVE_DRIVING_IN_PROGRESS_MESSAGE;
 import static com.example.serbUber.model.user.User.passwordsDontMatch;
@@ -37,19 +42,22 @@ public class DriverService implements IDriverService{
     private final RoleService roleService;
     private final VerifyService verifyService;
     private final WebSocketService webSocketService;
+    private final DrivingNotificationService drivingNotificationService;
 
     public DriverService(
             final DriverRepository driverRepository,
             final VehicleService vehicleService,
             final VerifyService verifyService,
             final RoleService roleService,
-            final WebSocketService webSocketService
+            final WebSocketService webSocketService,
+            final DrivingNotificationService drivingNotificationService
             ) {
         this.driverRepository = driverRepository;
         this.vehicleService = vehicleService;
         this.verifyService = verifyService;
         this.roleService = roleService;
         this.webSocketService = webSocketService;
+        this.drivingNotificationService = drivingNotificationService;
     }
 
 
@@ -139,6 +147,59 @@ public class DriverService implements IDriverService{
 
     public Double getDriverRating(final Long id){
         return driverRepository.getRatingForDriver(id);
+    }
+
+    public DriverDTO getDriverForDriving(Long id) throws EntityNotFoundException {
+        DrivingNotificationDTO drivingNotificationDTO = drivingNotificationService.getDrivingNotification(id);
+        LocalDateTime startDate = drivingNotificationDTO.getStarted();
+        LocalDateTime endDate = drivingNotificationDTO.getStarted().plusMinutes(drivingNotificationDTO.getDuration());
+        List<Driver> activeAndFreeDrivers = getActiveAndFreeDrivers(startDate, endDate);
+        if(activeAndFreeDrivers.size() == 0) { // nema trenutno slobodnih aktivnih vozaca
+
+            return getFutureFreeDriver(startDate, endDate);
+        }
+        return findNearestDriver(activeAndFreeDrivers, drivingNotificationDTO.getLonStarted(), drivingNotificationDTO.getLatStarted());
+    }
+
+
+    private DriverDTO findNearestDriver(List<Driver> activeAndFreeDrivers, double lonStart, double latStart){
+        Location locationFirstDriver = activeAndFreeDrivers.get(0).getCurrentLocation();
+        double latEnd = locationFirstDriver.getLat();
+        double lonEnd = locationFirstDriver.getLon();
+        double minDistance = getDistance(lonStart, latStart, lonEnd, latEnd);
+        Driver nearestDriver = activeAndFreeDrivers.get(0);
+        for(Driver driver : activeAndFreeDrivers){
+            double newMinDistance = getDistance(lonStart, latStart, driver.getCurrentLocation().getLon(), driver.getCurrentLocation().getLat());
+            if(newMinDistance < minDistance){
+                minDistance = newMinDistance;
+                nearestDriver = driver;
+            }
+        }
+        return new DriverDTO(nearestDriver);
+    }
+
+    private double getDistance(double lonStart, double latStart, double lonEnd, double latEnd){
+        GHRequest request = new GHRequest(latStart, lonStart, latEnd, lonEnd);
+        request.setProfile("car");
+        GHResponse route = hopper.route(request);
+        return route.getBest().getDistance();
+    }
+
+
+    private DriverDTO getFutureFreeDriver(LocalDateTime startDate, LocalDateTime endDate){
+        List<Driver> busyDriversNow = driverRepository.getBusyDriversNow(startDate);
+        for(Driver driver : busyDriversNow){
+            for(Driving driving : driver.getDrivings()){
+                if(driving.isActive() && driving.getEnd().isBefore(startDate.plusMinutes(3))){
+                    return new DriverDTO(driver);
+                }
+            }
+        }
+        return null;
+    }
+
+    private List<Driver> getActiveAndFreeDrivers(LocalDateTime startDate, LocalDateTime endDate) {
+        return driverRepository.getActiveAndFreeDrivers(startDate, endDate);
     }
 
     public DriverDTO updateActivityStatus(final Long id, boolean active)
@@ -284,10 +345,5 @@ public class DriverService implements IDriverService{
         return false;
     }
 
-    private List<DriverDTO> getActiveAndFreeDrivers(){
-        driverRepository.getActiveAndFreeDrivers();
-
-        return null;
-    }
 
 }

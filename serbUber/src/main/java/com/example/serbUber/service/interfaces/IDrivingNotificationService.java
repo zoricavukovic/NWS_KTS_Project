@@ -8,20 +8,23 @@ import com.example.serbUber.model.user.RegularUser;
 import com.example.serbUber.model.user.User;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
 @Service
 public interface IDrivingNotificationService {
 
-    List<DrivingNotificationDTO> createNotifications(
-        final double lonStarted,
-        final double latStarted,
-        final double lonEnd,
-        final double latEnd,
-        final String senderEmail,
-        final double price,
-        final List<String> passengers
+    List<DrivingNotificationDTO> createNotifications( ///driving dto
+                        final double lonStarted,
+                        final double latStarted,
+                        final double lonEnd,
+                        final double latEnd,
+                        final String senderEmail,
+                        final double price,
+                        final List<String> passengers,
+                        final LocalDateTime started,
+                        final int duration
     ) throws EntityNotFoundException;
 
     DrivingNotificationDTO setDrivingNotificationAnswered(final Long id) throws EntityNotFoundException;
