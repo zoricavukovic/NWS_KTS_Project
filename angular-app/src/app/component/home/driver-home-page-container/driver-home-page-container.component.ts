@@ -5,7 +5,6 @@ import { DrivingService } from '../../../service/driving.service';
 import { ConfigService } from 'src/app/service/config.service';
 import {Router} from "@angular/router";
 import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
-import {RatingDialogComponent} from "../../review/rating-dialog/rating-dialog.component";
 import {ToastrService} from "ngx-toastr";
 import {RejectDrivingComponent} from "../../driving/reject-driving/reject-driving.component";
 
@@ -70,7 +69,7 @@ export class DriverHomePageContainerComponent implements OnInit, OnDestroy {
 
     this.drivingService.finishDriving(drivingId).subscribe(
       res => this.updateDrivingStatus(drivingIndex),
-      err => console.log(err)
+      error => this.toast.error(error.error, 'Finishing driving failed')
     )
   }
 
@@ -80,22 +79,6 @@ export class DriverHomePageContainerComponent implements OnInit, OnDestroy {
 
   showDrivingDetails(drivingId: number): void {
     this.router.navigate([`/map-view/${drivingId}`]);
-  }
-
-  hasNotFutureDrivings(): boolean {
-    return (
-      this.nowAndFutureDrivings.length === 0 ||
-      (this.nowAndFutureDrivings.length === 1 &&
-        this.nowAndFutureDrivings.at(0).active)
-    );
-  }
-
-  hasNoActiveDriving(driving: Driving): boolean {
-    return !driving.active;
-  }
-
-  private updateDrivingStatus(drivingIndex: number) {
-    this.nowAndFutureDrivings.splice(drivingIndex, 1);
   }
 
   openRejectDrivingDialog(drivingId: number | undefined, index: number) {
@@ -114,6 +97,14 @@ export class DriverHomePageContainerComponent implements OnInit, OnDestroy {
     })
   }
 
+  startDriving(drivingId: number | undefined, index: number) {
+    this.drivingService.startDriving(drivingId).subscribe(response =>
+    {
+      this.nowAndFutureDrivings.at(index).drivingStatus = "ACTIVE";
+      this.nowAndFutureDrivings.at(index).active = true;
+    }, error => this.toast.error(error.error, 'Starting driving failed'));
+  }
+
   private reasonEntered(reason: string){
     return reason !== '' || reason !== undefined;
   }
@@ -128,4 +119,9 @@ export class DriverHomePageContainerComponent implements OnInit, OnDestroy {
   private removeRejectedDriving(index: number): void {
     this.nowAndFutureDrivings.splice(index, 1);
   }
+
+  private updateDrivingStatus(drivingIndex: number) {
+    this.nowAndFutureDrivings.splice(drivingIndex, 1);
+  }
+
 }

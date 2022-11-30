@@ -25,8 +25,7 @@ export class RouteRowComponent implements OnInit {
   }
 
   chooseRoute() {
-    console.log(this.route);
-    this.chosenRouteEvent.emit('tralalalalal');
+    this.chosenRouteEvent.emit('changed');
   }
 
   private incrementShadeOfColor(index: number, number: number) {

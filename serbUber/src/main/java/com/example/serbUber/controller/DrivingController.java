@@ -99,6 +99,14 @@ public class DrivingController {
         return drivingService.finishDriving(id);
     }
 
+    @PutMapping("/start/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
+    public DrivingDTO startDriving(@PathVariable Long id) throws EntityNotFoundException {
+
+        return drivingService.startDriving(id);
+    }
+
     @PutMapping("/reject/{id}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ROLE_DRIVER')")

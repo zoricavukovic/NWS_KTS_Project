@@ -1,4 +1,3 @@
-<!--<div id="map">-->
 <div id="route-div" *ngIf="!currentUserIsDriver" class="box mat-elevation-z1">
   <div *ngIf="routeChoiceView">
     <h1><strong>Request a ride now</strong></h1>
@@ -118,16 +117,15 @@
                   {{ searchingRoutesForm.at(i + 1).location.lon }}
                 </span>
               </ng-template>
-              <div
-                *ngFor="
-                  let route of possibleRoute.possibleRouteDTOList;
-                  let j = index
-                "
-                class="margin-top">
+              {{possibleRoute.possibleRouteDTOList.length}}
+              <div *ngFor="let route of possibleRoute.possibleRouteDTOList; let j = index" class="margin-top">
+
                 <route-row
                   [route]="route"
                   [index]="j"
-                  (click)="changeOptionRouteOnClick(route, j)"></route-row>
+                >
+                </route-row>
+
               </div>
               <div>
                 <button
@@ -166,6 +164,5 @@
 </div>
 <app-driver-home-page-container
   *ngIf="currentUserIsDriver"
-  [driverId]="currentUser.id"></app-driver-home-page-container>
-
-<!--</div>-->
+  [driverId]="currentUser.id">
+</app-driver-home-page-container>
