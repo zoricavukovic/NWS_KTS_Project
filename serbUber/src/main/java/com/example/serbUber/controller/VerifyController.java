@@ -42,12 +42,4 @@ public class VerifyController {
         this.verifyService.generateNewSecurityCode(verifyId);
     }
 
-    @PutMapping()
-    @ResponseStatus(HttpStatus.OK)
-    public boolean update(@Valid @RequestBody VerifyRequest verifyRequest)
-            throws EntityNotFoundException, WrongVerifyTryException {
-
-        return verifyService.activate(verifyRequest.getVerifyId(), verifyRequest.getSecurityCode());
-    }
-
 }

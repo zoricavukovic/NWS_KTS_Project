@@ -29,14 +29,16 @@ export class HomePageComponent implements OnInit, OnDestroy {
   filterVehicleView = false;
 
   @Input() map: L.Map;
-  currentUser: User;
+  currentUser: User = null;
+  isDriver: boolean;
+  isRegular: boolean;
+
   provider1: OpenStreetMapProvider = new OpenStreetMapProvider();
   selectedRoute: PossibleRoute;
   maxNumberOfLocations: number = 5;
   possibleRoutesViaPoints: PossibleRoutesViaPoints[] = [];
   drawPolylineList: L.Polyline[] = [];
   searchingRoutesForm: SearchingRoutesForm[] = [];
-  currentUserIsDriver: boolean;
   vehicles: Vehicle[];
   carMarkers: L.Marker[] = [];
   /* autocompleteForm = new FormGroup({
@@ -66,8 +68,15 @@ export class HomePageComponent implements OnInit, OnDestroy {
     });
     this.searchingRoutesForm.push(new SearchingRoutesForm());
     this.searchingRoutesForm.push(new SearchingRoutesForm());
-    this.currentUser = this.authService.getCurrentUser;
-    this.currentUserIsDriver = this.currentUser?.userIsDriver();
+
+    this.authSubscription = this.authService.getSubjectCurrentUser().subscribe(
+      user => {
+        this.currentUser = user;
+        this.isDriver = this.authService.userIsDriver();
+        this.isRegular = this.authService.userIsRegular();
+      }
+    );
+
     this.map.originalEvent.preventDefault();
     var div = L.DomUtil.get('route-div');
     L.DomEvent.on(div, 'mousewheel', L.DomEvent.stopPropagation);
@@ -100,6 +109,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
     if (this.routeSubscription) {
       this.routeSubscription.unsubscribe();
     }
+
   }
 
   async initMap() {
@@ -209,7 +219,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
       })
     });
   }
-
+  Z
   private getLatLongsRoute(route: PossibleRoute): number[] {
     let latLongs = [];
     route.pointList.forEach(latLng => latLongs.push([latLng[0], latLng[1]]));
@@ -299,10 +309,6 @@ export class HomePageComponent implements OnInit, OnDestroy {
     );
   }
 
-  currentUserIsRegular() {
-    return this.authService.getCurrentUser?.userIsRegular();
-  }
-
   private addMarker(index: number, place) {
     const customIcon = L.icon({
       iconUrl: this.getIconUrl(index),
@@ -371,7 +377,6 @@ export class HomePageComponent implements OnInit, OnDestroy {
   }
 
   chooseVehicleAndPassengers(route: PossibleRoute) {
-    console.log('blaaaaaaaaa');
     this.routeChoiceView = false;
     this.filterVehicleView = true;
     this.selectedRoute = route;

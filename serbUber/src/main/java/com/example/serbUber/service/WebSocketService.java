@@ -1,14 +1,11 @@
 package com.example.serbUber.service;
 
+import com.example.serbUber.dto.DriverActivityResetNotificationDTO;
 import com.example.serbUber.dto.DrivingNotificationDTO;
 import com.example.serbUber.dto.VehicleCurrentLocationDTO;
-import com.example.serbUber.request.DrivingNotificationRequest;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @Service
@@ -28,5 +25,9 @@ public class WebSocketService {
         drivingNotificationDTOs.forEach(notification -> {
             this.messagingTemplate.convertAndSendToUser(notification.getReceiverEmail(), "/connect", notification);
         });
+    }
+
+    public void sendActivityResetNotification(DriverActivityResetNotificationDTO dto) {
+        this.messagingTemplate.convertAndSendToUser(dto.getEmail(), "/connect", dto);
     }
 }

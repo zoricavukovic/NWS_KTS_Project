@@ -29,4 +29,6 @@ public interface IDriverService {
     ) throws PasswordsDoNotMatchException, EntityNotFoundException, EntityAlreadyExistsException, MailCannotBeSentException;
     Driver updateRate(final Long id, final double rate) throws EntityNotFoundException;
     Double getDriverRating(final Long id);
+    DriverDTO updateActivityStatus(final Long id, boolean active)
+            throws EntityNotFoundException, ActivityStatusCannotBeChangedException;
 }

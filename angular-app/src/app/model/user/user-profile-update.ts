@@ -9,3 +9,8 @@ export interface UserProfilePictureRequest {
   email: string;
   profilePicture: string;
 }
+
+export interface DriverActivityStatusRequest {
+  id: number;
+  active: boolean
+}

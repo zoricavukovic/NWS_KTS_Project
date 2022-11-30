@@ -1,9 +1,5 @@
 import { Role } from './role';
 
-const ROLE_ADMIN = 'ROLE_ADMIN';
-const ROLE_REGULAR_USER = 'ROLE_REGULAR_USER';
-const ROLE_DRIVER = 'ROLE_DRIVER';
-
 export class User {
   id: number;
   email: string;
@@ -13,6 +9,7 @@ export class User {
   city: string;
   role: Role;
   profilePicture: string;
+  online?: boolean;
 
   constructor(
     id: number,
@@ -22,7 +19,8 @@ export class User {
     phoneNumber: string,
     city: string,
     role: Role,
-    profilePicture: string
+    profilePicture: string,
+    online?: boolean
   ) {
     this.id = id;
     this.email = email;
@@ -32,17 +30,9 @@ export class User {
     this.city = city;
     this.role = role;
     this.profilePicture = profilePicture;
+    if (online) {
+      this.online = online;
+    }
   }
 
-  public isUserAdmin(): boolean {
-    return this.role.name === ROLE_ADMIN;
-  }
-
-  public userIsRegular(): boolean {
-    return this.role.name === ROLE_REGULAR_USER;
-  }
-
-  public userIsDriver(): boolean {
-    return this.role.name === ROLE_DRIVER;
-  }
 }

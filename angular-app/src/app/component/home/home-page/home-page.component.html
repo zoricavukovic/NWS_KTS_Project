@@ -1,4 +1,4 @@
-<div id="route-div" *ngIf="!currentUserIsDriver" class="box mat-elevation-z1">
+<div id="route-div" *ngIf="!isDriver" class="box mat-elevation-z1">
   <div *ngIf="routeChoiceView">
     <h1><strong>Request a ride now</strong></h1>
     <div
@@ -144,7 +144,7 @@
                 </button>
                 <button
                   *ngIf="
-                    currentUserIsRegular() &&
+                    isRegular &&
                     i === possibleRoutesViaPoints.length - 1
                   "
                   class="confirm-ride-button"
@@ -162,7 +162,5 @@
     <app-filter-vehicle-view [route]="selectedRoute"></app-filter-vehicle-view>
   </div>
 </div>
-<app-driver-home-page-container
-  *ngIf="currentUserIsDriver"
-  [driverId]="currentUser.id">
+<app-driver-home-page-container *ngIf="isDriver" [driverId]="currentUser.id">
 </app-driver-home-page-container>

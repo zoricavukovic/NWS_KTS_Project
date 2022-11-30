@@ -6,18 +6,18 @@
       class="app-icon" />
   </a>
   <div class="spacer">
-    <div *ngIf="authService?.getCurrentUser">
+    <div *ngIf="loggedUser">
       &nbsp;&nbsp;
       <a
         *ngIf="!isAdmin"
-        [routerLink]="['/drivings', authService.getCurrentUser?.id]"
+        [routerLink]="['/drivings', loggedUser?.id]"
         routerLinkActive="active"
         mat-button
         color="primary"
         >Drivings</a
       >
       <a
-        *ngIf="isRegularUser"
+        *ngIf="isRegular"
         [routerLink]="['/favourite-routes']"
         routerLinkActive="active"
         mat-button
@@ -62,7 +62,7 @@
   </div>
 
   <a
-    *ngIf="!authService.getCurrentUser"
+    *ngIf="!loggedUser"
     [routerLink]="['/login']"
     routerLinkActive="active"
     mat-button
@@ -70,7 +70,7 @@
     >Log in</a
   >
   <a
-    *ngIf="!authService.getCurrentUser"
+    *ngIf="!loggedUser"
     [routerLink]="['/registration']"
     routerLinkActive="active"
     mat-raised-button
@@ -78,13 +78,13 @@
     >Sign up</a
   >
 
-  <div *ngIf="authService.getCurrentUser" class="temp">
+  <div *ngIf="loggedUser" class="temp">
     <img
       mat-button
       [matMenuTriggerFor]="menu"
       [src]="
         configService.base64_show_photo_prefix +
-        authService.getCurrentUser?.profilePicture
+        loggedUser?.profilePicture
       "
       alt="avatar"
       loading="lazy"
@@ -99,9 +99,17 @@
     <button mat-menu-item (click)="redirectToEditPage()">
       <mat-icon color="primary">edit</mat-icon><span>Edit profile</span>
     </button>
+    <div mat-menu-item (click) = "$event.stopPropagation()" *ngIf="isDriver">
+      <mat-slide-toggle class="toggle"
+      [(ngModel)] = "this.driverActivityStatus"
+      (click) = "changeDriverStatus()"
+      color="primary">
+      </mat-slide-toggle>
+      <span class="toggle-activity-status">{{driverData?.active ? 'Active' : 'Not active'}}</span>
+    </div>
     <button
       mat-menu-item
-      *ngIf="this.authService.getCurrentUser?.isUserAdmin()"
+      *ngIf="isAdmin"
       (click)="redirectToMessagesPage()">
       <mat-icon color="primary">chat</mat-icon><span>Messages</span>
     </button>
