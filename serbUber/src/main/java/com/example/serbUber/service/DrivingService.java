@@ -61,8 +61,9 @@ public class DrivingService implements IDrivingService {
             final HashMap<Long, Boolean> usersPaid,
             final double price
     ) {
+        LocalDateTime end = started.plusMinutes(duration);
         Driving driving = drivingRepository.save(
-                new Driving(active, duration, started, payingLimit, route, drivingStatus, driverId, usersPaid, price)
+                new Driving(active, duration, started, end, payingLimit, route, drivingStatus, driverId, usersPaid, price)
         );
 
         return new DrivingDTO(driving);
@@ -94,7 +95,7 @@ public class DrivingService implements IDrivingService {
     }
 
 
-    private Page<Driving> getDrivingPage(Long id, Pageable page) throws EntityNotFoundException {
+    private Page<Driving> getDrivingPage(final Long id, final Pageable page) throws EntityNotFoundException {
         User user = userService.getUserById(id);
         Page<Driving> drivings = drivingRepository.findByUserId(id, page);
         return user.getRole().isDriver() ?
@@ -153,7 +154,7 @@ public class DrivingService implements IDrivingService {
                 drivingRepository.getNumberOfAllDrivingsForRegularUser(id).size();
     }
 
-    public DrivingDTO rejectDriving(Long id, String reason) throws EntityNotFoundException {
+    public DrivingDTO rejectDriving(final Long id, final String reason) throws EntityNotFoundException {
         Driving driving = getDriving(id);
         User driver = userService.getUserById(driving.getDriverId());
         driving.setDrivingStatus(DrivingStatus.REJECTED);
@@ -170,6 +171,15 @@ public class DrivingService implements IDrivingService {
         );
 
         webSocketService.sendDrivingNotification(notifications);
+
+        return new DrivingDTO(driving);
+    }
+
+    public DrivingDTO startDriving(final Long id) throws EntityNotFoundException {
+        Driving driving = getDriving(id);
+        driving.setActive(true);
+        driving.setDrivingStatus(DrivingStatus.ACCEPTED);
+        drivingRepository.save(driving);
 
         return new DrivingDTO(driving);
     }

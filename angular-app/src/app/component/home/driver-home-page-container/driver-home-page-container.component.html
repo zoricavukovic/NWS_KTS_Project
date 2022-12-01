@@ -1,16 +1,10 @@
 <div id="route-div" class="box mat-elevation-z1">
-  <div  *ngIf="nowAndFutureDrivings.length === 0 ||
-        ( nowAndFutureDrivings.length > 0 && hasNoActiveDriving(nowAndFutureDrivings.at(0)))"
+  <div  *ngIf="nowAndFutureDrivings.length === 0"
         class="devider-container"
   >
-    <h3>No active drivings.</h3>
+    <h3>No active or future drivings.</h3>
   </div>
   <div *ngFor="let driving of nowAndFutureDrivings; let i=index" class="for">
-    <div *ngIf="i === 0 && hasNoActiveDriving(driving)" class="devider-container">
-      <div class="devider-line"><mat-divider></mat-divider></div>
-      <div class="devider-text mat-typography"><b>In future</b></div>
-      <div class="devider-line"><mat-divider></mat-divider></div>
-    </div>
     <div class="driving-container mat-elevation-z2">
       <table style="table-layout: fixed;font-size: large;">
         <tr >
@@ -42,19 +36,16 @@
       </div>
       <div *ngIf="driving.drivingStatus === 'PENDING'">
 
-<!--        <button mat-button (click)="finishDriving(driving?.id, i)" class="finish-button" style="background-color: var(&#45;&#45;deep-blue)">Accept</button>-->
+        <button *ngIf="i===0"  mat-button (click)="startDriving(driving?.id, i)" class="finish-button">Start</button>
         <button mat-button (click)="openRejectDrivingDialog(driving?.id, i)" class="finish-button">Reject</button>
 
       </div>
     </div>
-    <div *ngIf="i === 0 && !hasNoActiveDriving(driving)" class="devider-container">
+    <div *ngIf="i === 0 && nowAndFutureDrivings.length > 1" class="devider-container">
       <div class="devider-line"><mat-divider></mat-divider></div>
       <div class="devider-text mat-typography"><b>In future</b></div>
       <div class="devider-line"><mat-divider></mat-divider></div>
     </div>
 
-  </div>
-  <div  *ngIf="hasNotFutureDrivings()" class="devider-container">
-    <h3>No future drivings.</h3>
   </div>
 </div>

@@ -22,8 +22,7 @@ delete L.Icon.Default.prototype._getIconUrl;
 export class MapComponent implements OnInit, OnDestroy {
   map: L.Map;
   provider1 = new OpenStreetMapProvider();
-  @ViewChild(DrivingDetailsComponent)
-  private drivingDetailsComponent: DrivingDetailsComponent;
+  @ViewChild(DrivingDetailsComponent) private drivingDetailsComponent: DrivingDetailsComponent;
   @ViewChild(HomePageComponent) private homePageComponent: HomePageComponent;
 
   constructor(public router: Router, public actRoute: ActivatedRoute) {

@@ -2,8 +2,11 @@ package com.example.serbUber.model;
 
 import com.example.serbUber.model.user.RegularUser;
 import com.example.serbUber.model.user.User;
+import net.bytebuddy.asm.Advice;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Table(name="driving_notifications")
@@ -42,22 +45,33 @@ public class DrivingNotification {
     @JoinColumn(name = "receiver_id", referencedColumnName = "id")
     private User receiver;
 
+    @Column(name="started")
+    private LocalDateTime started;
+
+    @Column(name="duration")
+    private int duration;
+
+
     public DrivingNotification(
-        final double lonStarted,
-        final double latStarted,
-        final double lonEnd,
-        final double latEnd,
-        final double price,
-        final User sender,
-        final User receiver,
-        final DrivingNotificationType type
-    ) {
+            final double lonStarted,
+            final double latStarted,
+            final double lonEnd,
+            final double latEnd,
+            final double price,
+            final User sender,
+            final User receiver,
+            final DrivingNotificationType type,
+            final LocalDateTime started,
+            final int duration
+            ) {
         this.lonStarted = lonStarted;
         this.latStarted = latStarted;
         this.lonEnd = lonEnd;
         this.latEnd = latEnd;
         this.price = price;
         this.sender = sender;
+        this.started = started;
+        this.duration = duration;
         this.receiver = receiver;
         this.read = false;
         this.drivingNotificationType = type;
@@ -170,6 +184,22 @@ public class DrivingNotification {
 
     public void setReason(String reason) {
         this.reason = reason;
+    }
+
+    public LocalDateTime getStarted() {
+        return started;
+    }
+
+    public void setStarted(LocalDateTime started) {
+        this.started = started;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 }
 

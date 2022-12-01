@@ -62,4 +62,10 @@ export class DrivingService {
       headers: this.configService.getHeader(),
     });
   }
+
+  startDriving(drivingId: number) {
+    return this.http.put<Driving>(this.configService.start_driving_url(drivingId), null, {
+      headers: this.configService.getHeader(),
+    });
+  }
 }

@@ -7,13 +7,20 @@ import com.graphhopper.GHResponse;
 import com.graphhopper.GraphHopper;
 import com.graphhopper.ResponsePath;
 import com.graphhopper.config.CHProfile;
+import com.graphhopper.config.LMProfile;
 import com.graphhopper.config.Profile;
+import com.graphhopper.routing.weighting.custom.CustomProfile;
 import com.graphhopper.util.*;
 import com.graphhopper.util.shapes.GHPoint;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+
+import static com.graphhopper.json.Statement.If;
+import static com.graphhopper.json.Statement.Op.LIMIT;
+import static com.graphhopper.json.Statement.Op.MULTIPLY;
 
 public class GraphHopperUtil {
 
@@ -33,75 +40,33 @@ public class GraphHopperUtil {
         hopper.importOrLoad();
         return hopper;
     }
+
     public static List<ResponsePath> routing(
         GraphHopper hopper,
         LongLatRequest startLocation,
         LongLatRequest endLocation
     ) {
-        // simple configuration of the request object
-        GHRequest req = new GHRequest(
-            startLocation.getLat(),
-            startLocation.getLon(),
-            endLocation.getLat(),
-            endLocation.getLon()
-        )
-            .setProfile("car")
-            .setLocale(Locale.US);
+        GHRequest req = new GHRequest().setProfile("car")
+            .addPoint(new GHPoint(startLocation.getLat(), startLocation.getLon()))
+            .addPoint(new GHPoint(endLocation.getLat(), endLocation.getLon()))
+            .setHeadings(Arrays.asList(180d, 90d))
+            .putHint(Parameters.CH.DISABLE, true);
 
-        GHResponse rsp = hopper.route(req);
-
-        // handle errors
-        if (rsp.hasErrors())
-            throw new RuntimeException(rsp.getErrors().toString());
-
-        // use the best path, see the GHResponse class for more possibilities.
-        ResponsePath path = rsp.getBest();
-
-        // points, distance in meters and time in millis of the full path
-        PointList pointList = path.getPoints();
-        double distance = path.getDistance();
-        long timeInMs = path.getTime();
-        Translation tr = hopper.getTranslationMap().getWithFallBack(Locale.UK);
-        InstructionList il = path.getInstructions();
-        // iterate over all turn instructions
-        for (Instruction instruction : il) {
-            System.out.println("distance " + instruction.getDistance() + " for instruction: " + instruction.getTurnDescription(tr));
-        }
-        return rsp.getAll();
-
-
-    }
-
-    public static List<ResponsePath> bla(GraphHopper hopper, LocationsForRoutesRequest locationsForRouteRequest) {
-        // define a heading (direction) at start and destination
-        LongLatRequest startLocation = locationsForRouteRequest.getLocationsForRouteRequest().get(0);
-        LongLatRequest endLocation = getLongLatRequest(locationsForRouteRequest.getLocationsForRouteRequest());
-        GHRequest req = new GHRequest().setProfile("car").
-            addPoint(new GHPoint(startLocation.getLat(), startLocation.getLon())).addPoint(new GHPoint(endLocation.getLat(), endLocation.getLon())).
-            setHeadings(Arrays.asList(350d, 180d)).
-            // use flexible mode (i.e. disable contraction hierarchies) to make heading and pass_through working
-                putHint(Parameters.CH.DISABLE, true);
-        // if you have via points you can avoid U-turns there with
-        req.getHints().putObject(Parameters.Routing.PASS_THROUGH, true);
         GHResponse res = hopper.route(req);
         if (res.hasErrors())
             throw new RuntimeException(res.getErrors().toString());
-//        assert res.getAll().size() == 1;
-//        assert Helper.round(res.getBest().getDistance(), -2) == 800;
 
-        // calculate alternative routes between two points (supported with and without CH)
-        req = new GHRequest().setProfile("car").
-            addPoint(new GHPoint(startLocation.getLat(), startLocation.getLon())).addPoint(new GHPoint(endLocation.getLat(), endLocation.getLon())).
-            setAlgorithm(Parameters.Algorithms.ALT_ROUTE);
-        req.getHints().putObject(Parameters.Algorithms.AltRoute.MAX_PATHS, 2);
+        req = new GHRequest().setProfile("car")
+            .addPoint(new GHPoint(startLocation.getLat(), startLocation.getLon()))
+            .addPoint(new GHPoint(endLocation.getLat(), endLocation.getLon()))
+            .setAlgorithm(Parameters.Algorithms.ALT_ROUTE);
+        req.getHints().putObject(Parameters.Algorithms.AltRoute.MAX_PATHS, 3);
         res = hopper.route(req);
         if (res.hasErrors())
             throw new RuntimeException(res.getErrors().toString());
 
-        return null;
-    }
+        return new ArrayList<>(res.getAll());
 
-    private static LongLatRequest getLongLatRequest(List<LongLatRequest> locationsForRouteRequest) {
-        return locationsForRouteRequest.get(locationsForRouteRequest.size() - 1);
+
     }
 }

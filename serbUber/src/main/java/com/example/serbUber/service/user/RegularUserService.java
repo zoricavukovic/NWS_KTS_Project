@@ -14,6 +14,7 @@ import com.example.serbUber.service.RouteService;
 import com.example.serbUber.service.VerifyService;
 import com.example.serbUber.service.interfaces.IRegularUserService;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -35,20 +36,17 @@ public class RegularUserService implements IRegularUserService {
     private final VerifyService verifyService;
     private final RoleService roleService;
     private final RouteService routeService;
-    private final UserService userService;
 
     public RegularUserService(
             final RegularUserRepository regularUserRepository,
             final VerifyService verifyService,
             final RouteService routeService,
-            final RoleService roleService,
-            final UserService userService
+            final RoleService roleService
     ) {
         this.regularUserRepository = regularUserRepository;
         this.verifyService = verifyService;
         this.routeService = routeService;
         this.roleService = roleService;
-        this.userService = userService;
     }
 
     public List<RegularUserDTO> getAll() {
@@ -75,28 +73,7 @@ public class RegularUserService implements IRegularUserService {
                 .orElseThrow(() -> new EntityNotFoundException(email, EntityType.USER));
     }
 
-    public RegistrationDTO create(
-        final String email,
-        final String password,
-        final String confirmationPassword,
-        final String name,
-        final String surname,
-        final String phoneNumber,
-        final String city,
-        final String profilePicture
-    ) throws PasswordsDoNotMatchException, EntityAlreadyExistsException, MailCannotBeSentException, EntityNotFoundException {
-        if (passwordsDontMatch(password, confirmationPassword)) {
-            throw new PasswordsDoNotMatchException();
-        }
-
-        if (userService.checkIfUserAlreadyExists(email)) {
-            throw new EntityAlreadyExistsException(String.format("User with %s already exists.", email));
-        }
-
-        return registerRegularUser(email, password, name, surname, phoneNumber, city, profilePicture);
-    }
-
-    private RegistrationDTO registerRegularUser(
+    public RegistrationDTO registerRegularUser(
             final String email,
             final String password,
             final String name,

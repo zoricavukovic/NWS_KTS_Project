@@ -26,14 +26,16 @@ export function removeOneLayer(map, polyline) {
   map.removeLayer(polyline);
 }
 
-export function removeMarker(map, marker) {
+export function removeMarker(map: L.Map, marker: L.Marker) {
   map.removeLayer(marker);
 }
 
-export function drawPolylineOnMap(map, latLongs, color, polylineList) {
-  let polyline = L.polyline(latLongs, { color: color, weight: 7 }).addTo(map);
+export function drawPolylineOnMap(map: L.Map, latLongs: number[], color: string, weight: number, polylineList): L.Polyline {
+  let polyline = L.polyline(latLongs, { color: color, weight: weight }).addTo(map);
   polylineList.push(polyline);
   map.fitBounds(polyline.getBounds());
+
+  return polyline;
 }
 
 export function refreshMap(map){

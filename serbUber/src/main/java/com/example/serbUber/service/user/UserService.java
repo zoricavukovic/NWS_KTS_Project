@@ -1,5 +1,6 @@
 package com.example.serbUber.service.user;
 
+import com.example.serbUber.dto.user.RegistrationDTO;
 import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.*;
 import com.example.serbUber.model.Verify;
@@ -32,6 +33,7 @@ public class UserService implements IUserService {
     private final DriverUpdateApprovalService driverUpdateApprovalService;
     private final EmailService emailService;
     private final DriverService driverService;
+    private final RegularUserService regularUserService;
     private final VerifyService verifyService;
 
     public UserService(
@@ -39,12 +41,14 @@ public class UserService implements IUserService {
         final DriverUpdateApprovalService driverUpdateApprovalService,
         final EmailService emailService,
         final DriverService driverService,
+        final RegularUserService regularUserService,
         final VerifyService verifyService
     ) {
         this.userRepository = userRepository;
         this.driverUpdateApprovalService = driverUpdateApprovalService;
         this.emailService = emailService;
         this.driverService = driverService;
+        this.regularUserService = regularUserService;
         this.verifyService = verifyService;
     }
 
@@ -214,6 +218,27 @@ public class UserService implements IUserService {
         this.saveUser(user);
 
         return true;
+    }
+
+    public RegistrationDTO createRegularUser(
+        final String email,
+        final String password,
+        final String confirmationPassword,
+        final String name,
+        final String surname,
+        final String phoneNumber,
+        final String city,
+        final String profilePicture
+    ) throws PasswordsDoNotMatchException, EntityAlreadyExistsException, MailCannotBeSentException, EntityNotFoundException {
+        if (passwordsDontMatch(password, confirmationPassword)) {
+            throw new PasswordsDoNotMatchException();
+        }
+
+        if (checkIfUserAlreadyExists(email)) {
+            throw new EntityAlreadyExistsException(String.format("User with %s already exists.", email));
+        }
+
+        return regularUserService.registerRegularUser(email, password, name, surname, phoneNumber, city, profilePicture);
     }
 
     private void updateAndSavePassword(String newPassword, User user) {

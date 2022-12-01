@@ -1,5 +1,6 @@
 package com.example.serbUber.service.interfaces;
 
+import com.example.serbUber.dto.user.RegistrationDTO;
 import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.*;
 import com.example.serbUber.model.user.User;
@@ -44,7 +45,6 @@ public interface IUserService {
     boolean sendEmailForResetPassword(String email) throws EntityNotFoundException;
     UserDTO resetPassword(String email, String newPassword, String confirmPassword)
             throws EntityNotFoundException, PasswordsDoNotMatchException;
-    User findFirstAdmin() throws EntityNotFoundException;
     UserDTO setOnlineStatus(final String email) throws EntityNotFoundException;
     UserDTO setOfflineStatus(final String email) throws EntityNotFoundException, ActivityStatusCannotBeChangedException;
     User findOnlineAdmin() throws NoAvailableAdminException;
@@ -52,4 +52,13 @@ public interface IUserService {
     boolean activate(final Long verifyId, final int securityCode)
             throws EntityNotFoundException, WrongVerifyTryException;
 
+    RegistrationDTO createRegularUser(
+        final String email,
+        final String password,
+        final String confirmPassword,
+        final String name,
+        final String surname,
+        final String phoneNumber,
+        final String city, final String profilePicture
+    ) throws PasswordsDoNotMatchException, EntityAlreadyExistsException, MailCannotBeSentException, EntityNotFoundException;
 }

@@ -38,7 +38,7 @@ public class DriverController {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
     @ResponseStatus(HttpStatus.OK)
     public DriverDTO get(
-        @Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable Long id
+            @Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable Long id
     ) throws EntityNotFoundException {
 
         return driverService.get(id);
@@ -47,7 +47,7 @@ public class DriverController {
     @GetMapping("/rating/{id}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
-    public double getRating(@Valid @NotNull(message=NOT_NULL_MESSAGE) @PathVariable Long id) throws EntityNotFoundException{
+    public double getRating(@Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable Long id) throws EntityNotFoundException {
         return driverService.getDriverRating(id);
     }
 
@@ -58,17 +58,17 @@ public class DriverController {
             throws EntityNotFoundException, PasswordsDoNotMatchException, EntityAlreadyExistsException, MailCannotBeSentException {
 
         return driverService.create(
-            driverRegistrationRequest.getEmail(),
-            driverRegistrationRequest.getPassword(),
-            driverRegistrationRequest.getConfirmPassword(),
-            driverRegistrationRequest.getName(),
-            driverRegistrationRequest.getSurname(),
-            driverRegistrationRequest.getPhoneNumber(),
-            driverRegistrationRequest.getCity(),
-            driverRegistrationRequest.getProfilePicture(),
-            driverRegistrationRequest.getVehicle().isPetFriendly(),
-            driverRegistrationRequest.getVehicle().isBabySeat(),
-            driverRegistrationRequest.getVehicle().getVehicleType()
+                driverRegistrationRequest.getEmail(),
+                driverRegistrationRequest.getPassword(),
+                driverRegistrationRequest.getConfirmPassword(),
+                driverRegistrationRequest.getName(),
+                driverRegistrationRequest.getSurname(),
+                driverRegistrationRequest.getPhoneNumber(),
+                driverRegistrationRequest.getCity(),
+                driverRegistrationRequest.getProfilePicture(),
+                driverRegistrationRequest.getVehicle().isPetFriendly(),
+                driverRegistrationRequest.getVehicle().isBabySeat(),
+                driverRegistrationRequest.getVehicle().getVehicleType()
         );
     }
 
@@ -76,20 +76,19 @@ public class DriverController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('ROLE_DRIVER')")
     public DriverDTO updateActivityStatus(@Valid @RequestBody DriverActivityStatusRequest driverActivityStatusRequest)
-            throws ActivityStatusCannotBeChangedException, EntityNotFoundException
-    {
+            throws ActivityStatusCannotBeChangedException, EntityNotFoundException {
 
         return driverService.updateActivityStatus(
-               driverActivityStatusRequest.getId(),
-               driverActivityStatusRequest.isActive()
+                driverActivityStatusRequest.getId(),
+                driverActivityStatusRequest.isActive()
         );
     }
 
-//    @GetMapping("/findDriver/{id}")
-//    @ResponseStatus(HttpStatus.OK)
-//    @PreAuthorize("hasAnyRole('ROLE_REGULAR_USER')")
-//    public DriverDTO getDriverForDriving(@PathVariable Long id) throws EntityNotFoundException {
-//        return driverService.getDriverForDriving(id);
-//    }
+    @GetMapping("/findDriver/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_REGULAR_USER')")
+    public DriverDTO getDriverForDriving(@PathVariable Long id) throws EntityNotFoundException {
+        return driverService.getDriverForDriving(id);
+    }
 }
 

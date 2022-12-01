@@ -25,6 +25,9 @@ public class Driving {
     @Column(name="started")
     private LocalDateTime started;
 
+    @Column(name="end_date")
+    private LocalDateTime end;
+
     @Column(name="paying_limit")
     private LocalDateTime payingLimit;
 
@@ -56,6 +59,7 @@ public class Driving {
         final boolean active,
         final int duration,
         final LocalDateTime started,
+        final LocalDateTime end,
         final LocalDateTime payingLimit,
         final Route route,
         final DrivingStatus drivingStatus,
@@ -66,6 +70,7 @@ public class Driving {
         this.active = active;
         this.duration = duration;
         this.started = started;
+        this.end = end;
         this.payingLimit = payingLimit;
         this.route = route;
         this.drivingStatus = drivingStatus;
@@ -161,4 +166,11 @@ public class Driving {
         this.price = price;
     }
 
+    public LocalDateTime getEnd() {
+        return end;
+    }
+
+    public void setEnd(LocalDateTime end) {
+        this.end = end;
+    }
 }

@@ -13,24 +13,32 @@ import java.util.List;
 
 public interface IDrivingService {
     DrivingDTO create(
-            final boolean active,
-            final int duration,
-            final LocalDateTime started,
-            final LocalDateTime payingLimit,
-            final Route route,
-            final DrivingStatus drivingStatus,
-            final Long driverId,
-            final HashMap<Long, Boolean> usersPaid,
-            final double price
+        final boolean active,
+        final int duration,
+        final LocalDateTime started,
+        final LocalDateTime payingLimit,
+        final Route route,
+        final DrivingStatus drivingStatus,
+        final Long driverId,
+        final HashMap<Long, Boolean> usersPaid,
+        final double price
     );
 
     List<DrivingDTO> getAll();
 
-    List<DrivingPageDTO> getDrivingsForUser(Long id, int pageNumber, int pageSize, String parameter, String sortOrder) throws EntityNotFoundException;
-    DrivingDTO getDrivingDto(Long id) throws EntityNotFoundException;
-    Driving getDriving(Long id) throws EntityNotFoundException;
-    List<DrivingDTO> getAllNowAndFutureDrivings(Long id);
+    List<DrivingPageDTO> getDrivingsForUser(
+        final Long id,
+        final int pageNumber,
+        final int pageSize,
+        final String parameter,
+        final String sortOrder
+    ) throws EntityNotFoundException;
+    DrivingDTO getDrivingDto(final Long id) throws EntityNotFoundException;
+    Driving getDriving(final Long id) throws EntityNotFoundException;
+    List<DrivingDTO> getAllNowAndFutureDrivings(final Long id);
 
 
-    DrivingDTO rejectDriving(Long id, String reason) throws EntityNotFoundException;
+    DrivingDTO rejectDriving(final Long id, String reason) throws EntityNotFoundException;
+
+    DrivingDTO startDriving(final Long id) throws EntityNotFoundException;
 }

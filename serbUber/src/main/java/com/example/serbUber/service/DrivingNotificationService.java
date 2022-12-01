@@ -14,6 +14,7 @@ import com.example.serbUber.service.user.RegularUserService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Component
@@ -40,7 +41,9 @@ public class DrivingNotificationService implements IDrivingNotificationService {
             final double latEnd,
             final String senderEmail,
             final double price,
-            final List<String> passengers
+            final List<String> passengers,
+            final LocalDateTime started,
+            final int duration
     ) throws EntityNotFoundException {
         RegularUser sender = regularUserService.getRegularByEmail(senderEmail);
         List<DrivingNotificationDTO> notificationDTOs = new ArrayList<>();
@@ -48,7 +51,7 @@ public class DrivingNotificationService implements IDrivingNotificationService {
         passengers.forEach(passengerEmail -> {
             try {
                 notificationDTOs.add(
-                    createDrivingNotification(lonStarted, latStarted, lonEnd, latEnd, price, passengerEmail, sender)
+                    createDrivingNotification(lonStarted, latStarted, lonEnd, latEnd, price, passengerEmail, sender, started, duration)
                 );
             } catch (EntityNotFoundException e) {
                 System.out.println("User: " + passengerEmail + " is not found");
@@ -129,12 +132,14 @@ public class DrivingNotificationService implements IDrivingNotificationService {
         final double latEnd,
         final double price,
         final String passengerEmail,
-        final User sender
+        final User sender,
+        final LocalDateTime started,
+        final int duration
     ) throws EntityNotFoundException {
-        User passenger = regularUserService.getRegularByEmail(passengerEmail);
+        RegularUser passenger = regularUserService.getRegularByEmail(passengerEmail);
 
         DrivingNotification drivingNotification =  drivingNotificationRepository.save(
-            new DrivingNotification(lonStarted, latStarted, lonEnd, latEnd, price, sender, passenger, DrivingNotificationType.LINKED_USER)
+            new DrivingNotification(lonStarted, latStarted, lonEnd, latEnd, price, sender, passenger, DrivingNotificationType.LINKED_USER, started, duration)
         );
 
         return new DrivingNotificationDTO(drivingNotification);

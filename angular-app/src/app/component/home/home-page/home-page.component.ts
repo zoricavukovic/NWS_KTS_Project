@@ -1,18 +1,13 @@
-import {
-  Component,
-  Input,
-  OnDestroy,
-  OnInit,
-} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit,} from '@angular/core';
 import * as L from 'leaflet';
-import { OpenStreetMapProvider } from 'leaflet-geosearch';
-import { SearchingRoutesForm } from '../../../model/route/searching-routes-form';
-import { RouteService } from '../../../service/route.service';
-import { PossibleRoute } from '../../../model/route/possible-routes';
-import { User } from '../../../model/user/user';
-import { Subscription } from 'rxjs';
-import { AuthService } from '../../../service/auth.service';
-import { PossibleRoutesViaPoints } from '../../../model/route/possible-routes-via-points';
+import {OpenStreetMapProvider} from 'leaflet-geosearch';
+import {SearchingRoutesForm} from '../../../model/route/searching-routes-form';
+import {RouteService} from '../../../service/route.service';
+import {PossibleRoute} from '../../../model/route/possible-routes';
+import {User} from '../../../model/user/user';
+import {Subscription} from 'rxjs';
+import {AuthService} from '../../../service/auth.service';
+import {PossibleRoutesViaPoints} from '../../../model/route/possible-routes-via-points';
 import {
   changeOrAddMarker,
   drawPolylineOnMap,
@@ -20,9 +15,9 @@ import {
   removeMarker,
   removeOneLayer,
 } from '../../../util/map-functions';
-import { Location } from '../../../model/route/location';
-import { VehicleService } from '../../../service/vehicle.service';
-import { Vehicle } from '../../../model/vehicle/vehicle';
+import {Location} from '../../../model/route/location';
+import {VehicleService} from '../../../service/vehicle.service';
+import {Vehicle} from '../../../model/vehicle/vehicle';
 
 @Component({
   selector: 'home-page',
@@ -30,11 +25,10 @@ import { Vehicle } from '../../../model/vehicle/vehicle';
   styleUrls: ['./home-page.component.css'],
 })
 export class HomePageComponent implements OnInit, OnDestroy {
-  routeChoiceView = false;
-  filterVehicleView = true;
+  routeChoiceView = true;
+  filterVehicleView = false;
 
   @Input() map: L.Map;
-
   currentUser: User = null;
   isDriver: boolean;
   isRegular: boolean;
@@ -43,7 +37,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
   selectedRoute: PossibleRoute;
   maxNumberOfLocations: number = 5;
   possibleRoutesViaPoints: PossibleRoutesViaPoints[] = [];
-  drawPolylineList = [];
+  drawPolylineList: L.Polyline[] = [];
   searchingRoutesForm: SearchingRoutesForm[] = [];
   vehicles: Vehicle[];
   carMarkers: L.Marker[] = [];
@@ -60,7 +54,8 @@ export class HomePageComponent implements OnInit, OnDestroy {
     private routeService: RouteService,
     private authService: AuthService,
     private vehicleService: VehicleService
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.vehicleService.getAllVehicle().subscribe(vehicleCurrentLocation => {
@@ -73,7 +68,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
     });
     this.searchingRoutesForm.push(new SearchingRoutesForm());
     this.searchingRoutesForm.push(new SearchingRoutesForm());
-        
+
     this.authSubscription = this.authService.getSubjectCurrentUser().subscribe(
       user => {
         this.currentUser = user;
@@ -81,6 +76,39 @@ export class HomePageComponent implements OnInit, OnDestroy {
         this.isRegular = this.authService.userIsRegular();
       }
     );
+
+    this.map.originalEvent.preventDefault();
+    var div = L.DomUtil.get('route-div');
+    L.DomEvent.on(div, 'mousewheel', L.DomEvent.stopPropagation);
+    L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation);
+    L.DomEvent.on(div, 'dblclick', L.DomEvent.stopPropagation);
+    L.DomEvent.on(div, 'mousedown', L.DomEvent.stopPropagation);
+    L.DomEvent.on(div, 'weel', L.DomEvent.stopPropagation);
+    L.DomEvent.on(div, 'touchstart', L.DomEvent.stopPropagation);
+    L.DomEvent.on(div, 'dblclick', function (ev) {
+      L.DomEvent.stopPropagation(ev);
+    });
+    if (!L.Browser.touch) {
+      L.DomEvent.disableClickPropagation(div);
+      L.DomEvent.on(div, 'wheel', L.DomEvent.stopPropagation);
+    } else {
+      L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation);
+    }
+  }
+
+  ngOnDestroy(): void {
+    for (let i; i < this.searchingRoutesForm.length; i++) {
+      this.deleteMarker(i);
+    }
+
+    this.carMarkers.forEach(marker => removeMarker(this.map, marker));
+    this.removeAllPolylines();
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
+    }
+    if (this.routeSubscription) {
+      this.routeSubscription.unsubscribe();
+    }
 
   }
 
@@ -160,7 +188,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
   getPossibleRoutes() {
     const locationsForCreateRoutes: Location[] = [];
-    console.log(this.searchingRoutesForm);
+
     this.searchingRoutesForm.forEach(searchingRoutesLocation =>
       locationsForCreateRoutes.push(searchingRoutesLocation.location)
     );
@@ -172,7 +200,6 @@ export class HomePageComponent implements OnInit, OnDestroy {
         )
       )
       .subscribe(res => {
-        console.log(res);
         this.possibleRoutesViaPoints = res;
         if (res.length > 0) {
           this.changeCurrentRoutes(res);
@@ -185,50 +212,53 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
     let index: number = 0;
     routes.forEach(route => {
-      let latLongs = this.getLatLongsForFirstRoute(route);
-      this.drawPolyline(index, latLongs);
-      index++;
+      route.possibleRouteDTOList.forEach(oneRoute => {
+        let latLongs = this.getLatLongsRoute(oneRoute);
+        this.drawPolyline(index, latLongs);
+        index++;
+      })
     });
   }
-
-  ngOnDestroy(): void {
-    for (let i; i < this.searchingRoutesForm.length; i++) {
-      this.deleteMarker(i);
-    }
-
-    this.carMarkers.forEach(marker => removeMarker(this.map, marker));
-    this.removeAllPolylines();
-    if (this.authSubscription) {
-      this.authSubscription.unsubscribe();
-    }
-    if (this.routeSubscription) {
-      this.routeSubscription.unsubscribe();
-    }
-  }
-
-  private getLatLongsForFirstRoute(route: PossibleRoutesViaPoints) {
+  Z
+  private getLatLongsRoute(route: PossibleRoute): number[] {
     let latLongs = [];
-    route.possibleRouteDTOList
-      .at(0)
-      .pointList.forEach(latLng => latLongs.push([latLng[0], latLng[1]]));
+    route.pointList.forEach(latLng => latLongs.push([latLng[0], latLng[1]]));
 
     return latLongs;
   }
 
-  private drawPolyline(index: number, latLongs) {
-    let color: string = this.getPolylineColor(index);
-    drawPolylineOnMap(this.map, latLongs, color, this.drawPolylineList);
+  private drawPolyline(index: number, latLongs): void {
+    let color: string = index === 0 ? "#283b50" : "#cdd1d3";
+    let weight: number = index === 0 ? 9 : 7;
+    let polyline: L.Polyline = drawPolylineOnMap(this.map, latLongs, color, weight, this.drawPolylineList);
+    const that = this;
+    polyline.on("click", function (e) {
+      that.drawPolylineList.forEach(p => {
+        p.setStyle({
+          color: '#cdd1d3',
+          weight: 7
+        });
+
+        polyline.setStyle({
+          color: '#283b50',
+          weight: 9
+        });
+
+
+      })
+    });
   }
 
-  changeOptionRouteOnClick(route: PossibleRoute, idx: number) {
+  changeOptionRouteOnClick(route: PossibleRoute, idx: number): void {
     this.removeOnePolyline(idx);
 
     let latLongs = [];
     route.pointList.forEach(latLng => latLongs.push([latLng[0], latLng[1]]));
-    let color: string = this.getPolylineColor(idx);
-    drawPolylineOnMap(this.map, latLongs, color, this.drawPolylineList);
+    let color: string = "#283b50";
+    const weight: number = 9;
+    drawPolylineOnMap(this.map, latLongs, color, weight, this.drawPolylineList);
 
-    this.chooseVehicleAndPassengers(route);
+    // this.chooseVehicleAndPassengers(route);
   }
 
   getIconName(index: number): string {
@@ -253,12 +283,11 @@ export class HomePageComponent implements OnInit, OnDestroy {
   }
 
   private createLocation(place, index: number) {
-    const location: Location = {
+    this.searchingRoutesForm.at(index).location = {
       city: place.value,
       lat: place.y,
       lon: place.x,
     };
-    this.searchingRoutesForm.at(index).location = location;
   }
 
   private getIconUrl(index: number): string {
