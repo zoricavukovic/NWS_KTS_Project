@@ -61,6 +61,8 @@ export class ConfigService {
   private _get_favourite_routes =
     this._api_url + '/regular-users/favourite-routes/';
 
+  private _reports_for_user_url = this._api_url + '/reports/all-for-user/'
+
   private _send_reset_password_email =
     this._api_url + '/users/send-rest-password-link';
   private _reset_password = this._api_url + '/users/reset-password';
@@ -262,6 +264,10 @@ export class ConfigService {
 
   get_reviews_for_driver(driverId: number): string {
     return `${this._reviews_per_driver_url}/${driverId}`;
+  }
+
+  get_reports_for_user(id: number): string {
+    return `${this._reports_for_user_url}${id}`;
   }
 
   get driving_notifications_url(): string {

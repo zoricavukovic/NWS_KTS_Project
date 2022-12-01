@@ -4,6 +4,7 @@ import { User } from 'src/app/model/user/user';
 import { UserService } from 'src/app/service/user.service';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
+import { AuthService } from 'src/app/service/auth.service';
 
 
 @Component({
@@ -17,6 +18,8 @@ export class BasicUserProfileComponent implements OnInit, OnDestroy {
   userRole: string = "";
   user: User = null;
 
+  showReviews: boolean = true;
+
   userSubscription: Subscription;
 
   ROLE_DRIVER: string = "ROLE_DRIVER";
@@ -25,6 +28,7 @@ export class BasicUserProfileComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private userService: UserService,
+    private authService: AuthService,
     private toast: ToastrService,  
   ) { }
 
@@ -44,6 +48,11 @@ export class BasicUserProfileComponent implements OnInit, OnDestroy {
   userIsDriver(): boolean {
     
     return this.user?.role.name === this.ROLE_DRIVER;
+  }
+
+  loggedUserIsAdmin(): boolean {
+
+    return this.authService.userIsAdmin();
   }
 
   checkIfRoleIsDriverOrRegular(): boolean {

@@ -3108,3 +3108,28 @@ h1 {
   justify-content: center;
   align-items: center;
 }
+
+.status {
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50% 50%;
+  margin-bottom: 0.75rem;
+  position: absolute;
+}
+
+.status-offline {
+  background-color: red;
+}
+
+.status-active {
+  background-color: green;
+}
+
+.status-not-active {
+  background-color: orange;
+}
+
+.bottom-right-comments {
+  right: 20%;
+  bottom: 0;
+}

@@ -1,8 +1,9 @@
 <div>
     <div class="row">
         <div class="column">
-            <div class="image-wrap center-content">
+            <div class="image-wrap center-content" style="position: relative;">
                 <img class="profile-img center-content" [src]="configService.base64_show_photo_prefix + user?.profilePicture" alt="User's photo">
+                <span [class]="!user?.online ? 'status bottom-right status-offline' : 'status bottom-right status-active'"></span>
             </div>
             <p class="role-badge center-content"><b>{{getRoleName()}}</b></p>
         </div>

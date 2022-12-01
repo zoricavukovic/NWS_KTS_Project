@@ -1,9 +1,9 @@
 
 img.profile-img {
-    margin-top: 5%;
+    margin-top: 2%;
     border-radius: 50%;
-    width: 130px;
-    max-height: 130px;
+    width: 120px;
+    max-height: 120px;
     height: auto;
     border: 2px solid var(--deep-blue);
 }
@@ -17,7 +17,7 @@ img.profile-img {
 
 h1 {
     font-size: 2rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     font-weight: bold;
 }
 
@@ -38,4 +38,14 @@ h1 {
 
 span {
     display: flex;
+}
+
+.status {
+    width: 1.2rem;
+    height: 1.2rem;
+}
+
+.bottom-right {
+    right: 30%;
+    bottom: 0;
 }

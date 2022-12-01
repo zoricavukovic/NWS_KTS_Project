@@ -10,22 +10,6 @@
   margin-top: 0.7rem;
 }
 
-.status {
-  width: 0.8rem;
-  height: 0.8rem;
-  border-radius: 50% 50%;
-  margin-bottom: 0.75rem;
-  position: absolute;
-}
-
-.status-active {
-  background-color: green;
-}
-
-.status-not-active {
-  background-color: orange;
-}
-
 .temp {
   position: relative;
   display: inline-block;

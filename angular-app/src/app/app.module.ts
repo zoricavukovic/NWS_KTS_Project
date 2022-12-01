@@ -71,6 +71,7 @@ import { BasicUserDataComponent } from './component/user/basic-user-data/basic-u
 import { UserProfileReviewsComponent } from './component/user/user-profile-reviews/user-profile-reviews.component';
 import { UserAverageRateComponent } from './component/review/user-average-rate/user-average-rate.component';
 import { ReviewsHistoryComponent } from './component/review/reviews-history/reviews-history.component';
+import { ReportsHistoryComponent } from './component/report/reports-history/reports-history.component';
 
 
 
@@ -116,6 +117,7 @@ import { ReviewsHistoryComponent } from './component/review/reviews-history/revi
     UserProfileReviewsComponent,
     UserAverageRateComponent,
     ReviewsHistoryComponent,
+    ReportsHistoryComponent,
   ],
   imports: [
     BrowserModule,

@@ -8,6 +8,8 @@ import com.example.serbUber.model.user.RegularUser;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.example.serbUber.util.PictureHandler.convertPictureToBase64ByName;
+
 public class ReviewDTO {
 
     private Long id;
@@ -28,9 +30,10 @@ public class ReviewDTO {
 
     public static List<ReviewDTO> fromReviews(List<Review> reviews) {
         List<ReviewDTO> dtos = new LinkedList<>();
-        reviews.forEach(review ->
-                dtos.add(new ReviewDTO(review))
-        );
+        reviews.forEach(review -> {
+                review.getSender().setProfilePicture(convertPictureToBase64ByName(review.getSender().getProfilePicture()));
+                dtos.add(new ReviewDTO(review));
+        });
 
         return dtos;
     }
