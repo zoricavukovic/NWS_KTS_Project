@@ -10,8 +10,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
+import static com.example.serbUber.exception.ErrorMessagesConstants.MISSING_ID;
 
 
 @RestController
@@ -31,10 +33,17 @@ public class ReviewController {
         return this.reviewService.getAll();
     }
 
+    @GetMapping("/all-for-driver/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER')")
+    public List<ReviewDTO> getAllForDriver(@Valid @NotNull(message = MISSING_ID) @PathVariable Long id) {
+
+        return this.reviewService.getAllForDriver(id);
+    }
 
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void delete(@PathVariable Long id) {
+    public void delete(@Valid @NotNull(message = MISSING_ID) @PathVariable Long id) {
 
         this.reviewService.delete(id);
     }
@@ -55,7 +64,7 @@ public class ReviewController {
     @GetMapping("/reviewedDrivings/{id}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
-    public List<Long> getReviewDrivingsForUser(@PathVariable Long id){
+    public List<Long> getReviewDrivingsForUser(@Valid @NotNull(message = MISSING_ID) @PathVariable Long id){
         return reviewService.getAllReviewedDrivingIdForUser(id);
     }
 }

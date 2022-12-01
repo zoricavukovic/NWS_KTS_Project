@@ -1,0 +1,35 @@
+
+.average-rate {
+    margin-top: 7%;
+    margin-left: 5%;
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.average-rate-content {
+    background-color: white;
+    border-radius: 1rem;
+    margin-top: 5%;
+}
+
+span {
+    display: flex;
+}
+
+.smaller-row {
+    width: 70%;
+}
+
+h2 {
+    display: block !important;
+    font-size: 1.5rem;
+}
+
+.stars {
+    margin-left: 15%;
+}
+
+.not-rated {
+    margin-left: 0.4rem;
+    font-size: 1rem;
+}

@@ -1,0 +1,7 @@
+<div>
+    <p-carousel [value]="reviews" [numVisible]="3" [numScroll]="1" [showNavigators]="true">
+        <ng-template let-car pTemplate="item">
+            {{car.id}}
+        </ng-template>
+    </p-carousel>
+</div>

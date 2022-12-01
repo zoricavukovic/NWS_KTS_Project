@@ -14,11 +14,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-import static com.example.serbUber.exception.ErrorMessagesConstants.NOT_NULL_MESSAGE;
+import static com.example.serbUber.exception.ErrorMessagesConstants.MISSING_ID;
 
 @RestController
 @RequestMapping("/users")
@@ -39,9 +38,9 @@ public class UserController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-//    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
     public UserDTO get(
-            @Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable Long id
+            @Valid @NotNull(message = MISSING_ID) @PathVariable Long id
     ) throws EntityNotFoundException {
 
         return userService.get(id);

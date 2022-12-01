@@ -3,6 +3,7 @@ package com.example.serbUber.dto;
 import com.example.serbUber.model.Driving;
 import com.example.serbUber.model.Notification;
 import com.example.serbUber.model.Review;
+import com.example.serbUber.model.user.RegularUser;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -14,6 +15,7 @@ public class ReviewDTO {
     private double driverRate;
     private String message;
     private Driving driving;
+    private RegularUser sender;
 
     public ReviewDTO(final Review review) {
         this.id = review.getId();
@@ -21,6 +23,7 @@ public class ReviewDTO {
         this.driverRate = review.getDriverRate();
         this.message = review.getMessage();
         this.driving = review.getDriving();
+        this.sender = review.getSender();
     }
 
     public static List<ReviewDTO> fromReviews(List<Review> reviews) {
@@ -56,4 +59,7 @@ public class ReviewDTO {
         return reviews.size() - 1;
     }
 
+    public RegularUser getSender() {
+        return sender;
+    }
 }

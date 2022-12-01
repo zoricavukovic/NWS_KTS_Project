@@ -40,6 +40,7 @@ export class ConfigService {
   private _vehicle_rate_url = this._api_url + '/vehicles/rating/';
   private _all_active_vehicles_url: string = this._api_url + '/vehicles/active';
   private _rate_vehicle_driver_url = this._api_url + '/reviews';
+  private _reviews_per_driver_url = this._api_url + '/reviews/all-for-driver';
   private _have_driving_rate_url = this._api_url + '/reviews/haveDrivingRate/';
   private _reviewed_drivings_url = this._api_url + '/reviews/reviewedDrivings/';
   private _base64_show_photo_prefix = 'data:image/png;base64,';
@@ -229,6 +230,10 @@ export class ConfigService {
     return this._all_users_url;
   }
 
+  user_by_id_url(id: string): string {
+    return `${this._users_url}/${id}`;
+  }
+
   get_count_drivings(id: number): string {
     return this._drivings_count_url + id;
   }
@@ -245,8 +250,12 @@ export class ConfigService {
     return `${this._reject_driving_url}/${drivingId}`;
   }
 
-  get_price_for_driving(type: string, kilometers: number) {
+  get_price_for_driving(type: string, kilometers: number): string {
     return this._price_for_driving_url + '/' + type + '/' + kilometers;
+  }
+
+  get_reviews_for_driver(driverId: number): string {
+    return `${this._reviews_per_driver_url}/${driverId}`;
   }
 
   get driving_notifications_url(): string {

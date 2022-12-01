@@ -30,7 +30,8 @@ public class DriverDTO extends UserDTO {
             driver.getCity(),
             driver.getProfilePicture(),
             driver.getRole(),
-            driver.getPassword()
+            driver.getPassword(),
+            driver.isOnline()
         );
         this.blocked = driver.isBlocked();
         this.rate = driver.getRate();

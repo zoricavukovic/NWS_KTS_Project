@@ -17,7 +17,8 @@ public class AdminDTO extends UserDTO{
             admin.getCity(),
             admin.getProfilePicture(),
             admin.getRole(),
-            admin.getPassword()
+            admin.getPassword(),
+            admin.isOnline()
         );
     }
 

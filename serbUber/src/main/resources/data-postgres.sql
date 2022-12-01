@@ -125,5 +125,11 @@ insert into messages(message, time_stamp, admin_response, chat_room_id, seen) va
 insert into messages(message, time_stamp, admin_response, chat_room_id, seen) values
     ('Cao, potrebna mi je pomoc..', '11.11.2022. 15:00', false, 4, false);
 
+insert into reviews(vehicle_rate, driver_rate, message, sender_id, driving_id) values
+    (4, 4.3, 'Cisto vozilo, prijatna voznja..', 2, 1),
+    (2.1, 4, 'Klima nije radila...', 2, 2),
+    (2.6, 4, 'Klima ne radi, vozilo prljavo.', 3, 2),
+    (5, 4, 'Dobar utisak..', 3, 7);
+
 
 

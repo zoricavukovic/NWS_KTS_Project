@@ -97,6 +97,12 @@ export class UserService {
     });
   }
 
+  getUser(id: string): Observable<User> {
+    return this.http.get<User>(this.configService.user_by_id_url(id), {
+      headers: this.configService.getHeader()
+    });
+  }
+
   createUserDetails(
     email: string,
     name: string,

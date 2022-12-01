@@ -1,0 +1,33 @@
+<div>
+    <div class="row">
+        <div class="column">
+            <div class="image-wrap center-content">
+                <img class="profile-img center-content" [src]="configService.base64_show_photo_prefix + user?.profilePicture" alt="User's photo">
+            </div>
+            <p class="role-badge center-content"><b>{{getRoleName()}}</b></p>
+        </div>
+        <div class="column">
+            <div class="user-data">
+                <h1>{{user?.name + " " + user?.surname}}</h1>
+                <label>
+                    <span>
+                        <mat-icon class="icon-size ">mail_outline</mat-icon>
+                        <b>{{user?.email}}</b>
+                    </span>
+                </label>
+                <label>
+                    <span>
+                        <mat-icon>call</mat-icon>
+                        <b>{{user?.phoneNumber}}</b>
+                    </span>
+                </label>
+                <label>
+                    <span>
+                        <mat-icon>home</mat-icon>
+                        <span><b>{{user?.city}}</b></span>
+                    </span>
+                </label>
+            </div>
+        </div>
+    </div>
+</div>

@@ -3088,3 +3088,23 @@ h1 {
 .mat-icon-deep-blue {
   color: var(--deep-blue);
 }
+
+.row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 100%;
+  flex: 1;
+}
+
+.center-content {
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}

@@ -1,0 +1,10 @@
+<div class="form-container">
+    <div *ngIf="userRole; else noDataBlock">
+        <app-basic-user-data [user]="user"></app-basic-user-data>
+        <app-user-average-rate *ngIf="userIsDriver()" [driverId]="user.id"></app-user-average-rate>
+        <app-reviews-history [userId]="user.id" [isDriver]="userIsDriver()"></app-reviews-history>
+    </div>
+    <ng-template #noDataBlock>
+        <h2 class="center">There is nothing to show.</h2>
+    </ng-template>
+</div>
