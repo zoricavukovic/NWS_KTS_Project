@@ -11,7 +11,6 @@ import { DrivingNotificationRequest } from '../model/request/driving-notificatio
 import { DrivingNotificationService } from './driving-notification.service';
 import { DriverService } from './driver.service';
 import { DriverActivityResetNotification } from '../model/notification/driver-activity-reset-notification';
-import { AuthService } from './auth.service';
 import { BlockNotification } from '../model/notification/block-notification';
 import { Router } from '@angular/router';
 
@@ -45,7 +44,7 @@ export class WebSocketService {
   }
 
   connect() {
-    if (!this.initialized) {
+    if (!this.initialized && localStorage.getItem('email') !== null) {
       this.initialized = true;
       const serverUrl = environment.webSocketUrl;
       const ws = new SockJS(serverUrl);
