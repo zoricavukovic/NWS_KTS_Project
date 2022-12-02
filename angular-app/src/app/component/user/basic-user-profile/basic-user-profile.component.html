@@ -1,5 +1,5 @@
 <div class="form-container">
-    <div *ngIf="userRole; else noDataBlock">
+    <div *ngIf="userId && user; else noDataBlock">
         <app-basic-user-data [user]="user"></app-basic-user-data>
         <div *ngIf="userIsDriver()" class="rating">
             <app-user-average-rate *ngIf="userIsDriver()" [driverId]="user.id"></app-user-average-rate>
@@ -14,7 +14,9 @@
         </mat-tab-group>
         <app-reviews-history *ngIf="userIsDriver() && !loggedUserIsAdmin() && user" [userId]="user.id"></app-reviews-history>
         <app-reports-history *ngIf="!userIsDriver() && loggedUserIsAdmin() && user" [userId]="user.id"></app-reports-history>
-            
+        <div *ngIf="loggedUserIsAdmin()" style="position: relative;">
+            <button mat-raised-button class="green-button block-button" (click)="blockUser()">Block</button>
+        </div>    
     </div>
     <ng-template #noDataBlock>
         <h2 class="center">There is nothing to show.</h2>

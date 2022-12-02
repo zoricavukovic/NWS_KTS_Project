@@ -3,6 +3,7 @@ package com.example.serbUber.controller.user;
 import com.example.serbUber.dto.user.RegistrationDTO;
 import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.*;
+import com.example.serbUber.request.BlockingRequest;
 import com.example.serbUber.request.VerifyRequest;
 import com.example.serbUber.request.user.*;
 import com.example.serbUber.service.user.UserService;
@@ -111,6 +112,38 @@ public class UserController {
             throws EntityNotFoundException, WrongVerifyTryException {
 
         return userService.activate(verifyRequest.getVerifyId(), verifyRequest.getSecurityCode());
+    }
+
+    @PutMapping("/block")
+    @ResponseStatus(HttpStatus.OK)
+    public boolean block(@Valid @RequestBody BlockingRequest blockingRequest)
+            throws EntityNotFoundException, EntityUpdateException {
+
+        return userService.block(
+                blockingRequest.getUserId(),
+                blockingRequest.getReason()
+        );
+    }
+
+    @PostMapping("/create/driver")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public UserDTO create(@Valid @RequestBody DriverRegistrationRequest driverRegistrationRequest)
+            throws EntityNotFoundException, PasswordsDoNotMatchException, EntityAlreadyExistsException, MailCannotBeSentException {
+
+        return userService.createDriver(
+                driverRegistrationRequest.getEmail(),
+                driverRegistrationRequest.getPassword(),
+                driverRegistrationRequest.getConfirmPassword(),
+                driverRegistrationRequest.getName(),
+                driverRegistrationRequest.getSurname(),
+                driverRegistrationRequest.getPhoneNumber(),
+                driverRegistrationRequest.getCity(),
+                driverRegistrationRequest.getProfilePicture(),
+                driverRegistrationRequest.getVehicle().isPetFriendly(),
+                driverRegistrationRequest.getVehicle().isBabySeat(),
+                driverRegistrationRequest.getVehicle().getVehicleType()
+        );
     }
 
 

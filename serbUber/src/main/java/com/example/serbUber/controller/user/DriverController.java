@@ -51,27 +51,6 @@ public class DriverController {
         return driverService.getDriverRating(id);
     }
 
-    @PostMapping("/register")
-    @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-    public UserDTO create(@Valid @RequestBody DriverRegistrationRequest driverRegistrationRequest)
-            throws EntityNotFoundException, PasswordsDoNotMatchException, EntityAlreadyExistsException, MailCannotBeSentException {
-
-        return driverService.create(
-                driverRegistrationRequest.getEmail(),
-                driverRegistrationRequest.getPassword(),
-                driverRegistrationRequest.getConfirmPassword(),
-                driverRegistrationRequest.getName(),
-                driverRegistrationRequest.getSurname(),
-                driverRegistrationRequest.getPhoneNumber(),
-                driverRegistrationRequest.getCity(),
-                driverRegistrationRequest.getProfilePicture(),
-                driverRegistrationRequest.getVehicle().isPetFriendly(),
-                driverRegistrationRequest.getVehicle().isBabySeat(),
-                driverRegistrationRequest.getVehicle().getVehicleType()
-        );
-    }
-
     @PutMapping("/activity")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('ROLE_DRIVER')")

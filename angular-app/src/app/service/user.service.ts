@@ -11,6 +11,7 @@ import { User } from '../model/user/user';
 import { Observable } from 'rxjs';
 import { Role } from '../model/user/role';
 import {RegistrationResponse} from "../model/user/registration-response";
+import { BlockNotification } from '../model/notification/block-notification';
 
 @Injectable({
   providedIn: 'root',
@@ -34,6 +35,12 @@ export class UserService {
 
   updateProfileData(data: UserDetails): Observable<User> {
     return this.http.put<User>(this.configService.users_url, data, {
+      headers: this.configService.getHeader(),
+    });
+  }
+
+  blockUser(data: BlockNotification): Observable<boolean> {
+    return this.http.put<boolean>(this.configService.block_user_url, data, {
       headers: this.configService.getHeader(),
     });
   }

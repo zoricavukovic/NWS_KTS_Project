@@ -14,6 +14,13 @@ mat-tab-group {
     margin-top: 3%;
 }
 
+.block-button {
+    margin-top: 3%;
+    background-color: var(--red);
+    float: right;
+    margin-right: 1.5rem;
+}
+
 /* .options-button {
     margin-top: 2%;
     height: 2rem;

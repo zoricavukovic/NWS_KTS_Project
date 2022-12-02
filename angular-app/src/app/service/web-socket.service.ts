@@ -10,8 +10,12 @@ import { VehicleCurrentLocation } from '../model/vehicle/vehicle-current-locatio
 import { DrivingNotificationRequest } from '../model/request/driving-notification-request';
 import { DrivingNotificationService } from './driving-notification.service';
 import { DriverService } from './driver.service';
-import { Driver } from '../model/user/driver';
 import { DriverActivityResetNotification } from '../model/notification/driver-activity-reset-notification';
+import { AuthService } from './auth.service';
+import { BlockNotification } from '../model/notification/block-notification';
+
+
+
 @Injectable({
   providedIn: 'root',
 })
@@ -63,7 +67,12 @@ export class WebSocketService {
   checkNotificationType(message: string) {
     if (this.isActivityResetNotification(message)) {
       this.driverService.showActivityStatusResetNotification(JSON.parse(message));
-    } else {
+    } else if (this.isBlockingNotification(message)) {
+      this.disconnect();
+      localStorage.clear();
+      window.location.reload();
+    } 
+    else {
       this.isMessageType(message) ?
         this.chatRoomService.addMessage(JSON.parse(message)) :
         this.drivingNotificationService.showNotification(JSON.parse(message))
@@ -94,6 +103,15 @@ export class WebSocketService {
           }
         );
       });
+    }
+  }
+
+  private isBlockingNotification(message: string): boolean {
+    try {
+      const parsed: BlockNotification = JSON.parse(message);
+      return (parsed.blockConfirmed !== null && parsed.blockConfirmed !== undefined)
+    } catch (e) {
+      return false;
     }
   }
 

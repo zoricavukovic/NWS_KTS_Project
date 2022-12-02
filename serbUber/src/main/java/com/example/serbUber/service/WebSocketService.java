@@ -8,13 +8,21 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.example.serbUber.util.Constants.BLOCKED_NOTIFICATION;
+
 @Service
 public class WebSocketService {
 
     private final SimpMessagingTemplate messagingTemplate;
 
-    public WebSocketService(final SimpMessagingTemplate messagingTemplate) {
+    private final EmailService emailService;
+
+    public WebSocketService(
+            final SimpMessagingTemplate messagingTemplate,
+            final EmailService emailService
+    ) {
         this.messagingTemplate = messagingTemplate;
+        this.emailService = emailService;
     }
 
     public void sendVehicleCurrentLocation(List<VehicleCurrentLocationDTO> vehicleDTOs) {
@@ -29,5 +37,10 @@ public class WebSocketService {
 
     public void sendActivityResetNotification(DriverActivityResetNotificationDTO dto) {
         this.messagingTemplate.convertAndSendToUser(dto.getEmail(), "/connect", dto);
+    }
+
+    public void sendBlockedNotification(final String email, final String reason) {
+        this.emailService.sendMail(email, "Blocke on SerbUber", reason);
+        this.messagingTemplate.convertAndSendToUser(email, "/connect", BLOCKED_NOTIFICATION);
     }
 }

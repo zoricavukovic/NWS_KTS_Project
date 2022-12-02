@@ -31,4 +31,6 @@ public interface IDriverService {
     Double getDriverRating(final Long id);
     DriverDTO updateActivityStatus(final Long id, boolean active)
             throws EntityNotFoundException, ActivityStatusCannotBeChangedException;
+    boolean blockDriver(final Long id, final String reason)
+            throws EntityNotFoundException, EntityUpdateException;
 }

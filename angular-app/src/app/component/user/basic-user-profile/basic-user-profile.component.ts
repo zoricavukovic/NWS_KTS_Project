@@ -5,6 +5,8 @@ import { UserService } from 'src/app/service/user.service';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/service/auth.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmBlockingDialogComponent } from '../confirm-blocking-dialog/confirm-blocking-dialog.component';
 
 
 @Component({
@@ -15,12 +17,12 @@ import { AuthService } from 'src/app/service/auth.service';
 export class BasicUserProfileComponent implements OnInit, OnDestroy {
 
   userId: string = "";
-  userRole: string = "";
   user: User = null;
 
   showReviews: boolean = true;
 
   userSubscription: Subscription;
+  blockUserSubscription: Subscription;
 
   ROLE_DRIVER: string = "ROLE_DRIVER";
   ROLE_REGULAR: string = "ROLE_REGULAR_USER";
@@ -29,12 +31,12 @@ export class BasicUserProfileComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private userService: UserService,
     private authService: AuthService,
+    private dialogBlockReason: MatDialog,
     private toast: ToastrService,  
   ) { }
 
   ngOnInit(): void {
     this.userId = this.route.snapshot.paramMap.get('id');
-    this.userRole = this.route.snapshot.paramMap.get('role');
     this.userSubscription = this.userService.getUser(this.userId).subscribe(
       (user: User) => {
         this.user = user
@@ -55,14 +57,32 @@ export class BasicUserProfileComponent implements OnInit, OnDestroy {
     return this.authService.userIsAdmin();
   }
 
-  checkIfRoleIsDriverOrRegular(): boolean {
+  blockUser(): void {
+    let dialogRef = this.dialogBlockReason.open(ConfirmBlockingDialogComponent, {
+      data: this.user,
+    });
 
-    return this.userRole === this.ROLE_DRIVER || this.userRole === this.ROLE_REGULAR
+    dialogRef.afterClosed().subscribe(blockNotification => {
+      if (blockNotification) {
+        console.log(JSON.stringify(blockNotification))
+        this.blockUserSubscription = this.userService.blockUser(blockNotification).subscribe(
+          res => {
+            this.toast.success(`User with id ${this.userId} is successfully blocked.`, 'User blocked!');
+          }, 
+          error => {
+            this.toast.error(error.error, 'User cannot be blocked!');
+          });
+      }
+    });
   }
 
   ngOnDestroy(): void {
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();
+    }
+
+    if (this.blockUserSubscription) {
+      this.blockUserSubscription.unsubscribe();
     }
   }
 

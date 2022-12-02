@@ -37,7 +37,7 @@ const routes: Routes = [
   { path: 'drivers', component: ShowDriversComponent },
   { path: 'users', component: ShowUsersComponent },
   { path: 'favourite-routes', component: FavouriteRoutesComponent },
-  { path: 'user-profile/:id/:role', component: BasicUserProfileComponent },
+  { path: 'user-profile/:id', component: BasicUserProfileComponent },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
 ];
 

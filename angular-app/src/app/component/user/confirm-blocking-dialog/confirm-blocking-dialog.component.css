@@ -1,0 +1,8 @@
+
+textarea {
+    width: 100%;
+}
+
+.block-button {
+    background-color: var(--red);
+}

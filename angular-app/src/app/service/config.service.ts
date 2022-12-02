@@ -28,8 +28,9 @@ export class ConfigService {
   private _login_with_gmail_user = this._api_url + '/auth/login/google';
   private _login_with_facebook_user = this._api_url + '/auth/login/facebook';
   private _register_user = this._api_url + '/users/create/regular-user';
-  private _register_driver = this._api_url + '/drivers/register';
+  private _register_driver = this._api_url + '/users/create/driver';
   private _verify_url = this._api_url + '/users/activate-account';
+  private _block_user_url = this._api_url + '/users/block';
   private _send_verify_code_again = this._api_url + '/verify/send-code-again';
   private _vehicle_type_infos = this._api_url + '/vehicle-type-infos';
 
@@ -272,5 +273,9 @@ export class ConfigService {
 
   get driving_notifications_url(): string {
     return this._driving_notifications_url;
+  }
+
+  get block_user_url(): string {
+    return this._block_user_url;
   }
 }
