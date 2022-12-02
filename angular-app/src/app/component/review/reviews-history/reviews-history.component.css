@@ -66,4 +66,9 @@ mat-icon {
     padding: 0.5rem;
 }
 
+.one-card-impression {
+    margin-right: 1rem;
+    flex-basis: 30% !important;
+}
+
 

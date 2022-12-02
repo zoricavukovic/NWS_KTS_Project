@@ -18,6 +18,10 @@ export class UserRowComponent {
     this.router.navigate(['/drivings', this.user.id]);
   }
 
+  goToUserProfile(): void {
+    this.router.navigate([`/user-profile/${this.user?.id}`]);
+  }
+
   getBase64Prefix(): string {
     return this.configService.base64_show_photo_prefix;
   }

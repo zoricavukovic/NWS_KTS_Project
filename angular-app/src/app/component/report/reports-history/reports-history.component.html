@@ -5,7 +5,8 @@
                 <div>
                     <div class="row">
                         <div class="column" style="position: relative;">
-                            <img [src]="getBase64Prefix() + report.sender.profilePicture">
+                            <img [src]="getBase64Prefix() + report.sender.profilePicture"
+                            (click)="goToUserProfile(report.sender.id)">
                             <span [class]="!report.sender.online ? 'status bottom-right-comments status-offline' : 'status bottom-right-comments status-active'"></span>
                         </div>
                         <div [class]="reports.length > 1 ? 'column name-column' : 'column one-card'">

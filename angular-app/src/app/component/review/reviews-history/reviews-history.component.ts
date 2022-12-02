@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs';
 import { Review } from 'src/app/model/review/rate-review';
 import { ReviewService } from 'src/app/service/review.service';
 import { ConfigService } from 'src/app/service/config.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-reviews-history',
@@ -18,7 +19,8 @@ export class ReviewsHistoryComponent implements OnInit, OnDestroy {
 
   constructor(
     private reviewService: ReviewService,
-    private configService: ConfigService
+    private configService: ConfigService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -35,6 +37,11 @@ export class ReviewsHistoryComponent implements OnInit, OnDestroy {
         }
       }
     );
+  }
+
+  goToUserProfile(id: number): void {
+    this.router.navigateByUrl('/', {skipLocationChange: true}).then(()=>
+    this.router.navigate([`/user-profile/${id}`]));
   }
 
   getBase64Prefix(): string {

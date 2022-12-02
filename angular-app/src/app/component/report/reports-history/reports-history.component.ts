@@ -1,4 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Report } from 'src/app/model/report/report';
 import { ConfigService } from 'src/app/service/config.service';
@@ -18,7 +19,8 @@ export class ReportsHistoryComponent implements OnInit, OnDestroy {
 
   constructor(
     private reportService: ReportService,
-    private configService: ConfigService
+    private configService: ConfigService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -35,6 +37,11 @@ export class ReportsHistoryComponent implements OnInit, OnDestroy {
         }
       }
     );
+  }
+
+  goToUserProfile(id: number): void {
+    this.router.navigateByUrl('/', {skipLocationChange: true}).then(()=>
+    this.router.navigate([`/user-profile/${id}`]));
   }
 
   getBase64Prefix(): string {

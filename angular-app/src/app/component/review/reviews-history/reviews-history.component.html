@@ -1,11 +1,11 @@
 <div class="reviews-content">
-    <p-carousel *ngIf="reviews?.length > 0" [value]="reviews" [numVisible]="2" [numScroll]="2" >
+    <p-carousel *ngIf="reviews?.length > 0; else noReviewsBlock" [value]="reviews" [numVisible]="2" [numScroll]="2" >
         <ng-template let-review pTemplate="item">
             <div class="review-item-content">
                 <div>
                     <div class="row">
                         <div class="column" style="position: relative;">
-                            <img [src]="getBase64Prefix() + review.sender.profilePicture">
+                            <img [src]="getBase64Prefix() + review.sender.profilePicture" (click)="goToUserProfile(review.sender.id)">
                             <span [class]="!review.sender.online ? 'status bottom-right-comments status-offline' : 'status bottom-right-comments status-active'"></span>
                         </div>
                         <div [class]="reviews.length > 1 ? 'column name-column' : 'column one-card'">
@@ -18,7 +18,7 @@
                                 {{"Driving #" + review.driving.id}}
                             </span>
                         </div>
-                        <div class="column">
+                        <div [class]="reviews.length > 1 ? 'column' : 'column one-card-impression'">
                             <span class="general-impression">
                                 <b>{{getGeneralImpression(review)}}</b>
                             </span>
@@ -49,7 +49,7 @@
             </div>
         </ng-template>
     </p-carousel>
-    <ng-template>
+    <ng-template #noReviewsBlock>
         <div id="no-reports">
             There are no reviews for this user.
         </div>

@@ -5,7 +5,7 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ConfigService } from 'src/app/service/config.service';
 import { AuthService } from 'src/app/service/auth.service';
 import { Subscription } from 'rxjs';
@@ -58,7 +58,8 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private userService: UserService,
     private drivingService: DrivingService,
-    private driverService: DriverService
+    private driverService: DriverService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -131,6 +132,14 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
 
   getBase64Prefix(): string {
     return this.configService.base64_show_photo_prefix;
+  }
+
+  goToDriverProfile(): void {
+    this.router.navigate([`/user-profile/${this.driver?.id}`]);
+  }
+
+  goToPassengerProfile(id: number): void {
+    this.router.navigate([`/user-profile/${id}`]);
   }
 
   ngOnDestroy(): void {

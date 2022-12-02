@@ -298,4 +298,5 @@ export class ConfigService {
   get block_user_url(): string {
     return this._block_user_url;
   }
+
 }

@@ -35,7 +35,7 @@ public class ReviewController {
 
     @GetMapping("/all-for-driver/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
     public List<ReviewDTO> getAllForDriver(@Valid @NotNull(message = MISSING_ID) @PathVariable Long id) {
 
         return this.reviewService.getAllForDriver(id);

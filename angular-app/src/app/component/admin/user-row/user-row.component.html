@@ -1,6 +1,7 @@
 <mat-card class="card">
   <div style="display:flex">
-    <img mat-card-avatar class="img-user" [src]="getBase64Prefix() + user.profilePicture">
+    <img mat-card-avatar class="img-user" [src]="getBase64Prefix() + user.profilePicture"
+    (click)="goToUserProfile()">
     <mat-card-content>
     <div class="user-info-container">
       <h1>{{user.name}} {{user.surname}}</h1>
