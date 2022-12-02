@@ -29,6 +29,7 @@ import java.util.Optional;
 import static com.example.serbUber.SerbUberApplication.hopper;
 import static com.example.serbUber.dto.user.DriverDTO.fromDrivers;
 import static com.example.serbUber.exception.ErrorMessagesConstants.ACTIVE_DRIVING_IN_PROGRESS_MESSAGE;
+import static com.example.serbUber.exception.ErrorMessagesConstants.UNBLOCK_UNBLOCKED_USER_MESSAGE;
 import static com.example.serbUber.util.Constants.*;
 import static com.example.serbUber.util.JwtProperties.getHashedNewUserPassword;
 
@@ -271,6 +272,23 @@ public class DriverService implements IDriverService{
         driver.setBlocked(true);
         driverRepository.save(driver);
         this.webSocketService.sendBlockedNotification(driver.getEmail(), reason);
+
+        return true;
+    }
+
+    public boolean getIsBlocked(Long id) {
+
+        return driverRepository.getIsBlocked(id);
+    }
+
+    public boolean unblock(Long id)
+            throws EntityNotFoundException, EntityUpdateException {
+        Driver driver = getDriverById(id);
+        if (!driver.isBlocked()) {
+            throw new EntityUpdateException(UNBLOCK_UNBLOCKED_USER_MESSAGE);
+        }
+        driver.setBlocked(false);
+        driverRepository.save(driver);
 
         return true;
     }

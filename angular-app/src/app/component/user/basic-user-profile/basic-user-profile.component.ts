@@ -20,9 +20,12 @@ export class BasicUserProfileComponent implements OnInit, OnDestroy {
   user: User = null;
 
   showReviews: boolean = true;
+  userBlocked: boolean = false;
 
   userSubscription: Subscription;
+  blockedUserSubscription: Subscription;
   blockUserSubscription: Subscription;
+  unblockUserSubscription: Subscription;
 
   ROLE_DRIVER: string = "ROLE_DRIVER";
   ROLE_REGULAR: string = "ROLE_REGULAR_USER";
@@ -40,9 +43,22 @@ export class BasicUserProfileComponent implements OnInit, OnDestroy {
     this.userSubscription = this.userService.getUser(this.userId).subscribe(
       (user: User) => {
         this.user = user
+        if (user && this.loggedUserIsAdmin()) {
+          this.loadBlocked();
+        }
       },
       error => {
         this.toast.error(`User with id ${this.userId} not found.`, 'User not found');
+      }
+    );
+  }
+
+  loadBlocked(): void {
+    this.blockedUserSubscription = this.userService.getBlockedData(this.user.id, this.userIsDriver()).subscribe(
+      response => {
+        if (response) {
+          this.userBlocked = response;
+        }
       }
     );
   }
@@ -68,12 +84,24 @@ export class BasicUserProfileComponent implements OnInit, OnDestroy {
         this.blockUserSubscription = this.userService.blockUser(blockNotification).subscribe(
           res => {
             this.toast.success(`User with id ${this.userId} is successfully blocked.`, 'User blocked!');
+            this.userBlocked = true;
           }, 
           error => {
             this.toast.error(error.error, 'User cannot be blocked!');
           });
       }
     });
+  }
+
+  unblockUser(): void {
+    this.unblockUserSubscription = this.userService.unblockUser(this.user.id, this.userIsDriver()).subscribe(
+      res => {
+        this.toast.success(`User with id ${this.userId} is successfully unblocked.`, 'User unblocked!');
+        this.userBlocked = false;
+      }, 
+      error => {
+        this.toast.error(error.error, 'User cannot be unblocked!');
+      });
   }
 
   ngOnDestroy(): void {
@@ -83,6 +111,14 @@ export class BasicUserProfileComponent implements OnInit, OnDestroy {
 
     if (this.blockUserSubscription) {
       this.blockUserSubscription.unsubscribe();
+    }
+
+    if (this.blockedUserSubscription !== null && this.blockUserSubscription !== undefined) {
+      this.blockUserSubscription.unsubscribe();
+    }
+
+    if (this.unblockUserSubscription) {
+      this.unblockUserSubscription.unsubscribe();
     }
   }
 

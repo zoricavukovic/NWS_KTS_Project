@@ -31,6 +31,10 @@ export class ConfigService {
   private _register_driver = this._api_url + '/users/create/driver';
   private _verify_url = this._api_url + '/users/activate-account';
   private _block_user_url = this._api_url + '/users/block';
+  private _blocked_data_regular_url = this._api_url + '/regular-users/blocked-data/';
+  private _blocked_data_driver_url = this._api_url + '/drivers/blocked-data/';
+  private _unblock_regular_url = this._api_url + '/regular-users/unblock/';
+  private _unblock_driver_url = this._api_url + '/drivers/unblock/';
   private _send_verify_code_again = this._api_url + '/verify/send-code-again';
   private _vehicle_type_infos = this._api_url + '/vehicle-type-infos';
 
@@ -269,6 +273,22 @@ export class ConfigService {
 
   get_reports_for_user(id: number): string {
     return `${this._reports_for_user_url}${id}`;
+  }
+
+  get_blocked_data_regular_url(id: number): string {
+    return `${this._blocked_data_regular_url}${id}`;
+  }
+
+  get_blocked_data_driver_url(id: number): string {
+    return `${this._blocked_data_driver_url}${id}`;
+  }
+
+  get_unblock_regular_url(id: number): string {
+    return `${this._unblock_regular_url}${id}`;
+  }
+
+  get_unblock_driver_url(id: number): string {
+    return `${this._unblock_driver_url}${id}`;
   }
 
   get driving_notifications_url(): string {

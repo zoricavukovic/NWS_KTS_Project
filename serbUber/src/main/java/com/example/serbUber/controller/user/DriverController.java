@@ -44,6 +44,16 @@ public class DriverController {
         return driverService.get(id);
     }
 
+    @GetMapping("/blocked-data/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
+    public boolean getBlocked(
+            @Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable Long id
+    ) throws EntityNotFoundException {
+
+        return driverService.getIsBlocked(id);
+    }
+
     @GetMapping("/rating/{id}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
@@ -61,6 +71,16 @@ public class DriverController {
                 driverActivityStatusRequest.getId(),
                 driverActivityStatusRequest.isActive()
         );
+    }
+
+    @PutMapping("/unblock/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
+    public boolean unblock(
+            @Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable Long id
+    ) throws EntityNotFoundException, EntityUpdateException {
+
+        return driverService.unblock(id);
     }
 
     @GetMapping("/findDriver/{id}")

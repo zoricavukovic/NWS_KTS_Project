@@ -21,6 +21,7 @@ import java.util.Optional;
 
 import static com.example.serbUber.dto.RouteDTO.fromRoutes;
 import static com.example.serbUber.dto.user.RegularUserDTO.fromRegularUsers;
+import static com.example.serbUber.exception.ErrorMessagesConstants.UNBLOCK_UNBLOCKED_USER_MESSAGE;
 import static com.example.serbUber.util.Constants.ROLE_REGULAR_USER;
 import static com.example.serbUber.util.Constants.getProfilePicture;
 import static com.example.serbUber.util.JwtProperties.getHashedNewUserPassword;
@@ -160,6 +161,23 @@ public class RegularUserService implements IRegularUserService {
         return true;
     }
 
+    public boolean getIsBlocked(Long id) {
+
+        return regularUserRepository.getIsBlocked(id);
+    }
+
+    public boolean unblock(Long id)
+            throws EntityNotFoundException, EntityUpdateException {
+        RegularUser regularUser = getRegularById(id);
+        if (!regularUser.isBlocked()) {
+            throw new EntityUpdateException(UNBLOCK_UNBLOCKED_USER_MESSAGE);
+        }
+        regularUser.setBlocked(false);
+        regularUserRepository.save(regularUser);
+
+        return true;
+    }
+
     private boolean regularUserInActiveDriving(final List<Driving> drivings) {
         for (Driving driving : drivings) {
             if (driving.isActive()) {
@@ -169,4 +187,5 @@ public class RegularUserService implements IRegularUserService {
 
         return false;
     }
+
 }

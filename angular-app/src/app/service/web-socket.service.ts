@@ -13,6 +13,7 @@ import { DriverService } from './driver.service';
 import { DriverActivityResetNotification } from '../model/notification/driver-activity-reset-notification';
 import { AuthService } from './auth.service';
 import { BlockNotification } from '../model/notification/block-notification';
+import { Router } from '@angular/router';
 
 
 
@@ -29,7 +30,8 @@ export class WebSocketService {
     private chatRoomService: ChatRoomService,
     private vehicleService: VehicleService,
     private drivingNotificationService: DrivingNotificationService,
-    private driverService: DriverService
+    private driverService: DriverService,
+    private router: Router
   ) {
     if (!this.stompClient) {
       this.initialized = false;
@@ -68,15 +70,20 @@ export class WebSocketService {
     if (this.isActivityResetNotification(message)) {
       this.driverService.showActivityStatusResetNotification(JSON.parse(message));
     } else if (this.isBlockingNotification(message)) {
-      this.disconnect();
-      localStorage.clear();
-      window.location.reload();
+      this.logOutUser()
     } 
     else {
       this.isMessageType(message) ?
         this.chatRoomService.addMessage(JSON.parse(message)) :
         this.drivingNotificationService.showNotification(JSON.parse(message))
     }
+  }
+
+  logOutUser(): void {
+    this.disconnect();
+    localStorage.clear();
+    this.router.navigate(['/login']);
+    window.location.reload();
   }
 
   globalConnect() {

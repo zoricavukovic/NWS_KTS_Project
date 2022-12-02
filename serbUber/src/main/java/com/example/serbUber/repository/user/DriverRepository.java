@@ -37,4 +37,7 @@ public interface DriverRepository extends JpaRepository<Driver, Long> {
 
     @Query("select d from Driver d left join fetch d.drivings drivings left join fetch d.vehicle v where d.verified = true")
     List<Driver> findAllVerified();
+
+    @Query("select d.blocked from Driver d where d.id = ?1")
+    boolean getIsBlocked(Long id);
 }

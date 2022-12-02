@@ -3,10 +3,7 @@ package com.example.serbUber.controller.user;
 import com.example.serbUber.dto.RouteDTO;
 import com.example.serbUber.dto.user.RegistrationDTO;
 import com.example.serbUber.dto.user.RegularUserDTO;
-import com.example.serbUber.exception.EntityAlreadyExistsException;
-import com.example.serbUber.exception.EntityNotFoundException;
-import com.example.serbUber.exception.MailCannotBeSentException;
-import com.example.serbUber.exception.PasswordsDoNotMatchException;
+import com.example.serbUber.exception.*;
 import com.example.serbUber.request.user.FavouriteRouteRequest;
 import com.example.serbUber.request.user.RegularUserRequest;
 import com.example.serbUber.service.user.RegularUserService;
@@ -46,6 +43,16 @@ public class RegularUserController {
         return regularUserService.addToFavouriteRoutes(request.getUserId(), request.getRouteId());
     }
 
+    @GetMapping("/blocked-data/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
+    public boolean getBlocked(
+            @Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable Long id
+    ) throws EntityNotFoundException {
+
+        return regularUserService.getIsBlocked(id);
+    }
+
     @PostMapping("/removeFavourite")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('ROLE_REGULAR_USER')")
@@ -66,5 +73,15 @@ public class RegularUserController {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_REGULAR_USER')")
     public List<RouteDTO> getFavouriteRoutes(@Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable Long id) throws EntityNotFoundException {
         return regularUserService.getFavouriteRoutes(id);
+    }
+
+    @PutMapping("/unblock/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
+    public boolean unblock(
+            @Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable Long id
+    ) throws EntityNotFoundException, EntityUpdateException {
+
+        return regularUserService.unblock(id);
     }
 }

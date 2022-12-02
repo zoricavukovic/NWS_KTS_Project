@@ -33,4 +33,5 @@ public interface IDriverService {
             throws EntityNotFoundException, ActivityStatusCannotBeChangedException;
     boolean blockDriver(final Long id, final String reason)
             throws EntityNotFoundException, EntityUpdateException;
+    boolean getIsBlocked(Long id);
 }

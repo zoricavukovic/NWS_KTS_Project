@@ -29,4 +29,6 @@ public interface IRegularUserService {
         final String city,
         final String profilePicture
     ) throws MailCannotBeSentException, EntityAlreadyExistsException, EntityNotFoundException;
+    boolean getIsBlocked(Long id);
+    boolean unblock(Long id) throws EntityNotFoundException, EntityUpdateException;
 }

@@ -21,6 +21,12 @@ mat-tab-group {
     margin-right: 1.5rem;
 }
 
+.unblock-button {
+    margin-top: 3%;
+    float: right;
+    margin-right: 1.5rem;
+}
+
 /* .options-button {
     margin-top: 2%;
     height: 2rem;

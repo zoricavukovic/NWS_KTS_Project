@@ -14,8 +14,13 @@
         </mat-tab-group>
         <app-reviews-history *ngIf="userIsDriver() && !loggedUserIsAdmin() && user" [userId]="user.id"></app-reviews-history>
         <app-reports-history *ngIf="!userIsDriver() && loggedUserIsAdmin() && user" [userId]="user.id"></app-reports-history>
-        <div *ngIf="loggedUserIsAdmin()" style="position: relative;">
-            <button mat-raised-button class="green-button block-button" (click)="blockUser()">Block</button>
+        <div *ngIf="loggedUserIsAdmin() && !userBlocked" style="position: relative;">
+            <button mat-raised-button class="green-button block-button" 
+            (click)="blockUser()">Block</button>
+        </div>
+        <div *ngIf="loggedUserIsAdmin() && userBlocked" style="position: relative;">
+            <button mat-raised-button class="green-button unblock-button" 
+            (click)="unblockUser()">Unblock</button>
         </div>    
     </div>
     <ng-template #noDataBlock>

@@ -45,6 +45,19 @@ export class UserService {
     });
   }
 
+  unblockUser(id: number, isDriver: boolean): Observable<boolean> {
+    return this.http.put<boolean>(
+      (isDriver) ? this.configService.get_unblock_driver_url(id) : this.configService.get_unblock_regular_url(id), 
+      null, {headers: this.configService.getHeader(),});
+  }
+
+  getBlockedData(id: number, isDriver: boolean): Observable<boolean> {
+    return this.http.get<boolean>(
+      (isDriver) ? this.configService.get_blocked_data_driver_url(id) : this.configService.get_blocked_data_regular_url(id),
+      {headers: this.configService.getHeader(),}
+    );
+  }
+
   updateProfilePicture(data: UserProfilePictureRequest): Observable<User> {
     return this.http.put<User>(
       this.configService.users_update_profile_pic,
