@@ -3,6 +3,7 @@ package com.example.serbUber.controller.user;
 import com.example.serbUber.dto.user.RegistrationDTO;
 import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.*;
+import com.example.serbUber.request.BlockingRequest;
 import com.example.serbUber.request.VerifyRequest;
 import com.example.serbUber.request.user.*;
 import com.example.serbUber.service.user.UserService;
@@ -15,7 +16,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-import static com.example.serbUber.exception.ErrorMessagesConstants.NOT_NULL_MESSAGE;
+import static com.example.serbUber.exception.ErrorMessagesConstants.MISSING_ID;
 
 @RestController
 @RequestMapping("/users")
@@ -36,9 +37,9 @@ public class UserController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-//    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
     public UserDTO get(
-            @Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable Long id
+            @Valid @NotNull(message = MISSING_ID) @PathVariable Long id
     ) throws EntityNotFoundException {
 
         return userService.get(id);
@@ -111,6 +112,38 @@ public class UserController {
             throws EntityNotFoundException, WrongVerifyTryException {
 
         return userService.activate(verifyRequest.getVerifyId(), verifyRequest.getSecurityCode());
+    }
+
+    @PutMapping("/block")
+    @ResponseStatus(HttpStatus.OK)
+    public boolean block(@Valid @RequestBody BlockingRequest blockingRequest)
+            throws EntityNotFoundException, EntityUpdateException {
+
+        return userService.block(
+                blockingRequest.getUserId(),
+                blockingRequest.getReason()
+        );
+    }
+
+    @PostMapping("/create/driver")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public UserDTO create(@Valid @RequestBody DriverRegistrationRequest driverRegistrationRequest)
+            throws EntityNotFoundException, PasswordsDoNotMatchException, EntityAlreadyExistsException, MailCannotBeSentException {
+
+        return userService.createDriver(
+                driverRegistrationRequest.getEmail(),
+                driverRegistrationRequest.getPassword(),
+                driverRegistrationRequest.getConfirmPassword(),
+                driverRegistrationRequest.getName(),
+                driverRegistrationRequest.getSurname(),
+                driverRegistrationRequest.getPhoneNumber(),
+                driverRegistrationRequest.getCity(),
+                driverRegistrationRequest.getProfilePicture(),
+                driverRegistrationRequest.getVehicle().isPetFriendly(),
+                driverRegistrationRequest.getVehicle().isBabySeat(),
+                driverRegistrationRequest.getVehicle().getVehicleType()
+        );
     }
 
 

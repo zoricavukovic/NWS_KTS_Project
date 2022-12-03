@@ -104,4 +104,9 @@ public class VehicleService implements IVehicleService {
         vehicle.setCurrentLocationIndex(nextLocationIndex);
         vehicleRepository.save(vehicle);
     }
+
+    public Vehicle getVehicleByType(String vehicleType){
+        VehicleType type = VehicleType.getVehicleType(vehicleType);
+        return vehicleRepository.getVehicleByType(type);
+    }
 }

@@ -100,7 +100,7 @@
             <div>
               <div class="product-item-content">
                 <div style="position: relative;">
-                  <route-row [route]="route" (click)="changeOptionRouteOnClick(route, possibleRoute.possibleRouteDTOList.indexOf(route))" ></route-row>
+                  <route-row [route]="route" (click)="changeOptionRouteOnClick(route, possibleRoute.possibleRouteDTOList.indexOf(route), i)" ></route-row>
                 </div>
               </div>
             </div>
@@ -109,8 +109,8 @@
         </p-carousel>
       </div>
     </div>
-    <div class="continue-button" *ngIf="possibleRoutesViaPoints.length > 0">
-      <button mat-raised-button>
+    <div class="continue-button" *ngIf="currentUser && possibleRoutesViaPoints.length > 0">
+      <button mat-raised-button (click)="chooseVehicleAndPassengers()">
         Continue
       </button>
     </div>

@@ -14,9 +14,8 @@
 }
 
 .viewport {
-  height: 170px;
-  overflow-x: hidden;
-  overflow-y: auto;
+  max-height: 10rem;
+  overflow: scroll !important;
 }
 
 .stepper-possible-routes {

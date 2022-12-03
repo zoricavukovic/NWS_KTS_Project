@@ -17,7 +17,7 @@ public class Driving {
     private Long id;
 
     @Column(name="active", nullable = false)
-    private boolean active;
+    private boolean active = false;
 
     @Column(name="duration", nullable = false)
     private int duration;
@@ -55,19 +55,7 @@ public class Driving {
     public Driving() {
     }
 
-    public Driving(
-        final boolean active,
-        final int duration,
-        final LocalDateTime started,
-        final LocalDateTime end,
-        final LocalDateTime payingLimit,
-        final Route route,
-        final DrivingStatus drivingStatus,
-        final Long driverId,
-        final HashMap<Long, Boolean> usersPaid,
-        final double price
-    ) {
-        this.active = active;
+    public Driving(int duration, LocalDateTime started, LocalDateTime end, LocalDateTime payingLimit, Route route, DrivingStatus drivingStatus, Long driverId, Set<RegularUser> users, Map<Long, Boolean> usersPaid, double price) {
         this.duration = duration;
         this.started = started;
         this.end = end;
@@ -75,6 +63,7 @@ public class Driving {
         this.route = route;
         this.drivingStatus = drivingStatus;
         this.driverId = driverId;
+        this.users = users;
         this.usersPaid = usersPaid;
         this.price = price;
     }

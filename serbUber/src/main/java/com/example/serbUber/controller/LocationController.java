@@ -24,7 +24,7 @@ public class LocationController {
     @ResponseStatus(HttpStatus.CREATED)
     public void create(@Valid @RequestBody LocationRequest locationRequest) {
 
-        this.locationService.create(
+        this.locationService.createDTO(
             locationRequest.getCity(),
             locationRequest.getStreet(),
             locationRequest.getNumber(),

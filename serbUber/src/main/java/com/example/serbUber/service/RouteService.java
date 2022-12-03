@@ -8,13 +8,13 @@ import com.example.serbUber.model.DrivingLocationIndex;
 import com.example.serbUber.model.Location;
 import com.example.serbUber.model.Route;
 import com.example.serbUber.repository.RouteRepository;
+import com.example.serbUber.request.DrivingLocationIndexRequest;
 import com.example.serbUber.request.LocationsForRoutesRequest;
 import com.example.serbUber.request.LongLatRequest;
 import com.example.serbUber.service.interfaces.IRouteService;
 import com.graphhopper.ResponsePath;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.IntStream;
@@ -31,9 +31,19 @@ import static com.example.serbUber.exception.EntityType.ROUTE;
 public class RouteService implements IRouteService {
 
     private final RouteRepository routeRepository;
+    private final LocationService locationService;
 
-    public RouteService(final RouteRepository routeRepository) {
+    private final DrivingLocationIndexService drivingLocationIndexService;
+
+    public RouteService(
+            final RouteRepository routeRepository,
+            final LocationService locationService,
+            final DrivingLocationIndexService drivingLocationIndexService
+    ) {
         this.routeRepository = routeRepository;
+        this.locationService = locationService;
+        this.drivingLocationIndexService = drivingLocationIndexService;
+
     }
 
     public List<RouteDTO> getAll() {
@@ -50,7 +60,7 @@ public class RouteService implements IRouteService {
         throw new EntityNotFoundException(id, ROUTE);
     }
 
-    public RouteDTO create(
+    public RouteDTO createDTO(
             final SortedSet<DrivingLocationIndex> locations,
             final double distance,
             final double time
@@ -65,6 +75,19 @@ public class RouteService implements IRouteService {
         return new RouteDTO(route);
     }
 
+    public Route create(
+            final SortedSet<DrivingLocationIndex> locations,
+            final double distance,
+            final double time
+    ) {
+
+        return routeRepository.save(new Route(
+                locations,
+                distance,
+                time
+        ));
+    }
+
     public List<PossibleRoutesViaPointsDTO> getPossibleRoutes(LocationsForRoutesRequest locationsForRouteRequest) {
         List<PossibleRoutesViaPointsDTO> possibleRoutesViaPointsDTOs = new LinkedList<>();
 
@@ -74,6 +97,23 @@ public class RouteService implements IRouteService {
             .forEach(index -> addPossibleRoutesViaPoints(locationsForRouteRequest.getLocationsForRouteRequest(), possibleRoutesViaPointsDTOs, index));
 
         return possibleRoutesViaPointsDTOs;
+    }
+
+    public Route createRoute(List<DrivingLocationIndexRequest> locations, double time, double distance){
+        SortedSet<DrivingLocationIndex> drivingLocations = new TreeSet<>(); //???
+        locations.forEach(locationIndex -> {
+            Location location = locationService.create( locationIndex.getLocation().getCity(),
+                    locationIndex.getLocation().getStreet(),
+                    locationIndex.getLocation().getNumber(),
+                    locationIndex.getLocation().getZipCode(),
+                    locationIndex.getLocation().getLon(),
+                    locationIndex.getLocation().getLat()
+            );
+            DrivingLocationIndex drivingLocationIndex = drivingLocationIndexService.create(location, locationIndex.getIndex());
+            drivingLocations.add(drivingLocationIndex);
+        });
+
+        return create(drivingLocations, distance, time);
     }
 
     private void addPossibleRoutesViaPoints(

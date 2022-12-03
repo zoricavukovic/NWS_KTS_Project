@@ -4,4 +4,5 @@ export interface Location {
   lat: number;
   street?: string;
   number?: string;
+  zipCode?: string;
 }

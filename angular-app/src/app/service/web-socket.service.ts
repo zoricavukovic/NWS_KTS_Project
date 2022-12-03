@@ -10,8 +10,11 @@ import { VehicleCurrentLocation } from '../model/vehicle/vehicle-current-locatio
 import { DrivingNotificationRequest } from '../model/request/driving-notification-request';
 import { DrivingNotificationService } from './driving-notification.service';
 import { DriverService } from './driver.service';
-import { Driver } from '../model/user/driver';
 import { DriverActivityResetNotification } from '../model/notification/driver-activity-reset-notification';
+import { DrivingNotificationResponse } from '../model/notification/driving-notification-response';
+import { BlockNotification } from '../model/notification/block-notification';
+import { Router } from '@angular/router';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -25,7 +28,8 @@ export class WebSocketService {
     private chatRoomService: ChatRoomService,
     private vehicleService: VehicleService,
     private drivingNotificationService: DrivingNotificationService,
-    private driverService: DriverService
+    private driverService: DriverService,
+    private router: Router
   ) {
     if (!this.stompClient) {
       this.initialized = false;
@@ -39,7 +43,7 @@ export class WebSocketService {
   }
 
   connect() {
-    if (!this.initialized) {
+    if (!this.initialized && localStorage.getItem('email') !== null) {
       this.initialized = true;
       const serverUrl = environment.webSocketUrl;
       const ws = new SockJS(serverUrl);
@@ -62,12 +66,27 @@ export class WebSocketService {
 
   checkNotificationType(message: string) {
     if (this.isActivityResetNotification(message)) {
-      this.driverService.showActivityStatusResetNotification(JSON.parse(message));
+      this.driverService.showActivityStatusResetNotification(
+        JSON.parse(message)
+      );
+    } else if (this.isBlockingNotification(message)) {
+      this.logOutUser();
     } else {
-      this.isMessageType(message) ?
-        this.chatRoomService.addMessage(JSON.parse(message)) :
-        this.drivingNotificationService.showNotification(JSON.parse(message))
+      this.isMessageType(message)
+        ? this.chatRoomService.addMessage(JSON.parse(message))
+        : this.isDrivingNotification(message)
+        ? this.drivingNotificationService.showNotification(JSON.parse(message))
+        : this.drivingNotificationService.showDrivingStatus(
+            JSON.parse(message)
+          );
     }
+  }
+
+  logOutUser(): void {
+    this.disconnect();
+    localStorage.clear();
+    this.router.navigate(['/login']);
+    window.location.reload();
   }
 
   globalConnect() {
@@ -97,11 +116,34 @@ export class WebSocketService {
     }
   }
 
+  private isBlockingNotification(message: string): boolean {
+    try {
+      const parsed: BlockNotification = JSON.parse(message);
+      return (
+        parsed.blockConfirmed !== null && parsed.blockConfirmed !== undefined
+      );
+    } catch (e) {
+      return false;
+    }
+  }
+
   private isActivityResetNotification(message: string): boolean {
     try {
       const parsed: DriverActivityResetNotification = JSON.parse(message);
-      return (parsed.email !== null && parsed.email !== undefined 
-        && (parsed.active !== null || parsed.active !== undefined))
+      return (
+        parsed.email !== null &&
+        parsed.email !== undefined &&
+        (parsed.active !== null || parsed.active !== undefined)
+      );
+    } catch (e) {
+      return false;
+    }
+  }
+
+  private isDrivingNotification(message: string): boolean {
+    try {
+      const parsed: DrivingNotificationResponse = JSON.parse(message);
+      return parsed.drivingNotificationType === 'LINKED_USERS';
     } catch (e) {
       return false;
     }
@@ -109,8 +151,8 @@ export class WebSocketService {
 
   private isMessageType(webSocketNotification: string): boolean {
     try {
-       const parsed: ChatRoomWithNotify = JSON.parse(webSocketNotification);
-       return (parsed.notifyAdmin !== null && parsed.notifyAdmin !== undefined)
+      const parsed: ChatRoomWithNotify = JSON.parse(webSocketNotification);
+      return parsed.notifyAdmin !== null && parsed.notifyAdmin !== undefined;
     } catch (e) {
       return false;
     }

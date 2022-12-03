@@ -28,8 +28,14 @@ export class ConfigService {
   private _login_with_gmail_user = this._api_url + '/auth/login/google';
   private _login_with_facebook_user = this._api_url + '/auth/login/facebook';
   private _register_user = this._api_url + '/users/create/regular-user';
-  private _register_driver = this._api_url + '/drivers/register';
+  private _register_driver = this._api_url + '/users/create/driver';
   private _verify_url = this._api_url + '/users/activate-account';
+  private _block_user_url = this._api_url + '/users/block';
+  private _blocked_data_regular_url =
+    this._api_url + '/regular-users/blocked-data/';
+  private _blocked_data_driver_url = this._api_url + '/drivers/blocked-data/';
+  private _unblock_regular_url = this._api_url + '/regular-users/unblock/';
+  private _unblock_driver_url = this._api_url + '/drivers/unblock/';
   private _send_verify_code_again = this._api_url + '/verify/send-code-again';
   private _vehicle_type_infos = this._api_url + '/vehicle-type-infos';
 
@@ -41,6 +47,7 @@ export class ConfigService {
   private _vehicle_rate_url = this._api_url + '/vehicles/rating/';
   private _all_active_vehicles_url: string = this._api_url + '/vehicles/active';
   private _rate_vehicle_driver_url = this._api_url + '/reviews';
+  private _reviews_per_driver_url = this._api_url + '/reviews/all-for-driver';
   private _have_driving_rate_url = this._api_url + '/reviews/haveDrivingRate/';
   private _reviewed_drivings_url = this._api_url + '/reviews/reviewedDrivings/';
   private _base64_show_photo_prefix = 'data:image/png;base64,';
@@ -60,6 +67,8 @@ export class ConfigService {
   private _get_favourite_routes =
     this._api_url + '/regular-users/favourite-routes/';
 
+  private _reports_for_user_url = this._api_url + '/reports/all-for-user/';
+
   private _send_reset_password_email =
     this._api_url + '/users/send-rest-password-link';
   private _reset_password = this._api_url + '/users/reset-password';
@@ -67,6 +76,9 @@ export class ConfigService {
   private _price_for_driving_url = this._api_url + '/vehicle-type-infos/price';
 
   private _driving_notifications_url = this._api_url + '/driving-notifications';
+
+  private _accept_driving_url =
+    this._api_url + '/driving-notifications/accept/';
 
   get login_url(): string {
     return this._login_user;
@@ -230,6 +242,10 @@ export class ConfigService {
     return this._all_users_url;
   }
 
+  user_by_id_url(id: string): string {
+    return `${this._users_url}/${id}`;
+  }
+
   get_count_drivings(id: number): string {
     return this._drivings_count_url + id;
   }
@@ -254,7 +270,39 @@ export class ConfigService {
     return this._price_for_driving_url + '/' + type + '/' + kilometers;
   }
 
+  get_reviews_for_driver(driverId: number): string {
+    return `${this._reviews_per_driver_url}/${driverId}`;
+  }
+
+  get_reports_for_user(id: number): string {
+    return `${this._reports_for_user_url}${id}`;
+  }
+
+  get_blocked_data_regular_url(id: number): string {
+    return `${this._blocked_data_regular_url}${id}`;
+  }
+
+  get_blocked_data_driver_url(id: number): string {
+    return `${this._blocked_data_driver_url}${id}`;
+  }
+
+  get_unblock_regular_url(id: number): string {
+    return `${this._unblock_regular_url}${id}`;
+  }
+
+  get_unblock_driver_url(id: number): string {
+    return `${this._unblock_driver_url}${id}`;
+  }
+
   get driving_notifications_url(): string {
     return this._driving_notifications_url;
+  }
+
+  get_accept_driving_url(id: number): string {
+    return this._accept_driving_url + id;
+  }
+
+  get block_user_url(): string {
+    return this._block_user_url;
   }
 }

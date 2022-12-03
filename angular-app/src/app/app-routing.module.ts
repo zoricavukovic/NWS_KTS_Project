@@ -16,6 +16,7 @@ import { MapComponent } from './component/map/map.component';
 import { FavouriteRoutesComponent } from './component/favourite-route/favourite-routes/favourite-routes.component';
 import { SuccessfullVerificationComponent } from './component/user/auth/successfull-verification/successfull-verification.component';
 import {DrivingDetailsComponent} from "./component/driving/driving-details/driving-details.component";
+import { BasicUserProfileComponent } from './component/user/basic-user-profile/basic-user-profile.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'map-view/-1', pathMatch: 'full' },
@@ -36,6 +37,7 @@ const routes: Routes = [
   { path: 'drivers', component: ShowDriversComponent },
   { path: 'users', component: ShowUsersComponent },
   { path: 'favourite-routes', component: FavouriteRoutesComponent },
+  { path: 'user-profile/:id', component: BasicUserProfileComponent },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
 ];
 

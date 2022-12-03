@@ -4,26 +4,24 @@ import com.example.serbUber.dto.RouteDTO;
 import com.example.serbUber.dto.VerifyDTO;
 import com.example.serbUber.dto.user.RegistrationDTO;
 import com.example.serbUber.dto.user.RegularUserDTO;
-import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.*;
+import com.example.serbUber.model.Driving;
 import com.example.serbUber.model.Route;
-import com.example.serbUber.model.Verify;
 import com.example.serbUber.model.user.RegularUser;
 import com.example.serbUber.repository.user.RegularUserRepository;
 import com.example.serbUber.service.RouteService;
 import com.example.serbUber.service.VerifyService;
+import com.example.serbUber.service.WebSocketService;
 import com.example.serbUber.service.interfaces.IRegularUserService;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 import static com.example.serbUber.dto.RouteDTO.fromRoutes;
 import static com.example.serbUber.dto.user.RegularUserDTO.fromRegularUsers;
-import static com.example.serbUber.model.user.User.passwordsDontMatch;
+import static com.example.serbUber.exception.ErrorMessagesConstants.UNBLOCK_UNBLOCKED_USER_MESSAGE;
 import static com.example.serbUber.util.Constants.ROLE_REGULAR_USER;
 import static com.example.serbUber.util.Constants.getProfilePicture;
 import static com.example.serbUber.util.JwtProperties.getHashedNewUserPassword;
@@ -36,17 +34,20 @@ public class RegularUserService implements IRegularUserService {
     private final VerifyService verifyService;
     private final RoleService roleService;
     private final RouteService routeService;
+    private final WebSocketService webSocketService;
 
     public RegularUserService(
             final RegularUserRepository regularUserRepository,
             final VerifyService verifyService,
             final RouteService routeService,
-            final RoleService roleService
+            final RoleService roleService,
+            final WebSocketService webSocketService
     ) {
         this.regularUserRepository = regularUserRepository;
         this.verifyService = verifyService;
         this.routeService = routeService;
         this.roleService = roleService;
+        this.webSocketService = webSocketService;
     }
 
     public List<RegularUserDTO> getAll() {
@@ -142,6 +143,49 @@ public class RegularUserService implements IRegularUserService {
             return fromRoutes(u.get().getFavouriteRoutes());
         }
         throw new EntityNotFoundException(id, EntityType.USER);
+    }
+
+    public boolean blockRegular(final Long id, String reason)
+            throws EntityNotFoundException, EntityUpdateException
+    {
+        RegularUser regularUser = getRegularById(id);
+        if (regularUserInActiveDriving(regularUser.getDrivings())) {
+            throw new EntityUpdateException("Regular user cannot be blocked while in active driving.");
+        }
+
+        regularUser.setOnline(false);
+        regularUser.setBlocked(true);
+        regularUserRepository.save(regularUser);
+        this.webSocketService.sendBlockedNotification(regularUser.getEmail(), reason);
+
+        return true;
+    }
+
+    public boolean getIsBlocked(Long id) {
+
+        return regularUserRepository.getIsBlocked(id);
+    }
+
+    public boolean unblock(Long id)
+            throws EntityNotFoundException, EntityUpdateException {
+        RegularUser regularUser = getRegularById(id);
+        if (!regularUser.isBlocked()) {
+            throw new EntityUpdateException(UNBLOCK_UNBLOCKED_USER_MESSAGE);
+        }
+        regularUser.setBlocked(false);
+        regularUserRepository.save(regularUser);
+
+        return true;
+    }
+
+    private boolean regularUserInActiveDriving(final List<Driving> drivings) {
+        for (Driving driving : drivings) {
+            if (driving.isActive()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }

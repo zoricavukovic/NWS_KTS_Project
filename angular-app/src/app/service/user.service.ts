@@ -11,6 +11,7 @@ import { User } from '../model/user/user';
 import { Observable } from 'rxjs';
 import { Role } from '../model/user/role';
 import {RegistrationResponse} from "../model/user/registration-response";
+import { BlockNotification } from '../model/notification/block-notification';
 
 @Injectable({
   providedIn: 'root',
@@ -36,6 +37,25 @@ export class UserService {
     return this.http.put<User>(this.configService.users_url, data, {
       headers: this.configService.getHeader(),
     });
+  }
+
+  blockUser(data: BlockNotification): Observable<boolean> {
+    return this.http.put<boolean>(this.configService.block_user_url, data, {
+      headers: this.configService.getHeader(),
+    });
+  }
+
+  unblockUser(id: number, isDriver: boolean): Observable<boolean> {
+    return this.http.put<boolean>(
+      (isDriver) ? this.configService.get_unblock_driver_url(id) : this.configService.get_unblock_regular_url(id), 
+      null, {headers: this.configService.getHeader(),});
+  }
+
+  getBlockedData(id: number, isDriver: boolean): Observable<boolean> {
+    return this.http.get<boolean>(
+      (isDriver) ? this.configService.get_blocked_data_driver_url(id) : this.configService.get_blocked_data_regular_url(id),
+      {headers: this.configService.getHeader(),}
+    );
   }
 
   updateProfilePicture(data: UserProfilePictureRequest): Observable<User> {
@@ -94,6 +114,12 @@ export class UserService {
   getAllRegularUsers() {
     return this.http.get<User[]>(this.configService.all_users_url, {
       headers: this.configService.getHeader(),
+    });
+  }
+
+  getUser(id: string): Observable<User> {
+    return this.http.get<User>(this.configService.user_by_id_url(id), {
+      headers: this.configService.getHeader()
     });
   }
 

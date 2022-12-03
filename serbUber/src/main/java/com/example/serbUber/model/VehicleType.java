@@ -3,5 +3,13 @@ package com.example.serbUber.model;
 public enum VehicleType {
     VAN,
     SUV,
-    CAR
+    CAR;
+
+    public static VehicleType getVehicleType(String vehicleType){
+        return switch (vehicleType) {
+            case "van" -> VehicleType.VAN;
+            case "suv" -> VehicleType.SUV;
+            default -> VehicleType.CAR;
+        };
+    }
 }

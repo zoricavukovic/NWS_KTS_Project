@@ -17,4 +17,7 @@ public interface RegularUserRepository extends JpaRepository<RegularUser, Long> 
     RegularUser getUserWithFavouriteRouteId(Long routeId, Long userId);
     Optional<RegularUser> getRegularUserById(Long id);
 
+    @Query("select r.blocked from RegularUser r where r.id = ?1")
+    boolean getIsBlocked(Long id);
+
 }

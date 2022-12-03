@@ -21,7 +21,8 @@ public class RegularUserDTO extends UserDTO{
             regularUser.getCity(),
             regularUser.getProfilePicture(),
             regularUser.getRole(),
-            regularUser.getPassword()
+            regularUser.getPassword(),
+            regularUser.isOnline()
         );
         this.blocked = regularUser.isBlocked();
         this.verified = regularUser.isVerified();

@@ -45,7 +45,8 @@ public class UserDTO{
         final String city,
         final String profilePicture,
         final Role role,
-        final String password
+        final String password,
+        final boolean online
     ) {
         this.id = id;
         this.email = email;
@@ -56,6 +57,7 @@ public class UserDTO{
         this.profilePicture = convertPictureToBase64ByName(profilePicture);
         this.role = role;
         this.password = password;
+        this.online = online;
     }
 
     public UserDTO(final Driver driver) {

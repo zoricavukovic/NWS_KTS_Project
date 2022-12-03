@@ -6,20 +6,22 @@ import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.model.Driving;
 import com.example.serbUber.model.DrivingStatus;
 import com.example.serbUber.model.Route;
+import com.example.serbUber.model.user.RegularUser;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 public interface IDrivingService {
     DrivingDTO create(
-        final boolean active,
         final int duration,
         final LocalDateTime started,
         final LocalDateTime payingLimit,
         final Route route,
         final DrivingStatus drivingStatus,
         final Long driverId,
+        final Set<RegularUser> users,
         final HashMap<Long, Boolean> usersPaid,
         final double price
     );

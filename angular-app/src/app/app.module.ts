@@ -21,6 +21,7 @@ import { RegistrationComponent } from './component/user/auth/registration/regist
 import { VerifyComponent } from './component/user/auth/verify/verify.component';
 import { DriverVehicleComponent } from './component/vehicle/create-vehicle/driver-vehicle.component';
 import { CarouselModule } from 'primeng/carousel';
+import { ButtonModule } from 'primeng/button';
 import { ShowDrivingsComponent } from './component/driving/show-drivings/show-drivings.component';
 import { DrivingDetailsComponent } from './component/driving/driving-details/driving-details.component';
 import { RatingDialogComponent } from './component/review/rating-dialog/rating-dialog.component';
@@ -66,6 +67,13 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { AvatarGroupModule } from 'primeng/avatargroup';
 import { SuccessfullVerificationComponent } from './component/user/auth/successfull-verification/successfull-verification.component';
 import { RejectDrivingComponent } from './component/driving/reject-driving/reject-driving.component';
+import { BasicUserProfileComponent } from './component/user/basic-user-profile/basic-user-profile.component';
+import { BasicUserDataComponent } from './component/user/basic-user-data/basic-user-data.component';
+import { UserProfileReviewsComponent } from './component/user/user-profile-reviews/user-profile-reviews.component';
+import { UserAverageRateComponent } from './component/review/user-average-rate/user-average-rate.component';
+import { ReviewsHistoryComponent } from './component/review/reviews-history/reviews-history.component';
+import { ReportsHistoryComponent } from './component/report/reports-history/reports-history.component';
+import { ConfirmBlockingDialogComponent } from './component/user/confirm-blocking-dialog/confirm-blocking-dialog.component';
 
 @NgModule({
   declarations: [
@@ -104,6 +112,13 @@ import { RejectDrivingComponent } from './component/driving/reject-driving/rejec
     DriverHomePageContainerComponent,
     SuccessfullVerificationComponent,
     RejectDrivingComponent,
+    BasicUserProfileComponent,
+    BasicUserDataComponent,
+    UserProfileReviewsComponent,
+    UserAverageRateComponent,
+    ReviewsHistoryComponent,
+    ReportsHistoryComponent,
+    ConfirmBlockingDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -115,6 +130,7 @@ import { RejectDrivingComponent } from './component/driving/reject-driving/rejec
     ReactiveFormsModule,
     SocialLoginModule,
     CarouselModule,
+    ButtonModule,
     MatDialogModule,
     RatingModule,
     TimelineModule,
@@ -126,7 +142,6 @@ import { RejectDrivingComponent } from './component/driving/reject-driving/rejec
     MatPaginatorModule,
     MatChipsModule,
     ToastrModule.forRoot({
-      timeOut: 4000,
       positionClass: 'toast-bottom-left',
       preventDuplicates: true,
       closeButton: true,
