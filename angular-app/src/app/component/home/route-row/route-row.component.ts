@@ -8,7 +8,6 @@ import { EventEmitter } from '@angular/core';
 })
 export class RouteRowComponent implements OnInit {
   @Input() route: PossibleRoute;
-  @Input() index: number;
   @Output() chosenRouteEvent = new EventEmitter<string>();
   color: string;
   rgbDeepBlue: number[] = [44, 75, 97];
@@ -16,11 +15,11 @@ export class RouteRowComponent implements OnInit {
   ngOnInit(): void {
     this.color =
       'rgb(' +
-      this.incrementShadeOfColor(this.index, 0) +
+      this.incrementShadeOfColor(0, 0) +
       ', ' +
-      this.incrementShadeOfColor(this.index, 1) +
+      this.incrementShadeOfColor(0, 1) +
       ', ' +
-      this.incrementShadeOfColor(this.index, 2) +
+      this.incrementShadeOfColor(0, 2) +
       ')';
   }
 

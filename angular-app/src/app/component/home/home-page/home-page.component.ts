@@ -18,6 +18,9 @@ import {
 import {Location} from '../../../model/route/location';
 import {VehicleService} from '../../../service/vehicle.service';
 import {Vehicle} from '../../../model/vehicle/vehicle';
+import {Options} from "ngx-google-places-autocomplete/objects/options/options";
+import {Address} from "ngx-google-places-autocomplete/objects/address";
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'home-page',
@@ -41,22 +44,46 @@ export class HomePageComponent implements OnInit, OnDestroy {
   searchingRoutesForm: SearchingRoutesForm[] = [];
   vehicles: Vehicle[];
   carMarkers: L.Marker[] = [];
-  /* autocompleteForm = new FormGroup({
-    startDest: new FormControl(undefined, [this.requireMatch.bind(this)]),
-    endDest: new FormControl(undefined, [this.requireMatch.bind(this)]),
-  });*/
 
   rgbDeepBlue: number[] = [44, 75, 97];
   private authSubscription: Subscription;
   private routeSubscription: Subscription;
+  rideIsRequested: boolean;
+  responsiveOptions = [
+    {
+      breakpoint: '1024px',
+      numVisible: 1,
+      numScroll: 2,
+    },
+  ];
+  options: Options = new Options({
+    bounds: undefined, fields: ["address_component", "formatted_address","name", "geometry"], strictBounds: false,
+    componentRestrictions: {country: 'rs'}
+  });
 
   constructor(
     private routeService: RouteService,
     private authService: AuthService,
-    private vehicleService: VehicleService
+    private vehicleService: VehicleService,
+    private toast: ToastrService
   ) {
+    this.rideIsRequested = false;
   }
+  public addressChange(address: Address, index: number) {
+    this.deleteMarker(index);
+    this.removeAllPolylines();
 
+    this.searchingRoutesForm.at(index).inputPlace = address.formatted_address;
+
+    const lng: number = address.geometry.location.lng();
+    const lat: number = address.geometry.location.lat();
+
+
+    this.addMarker(index, {y: lat, x: lng});
+
+    this.createLocation(address, index);
+
+  }
   ngOnInit(): void {
     this.vehicleService.getAllVehicle().subscribe(vehicleCurrentLocation => {
       this.carMarkers = changeOrAddMarker(
@@ -76,24 +103,6 @@ export class HomePageComponent implements OnInit, OnDestroy {
         this.isRegular = this.authService.userIsRegular();
       }
     );
-
-    this.map.originalEvent.preventDefault();
-    var div = L.DomUtil.get('route-div');
-    L.DomEvent.on(div, 'mousewheel', L.DomEvent.stopPropagation);
-    L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation);
-    L.DomEvent.on(div, 'dblclick', L.DomEvent.stopPropagation);
-    L.DomEvent.on(div, 'mousedown', L.DomEvent.stopPropagation);
-    L.DomEvent.on(div, 'weel', L.DomEvent.stopPropagation);
-    L.DomEvent.on(div, 'touchstart', L.DomEvent.stopPropagation);
-    L.DomEvent.on(div, 'dblclick', function (ev) {
-      L.DomEvent.stopPropagation(ev);
-    });
-    if (!L.Browser.touch) {
-      L.DomEvent.disableClickPropagation(div);
-      L.DomEvent.on(div, 'wheel', L.DomEvent.stopPropagation);
-    } else {
-      L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation);
-    }
   }
 
   ngOnDestroy(): void {
@@ -112,21 +121,6 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
   }
 
-  async initMap() {
-    this.map = L.map('map').setView([45.25167, 19.83694], 13);
-
-    L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      crossOrigin: true,
-    }).addTo(this.map);
-    L.control
-      .zoom({
-        position: 'topright',
-      })
-      .addTo(this.map);
-    let div = L.DomUtil.get('route-div');
-    L.DomEvent.on(div, 'mousewheel', L.DomEvent.stopPropagation);
-    L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation);
-  }
 
   addOneMoreLocation() {
     this.possibleRoutesViaPoints = [];
@@ -152,74 +146,57 @@ export class HomePageComponent implements OnInit, OnDestroy {
     this.possibleRoutesViaPoints = [];
   }
 
-  async filterPlaces(searchParam: string) {
-    return await this.provider1.search({ query: searchParam });
-  }
-
-  /*requireMatch(control: FormControl): ValidationErrors | null {
-    const selection: any = control.value; //??
-    console.log(selection);
-
-    // console.log(this.filteredStartPlaces)
-    // if (selection !== null && this.filteredStartPlaces.value && this.filteredStartPlaces.value.indexOf(selection) < 0) {
-    //   return { requireMatch: true };
-    // }
-    return null;
-  }*/
-
-  chooseMarker(index: number, place) {
-    this.deleteMarker(index);
-    this.removeAllPolylines();
-
-    this.addMarker(index, place);
-
-    this.createLocation(place, index);
-  }
-
   getFilteredPlaces(index: number) {
     return this.searchingRoutesForm.at(index).filteredPlaces;
   }
 
-  filterPlace(index: number) {
-    this.searchingRoutesForm.at(index).filteredPlaces = this.filterPlaces(
-      this.searchingRoutesForm.at(index).inputPlace
-    );
-  }
-
   getPossibleRoutes() {
-    const locationsForCreateRoutes: Location[] = [];
+    this.rideIsRequested = true;
+    if (!this.formIsInvalid()) {
+      const locationsForCreateRoutes: Location[] = [];
 
-    this.searchingRoutesForm.forEach(searchingRoutesLocation =>
-      locationsForCreateRoutes.push(searchingRoutesLocation.location)
-    );
+      this.searchingRoutesForm.forEach(searchingRoutesLocation =>
+        locationsForCreateRoutes.push(searchingRoutesLocation.location)
+      );
 
-    this.routeSubscription = this.routeService
-      .getPossibleRoutes(
-        this.routeService.createLocationForRoutesRequest(
-          locationsForCreateRoutes
+      this.routeSubscription = this.routeService
+        .getPossibleRoutes(
+          this.routeService.createLocationForRoutesRequest(
+            locationsForCreateRoutes
+          )
         )
-      )
-      .subscribe(res => {
-        this.possibleRoutesViaPoints = res;
-        if (res.length > 0) {
-          this.changeCurrentRoutes(res);
-        }
-      });
+        .subscribe(res => {
+          this.possibleRoutesViaPoints = res;
+          if (res.length > 0) {
+            this.changeCurrentRoutes(res);
+          }
+          else {
+            this.toast.error('Cannot find routes for chosen places', 'Unavailable routes');
+          }
+        });
+    }
   }
 
   changeCurrentRoutes(routes: PossibleRoutesViaPoints[]) {
     this.removeAllPolylines();
 
+
     let index: number = 0;
-    routes.forEach(route => {
-      route.possibleRouteDTOList.forEach(oneRoute => {
-        let latLongs = this.getLatLongsRoute(oneRoute);
+    if (routes.length === 1){
+      routes.at(0).possibleRouteDTOList.forEach(oneRoute => {
+        const latLongs = this.getLatLongsRoute(oneRoute);
         this.drawPolyline(index, latLongs);
         index++;
       })
-    });
+    }
+    else{
+      routes.forEach(route => {
+        const latLongs = this.getLatLongsRoute(route.possibleRouteDTOList.at(0));
+        // drawPolylineOnMapWithoutClickEvent(this.map, latLongs, this.drawPolylineList);
+      });
+    }
   }
-  Z
+
   private getLatLongsRoute(route: PossibleRoute): number[] {
     let latLongs = [];
     route.pointList.forEach(latLng => latLongs.push([latLng[0], latLng[1]]));
@@ -228,11 +205,11 @@ export class HomePageComponent implements OnInit, OnDestroy {
   }
 
   private drawPolyline(index: number, latLongs): void {
-    let color: string = index === 0 ? "#283b50" : "#cdd1d3";
-    let weight: number = index === 0 ? 9 : 7;
-    let polyline: L.Polyline = drawPolylineOnMap(this.map, latLongs, color, weight, this.drawPolylineList);
+    const color: string = index === 0 ? "#283b50" : "#cdd1d3";
+    const weight: number = index === 0 ? 9 : 7;
+    const polyline: L.Polyline = drawPolylineOnMap(this.map, latLongs, color, weight, this.drawPolylineList);
     const that = this;
-    polyline.on("click", function (e) {
+    polyline.on("click", function () {
       that.drawPolylineList.forEach(p => {
         p.setStyle({
           color: '#cdd1d3',
@@ -243,20 +220,30 @@ export class HomePageComponent implements OnInit, OnDestroy {
           color: '#283b50',
           weight: 9
         });
-
-
       })
     });
   }
 
   changeOptionRouteOnClick(route: PossibleRoute, idx: number): void {
-    this.removeOnePolyline(idx);
-
-    let latLongs = [];
-    route.pointList.forEach(latLng => latLongs.push([latLng[0], latLng[1]]));
-    let color: string = "#283b50";
-    const weight: number = 9;
-    drawPolylineOnMap(this.map, latLongs, color, weight, this.drawPolylineList);
+    if (this.searchingRoutesForm.length === 2){
+      this.drawPolylineList.forEach(p => {
+        p.setStyle({
+          color: '#cdd1d3',
+          weight: 7
+        });
+      });
+      this.drawPolylineList.at(idx).setStyle({
+        color: '#283b50',
+        weight: 9
+      });
+    } else {
+      this.removeOnePolyline(idx);
+      let latLongs = [];
+      route.pointList.forEach(latLng => latLongs.push([latLng[0], latLng[1]]));
+      let color: string = "#283b50";
+      const weight: number = 9;
+      drawPolylineOnMap(this.map, latLongs, color, weight, this.drawPolylineList);
+    }
 
     // this.chooseVehicleAndPassengers(route);
   }
@@ -278,16 +265,46 @@ export class HomePageComponent implements OnInit, OnDestroy {
     );
   }
 
-  private incrementShadeOfColor(index: number, number: number) {
-    return this.rgbDeepBlue[number] + index;
-  }
+  private createLocation(address: Address, index: number): void {
+    let houseNumber = '';
+    let city = '';
+    let street = '';
+    for(let i=0; i<address.address_components.length;i++)
+    {
+      const mapAddress = address.address_components[i];
+      if(mapAddress.long_name !==''){
 
-  private createLocation(place, index: number) {
+        if(mapAddress.types[0] === "street_number"){
+          houseNumber = mapAddress.long_name;
+        }
+        if(mapAddress.types[0] === "route"){
+          street = mapAddress.long_name;
+        }
+
+        if(mapAddress.types[0] === "locality"){
+          city  = mapAddress.long_name;
+        }
+        if(mapAddress.types[0] === "administrative_area_level_1"){
+          // this.mapState = mapAddress.long_name;
+        }
+        if(mapAddress.types[0] === "country"){
+          // this.mapcountry = mapAddress.long_name;
+        }
+        if(mapAddress.types[0] === "postal_code"){
+          //this.mapPaostalCode  = mapAddress.long_name+',';
+        }
+      }
+
+    }
+    const lng: number = address.geometry.location.lng();
+    const lat: number = address.geometry.location.lat();
     this.searchingRoutesForm.at(index).location = {
-      city: place.value,
-      lat: place.y,
-      lon: place.x,
-    };
+      "city": city,
+      "lon": lng,
+      "lat": lat,
+      "street": street,
+      "number": houseNumber
+    }
   }
 
   private getIconUrl(index: number): string {
@@ -368,14 +385,6 @@ export class HomePageComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getPolylineColor(index: number): string {
-    return `rgb(${this.incrementShadeOfColor(index * 5, 0)},
-     ${this.incrementShadeOfColor(index * 5, 1)}, ${this.incrementShadeOfColor(
-      index * 5,
-      2
-    )})`;
-  }
-
   chooseVehicleAndPassengers(route: PossibleRoute) {
     this.routeChoiceView = false;
     this.filterVehicleView = true;
@@ -383,5 +392,28 @@ export class HomePageComponent implements OnInit, OnDestroy {
   }
   private checkIfDeletedLocationIsDestination(index: number) {
     return this.searchingRoutesForm.length === index;
+  }
+
+  formIsInvalid(): boolean {
+    let formIsInvalid: boolean = false;
+    this.searchingRoutesForm.forEach(searchingRoute => {
+      if (searchingRoute.location === undefined || searchingRoute.location === null){
+        formIsInvalid = true;
+      }
+    })
+
+    return formIsInvalid;
+  }
+
+  fieldIsInvalid(index: number): boolean {
+
+    return this.searchingRoutesForm.at(index).location === undefined ||
+      this.searchingRoutesForm.at(index).location === null;
+  }
+
+  getFromToLabel(index: number): string {
+    const location: Location = this.searchingRoutesForm.at(index).location;
+
+    return `${location.street} ${location.number}`;
   }
 }

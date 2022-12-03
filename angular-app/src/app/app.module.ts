@@ -7,6 +7,7 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './material/material.module';
 import { LoginComponent } from './component/user/auth/login/login.component';
+import { GooglePlaceModule } from "ngx-google-places-autocomplete";
 import {
   SocialLoginModule,
   SocialAuthServiceConfig,
@@ -130,6 +131,7 @@ import { RejectDrivingComponent } from './component/driving/reject-driving/rejec
       preventDuplicates: true,
       closeButton: true,
     }),
+    GooglePlaceModule,
     ScrollingModule,
     AvatarModule,
     AvatarGroupModule,

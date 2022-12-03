@@ -3,5 +3,5 @@ export interface Location {
   lon: number;
   lat: number;
   street?: string;
-  number?: number;
+  number?: string;
 }

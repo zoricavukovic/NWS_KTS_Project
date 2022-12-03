@@ -2,15 +2,10 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import * as L from 'leaflet';
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
 import { DrivingDetailsComponent } from '../driving/driving-details/driving-details.component';
-import { refreshMap } from '../../util/map-functions';
-import { Router, UrlSegment } from '@angular/router';
+import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { HomePageComponent } from '../home/home-page/home-page.component';
 declare let L;
-
-import 'leaflet/dist/leaflet.css';
-import 'esri-leaflet-geocoder/dist/esri-leaflet-geocoder';
-import * as ELG from 'esri-leaflet-geocoder';
 
 delete L.Icon.Default.prototype._getIconUrl;
 
