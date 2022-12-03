@@ -12,6 +12,7 @@ import { DrivingNotificationService } from './driving-notification.service';
 import { DriverService } from './driver.service';
 import { Driver } from '../model/user/driver';
 import { DriverActivityResetNotification } from '../model/notification/driver-activity-reset-notification';
+import { DrivingNotificationResponse } from '../model/notification/driving-notification-response';
 @Injectable({
   providedIn: 'root',
 })
@@ -62,11 +63,17 @@ export class WebSocketService {
 
   checkNotificationType(message: string) {
     if (this.isActivityResetNotification(message)) {
-      this.driverService.showActivityStatusResetNotification(JSON.parse(message));
+      this.driverService.showActivityStatusResetNotification(
+        JSON.parse(message)
+      );
     } else {
-      this.isMessageType(message) ?
-        this.chatRoomService.addMessage(JSON.parse(message)) :
-        this.drivingNotificationService.showNotification(JSON.parse(message))
+      this.isMessageType(message)
+        ? this.chatRoomService.addMessage(JSON.parse(message))
+        : this.isDrivingNotification(message)
+        ? this.drivingNotificationService.showNotification(JSON.parse(message))
+        : this.drivingNotificationService.showDrivingStatus(
+            JSON.parse(message)
+          );
     }
   }
 
@@ -100,8 +107,20 @@ export class WebSocketService {
   private isActivityResetNotification(message: string): boolean {
     try {
       const parsed: DriverActivityResetNotification = JSON.parse(message);
-      return (parsed.email !== null && parsed.email !== undefined 
-        && (parsed.active !== null || parsed.active !== undefined))
+      return (
+        parsed.email !== null &&
+        parsed.email !== undefined &&
+        (parsed.active !== null || parsed.active !== undefined)
+      );
+    } catch (e) {
+      return false;
+    }
+  }
+
+  private isDrivingNotification(message: string): boolean {
+    try {
+      const parsed: DrivingNotificationResponse = JSON.parse(message);
+      return parsed.drivingNotificationType === 'LINKED_USERS';
     } catch (e) {
       return false;
     }
@@ -109,8 +128,8 @@ export class WebSocketService {
 
   private isMessageType(webSocketNotification: string): boolean {
     try {
-       const parsed: ChatRoomWithNotify = JSON.parse(webSocketNotification);
-       return (parsed.notifyAdmin !== null && parsed.notifyAdmin !== undefined)
+      const parsed: ChatRoomWithNotify = JSON.parse(webSocketNotification);
+      return parsed.notifyAdmin !== null && parsed.notifyAdmin !== undefined;
     } catch (e) {
       return false;
     }

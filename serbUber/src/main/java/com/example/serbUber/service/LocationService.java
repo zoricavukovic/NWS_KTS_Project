@@ -38,7 +38,7 @@ public class LocationService implements ILocationService {
 //            .orElseThrow(() ->  new EntityNotFoundException(city, EntityType.LOCATION));
 //    }
 
-    public LocationDTO create(
+    public LocationDTO createDTO(
         final String city,
         final String street,
         final String number,
@@ -48,5 +48,17 @@ public class LocationService implements ILocationService {
     ) {
 
         return new LocationDTO(locationRepository.save(new Location(city, street, number, zipCode, lon, lat)));
+    }
+
+    public Location create(
+            final String city,
+            final String street,
+            final String number,
+            final String zipCode,
+            final double lon,
+            final double lat
+    ) {
+
+        return locationRepository.save(new Location(city, street, number, zipCode, lon, lat));
     }
 }

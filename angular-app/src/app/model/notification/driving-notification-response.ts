@@ -5,8 +5,15 @@ export interface DrivingNotificationResponse {
   latEnd: number;
   senderEmail: string;
   price: number;
-  receiverEmail: string;
-  read: boolean;
-  drivingNotificationType: string;
+  receiverEmail?: string;
+  passengers?: string[];
+  read?: boolean;
+  drivingNotificationType?: string;
+  started?: Date;
+  duration?: number;
+  petFriendly?: boolean;
+  babySeat?: boolean;
+  vehicleType?: string;
   reason?: string;
+  id?: number;
 }

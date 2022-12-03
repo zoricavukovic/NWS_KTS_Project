@@ -1,15 +1,18 @@
 package com.example.serbUber.service;
 
+import com.example.serbUber.dto.DrivingDTO;
 import com.example.serbUber.dto.DrivingNotificationDTO;
+import com.example.serbUber.dto.DrivingStatusNotificationDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.EntityType;
-import com.example.serbUber.model.DrivingNotification;
-import com.example.serbUber.model.DrivingNotificationType;
-import com.example.serbUber.model.Location;
+import com.example.serbUber.model.*;
+import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.model.user.RegularUser;
 import com.example.serbUber.model.user.User;
 import com.example.serbUber.repository.DrivingNotificationRepository;
+import com.example.serbUber.request.DrivingLocationIndexRequest;
 import com.example.serbUber.service.interfaces.IDrivingNotificationService;
+import com.example.serbUber.service.user.DriverService;
 import com.example.serbUber.service.user.RegularUserService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -23,100 +26,107 @@ public class DrivingNotificationService implements IDrivingNotificationService {
     private final DrivingNotificationRepository drivingNotificationRepository;
     private final RegularUserService regularUserService;
     private final WebSocketService webSocketService;
+    private final VehicleService vehicleService;
+    private final DriverService driverService;
+    private final DrivingService drivingService;
+    private final RouteService routeService;
+
 
     public DrivingNotificationService(
         final DrivingNotificationRepository drivingNotificationRepository,
         final RegularUserService regularUserService,
-        final WebSocketService webSocketService
+        final WebSocketService webSocketService,
+        final VehicleService vehicleService,
+        final DriverService driverService,
+        final DrivingService drivingService,
+        final RouteService routeService
     ){
         this.drivingNotificationRepository = drivingNotificationRepository;
         this.regularUserService = regularUserService;
         this.webSocketService = webSocketService;
+        this.vehicleService = vehicleService;
+        this.driverService = driverService;
+        this.drivingService = drivingService;
+        this.routeService = routeService;
     }
 
-    public List<DrivingNotificationDTO> createNotifications(
-            final double lonStarted,
-            final double latStarted,
-            final double lonEnd,
-            final double latEnd,
+    public DrivingNotificationDTO createDrivingNotificationDTO(
+            final List<DrivingLocationIndexRequest> locations,
             final String senderEmail,
             final double price,
             final List<String> passengers,
             final LocalDateTime started,
-            final int duration
+            final int duration,
+            final boolean babySeat,
+            final boolean petFriendly,
+            final String vehicleType,
+            final double time,
+            final double distance
     ) throws EntityNotFoundException {
         RegularUser sender = regularUserService.getRegularByEmail(senderEmail);
-        List<DrivingNotificationDTO> notificationDTOs = new ArrayList<>();
-
+        Set<RegularUser> receivers = new HashSet<>();
         passengers.forEach(passengerEmail -> {
             try {
-                notificationDTOs.add(
-                    createDrivingNotification(lonStarted, latStarted, lonEnd, latEnd, price, passengerEmail, sender, started, duration)
-                );
+                receivers.add(regularUserService.getRegularByEmail(passengerEmail));
             } catch (EntityNotFoundException e) {
-                System.out.println("User: " + passengerEmail + " is not found");
+                throw new RuntimeException(e); ////???
             }
-
         });
+        //TODO:
+        Vehicle selectedVehicle = vehicleService.getVehicleByType(vehicleType);
+        Route route = routeService.createRoute(locations, time, distance);
+        DrivingNotification notification = createDrivingNotification(
+                route, price, receivers, sender, started, duration, babySeat, petFriendly, selectedVehicle
+        );
+        if(passengers.size() > 0){
+            webSocketService.sendDrivingNotification(notification);
+        }
+        else{
+            shouldFindDriver(notification);
+        }
 
-        webSocketService.sendDrivingNotification(notificationDTOs);
-
-        return notificationDTOs;
+        return new DrivingNotificationDTO(notification);
     }
 
-    public DrivingNotificationDTO setDrivingNotificationAnswered(final Long id) throws EntityNotFoundException {
+    public DrivingNotificationDTO acceptDriving(final Long id) throws EntityNotFoundException {
         DrivingNotification drivingNotification = drivingNotificationRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException(id, EntityType.DRIVING_NOTIFICATION));
-
-        drivingNotification.setRead(true);
+        drivingNotification.setAnsweredPassengers(drivingNotification.getAnsweredPassengers()+1);
         drivingNotificationRepository.save(drivingNotification);
-
+        shouldFindDriver(drivingNotification);
         return new DrivingNotificationDTO(drivingNotification);
     }
 
-    public List<DrivingNotificationDTO> createNotifications(
-        final Location startLocation,
-        final Location destination,
-        final double price,
-        final User sender,
-        final Set<RegularUser> receivers,
-        final DrivingNotificationType notificationType,
-        final String reason
-    ) {
-        List<DrivingNotificationDTO> notificationDTOs = new ArrayList<>();
-        receivers.forEach(receiver ->
-            notificationDTOs.add(
-                createDrivingNotification(startLocation, destination, price, sender, receiver, notificationType, reason)
-            )
-        );
+    private boolean allPassengersAcceptDriving(DrivingNotification drivingNotification){
 
-        return notificationDTOs;
+        return drivingNotification.getAnsweredPassengers() == drivingNotification.getReceivers().size();
     }
 
-    private DrivingNotificationDTO createDrivingNotification(
-        final Location startLocation,
-        final Location destination,
-        final double price,
-        final User sender,
-        final User receiver,
-        final DrivingNotificationType notificationType,
-        final String reason
-    ) {
-        DrivingNotification drivingNotification =  drivingNotificationRepository.save(
-            new DrivingNotification(
-                startLocation.getLon(),
-                startLocation.getLat(),
-                destination.getLon(),
-                destination.getLat(),
-                price,
-                sender,
-                receiver,
-                notificationType,
-                reason
-            ));
+    public void shouldFindDriver(DrivingNotification drivingNotification) throws EntityNotFoundException {
+        if(allPassengersAcceptDriving(drivingNotification)){
+            Driver driver = driverService.getDriverForDriving(drivingNotification);
+            if(driver == null){
+                DrivingStatusNotificationDTO drivingStatusNotificationDTO = new DrivingStatusNotificationDTO(0L, 0, DrivingStatus.PENDING,"Not found driver", drivingNotification.getId());
+                webSocketService.sendDrivingStatus(drivingStatusNotificationDTO, drivingNotification.getReceivers(), drivingNotification.getSender().getEmail());
+                return;
+            }
+            DrivingDTO drivingDTO = drivingService.create(
+                    drivingNotification.getDuration(),
+                    drivingNotification.getStarted(),
+                    drivingNotification.getStarted().plusMinutes(2),
+                    drivingNotification.getRoute(),
+                    DrivingStatus.PAYING,
+                    driver.getId(),
+                    drivingNotification.getReceivers(),
+                    new HashMap<>(),
+                    drivingNotification.getPrice());
+            //poziv placanja
 
-        return new DrivingNotificationDTO(drivingNotification);
+        }
     }
+
+
+
 
     public DrivingNotificationDTO getDrivingNotification(Long id) throws EntityNotFoundException {
         DrivingNotification drivingNotification =  drivingNotificationRepository.findById(id)
@@ -125,23 +135,21 @@ public class DrivingNotificationService implements IDrivingNotificationService {
         return new DrivingNotificationDTO(drivingNotification);
     }
 
-    private DrivingNotificationDTO createDrivingNotification(
-        final double lonStarted,
-        final double latStarted,
-        final double lonEnd,
-        final double latEnd,
+    private DrivingNotification createDrivingNotification(
+        final Route route,
         final double price,
-        final String passengerEmail,
+        final Set<RegularUser> receivers,
         final User sender,
         final LocalDateTime started,
-        final int duration
-    ) throws EntityNotFoundException {
-        RegularUser passenger = regularUserService.getRegularByEmail(passengerEmail);
+        final int duration,
+        final boolean babySeat,
+        final boolean petFriendly,
+        final Vehicle vehicle
+    )
+    {
 
-        DrivingNotification drivingNotification =  drivingNotificationRepository.save(
-            new DrivingNotification(lonStarted, latStarted, lonEnd, latEnd, price, sender, passenger, DrivingNotificationType.LINKED_USER, started, duration)
+        return drivingNotificationRepository.save(
+            new DrivingNotification(route, price, sender, started, duration, babySeat, petFriendly, vehicle, receivers)
         );
-
-        return new DrivingNotificationDTO(drivingNotification);
     }
 }

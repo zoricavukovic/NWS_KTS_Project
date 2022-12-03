@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ConfigService } from './config.service';
-import { DrivingNotificationRequest } from '../model/request/driving-notification-request';
 import { ToastrService } from 'ngx-toastr';
-import {DrivingNotificationResponse} from "../model/notification/driving-notification-response";
+import { DrivingNotificationResponse } from '../model/notification/driving-notification-response';
+import { DrivingStatusNotification } from '../model/notification/driving-status-notification';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DrivingNotificationService {
-  private notificationTypeLinkedUser: string = "LINKED_USER";
+  private notificationTypeLinkedUser = 'LINKED_USER';
 
   constructor(
     private http: HttpClient,
@@ -17,7 +17,9 @@ export class DrivingNotificationService {
     private toast: ToastrService
   ) {}
 
-  saveDrivingNotification(drivingNotificationRequest: DrivingNotificationRequest) {
+  saveDrivingNotification(
+    drivingNotificationRequest: DrivingNotificationResponse
+  ) {
     return this.http.post(
       this.configService.driving_notifications_url,
       drivingNotificationRequest,
@@ -30,11 +32,44 @@ export class DrivingNotificationService {
   }
 
   showNotification(drivingNotificationResponse: DrivingNotificationResponse) {
-    drivingNotificationResponse.drivingNotificationType === this.notificationTypeLinkedUser ?
-      this.toast.info(`User ${drivingNotificationResponse.senderEmail} add you as linked passenger.Tap to accept!`)
-        .onTap.subscribe(action => console.log(action)) :
-      this.toast.info(`Driver ${drivingNotificationResponse.senderEmail} reject your driving. \nReason for rejecting is
-      ${drivingNotificationResponse.reason}`)
-        .onTap.subscribe(action => console.log(action));
+    console.log(drivingNotificationResponse);
+    drivingNotificationResponse.drivingNotificationType ===
+    this.notificationTypeLinkedUser
+      ? this.toast
+          .info(
+            `User ${drivingNotificationResponse.senderEmail} add you as linked passenger.Tap to accept!`
+          )
+          .onTap.subscribe(action => {
+            console.log('blaaa');
+            this.acceptDriving(drivingNotificationResponse.id).subscribe(
+              bla => {
+                console.log(bla);
+              }
+            );
+          })
+      : this.toast
+          .info(
+            `Driver ${drivingNotificationResponse.senderEmail} reject your driving. \nReason for rejecting is
+      ${drivingNotificationResponse.reason}`
+          )
+          .onTap.subscribe(action => console.log(action));
+  }
+
+  showDrivingStatus(drivingStatusNotification: DrivingStatusNotification) {
+    const divNotification = document.getElementById('notification');
+    divNotification.innerText =
+      'blaabla' + drivingStatusNotification.driverEmail;
+    console.log('notifiiii');
+  }
+
+  acceptDriving(id: number) {
+    console.log(id);
+    console.log(this.configService.get_accept_driving_url(id));
+    return this.http.get<DrivingNotificationResponse>(
+      this.configService.get_accept_driving_url(id),
+      {
+        headers: this.configService.getHeader(),
+      }
+    );
   }
 }

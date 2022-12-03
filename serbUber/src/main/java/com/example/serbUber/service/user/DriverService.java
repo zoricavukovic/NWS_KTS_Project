@@ -2,13 +2,11 @@ package com.example.serbUber.service.user;
 
 import com.example.serbUber.dto.DriverActivityResetNotificationDTO;
 import com.example.serbUber.dto.DrivingNotificationDTO;
+import com.example.serbUber.dto.DrivingStatusNotificationDTO;
 import com.example.serbUber.dto.user.DriverDTO;
 import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.*;
-import com.example.serbUber.model.Driving;
-import com.example.serbUber.model.Location;
-import com.example.serbUber.model.Vehicle;
-import com.example.serbUber.model.VehicleType;
+import com.example.serbUber.model.*;
 import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.repository.user.DriverRepository;
 import com.example.serbUber.service.DrivingNotificationService;
@@ -23,6 +21,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,22 +41,19 @@ public class DriverService implements IDriverService{
     private final RoleService roleService;
     private final VerifyService verifyService;
     private final WebSocketService webSocketService;
-    private final DrivingNotificationService drivingNotificationService;
 
     public DriverService(
             final DriverRepository driverRepository,
             final VehicleService vehicleService,
             final VerifyService verifyService,
             final RoleService roleService,
-            final WebSocketService webSocketService,
-            final DrivingNotificationService drivingNotificationService
+            final WebSocketService webSocketService
             ) {
         this.driverRepository = driverRepository;
         this.vehicleService = vehicleService;
         this.verifyService = verifyService;
         this.roleService = roleService;
         this.webSocketService = webSocketService;
-        this.drivingNotificationService = drivingNotificationService;
     }
 
 
@@ -149,20 +145,23 @@ public class DriverService implements IDriverService{
         return driverRepository.getRatingForDriver(id);
     }
 
-    public DriverDTO getDriverForDriving(Long id) throws EntityNotFoundException {
-        DrivingNotificationDTO drivingNotificationDTO = drivingNotificationService.getDrivingNotification(id);
-        LocalDateTime startDate = drivingNotificationDTO.getStarted();
-        LocalDateTime endDate = drivingNotificationDTO.getStarted().plusMinutes(drivingNotificationDTO.getDuration());
-        List<Driver> activeAndFreeDrivers = getActiveAndFreeDrivers(startDate, endDate);
-        if(activeAndFreeDrivers.size() == 0) { // nema trenutno slobodnih aktivnih vozaca
 
-            return getFutureFreeDriver(startDate, endDate);
+    public Driver getDriverForDriving( DrivingNotification drivingNotification) {
+        LocalDateTime startDate = drivingNotification.getStarted();
+        LocalDateTime endDate = drivingNotification.getStarted().plusMinutes(drivingNotification.getDuration());
+        Vehicle vehicle = drivingNotification.getVehicle();
+        Location startLocation = drivingNotification.getRoute().getLocations().first().getLocation();
+        List<Driver> activeAndFreeDrivers = getActiveAndFreeDrivers(startDate, endDate, vehicle.getVehicleTypeInfo().getVehicleType());
+        if(activeAndFreeDrivers.size() == 0) { // nema trenutno slobodnih aktivnih vozaca
+            activeAndFreeDrivers = getFutureFreeDrivers(startDate, endDate, vehicle.getVehicleTypeInfo().getVehicleType());
         }
-        return findNearestDriver(activeAndFreeDrivers, drivingNotificationDTO.getLonStarted(), drivingNotificationDTO.getLatStarted());
+
+       return activeAndFreeDrivers.size() > 0 ?
+               findNearestDriver(activeAndFreeDrivers, startLocation.getLon(), startLocation.getLat())
+               : null;
     }
 
-
-    private DriverDTO findNearestDriver(List<Driver> activeAndFreeDrivers, double lonStart, double latStart){
+    private Driver findNearestDriver(List<Driver> activeAndFreeDrivers, double lonStart, double latStart){
         Location locationFirstDriver = activeAndFreeDrivers.get(0).getCurrentLocation();
         double latEnd = locationFirstDriver.getLat();
         double lonEnd = locationFirstDriver.getLon();
@@ -175,7 +174,7 @@ public class DriverService implements IDriverService{
                 nearestDriver = driver;
             }
         }
-        return new DriverDTO(nearestDriver);
+        return nearestDriver;
     }
 
     private double getDistance(double lonStart, double latStart, double lonEnd, double latEnd){
@@ -186,20 +185,21 @@ public class DriverService implements IDriverService{
     }
 
 
-    private DriverDTO getFutureFreeDriver(LocalDateTime startDate, LocalDateTime endDate){
-        List<Driver> busyDriversNow = driverRepository.getBusyDriversNow(startDate);
-        for(Driver driver : busyDriversNow){
-            for(Driving driving : driver.getDrivings()){
+    private List<Driver> getFutureFreeDrivers(LocalDateTime startDate, LocalDateTime endDate, VehicleType vehicleType){
+        List<Driver> busyDriversNow = driverRepository.getBusyDriversNow(startDate, vehicleType);
+        List<Driver> futureFreeDrivers = new LinkedList<>();
+        busyDriversNow.forEach(driver -> {
+            driver.getDrivings().forEach(driving -> {
                 if(driving.isActive() && driving.getEnd().isBefore(startDate.plusMinutes(3))){
-                    return new DriverDTO(driver);
+                    futureFreeDrivers.add(driver);
                 }
-            }
-        }
-        return null;
+            });
+        });
+       return futureFreeDrivers;
     }
 
-    private List<Driver> getActiveAndFreeDrivers(LocalDateTime startDate, LocalDateTime endDate) {
-        return driverRepository.getActiveAndFreeDrivers(startDate, endDate);
+    private List<Driver> getActiveAndFreeDrivers(LocalDateTime startDate, LocalDateTime endDate, VehicleType vehicleType) {
+        return driverRepository.getActiveAndFreeDrivers(startDate, endDate, vehicleType);
     }
 
     public DriverDTO updateActivityStatus(final Long id, boolean active)

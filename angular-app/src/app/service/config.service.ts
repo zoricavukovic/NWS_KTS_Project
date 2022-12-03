@@ -68,6 +68,9 @@ export class ConfigService {
 
   private _driving_notifications_url = this._api_url + '/driving-notifications';
 
+  private _accept_driving_url =
+    this._api_url + '/driving-notifications/accept/';
+
   get login_url(): string {
     return this._login_user;
   }
@@ -256,5 +259,9 @@ export class ConfigService {
 
   get driving_notifications_url(): string {
     return this._driving_notifications_url;
+  }
+
+  get_accept_driving_url(id: number): string {
+    return this._accept_driving_url + id;
   }
 }

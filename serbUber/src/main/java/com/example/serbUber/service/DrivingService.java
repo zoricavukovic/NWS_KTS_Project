@@ -1,14 +1,12 @@
 package com.example.serbUber.service;
 
 import com.example.serbUber.dto.DrivingDTO;
-import com.example.serbUber.dto.DrivingNotificationDTO;
 import com.example.serbUber.dto.DrivingPageDTO;
+import com.example.serbUber.dto.DrivingStatusNotificationDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.EntityType;
-import com.example.serbUber.model.Driving;
-import com.example.serbUber.model.DrivingNotificationType;
-import com.example.serbUber.model.DrivingStatus;
-import com.example.serbUber.model.Route;
+import com.example.serbUber.model.*;
+import com.example.serbUber.model.user.RegularUser;
 import com.example.serbUber.model.user.User;
 import com.example.serbUber.repository.DrivingRepository;
 import com.example.serbUber.service.interfaces.IDrivingService;
@@ -21,10 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
+import java.util.*;
 
 import static com.example.serbUber.dto.DrivingDTO.fromDrivings;
 import static com.example.serbUber.dto.DrivingPageDTO.fromDrivingsPage;
@@ -35,35 +30,35 @@ public class DrivingService implements IDrivingService {
 
     private final DrivingRepository drivingRepository;
     private final UserService userService;
-    private final DrivingNotificationService drivingNotificationService;
     private final WebSocketService webSocketService;
+    private final DrivingStatusNotificationService drivingStatusNotificationService;
 
     public DrivingService(
         final DrivingRepository drivingRepository,
         final UserService userService,
-        final DrivingNotificationService drivingNotificationService,
-        final WebSocketService webSocketService
+        final WebSocketService webSocketService,
+        final DrivingStatusNotificationService drivingStatusNotificationService
     ) {
         this.drivingRepository = drivingRepository;
         this.userService = userService;
-        this.drivingNotificationService = drivingNotificationService;
         this.webSocketService = webSocketService;
+        this.drivingStatusNotificationService = drivingStatusNotificationService;
     }
 
     public DrivingDTO create(
-            final boolean active,
             final int duration,
             final LocalDateTime started,
             final LocalDateTime payingLimit,
             final Route route,
             final DrivingStatus drivingStatus,
             final Long driverId,
+            final Set<RegularUser> users,
             final HashMap<Long, Boolean> usersPaid,
             final double price
     ) {
         LocalDateTime end = started.plusMinutes(duration);
         Driving driving = drivingRepository.save(
-                new Driving(active, duration, started, end, payingLimit, route, drivingStatus, driverId, usersPaid, price)
+                new Driving(duration, started, end, payingLimit, route, drivingStatus, driverId, users, usersPaid, price)
         );
 
         return new DrivingDTO(driving);
@@ -160,17 +155,21 @@ public class DrivingService implements IDrivingService {
         driving.setDrivingStatus(DrivingStatus.REJECTED);
         drivingRepository.save(driving);
 
-        List<DrivingNotificationDTO> notifications = drivingNotificationService.createNotifications(
-            driving.getRoute().getLocations().first().getLocation(),
-            driving.getRoute().getLocations().last().getLocation(),
-            driving.getPrice(),
-            driver,
-            driving.getUsers(),
-            DrivingNotificationType.REJECT_DRIVING,
-            reason
-        );
+      DrivingStatusNotification drivingStatusNotification = drivingStatusNotificationService.create(
+              reason, DrivingStatus.REJECTED, driving);
 
-        webSocketService.sendDrivingNotification(notifications);
+      DrivingStatusNotificationDTO drivingStatusNotificationDTO = new DrivingStatusNotificationDTO(
+              drivingStatusNotification.getDriving().getId(),
+              drivingStatusNotification.getDriving().getRoute().getTimeInMin(),
+              DrivingStatus.REJECTED,
+              reason,
+              driving.getId()
+              );
+
+        webSocketService.sendDrivingStatus(
+                drivingStatusNotificationDTO,
+                drivingStatusNotification.getDriving().getUsers(),
+                driver.getEmail());
 
         return new DrivingDTO(driving);
     }

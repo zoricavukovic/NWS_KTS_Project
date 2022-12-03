@@ -61,11 +61,11 @@ import { FilterVehicleViewComponent } from './component/home/filter-vehicle-view
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { DriverHomePageContainerComponent } from './component/home/driver-home-page-container/driver-home-page-container.component';
 import { AvatarModule } from 'primeng/avatar';
+import { ToastModule } from 'primeng/toast';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { AvatarGroupModule } from 'primeng/avatargroup';
 import { SuccessfullVerificationComponent } from './component/user/auth/successfull-verification/successfull-verification.component';
 import { RejectDrivingComponent } from './component/driving/reject-driving/reject-driving.component';
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -125,7 +125,6 @@ import { RejectDrivingComponent } from './component/driving/reject-driving/rejec
     MatPaginatorModule,
     MatChipsModule,
     ToastrModule.forRoot({
-      timeOut: 4000,
       positionClass: 'toast-bottom-left',
       preventDuplicates: true,
       closeButton: true,

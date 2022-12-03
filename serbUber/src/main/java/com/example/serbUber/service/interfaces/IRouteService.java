@@ -15,7 +15,13 @@ import java.util.SortedSet;
 public interface IRouteService {
     List<RouteDTO> getAll();
     Route get(Long id) throws EntityNotFoundException;
-    RouteDTO create(
+    RouteDTO createDTO(
+            final SortedSet<DrivingLocationIndex> locations,
+            final double distance,
+            final double time
+    );
+
+    Route create(
             final SortedSet<DrivingLocationIndex> locations,
             final double distance,
             final double time

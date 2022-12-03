@@ -83,12 +83,5 @@ public class DriverController {
                 driverActivityStatusRequest.isActive()
         );
     }
-
-    @GetMapping("/findDriver/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_REGULAR_USER')")
-    public DriverDTO getDriverForDriving(@PathVariable Long id) throws EntityNotFoundException {
-        return driverService.getDriverForDriving(id);
-    }
 }
 
