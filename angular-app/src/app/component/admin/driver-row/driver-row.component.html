@@ -5,7 +5,8 @@
            src="../../../assets/images/{{driver?.vehicle?.vehicleTypeInfo.vehicleType.toLowerCase()}}.png"
       >
       <div style="display:flex; margin-top: 1.5rem">
-        <img mat-card-avatar class="img-user" [src]="getBase64Prefix() + driver.profilePicture">
+        <img mat-card-avatar class="img-user" [src]="getBase64Prefix() + driver.profilePicture"
+        (click)="goToDriverProfile()">
         <mat-card-content>
           <div class="user-info-container">
             <h1>{{driver.name}} {{driver.surname}}</h1>

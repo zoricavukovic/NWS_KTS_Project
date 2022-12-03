@@ -20,7 +20,8 @@
         <p-avatarGroup>
           <div *ngFor="let user of driving.users; let userIndex=index">
             <p-avatar *ngIf="userIndex < maxNumberOfShowedUsers" shape="circle"
-                      size="large" [image]="configService.base64_show_photo_prefix + user.profilePicture"></p-avatar>
+                      size="large" [image]="configService.base64_show_photo_prefix + user.profilePicture"
+                      (click)="goToUserProfile(user?.id)"></p-avatar>
             <p-avatar *ngIf="userIndex >= maxNumberOfShowedUsers" shape="circle"
                       size="large" [label]=getNumOfNotShowedUsers(driving)></p-avatar>
           </div>

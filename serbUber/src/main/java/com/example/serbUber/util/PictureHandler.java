@@ -40,6 +40,10 @@ public class PictureHandler {
 
     public static String convertPictureToBase64ByName(final String name) {
         try {
+            if (name.length() > 20){
+
+                return name;
+            }
             byte[] pictureData = new byte[0];
             pictureData = getPictureDataByName(name);
 

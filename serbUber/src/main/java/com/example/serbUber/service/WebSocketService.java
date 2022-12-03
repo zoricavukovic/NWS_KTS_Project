@@ -10,13 +10,21 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Set;
 
+import static com.example.serbUber.util.Constants.BLOCKED_NOTIFICATION;
+
 @Service
 public class WebSocketService {
 
     private final SimpMessagingTemplate messagingTemplate;
 
-    public WebSocketService(final SimpMessagingTemplate messagingTemplate) {
+    private final EmailService emailService;
+
+    public WebSocketService(
+            final SimpMessagingTemplate messagingTemplate,
+            final EmailService emailService
+    ) {
         this.messagingTemplate = messagingTemplate;
+        this.emailService = emailService;
     }
 
     public void sendVehicleCurrentLocation(List<VehicleCurrentLocationDTO> vehicleDTOs) {
@@ -39,10 +47,13 @@ public class WebSocketService {
 
     public void sendDrivingStatus(DrivingStatusNotificationDTO dto, Set<RegularUser> receivers, String senderEmail) {
         this.messagingTemplate.convertAndSendToUser(senderEmail, "/connect", dto);
-        if(receivers.size() > 0){
+        if (receivers.size() > 0) {
             receivers.forEach(receiver -> {
                 this.messagingTemplate.convertAndSendToUser(receiver.getEmail(), "/connect", dto);
             });
         }
+    }
+    public void sendBlockedNotification(final String email, final String reason) {
+        this.messagingTemplate.convertAndSendToUser(email, "/connect", BLOCKED_NOTIFICATION);
     }
 }

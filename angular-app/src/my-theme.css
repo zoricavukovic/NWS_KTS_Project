@@ -3088,3 +3088,48 @@ h1 {
 .mat-icon-deep-blue {
   color: var(--deep-blue);
 }
+
+.row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 100%;
+  flex: 1;
+}
+
+.center-content {
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.status {
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50% 50%;
+  margin-bottom: 0.75rem;
+  position: absolute;
+}
+
+.status-offline {
+  background-color: red;
+}
+
+.status-active {
+  background-color: green;
+}
+
+.status-not-active {
+  background-color: orange;
+}
+
+.bottom-right-comments {
+  right: 20%;
+  bottom: 0;
+}

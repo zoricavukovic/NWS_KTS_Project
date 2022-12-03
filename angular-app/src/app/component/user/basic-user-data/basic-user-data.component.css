@@ -1,0 +1,51 @@
+
+img.profile-img {
+    margin-top: 2%;
+    border-radius: 50%;
+    width: 120px;
+    max-height: 120px;
+    height: auto;
+    border: 2px solid var(--deep-blue);
+}
+
+.role-badge {
+    font-size: 1.2rem;
+    padding: 4px 8px;
+    display: flex;
+    border-radius: 20px;
+}
+
+h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+}
+
+.user-data {
+    min-width: 15rem;
+    margin: 0.5rem;
+}
+
+.user-data label {
+    display: block;
+    margin-top: 1rem;
+}
+
+.user-data b {
+    font-size: 1.2rem;
+    margin-left: 0.5rem;
+}
+
+span {
+    display: flex;
+}
+
+.status {
+    width: 1.2rem;
+    height: 1.2rem;
+}
+
+.bottom-right {
+    right: 30%;
+    bottom: 0;
+}

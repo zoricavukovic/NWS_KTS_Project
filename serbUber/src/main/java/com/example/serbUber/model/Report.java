@@ -14,14 +14,6 @@ public class Report extends Notification {
     @Column(name="answered", nullable = false)
     private boolean answered = false;
 
-    @OneToOne()
-    @JoinColumn(name = "sender_id", referencedColumnName = "id")
-    private User sender;
-
-    @OneToOne()
-    @JoinColumn(name = "receiver_id", referencedColumnName = "id")
-    private User receiver;
-
     public Report() {
         super();
     }

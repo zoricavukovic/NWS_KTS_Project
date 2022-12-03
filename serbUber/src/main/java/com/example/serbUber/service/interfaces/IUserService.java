@@ -51,6 +51,8 @@ public interface IUserService {
     boolean checkIfUserAlreadyExists(String email);
     boolean activate(final Long verifyId, final int securityCode)
             throws EntityNotFoundException, WrongVerifyTryException;
+    boolean block(final Long id, final String reason)
+            throws EntityNotFoundException, EntityUpdateException;
 
     RegistrationDTO createRegularUser(
         final String email,

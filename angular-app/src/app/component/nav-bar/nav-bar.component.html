@@ -89,7 +89,7 @@
       alt="avatar"
       loading="lazy"
       class="img-circle-small" />
-    <span class="status bottomRight"></span>
+    <span [class]="isDriver && !driverData?.active ? 'status bottomRight status-not-active' : 'status bottomRight  status-active'"></span>
   </div>
 
   <mat-menu #menu="matMenu">

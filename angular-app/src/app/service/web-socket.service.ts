@@ -10,9 +10,11 @@ import { VehicleCurrentLocation } from '../model/vehicle/vehicle-current-locatio
 import { DrivingNotificationRequest } from '../model/request/driving-notification-request';
 import { DrivingNotificationService } from './driving-notification.service';
 import { DriverService } from './driver.service';
-import { Driver } from '../model/user/driver';
 import { DriverActivityResetNotification } from '../model/notification/driver-activity-reset-notification';
 import { DrivingNotificationResponse } from '../model/notification/driving-notification-response';
+import { BlockNotification } from '../model/notification/block-notification';
+import { Router } from '@angular/router';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -26,7 +28,8 @@ export class WebSocketService {
     private chatRoomService: ChatRoomService,
     private vehicleService: VehicleService,
     private drivingNotificationService: DrivingNotificationService,
-    private driverService: DriverService
+    private driverService: DriverService,
+    private router: Router
   ) {
     if (!this.stompClient) {
       this.initialized = false;
@@ -40,7 +43,7 @@ export class WebSocketService {
   }
 
   connect() {
-    if (!this.initialized) {
+    if (!this.initialized && localStorage.getItem('email') !== null) {
       this.initialized = true;
       const serverUrl = environment.webSocketUrl;
       const ws = new SockJS(serverUrl);
@@ -66,6 +69,8 @@ export class WebSocketService {
       this.driverService.showActivityStatusResetNotification(
         JSON.parse(message)
       );
+    } else if (this.isBlockingNotification(message)) {
+      this.logOutUser();
     } else {
       this.isMessageType(message)
         ? this.chatRoomService.addMessage(JSON.parse(message))
@@ -75,6 +80,13 @@ export class WebSocketService {
             JSON.parse(message)
           );
     }
+  }
+
+  logOutUser(): void {
+    this.disconnect();
+    localStorage.clear();
+    this.router.navigate(['/login']);
+    window.location.reload();
   }
 
   globalConnect() {
@@ -101,6 +113,17 @@ export class WebSocketService {
           }
         );
       });
+    }
+  }
+
+  private isBlockingNotification(message: string): boolean {
+    try {
+      const parsed: BlockNotification = JSON.parse(message);
+      return (
+        parsed.blockConfirmed !== null && parsed.blockConfirmed !== undefined
+      );
+    } catch (e) {
+      return false;
     }
   }
 

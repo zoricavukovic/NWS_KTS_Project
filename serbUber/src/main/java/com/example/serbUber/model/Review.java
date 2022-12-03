@@ -4,6 +4,8 @@ import com.example.serbUber.model.user.User;
 
 import javax.persistence.*;
 
+import static com.example.serbUber.util.PictureHandler.convertPictureToBase64ByName;
+
 
 @Entity
 @Table(name="reviews")

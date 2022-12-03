@@ -40,7 +40,7 @@
         <img
           mat-card-avatar
           style="height: 5rem; width: 5rem"
-          [src]="getBase64Prefix() + driver?.profilePicture" />
+          [src]="getBase64Prefix() + driver?.profilePicture" (click)="goToDriverProfile()" />
 
         <mat-card-title
           >{{ driver?.name }} {{ driver?.surname }}</mat-card-title
@@ -72,7 +72,8 @@
           <mat-card-header>
             <img
               mat-card-avatar
-              [src]="getBase64Prefix() + user?.profilePicture" />
+              [src]="getBase64Prefix() + user?.profilePicture" 
+              (click)="goToPassengerProfile(user?.id)"/>
             <div style="display: block">
               <mat-card-title
                 >{{ user?.name }} {{ user?.surname }}</mat-card-title

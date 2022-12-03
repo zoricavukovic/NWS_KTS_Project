@@ -1,10 +1,8 @@
 package com.example.serbUber.controller.user;
 
 import com.example.serbUber.dto.user.DriverDTO;
-import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.*;
 import com.example.serbUber.request.user.DriverActivityStatusRequest;
-import com.example.serbUber.request.user.DriverRegistrationRequest;
 import com.example.serbUber.service.user.DriverService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -44,32 +42,21 @@ public class DriverController {
         return driverService.get(id);
     }
 
+    @GetMapping("/blocked-data/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
+    public boolean getBlocked(
+            @Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable Long id
+    ) throws EntityNotFoundException {
+
+        return driverService.getIsBlocked(id);
+    }
+
     @GetMapping("/rating/{id}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
     public double getRating(@Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable Long id) throws EntityNotFoundException {
         return driverService.getDriverRating(id);
-    }
-
-    @PostMapping("/register")
-    @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-    public UserDTO create(@Valid @RequestBody DriverRegistrationRequest driverRegistrationRequest)
-            throws EntityNotFoundException, PasswordsDoNotMatchException, EntityAlreadyExistsException, MailCannotBeSentException {
-
-        return driverService.create(
-                driverRegistrationRequest.getEmail(),
-                driverRegistrationRequest.getPassword(),
-                driverRegistrationRequest.getConfirmPassword(),
-                driverRegistrationRequest.getName(),
-                driverRegistrationRequest.getSurname(),
-                driverRegistrationRequest.getPhoneNumber(),
-                driverRegistrationRequest.getCity(),
-                driverRegistrationRequest.getProfilePicture(),
-                driverRegistrationRequest.getVehicle().isPetFriendly(),
-                driverRegistrationRequest.getVehicle().isBabySeat(),
-                driverRegistrationRequest.getVehicle().getVehicleType()
-        );
     }
 
     @PutMapping("/activity")
@@ -82,6 +69,16 @@ public class DriverController {
                 driverActivityStatusRequest.getId(),
                 driverActivityStatusRequest.isActive()
         );
+    }
+
+    @PutMapping("/unblock/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
+    public boolean unblock(
+            @Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable Long id
+    ) throws EntityNotFoundException, EntityUpdateException {
+
+        return driverService.unblock(id);
     }
 }
 

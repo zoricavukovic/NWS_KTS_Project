@@ -3,6 +3,7 @@ package com.example.serbUber.service.user;
 import com.example.serbUber.dto.user.RegistrationDTO;
 import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.*;
+import com.example.serbUber.model.VehicleType;
 import com.example.serbUber.model.Verify;
 import com.example.serbUber.model.user.User;
 import com.example.serbUber.repository.user.UserRepository;
@@ -241,6 +242,43 @@ public class UserService implements IUserService {
         return regularUserService.registerRegularUser(email, password, name, surname, phoneNumber, city, profilePicture);
     }
 
+    public UserDTO createDriver(
+            final String email,
+            final String password,
+            final String confirmPassword,
+            final String name,
+            final String surname,
+            final String phoneNumber,
+            final String city,
+            final String profilePicture,
+            final boolean petFriendly,
+            final boolean babySeat,
+            final VehicleType vehicleType
+    ) throws PasswordsDoNotMatchException, EntityNotFoundException, EntityAlreadyExistsException, MailCannotBeSentException {
+        if (passwordsDontMatch(password, confirmPassword)) {
+            throw new PasswordsDoNotMatchException();
+        }
+
+        if (this.checkIfUserAlreadyExists(email)) {
+            throw new EntityAlreadyExistsException(String.format("User with %s already exists.", email));
+        }
+
+        return driverService.create(email, password, confirmPassword, name, surname, phoneNumber,
+                city, profilePicture, petFriendly, babySeat, vehicleType);
+    }
+
+    public boolean block(final Long id, final String reason)
+            throws EntityNotFoundException, EntityUpdateException
+    {
+        User user = getUserById(id);
+        if (user.getRole().isAdmin()) {
+            throw new EntityUpdateException("Admin cannot be blocked.");
+        }
+
+        return (user.getRole().isDriver()) ? driverService.blockDriver(id, reason)
+                : regularUserService.blockRegular(id, reason);
+    }
+
     private void updateAndSavePassword(String newPassword, User user) {
         user.setPassword(getHashedNewUserPassword(newPassword));
         userRepository.save(user);
@@ -259,4 +297,5 @@ public class UserService implements IUserService {
             throw new PasswordsDoNotMatchException("Your old password is not correct.");
         }
     }
+
 }

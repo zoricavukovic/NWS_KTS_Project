@@ -1,0 +1,17 @@
+<div>
+    <h1 mat-dialog-title style="display: flex;" class="center"><b>Blocking user</b></h1>
+    <mat-dialog-content>
+        <br>
+        <h2 class="center"><b>Please enter a reason for blocking {{user.name}} {{user.surname}}.</b></h2>
+        <textarea
+        matInput
+        rows="5"
+        placeholder="Enter a reason..."
+        [(ngModel)]="reason"></textarea>
+    </mat-dialog-content>
+
+    <mat-dialog-actions class="activity-buttons" align="center">
+        <button mat-button class="cancel-button" [mat-dialog-close]="null">Close</button>
+        <button mat-raised-button class="green-button block-button" [disabled]="!checkEnteredReason()" [mat-dialog-close]="createData()">Block</button>
+    </mat-dialog-actions>
+</div>

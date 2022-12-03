@@ -81,6 +81,10 @@ export class DriverHomePageContainerComponent implements OnInit, OnDestroy {
     this.router.navigate([`/map-view/${drivingId}`]);
   }
 
+  goToUserProfile(id: number): void {
+    this.router.navigate([`/user-profile/${id}`]);
+  }
+
   openRejectDrivingDialog(drivingId: number | undefined, index: number) {
     const dialogConfig = new MatDialogConfig();
 

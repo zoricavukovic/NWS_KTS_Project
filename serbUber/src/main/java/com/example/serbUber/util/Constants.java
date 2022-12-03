@@ -33,6 +33,7 @@ public class Constants {
     public static final String ROLE_REGULAR_USER = "ROLE_REGULAR_USER";
     public static final String ROLE_ADMIN = "ROLE_ADMIN";
     public static final int START_LIST_INDEX = 0;
+    public static final String BLOCKED_NOTIFICATION = "{\"blockConfirmed\":true}";
 
     public static int generateSecurityCode() {
         return (int)(Math.random() * (Constants.MAX_SECURITY_NUM - Constants.MIN_SECURITY_NUM + 1) + Constants.MIN_SECURITY_NUM);

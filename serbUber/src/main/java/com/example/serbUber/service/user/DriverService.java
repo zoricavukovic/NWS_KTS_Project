@@ -9,10 +9,7 @@ import com.example.serbUber.exception.*;
 import com.example.serbUber.model.*;
 import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.repository.user.DriverRepository;
-import com.example.serbUber.service.DrivingNotificationService;
-import com.example.serbUber.service.VehicleService;
-import com.example.serbUber.service.VerifyService;
-import com.example.serbUber.service.WebSocketService;
+import com.example.serbUber.service.*;
 import com.example.serbUber.service.interfaces.IDriverService;
 import com.example.serbUber.util.Constants;
 import com.graphhopper.GHRequest;
@@ -28,7 +25,7 @@ import java.util.Optional;
 import static com.example.serbUber.SerbUberApplication.hopper;
 import static com.example.serbUber.dto.user.DriverDTO.fromDrivers;
 import static com.example.serbUber.exception.ErrorMessagesConstants.ACTIVE_DRIVING_IN_PROGRESS_MESSAGE;
-import static com.example.serbUber.model.user.User.passwordsDontMatch;
+import static com.example.serbUber.exception.ErrorMessagesConstants.UNBLOCK_UNBLOCKED_USER_MESSAGE;
 import static com.example.serbUber.util.Constants.*;
 import static com.example.serbUber.util.JwtProperties.getHashedNewUserPassword;
 
@@ -40,6 +37,7 @@ public class DriverService implements IDriverService{
     private final VehicleService vehicleService;
     private final RoleService roleService;
     private final VerifyService verifyService;
+    private final EmailService emailService;
     private final WebSocketService webSocketService;
 
     public DriverService(
@@ -47,13 +45,15 @@ public class DriverService implements IDriverService{
             final VehicleService vehicleService,
             final VerifyService verifyService,
             final RoleService roleService,
-            final WebSocketService webSocketService
+            final WebSocketService webSocketService,
+            final EmailService emailService
             ) {
         this.driverRepository = driverRepository;
         this.vehicleService = vehicleService;
         this.verifyService = verifyService;
         this.roleService = roleService;
         this.webSocketService = webSocketService;
+        this.emailService = emailService;
     }
 
 
@@ -89,12 +89,6 @@ public class DriverService implements IDriverService{
             final boolean babySeat,
             final VehicleType vehicleType
     ) throws PasswordsDoNotMatchException, EntityNotFoundException, EntityAlreadyExistsException, MailCannotBeSentException {
-        if (passwordsDontMatch(password, confirmPassword)) {
-            throw new PasswordsDoNotMatchException();
-        } // else if (userService.checkIfUserAlreadyExists(email)) {
-//            throw new EntityAlreadyExistsException(String.format("User with %s already exists.", email));
-//        }
-
         Vehicle vehicle = vehicleService.create(petFriendly, babySeat, vehicleType);
         Driver driver = saveDriver(email, password, name, surname, phoneNumber, city, profilePicture, vehicle);
 
@@ -233,7 +227,7 @@ public class DriverService implements IDriverService{
     public void resetActivityForDrivers() {
         List<Driver> drivers = driverRepository.getAllWithDrivings();
         drivers.forEach(driver -> {
-            if (driver.isActive()) {
+            if (driver.isActive() && !driver.isBlocked()) {
                 driver.incementWorkingMinutes();
                 changeStatusIfNeeded(driver);
             }
@@ -263,6 +257,41 @@ public class DriverService implements IDriverService{
         driver.setOnline(true);
 
         return driverRepository.save(driver);
+    }
+
+    public boolean blockDriver(final Long id, final String reason)
+            throws EntityNotFoundException, EntityUpdateException
+    {
+        Driver driver = getDriverById(id);
+        if (checkIfDrivingInProgress(driver.getDrivings())) {
+            throw new EntityUpdateException("Driver cannot be blocked until he finishes his driving.");
+        }
+
+        driver.setOnline(false);
+        driver.setActive(false);
+        driver.setBlocked(true);
+        driverRepository.save(driver);
+        this.emailService.sendMail(driver.getEmail(), "Blocke on SerbUber", reason);
+        this.webSocketService.sendBlockedNotification(driver.getEmail(), reason);
+
+        return true;
+    }
+
+    public boolean getIsBlocked(Long id) {
+
+        return driverRepository.getIsBlocked(id);
+    }
+
+    public boolean unblock(Long id)
+            throws EntityNotFoundException, EntityUpdateException {
+        Driver driver = getDriverById(id);
+        if (!driver.isBlocked()) {
+            throw new EntityUpdateException(UNBLOCK_UNBLOCKED_USER_MESSAGE);
+        }
+        driver.setBlocked(false);
+        driverRepository.save(driver);
+
+        return true;
     }
 
     private Driver setDriverLoginData(final Driver driver) {
@@ -344,6 +373,5 @@ public class DriverService implements IDriverService{
 
         return false;
     }
-
 
 }
