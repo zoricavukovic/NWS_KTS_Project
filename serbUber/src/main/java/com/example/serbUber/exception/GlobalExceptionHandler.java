@@ -92,4 +92,12 @@ public class GlobalExceptionHandler {
 
         return ex.getMessage();
     }
+
+    @ExceptionHandler(value = PayPalPaymentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String PayPalPaymentException(PayPalPaymentException ex) {
+
+        return ex.getMessage();
+    }
+
 }

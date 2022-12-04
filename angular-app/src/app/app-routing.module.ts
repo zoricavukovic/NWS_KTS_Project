@@ -17,6 +17,7 @@ import { FavouriteRoutesComponent } from './component/favourite-route/favourite-
 import { SuccessfullVerificationComponent } from './component/user/auth/successfull-verification/successfull-verification.component';
 import {DrivingDetailsComponent} from "./component/driving/driving-details/driving-details.component";
 import { BasicUserProfileComponent } from './component/user/basic-user-profile/basic-user-profile.component';
+import { PaymentSuccessComponent } from './component/payment/payment-success/payment-success.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'map-view/-1', pathMatch: 'full' },
@@ -38,6 +39,7 @@ const routes: Routes = [
   { path: 'users', component: ShowUsersComponent },
   { path: 'favourite-routes', component: FavouriteRoutesComponent },
   { path: 'user-profile/:id', component: BasicUserProfileComponent },
+  { path: 'payment/success', component: PaymentSuccessComponent },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
 ];
 

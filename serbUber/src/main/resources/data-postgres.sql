@@ -77,7 +77,7 @@ insert into drivers (id, email, password, name, surname, phone_number, city, pro
 insert into drivings (active, driver_id, driving_status, duration, paying_limit, price, started, end_date, route_id, driving_id) values
    (false, 5, 1, 3, null, 400, to_timestamp('06.11.2022. 14:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('06.11.2022. 14:03', 'DD.MM.YYYY HH24:MI'), 1, 5),
    (false, 5, 1, 2, null, 300, to_timestamp('16.11.2022. 14:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('06.11.2022. 14:02', 'DD.MM.YYYY HH24:MI'),2, 5),
-   (false, 5, 1, 5, null, 600, to_timestamp('16.11.2022. 18:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('06.11.2022. 14:05', 'DD.MM.YYYY HH24:MI'),1, 5),
+   (false, 5, 1, 5, null, 600, to_timestamp('02.12.2022. 18:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('06.11.2022. 14:05', 'DD.MM.YYYY HH24:MI'),1, 5),
    (false, 5, 0, 4, null, 445, to_timestamp('14.12.2021. 14:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('06.11.2022. 14:04', 'DD.MM.YYYY HH24:MI'),2, 5),
    (false, 5, 1, 4, null, 445, to_timestamp('16.11.2022. 14:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('06.11.2022. 14:04', 'DD.MM.YYYY HH24:MI'),2, 5),
    (false, 5, 2, 4, null, 445, to_timestamp('16.11.2022. 18:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('06.11.2022. 14:04', 'DD.MM.YYYY HH24:MI'),2, 5),
@@ -133,6 +133,19 @@ insert into reports(id, admin_email, answered, sender_id, receiver_id, message, 
     (nextval('notifications_id_gen'), null, false, 2, 5, 'Vozac je bezobrazan!','20.11.2022. 14:00'),
     (nextval('notifications_id_gen'), null, false, 3, 5, 'Vozac je skrenuo sa zadate putanje!', '01.12.2022. 13:00'),
     (nextval('notifications_id_gen'), null, false, 5, 2,'Ana je prosula sok po sedistu!', '01.12.2022. 13:25');
+
+insert into paying_info(id, currency, token_price, max_num_of_tokens_per_transaction) values
+    (1, 'EUR', 1, 20);
+
+insert into token_banks(id, user_id, num_of_tokens, total_token_amount_spent, total_money_amount_spent, paying_info_id) values
+    (1, 2, 6, 0, 6, 1),
+    (2, 3, 8, 0, 8, 1),
+    (3, 4, 0, 0, 0, 1);
+
+insert into token_transactions(id, time_stamp, num_of_bought_tokens, total_price, token_bank_id) values
+    (1, '2022-12-01 14:03', 4, 4, 1),
+    (2, '2022-12-03 14:00', 4, 4, 1),
+    (3, '2022-12-03 15:00', 8, 8, 2);
 
 
 

@@ -73,6 +73,7 @@ import { UserAverageRateComponent } from './component/review/user-average-rate/u
 import { ReviewsHistoryComponent } from './component/review/reviews-history/reviews-history.component';
 import { ReportsHistoryComponent } from './component/report/reports-history/reports-history.component';
 import { ConfirmBlockingDialogComponent } from './component/user/confirm-blocking-dialog/confirm-blocking-dialog.component';
+import { PaymentSuccessComponent } from './component/payment/payment-success/payment-success.component';
 
 
 
@@ -120,6 +121,7 @@ import { ConfirmBlockingDialogComponent } from './component/user/confirm-blockin
     ReviewsHistoryComponent,
     ReportsHistoryComponent,
     ConfirmBlockingDialogComponent,
+    PaymentSuccessComponent,
   ],
   imports: [
     BrowserModule,

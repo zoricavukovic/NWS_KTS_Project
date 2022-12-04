@@ -10,6 +10,8 @@ public class Constants {
     public static final String PHOTOS_FILE_PATH = "src/main/resources/static/images/";
     public static final String TARGET_PHOTO_FILE_PATH = "./src/main/resources/static/images/";
     public static final double STARTING_RATE = 0.0;
+    public static final double EMPTY_BANK_ACCOUNT = 0.0;
+    public static final int ZERO_TOKENS = 0;
     public static final int MAX_LENGTH_OF_MESSAGE = 100;
     public static final int MIN_RATE = 0;
     public static final int MAX_RATE = 5;
@@ -34,6 +36,13 @@ public class Constants {
     public static final String ROLE_ADMIN = "ROLE_ADMIN";
     public static final int START_LIST_INDEX = 0;
     public static final String BLOCKED_NOTIFICATION = "{\"blockConfirmed\":true}";
+    public static final String TRANSACTION_DESCRIPTION = "Buying tokens for SerbUber";
+    public static final String PAYMENT_METHOD = "paypal";
+    public static final String PAYMENT_INTENT = "sale";
+    public static final String REDIRECT_URL_SUCCESS = "http://localhost:4200/payment/cancel";
+    public static final String REDIRECT_URL_CANCEL = "http://localhost:4200/payment/success";
+    public static final String PAYPAL_APPROVAL_URL = "approval_url";
+    public static final Long DEFAULT_PAYING_INFO_ID = 1L;
 
     public static int generateSecurityCode() {
         return (int)(Math.random() * (Constants.MAX_SECURITY_NUM - Constants.MIN_SECURITY_NUM + 1) + Constants.MIN_SECURITY_NUM);
