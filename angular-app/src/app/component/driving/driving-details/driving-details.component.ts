@@ -99,10 +99,6 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
           });
       });
 
-    let div = L.DomUtil.get('route-div');
-    L.DomEvent.on(div, 'mousewheel', L.DomEvent.stopPropagation);
-    L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation);
-    L.DomEvent.disableScrollPropagation(document.getElementById('route-div'));
   }
 
   setFavouriteRoute() {

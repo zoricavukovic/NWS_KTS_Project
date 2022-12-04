@@ -25,6 +25,7 @@ import static com.example.serbUber.util.EmailConstants.RESET_PASSWORD_SUBJECT;
 import static com.example.serbUber.util.JwtProperties.getHashedNewUserPassword;
 import static com.example.serbUber.util.JwtProperties.oldPasswordsMatch;
 import static com.example.serbUber.util.PictureHandler.checkPictureValidity;
+import static com.example.serbUber.util.PictureHandler.convertPictureToBase64ByName;
 
 @Component
 @Qualifier("userServiceConfiguration")
@@ -77,8 +78,10 @@ public class UserService implements IUserService {
     }
 
     public UserDTO get(Long id) throws EntityNotFoundException {
+        UserDTO userDTO = new UserDTO(getUserById(id));
+        userDTO.setProfilePicture(convertPictureToBase64ByName(userDTO.getProfilePicture()));
 
-        return new UserDTO(getUserById(id));
+        return userDTO;
     }
 
     public UserDTO updateDriver(

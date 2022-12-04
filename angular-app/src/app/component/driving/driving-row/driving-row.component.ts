@@ -56,34 +56,27 @@ export class DrivingRowComponent implements OnInit, OnDestroy {
     return new Date(start.getTime() + duration * 60000);
   }
 
-  openDialog(id: number) {
+  openDialog(drivingId: number) {
     const dialogConfig = new MatDialogConfig();
 
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
     dialogConfig.data = {
-      id: id,
-      userEmail: this.user.email,
+      drivingId: drivingId,
+      userId: this.user.id,
     };
     const dialogRef = this.dialog.open(RatingDialogComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(
       response => {
-        console.log(response);
-        this.toast.success('Review created');
-        this.driving.hasReviewForUser = true;
+        if (response !== null) {
+          this.toast.success('Review created');
+          this.driving.hasReviewForUser = true;
+        }
       },
-
       error => {
-        console.log(error);
         this.toast.error('Review creation failed');
       }
-      /*res => {this.toast.success({detail:"Review created", summary:"Review is successfully created!",
-                duration:4000, position:'bl'});
-                this.driving.hasReviewForUser = true;
-              },
-      error => this.toast.error({detail:"Review creation failed", summary:error.error,
-                duration:4000, position:'bl'})*/
     );
   }
 

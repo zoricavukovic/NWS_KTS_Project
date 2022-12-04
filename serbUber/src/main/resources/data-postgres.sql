@@ -75,10 +75,10 @@ insert into drivers (id, email, password, name, surname, phone_number, city, pro
     (nextval('users_id_gen'), 'eki@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Esad', 'Esadic', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, null, null, 0, 0, 1, 3, true, false, false);
 
 insert into drivings (active, driver_id, driving_status, duration, paying_limit, price, started, end_date, route_id, driving_id) values
-   (false, 5, 1, 3, null, 400, to_timestamp('06.11.2022. 14:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('06.11.2022. 14:03', 'DD.MM.YYYY HH24:MI'), 1, 5),
+   (false, 5, 1, 3, null, 400, to_timestamp('03.12.2022. 14:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('03.12.2022. 14:03', 'DD.MM.YYYY HH24:MI'), 1, 5),
    (false, 5, 1, 2, null, 300, to_timestamp('16.11.2022. 14:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('06.11.2022. 14:02', 'DD.MM.YYYY HH24:MI'),2, 5),
-   (false, 5, 1, 5, null, 600, to_timestamp('16.11.2022. 18:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('06.11.2022. 14:05', 'DD.MM.YYYY HH24:MI'),1, 5),
-   (false, 5, 0, 4, null, 445, to_timestamp('14.12.2021. 14:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('06.11.2022. 14:04', 'DD.MM.YYYY HH24:MI'),2, 5),
+   (true, 5, 1, 5, null, 600, to_timestamp('16.11.2022. 18:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('06.11.2022. 14:05', 'DD.MM.YYYY HH24:MI'),1, 5),
+   (false, 5, 0, 4, null, 445, to_timestamp('14.12.2022. 14:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('06.11.2022. 14:04', 'DD.MM.YYYY HH24:MI'),2, 5),
    (false, 5, 1, 4, null, 445, to_timestamp('16.11.2022. 14:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('06.11.2022. 14:04', 'DD.MM.YYYY HH24:MI'),2, 5),
    (false, 5, 2, 4, null, 445, to_timestamp('16.11.2022. 18:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('06.11.2022. 14:04', 'DD.MM.YYYY HH24:MI'),2, 5),
    (false, 6, 1, 10, null, 560,to_timestamp('24.08.2022 14:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('06.11.2022. 14:10', 'DD.MM.YYYY HH24:MI'),3, 6),
@@ -130,9 +130,9 @@ insert into reviews(vehicle_rate, driver_rate, message, sender_id, driving_id) v
     (5, 4, 'Dobar utisak..', 3, 7);
 
 insert into reports(id, admin_email, answered, sender_id, receiver_id, message, time_stamp) values
-    (nextval('notifications_id_gen'), null, false, 2, 5, 'Vozac je bezobrazan!',to_timestamp('20.11.2022. 14:00','DD.MM.YYYY HH24:MI')),
-    (nextval('notifications_id_gen'), null, false, 3, 5, 'Vozac je skrenuo sa zadate putanje!', to_timestamp('01.12.2022. 13:00', 'DD.MM.YYYY HH24:MI')),
-    (nextval('notifications_id_gen'), null, false, 5, 2,'Ana je prosula sok po sedistu!', to_timestamp('01.12.2022. 13:25', 'DD.MM.YYYY HH24:MI'));
+    (nextval('notifications_id_gen'), null, false, 2, 5, 'Vozac je bezobrazan!','2022-11-20 14:00'),
+    (nextval('notifications_id_gen'), null, false, 3, 5, 'Vozac je skrenuo sa zadate putanje!', '2022-12-01 13:00'),
+    (nextval('notifications_id_gen'), null, false, 5, 2,'Ana je prosula sok po sedistu!', '2022-12-01 13:25');
 
 
 

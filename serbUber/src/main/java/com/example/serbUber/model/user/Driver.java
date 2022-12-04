@@ -22,7 +22,7 @@ public class Driver extends User {
     @JoinColumn(name = "location_id", referencedColumnName = "id")
     private Location currentLocation;
 
-    @OneToMany()
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "driving_id", referencedColumnName = "id")
     private List<Driving> drivings = new LinkedList<>();
 

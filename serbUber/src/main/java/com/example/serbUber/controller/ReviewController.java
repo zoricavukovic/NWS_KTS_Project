@@ -55,7 +55,7 @@ public class ReviewController {
             reviewRequest.getVehicleRate(),
             reviewRequest.getDriverRate(),
             reviewRequest.getMessage(),
-            reviewRequest.getDriving(),
+            reviewRequest.getDrivingId(),
             reviewRequest.getUserId()
 
         );

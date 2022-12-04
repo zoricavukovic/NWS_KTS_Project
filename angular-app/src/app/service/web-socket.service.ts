@@ -130,11 +130,7 @@ export class WebSocketService {
   private isActivityResetNotification(message: string): boolean {
     try {
       const parsed: DriverActivityResetNotification = JSON.parse(message);
-      return (
-        parsed.email !== null &&
-        parsed.email !== undefined &&
-        (parsed.active !== null || parsed.active !== undefined)
-      );
+      return (parsed.email !== null && parsed.email !== undefined && (parsed.active !== null || true));
     } catch (e) {
       return false;
     }

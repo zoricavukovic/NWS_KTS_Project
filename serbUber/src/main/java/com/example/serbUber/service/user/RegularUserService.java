@@ -25,6 +25,7 @@ import static com.example.serbUber.exception.ErrorMessagesConstants.UNBLOCK_UNBL
 import static com.example.serbUber.util.Constants.ROLE_REGULAR_USER;
 import static com.example.serbUber.util.Constants.getProfilePicture;
 import static com.example.serbUber.util.JwtProperties.getHashedNewUserPassword;
+import static com.example.serbUber.util.PictureHandler.convertPictureToBase64ByName;
 
 @Component
 @Qualifier("regularUserServiceConfiguration")
@@ -53,7 +54,10 @@ public class RegularUserService implements IRegularUserService {
     public List<RegularUserDTO> getAll() {
         List<RegularUser> regularUsers = regularUserRepository.findAll();
 
-        return fromRegularUsers(regularUsers);
+        List<RegularUserDTO> regularUserDTOs = fromRegularUsers(regularUsers);
+        regularUserDTOs.forEach(user ->  user.setProfilePicture(convertPictureToBase64ByName(user.getProfilePicture())));
+
+        return regularUserDTOs;
     }
 
     public RegularUserDTO get(Long id) throws EntityNotFoundException {

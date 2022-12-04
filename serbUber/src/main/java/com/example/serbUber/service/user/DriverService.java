@@ -16,6 +16,7 @@ import com.graphhopper.GHRequest;
 import com.graphhopper.GHResponse;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.LinkedList;
@@ -28,6 +29,7 @@ import static com.example.serbUber.exception.ErrorMessagesConstants.ACTIVE_DRIVI
 import static com.example.serbUber.exception.ErrorMessagesConstants.UNBLOCK_UNBLOCKED_USER_MESSAGE;
 import static com.example.serbUber.util.Constants.*;
 import static com.example.serbUber.util.JwtProperties.getHashedNewUserPassword;
+import static com.example.serbUber.util.PictureHandler.convertPictureToBase64ByName;
 
 @Component
 @Qualifier("driverServiceConfiguration")
@@ -59,20 +61,31 @@ public class DriverService implements IDriverService{
 
     public List<DriverDTO> getAll() {
         List<Driver> drivers = driverRepository.findAllVerified();
+        List<DriverDTO> driverDTOs = fromDrivers(drivers);
+        driverDTOs.forEach(user ->  user.setProfilePicture(convertPictureToBase64ByName(user.getProfilePicture())));
 
-        return fromDrivers(drivers);
+        return driverDTOs;
     }
 
     public DriverDTO get(final Long id) throws EntityNotFoundException {
         Optional<Driver> optionalDriver = driverRepository.getDriverById(id);
 
-        return optionalDriver.map(DriverDTO::new)
+        DriverDTO driverDTO = optionalDriver.map(DriverDTO::new)
             .orElseThrow(() ->  new EntityNotFoundException(id, EntityType.USER));
+        driverDTO.setProfilePicture(convertPictureToBase64ByName(driverDTO.getProfilePicture()));
+
+        return driverDTO;
     }
 
     public Driver getDriverById(final Long id) throws EntityNotFoundException {
 
         return driverRepository.getDriverById(id)
+            .orElseThrow(() -> new EntityNotFoundException(id, EntityType.USER));
+    }
+
+    public Driver getDriverByIdWithoutDrivings(final Long id) throws EntityNotFoundException {
+
+        return driverRepository.getDriverByIdWithoutDrivings(id)
             .orElseThrow(() -> new EntityNotFoundException(id, EntityType.USER));
     }
 
@@ -128,10 +141,12 @@ public class DriverService implements IDriverService{
         }
     }
 
+    @Transactional
     public Driver updateRate(final Long id, final double rate) throws EntityNotFoundException {
-        Driver driver = getDriverById(id);
+        Driver driver = getDriverByIdWithoutDrivings(id);
         driver.setRate(rate);
-        return driverRepository.save(driver);
+        driverRepository.updateDrivingRate(id, rate);
+        return driver;
     }
 
 

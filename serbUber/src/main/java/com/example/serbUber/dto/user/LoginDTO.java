@@ -8,6 +8,7 @@ public class LoginDTO {
     public LoginDTO(final String token, final UserDTO userDTO) {
         this.token = token;
         this.userDTO = userDTO;
+        this.userDTO.setProfilePicture(userDTO.getProfilePicture());
     }
 
     public String getToken() {

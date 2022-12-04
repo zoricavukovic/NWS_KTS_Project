@@ -11,6 +11,7 @@ export class ReviewService {
   constructor(private http: HttpClient, private configService: ConfigService) {}
 
   saveReview(reviewRequest: RateReview): Observable<RateReview> {
+
     return this.http.post<RateReview>(
       this.configService.rate_driver_vehicle_url,
       reviewRequest,
@@ -36,17 +37,15 @@ export class ReviewService {
     vehicleRate: number,
     driverRate: number,
     message: string,
-    driving: number,
-    userEmail?: string,
-    id?: number
+    drivingId?: number,
+    userId?: number
   ): RateReview {
     return {
-      id: id,
       vehicleRate: vehicleRate,
       driverRate: driverRate,
       message: message,
-      driving: driving,
-      userEmail: userEmail,
+      drivingId: drivingId,
+      userId: userId
     };
   }
 }

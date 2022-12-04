@@ -12,8 +12,8 @@ import { RateReview } from 'src/app/model/review/rate-review';
 export class RatingDialogComponent implements OnDestroy {
   ratingVehicle = 5;
   ratingDriver = 0;
-  id: number;
-  userEmail: string;
+  drivingId: number;
+  userId: number;
   message = '';
 
   reviewSubscription: Subscription;
@@ -23,28 +23,22 @@ export class RatingDialogComponent implements OnDestroy {
     @Inject(MAT_DIALOG_DATA) data,
     public reviewService: ReviewService
   ) {
-    this.id = data.id;
-    this.userEmail = data.userEmail;
-  }
-  cancelBtn(): void {
-    this.dialogRef.close();
+    this.drivingId = data.drivingId;
+    this.userId = data.userId;
   }
 
   confirm(): void {
-    //subscribe() ne radi
     this.reviewSubscription = this.reviewService
       .saveReview(
         this.reviewService.createRateReview(
           this.ratingVehicle,
           this.ratingDriver,
           this.message,
-          this.id,
-          this.userEmail
+          this.drivingId,
+          this.userId
         )
-      )
-      .subscribe(data => {
-        console.log(data);
-        this.dialogRef.close();
+      ).subscribe(data => {
+        this.dialogRef.close(data);
       });
   }
 

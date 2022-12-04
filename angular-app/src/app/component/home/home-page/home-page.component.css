@@ -14,8 +14,8 @@
 }
 
 .viewport {
-  max-height: 10rem;
-  overflow: scroll !important;
+  max-height: 9rem;
+  overflow-y: auto !important;
 }
 
 .stepper-possible-routes {
@@ -35,7 +35,8 @@ mat-error {
 }
 
 .continue-button {
-  float:right;
+  text-align:center;
+  justify-content: center;
 }
 
 .options-button {
