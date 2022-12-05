@@ -75,6 +75,8 @@ import { ReviewsHistoryComponent } from './component/review/reviews-history/revi
 import { ReportsHistoryComponent } from './component/report/reports-history/reports-history.component';
 import { ConfirmBlockingDialogComponent } from './component/user/confirm-blocking-dialog/confirm-blocking-dialog.component';
 import {SplitButtonModule} from "primeng/splitbutton";
+import { PaymentSuccessComponent } from './component/payment/payment-success/payment-success.component';
+
 
 @NgModule({
   declarations: [
@@ -120,6 +122,7 @@ import {SplitButtonModule} from "primeng/splitbutton";
     ReviewsHistoryComponent,
     ReportsHistoryComponent,
     ConfirmBlockingDialogComponent,
+    PaymentSuccessComponent,
   ],
     imports: [
         BrowserModule,

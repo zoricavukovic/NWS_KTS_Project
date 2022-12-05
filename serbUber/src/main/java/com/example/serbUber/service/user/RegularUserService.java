@@ -13,6 +13,7 @@ import com.example.serbUber.service.RouteService;
 import com.example.serbUber.service.VerifyService;
 import com.example.serbUber.service.WebSocketService;
 import com.example.serbUber.service.interfaces.IRegularUserService;
+import com.example.serbUber.service.payment.TokenBankService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
@@ -36,19 +37,22 @@ public class RegularUserService implements IRegularUserService {
     private final RoleService roleService;
     private final RouteService routeService;
     private final WebSocketService webSocketService;
+    private final TokenBankService tokenBankService;
 
     public RegularUserService(
             final RegularUserRepository regularUserRepository,
             final VerifyService verifyService,
             final RouteService routeService,
             final RoleService roleService,
-            final WebSocketService webSocketService
+            final WebSocketService webSocketService,
+            final TokenBankService tokenBankService
     ) {
         this.regularUserRepository = regularUserRepository;
         this.verifyService = verifyService;
         this.routeService = routeService;
         this.roleService = roleService;
         this.webSocketService = webSocketService;
+        this.tokenBankService = tokenBankService;
     }
 
     public List<RegularUserDTO> getAll() {
@@ -100,6 +104,7 @@ public class RegularUserService implements IRegularUserService {
                 roleService.get(ROLE_REGULAR_USER)
             ));
             VerifyDTO verifyDTO = verifyService.create(regularUser.getId(), regularUser.getEmail());
+            this.tokenBankService.createTokenBank(regularUser);
 
             return new RegistrationDTO(verifyDTO.getId(), email);
         } catch (EntityNotFoundException ex) {
