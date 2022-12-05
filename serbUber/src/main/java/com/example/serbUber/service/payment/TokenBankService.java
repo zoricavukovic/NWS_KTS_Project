@@ -10,6 +10,10 @@ import com.example.serbUber.service.interfaces.ITokenBankService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.util.LinkedList;
+import java.util.List;
+
 import static com.example.serbUber.util.Constants.EMPTY_BANK_ACCOUNT;
 import static com.example.serbUber.util.Constants.ZERO_TOKENS;
 
@@ -35,7 +39,7 @@ public class TokenBankService implements ITokenBankService {
 
     public TokenBank getTokenBankById(final Long id) throws EntityNotFoundException {
 
-        return tokenBankRepository.findById(id)
+        return tokenBankRepository.getTokenBankById(id)
                 .orElseThrow(() -> new EntityNotFoundException(id, EntityType.TOKEN_BANK));
     }
 
@@ -46,6 +50,8 @@ public class TokenBankService implements ITokenBankService {
         TokenBank tokenBank = getTokenBankById(tokenBankId);
         TokenTransaction tokenTransaction = this.tokenTransactionService.createTransactionObject(
                 numOfTokens, tokenBank.getPayingInfo().getTokenPrice());
+        tokenBank.addTokens(numOfTokens);
+        tokenBank.addTotalSpent(tokenTransaction.getTotalPrice());
         tokenBank.getTransactions().add(tokenTransaction);
 
         return tokenBankRepository.save(tokenBank);

@@ -15,7 +15,7 @@ public class TokenBank {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private RegularUser user;
 
@@ -28,11 +28,11 @@ public class TokenBank {
     @Column(name="total_money_amount_spent", nullable = false)
     private double totalMoneyAmountSpent;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "token_bank_id", referencedColumnName = "id")
     private List<TokenTransaction> transactions = new LinkedList<>();
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "paying_info_id", referencedColumnName = "id")
     private PayingInfo payingInfo;
 
@@ -66,7 +66,6 @@ public class TokenBank {
         this.numOfTokens = numOfTokens;
         this.totalTokenAmountSpent = totalTokenAmountSpent;
         this.totalMoneyAmountSpent = totalMoneyAmountSpent;
-        this.transactions = new LinkedList<>();
         this.payingInfo = payingInfo;
     }
 
@@ -124,5 +123,13 @@ public class TokenBank {
 
     public void setPayingInfo(PayingInfo payingInfo) {
         this.payingInfo = payingInfo;
+    }
+
+    public void addTokens(final int numOfTokens) {
+        this.numOfTokens += numOfTokens;
+    }
+
+    public void addTotalSpent(final double totalPrice) {
+        this.totalMoneyAmountSpent += totalPrice;
     }
 }
