@@ -59,5 +59,10 @@ public class VehicleController {
         return vehicleService.getRatingForVehicle(id);
     }
 
-
+    @GetMapping("/{vehicleType}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
+    public VehicleDTO getVehicleByVehicleType(@PathVariable String vehicleType){
+        return vehicleService.getVehicleDTOByVehicleType(vehicleType);
+    }
 }

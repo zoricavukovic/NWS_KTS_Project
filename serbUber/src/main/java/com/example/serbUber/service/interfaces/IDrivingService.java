@@ -43,4 +43,8 @@ public interface IDrivingService {
     DrivingDTO rejectDriving(final Long id, String reason) throws EntityNotFoundException;
 
     DrivingDTO startDriving(final Long id) throws EntityNotFoundException;
+
+    DrivingDTO paidDriving(final Long id) throws EntityNotFoundException;
+
+    DrivingDTO removeDriver(Long id) throws EntityNotFoundException;
 }

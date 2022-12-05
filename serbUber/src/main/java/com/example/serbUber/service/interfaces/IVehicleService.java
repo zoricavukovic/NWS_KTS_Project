@@ -25,4 +25,6 @@ public interface IVehicleService {
     List<VehicleCurrentLocationDTO> getAllVehiclesForActiveDriver();
 
     List<VehicleCurrentLocationDTO> updateCurrentVehiclesLocation();
+
+    VehicleDTO getVehicleDTOByVehicleType(String vehicleType);
 }

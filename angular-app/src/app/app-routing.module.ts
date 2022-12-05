@@ -6,7 +6,6 @@ import { ShowDrivingsComponent } from './component/driving/show-drivings/show-dr
 import { VerifyComponent } from './component/user/auth/verify/verify.component';
 import { SendResetPasswordEmailComponent } from './component/user/auth/send-reset-password-link/send-reset-password-link.component';
 import { ResetPasswordComponent } from './component/user/auth/reset-password/reset-password.component';
-import { HomePageComponent } from './component/home/home-page/home-page.component';
 import { ProfilePageComponent } from './component/user/profile-page/profile-page.component';
 import { EditProfileComponent } from './component/user/edit-profile/edit-profile.component';
 import { HistoryLiveChatComponent } from './component/chat/history-live-chat/history-live-chat.component';
@@ -15,7 +14,7 @@ import { ShowUsersComponent } from './component/admin/show-users/show-users.comp
 import { MapComponent } from './component/map/map.component';
 import { FavouriteRoutesComponent } from './component/favourite-route/favourite-routes/favourite-routes.component';
 import { SuccessfullVerificationComponent } from './component/user/auth/successfull-verification/successfull-verification.component';
-import {DrivingDetailsComponent} from "./component/driving/driving-details/driving-details.component";
+import { DrivingDetailsComponent } from './component/driving/driving-details-components/driving-details/driving-details.component';
 import { BasicUserProfileComponent } from './component/user/basic-user-profile/basic-user-profile.component';
 import { PaymentSuccessComponent } from './component/payment/payment-success/payment-success.component';
 
@@ -26,7 +25,7 @@ const routes: Routes = [
   { path: 'registration', component: RegistrationComponent },
   { path: 'forgot-password', component: SendResetPasswordEmailComponent },
   { path: 'verify/:id', component: VerifyComponent },
-  { path: 'successfull-verification', component: SuccessfullVerificationComponent },
+  {path: 'successfull-verification', component: SuccessfullVerificationComponent},
   { path: 'drivings/:id', component: ShowDrivingsComponent },
   { path: 'reset-password/:email', component: ResetPasswordComponent },
   { path: 'profile-page', component: ProfilePageComponent },

@@ -10,7 +10,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/driving-notifications")
@@ -26,9 +25,9 @@ public class DrivingNotificationController {
     @PreAuthorize("hasAnyRole('ROLE_REGULAR_USER')")
 
     public DrivingNotificationDTO create(@Valid @RequestBody DrivingNotificationRequest drivingNotificationRequest) throws EntityNotFoundException {
-
+        System.out.println("blaaa");
         return this.drivingNotificationService.createDrivingNotificationDTO(
-            drivingNotificationRequest.getLocations(),
+            drivingNotificationRequest.getRoute(),
             drivingNotificationRequest.getSenderEmail(),
             drivingNotificationRequest.getPrice(),
             drivingNotificationRequest.getPassengers(),
@@ -36,9 +35,7 @@ public class DrivingNotificationController {
             drivingNotificationRequest.getDuration(),
             drivingNotificationRequest.isBabySeat(),
             drivingNotificationRequest.isPetFriendly(),
-            drivingNotificationRequest.getVehicleType(),
-            drivingNotificationRequest.getTime(),
-            drivingNotificationRequest.getDistance()
+            drivingNotificationRequest.getVehicleType()
         );
     }
 

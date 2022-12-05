@@ -20,8 +20,8 @@ public class RegularUser extends User {
     @JoinColumn(name="blocked", nullable = false)
     private boolean blocked = false;
 
-    @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JsonIgnore
+    @ManyToMany
+    @JoinTable(name = "drivings_users", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "driving_id", referencedColumnName = "id"))
     private List<Driving> drivings = new LinkedList<>();
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -94,4 +94,5 @@ public class RegularUser extends User {
     public void setReservations(List<Reservation> reservations) {
         this.reservations = reservations;
     }
+
 }

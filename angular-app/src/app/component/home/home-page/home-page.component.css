@@ -19,28 +19,28 @@
 }
 
 .stepper-possible-routes {
-  background-color:var(--gray);
+  background-color: var(--gray);
 }
 
 .confirm-ride-button {
-  background-color:var(--deep-blue);
+  background-color: var(--deep-blue);
 }
 
 .text-deep-blue {
-  color:var(--deep-blue);
+  color: var(--deep-blue);
 }
 
 mat-error {
-  margin-left:0.2rem;
+  margin-left: 0.2rem;
 }
 
 .continue-button {
-  text-align:center;
+  text-align: center;
   justify-content: center;
 }
 
 .options-button {
-  float:right;
+  float: right;
   background-color: var(--gray);
   color: var(--deep-blue);
 }

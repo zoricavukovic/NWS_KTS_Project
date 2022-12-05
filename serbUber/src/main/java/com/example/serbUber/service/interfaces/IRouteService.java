@@ -18,13 +18,15 @@ public interface IRouteService {
     RouteDTO createDTO(
             final SortedSet<DrivingLocationIndex> locations,
             final double distance,
-            final double time
+            final double time,
+            final SortedSet<Integer> routePathIndex
     );
 
     Route create(
             final SortedSet<DrivingLocationIndex> locations,
             final double distance,
-            final double time
+            final double time,
+            final SortedSet<Integer> routePathIndex
     );
     List<PossibleRoutesViaPointsDTO> getPossibleRoutes(LocationsForRoutesRequest locationsForRouteRequest);
 

@@ -1,0 +1,13 @@
+.button-container {
+    display: inline-flex;
+    margin-bottom: 1rem;
+  }
+  
+  .button-container .mat-button-base {
+    margin-left: 30px;
+  }
+  
+  .button-container .mat-button-base .mat-icon {
+    transform: scale(1.4);
+  }
+  

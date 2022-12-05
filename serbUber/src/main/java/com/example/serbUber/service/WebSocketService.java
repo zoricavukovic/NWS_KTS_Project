@@ -45,8 +45,7 @@ public class WebSocketService {
         this.messagingTemplate.convertAndSendToUser(dto.getEmail(), "/connect", dto);
     }
 
-    public void sendDrivingStatus(DrivingStatusNotificationDTO dto, Set<RegularUser> receivers, String senderEmail) {
-        this.messagingTemplate.convertAndSendToUser(senderEmail, "/connect", dto);
+    public void sendDrivingStatus(DrivingStatusNotificationDTO dto, Set<RegularUser> receivers) {
         if (receivers.size() > 0) {
             receivers.forEach(receiver -> {
                 this.messagingTemplate.convertAndSendToUser(receiver.getEmail(), "/connect", dto);

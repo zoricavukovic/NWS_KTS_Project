@@ -109,4 +109,8 @@ public class VehicleService implements IVehicleService {
         VehicleType type = VehicleType.getVehicleType(vehicleType);
         return vehicleRepository.getVehicleByType(type);
     }
+
+    public VehicleDTO getVehicleDTOByVehicleType(String vehicleType){
+        return new VehicleDTO(getVehicleByType(vehicleType));
+    }
 }

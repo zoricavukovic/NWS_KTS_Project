@@ -28,7 +28,7 @@
           [(ngModel)]="searchingRoutesForm.at(i).inputPlace"
           (onAddressChange)="addressChange($event, i)"
           placeholder="Enter location"
-          style="font-size: 1.2rem;" />
+          style="font-size: 1.2rem" />
         <mat-icon
           *ngIf="i === 0 || i === searchingRoutesForm.length - 1"
           [style.color]="i === 0 ? '#abbbae' : '#b73e3e'"
@@ -40,7 +40,6 @@
           matSuffix
           >{{ getIconName(i) }}</mat-icon
         >
-
       </mat-form-field>
 
       <button
@@ -77,15 +76,25 @@
     </div>
 
     <div class="mat-elevation-z3" *ngIf="possibleRoutesViaPoints.length > 0">
-      <button mat-button [matMenuTriggerFor]="menu" aria-label="Options" class="options-button">
+      <button
+        mat-button
+        [matMenuTriggerFor]="menu"
+        aria-label="Options"
+        class="options-button">
         Options
       </button>
       <mat-menu #menu="matMenu" style="background-color:red; !important;">
-        <button mat-menu-item (click)="chooseFastestRoute()" style="background-color:var(--gray); !important;color: var(--deep-blue)">
+        <button
+          mat-menu-item
+          (click)="chooseFastestRoute()"
+          style="background-color:var(--gray); !important;color: var(--deep-blue)">
           <mat-icon>access_time</mat-icon>
           <span>Fastest route</span>
         </button>
-        <button mat-menu-item (click)="chooseShortestRoute()" style="background-color:var(--gray); !important; color: var(--deep-blue)">
+        <button
+          mat-menu-item
+          (click)="chooseShortestRoute()"
+          style="background-color:var(--gray); !important; color: var(--deep-blue)">
           <mat-icon>map</mat-icon>
           <span>Shortest route</span>
         </button>
@@ -100,28 +109,44 @@
 
     <div *ngIf="possibleRoutesViaPoints.length > 0" class="viewport">
       <div *ngFor="let possibleRoute of possibleRoutesViaPoints; let i = index">
-        <h2 style="margin-left:0.7rem"><strong>
-          {{getFromToLabel(i)}}
-          <mat-icon>arrow_right_alt</mat-icon>
-          {{getFromToLabel(i + 1)}}
-        </strong></h2>
-        <p-carousel [value]="possibleRoute.possibleRouteDTOList" [numVisible]="1" [numScroll]="1" [circular]="false" [responsiveOptions]="responsiveOptions">
-          <ng-template let-route  pTemplate="item">
+        <h2 style="margin-left: 0.7rem">
+          <strong>
+            {{ getFromToLabel(i) }}
+            <mat-icon>arrow_right_alt</mat-icon>
+            {{ getFromToLabel(i + 1) }}
+          </strong>
+        </h2>
+        <p-carousel
+          [value]="possibleRoute.possibleRouteDTOList"
+          [numVisible]="1"
+          [numScroll]="1"
+          [circular]="false"
+          [responsiveOptions]="responsiveOptions">
+          <ng-template let-route pTemplate="item">
             <div>
               <div class="product-item-content">
-                <div style="position: relative;">
-                  <route-row [route]="route" (click)="changeOptionRouteOnClick(route, possibleRoute.possibleRouteDTOList.indexOf(route), i)" ></route-row>
+                <div style="position: relative">
+                  <route-row
+                    [route]="route"
+                    (click)="
+                      changeOptionRouteOnClick(
+                        route,
+                        possibleRoute.possibleRouteDTOList.indexOf(route),
+                        i
+                      )
+                    "></route-row>
                 </div>
               </div>
             </div>
-
           </ng-template>
         </p-carousel>
         <mat-divider></mat-divider>
       </div>
     </div>
-    <br/>
-    <div class="continue-button" *ngIf="currentUser && possibleRoutesViaPoints.length > 0">
+    <br />
+    <div
+      class="continue-button"
+      *ngIf="currentUser && possibleRoutesViaPoints.length > 0">
       <button mat-raised-button (click)="chooseVehicleAndPassengers()">
         <strong>Chose vehicle type</strong>
       </button>
@@ -130,6 +155,6 @@
   <div *ngIf="filterVehicleView">
     <app-filter-vehicle-view [route]="selectedRoute"></app-filter-vehicle-view>
   </div>
+  <app-driver-home-page-container *ngIf="isDriver" [driverId]="currentUser.id">
+  </app-driver-home-page-container>
 </div>
-<app-driver-home-page-container *ngIf="isDriver" [driverId]="currentUser.id">
-</app-driver-home-page-container>

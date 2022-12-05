@@ -1,10 +1,5 @@
 import { Driving } from 'src/app/model/driving/driving';
-import {
-  Component,
-  Input,
-  OnDestroy,
-  OnInit,
-} from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConfigService } from 'src/app/service/config.service';
 import { AuthService } from 'src/app/service/auth.service';
@@ -13,10 +8,9 @@ import { Driver } from 'src/app/model/user/driver';
 import { UserService } from 'src/app/service/user.service';
 import { DrivingService } from 'src/app/service/driving.service';
 import { DriverService } from 'src/app/service/driver.service';
-import {drawPolylineOnMap, drawPolylineOnMapHaveRoute, removeLine} from '../../../util/map-functions';
 import { Vehicle } from 'src/app/model/vehicle/vehicle';
 import { User } from 'src/app/model/user/user';
-import {Route} from "../../../model/route/route";
+import {drawPolylineOnMapHaveRoute, removeLine} from "../../../../util/map-functions";
 
 @Component({
   selector: 'app-driving-details',
@@ -34,11 +28,12 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
   driver: Driver;
   vehicle: Vehicle;
   destinations: string[] = [];
-  favouriteRoute: boolean = false;
+  favouriteRoute = false;
   isDriver: boolean;
   isRegularUser: boolean;
   routePolyline: google.maps.Polyline;
   loggedUser: User = null;
+  base64Prefix = this.configService.base64_show_photo_prefix;
 
   currentUserSubscription: Subscription;
   drivingsSubscription: Subscription;
@@ -79,30 +74,26 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
             this.driver = response;
           });
 
-        this.currentUserSubscription = this.authService.getSubjectCurrentUser().subscribe(
-          user => {
+        this.currentUserSubscription = this.authService
+          .getSubjectCurrentUser()
+          .subscribe(user => {
             this.loggedUser = user;
             this.isRegularUser = this.authService.userIsRegular();
             this.isDriver = this.authService.userIsDriver();
-          }
-        );
+          });
 
         this.favouriteRouteSubscription = this.userService
-          .isFavouriteRouteForUser(
-            driving?.route?.id,
-            this.loggedUser?.id
-          )
+          .isFavouriteRouteForUser(driving?.route?.id, this.loggedUser?.id)
           .subscribe(response => {
             if (response) {
               this.favouriteRoute = true;
             }
           });
       });
-
   }
 
-  setFavouriteRoute() {
-    if (this.favouriteRoute) {
+  setFavouriteRoute(favourite: boolean) {
+    if (favourite) {
       this.userService
         .removeFromFavouriteRoutes(
           this.userService.createFavouriteRequest(
@@ -125,18 +116,6 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
           this.favouriteRoute = true;
         });
     }
-  }
-
-  getBase64Prefix(): string {
-    return this.configService.base64_show_photo_prefix;
-  }
-
-  goToDriverProfile(): void {
-    this.router.navigate([`/user-profile/${this.driver?.id}`]);
-  }
-
-  goToPassengerProfile(id: number): void {
-    this.router.navigate([`/user-profile/${id}`]);
   }
 
   ngOnDestroy(): void {

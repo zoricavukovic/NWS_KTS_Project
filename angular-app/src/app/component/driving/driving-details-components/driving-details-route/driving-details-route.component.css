@@ -1,0 +1,15 @@
+.icon {
+  display: inline-flex;
+}
+
+.mat-list {
+  background-color: var(--deep-blue);
+  border-radius: 15px;
+  overflow: auto;
+  min-width: 20rem;
+  max-height: 11rem;
+}
+
+.mat-list-item {
+  color: var(--white);
+}

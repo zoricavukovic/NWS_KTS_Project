@@ -20,7 +20,7 @@ public class TokenBank {
     private RegularUser user;
 
     @Column(name="num_of_tokens", nullable = false)
-    private int numOfTokens;
+    private double numOfTokens;
 
     @Column(name="total_token_amount_spent", nullable = false)
     private double totalTokenAmountSpent;
@@ -57,7 +57,7 @@ public class TokenBank {
 
     public TokenBank(
             final RegularUser user,
-            final int numOfTokens,
+            final double numOfTokens,
             final double totalTokenAmountSpent,
             final double totalMoneyAmountSpent,
             final PayingInfo payingInfo
@@ -85,11 +85,11 @@ public class TokenBank {
         this.user = user;
     }
 
-    public int getNumOfTokens() {
+    public double getNumOfTokens() {
         return numOfTokens;
     }
 
-    public void setNumOfTokens(int numOfTokens) {
+    public void setNumOfTokens(double numOfTokens) {
         this.numOfTokens = numOfTokens;
     }
 

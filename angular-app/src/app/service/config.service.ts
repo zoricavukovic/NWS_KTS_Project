@@ -80,6 +80,12 @@ export class ConfigService {
   private _accept_driving_url =
     this._api_url + '/driving-notifications/accept/';
 
+  private _vehicle_url = this._api_url + '/vehicles/';
+
+  get_vehicle_by_vehicle_type(vehicleType: string): string {
+    return this._vehicle_url + vehicleType;
+  }
+
   get login_url(): string {
     return this._login_user;
   }
@@ -244,6 +250,10 @@ export class ConfigService {
 
   user_by_id_url(id: string): string {
     return `${this._users_url}/${id}`;
+  }
+
+  get_user_by_email(email: string): string {
+    return `${this._users_url}/byEmail/${email}`;
   }
 
   get_count_drivings(id: number): string {

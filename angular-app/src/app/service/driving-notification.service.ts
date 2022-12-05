@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ConfigService } from './config.service';
 import { ToastrService } from 'ngx-toastr';
-import { DrivingNotificationResponse } from '../model/notification/driving-notification-response';
+import { DrivingNotification } from '../model/notification/driving-notification';
 import { DrivingStatusNotification } from '../model/notification/driving-status-notification';
 
 @Injectable({
@@ -17,9 +17,8 @@ export class DrivingNotificationService {
     private toast: ToastrService
   ) {}
 
-  saveDrivingNotification(
-    drivingNotificationRequest: DrivingNotificationResponse
-  ) {
+  saveDrivingNotification(drivingNotificationRequest: DrivingNotification) {
+    console.log(drivingNotificationRequest);
     return this.http.post(
       this.configService.driving_notifications_url,
       drivingNotificationRequest,
@@ -31,7 +30,7 @@ export class DrivingNotificationService {
     alert('bla');
   }
 
-  showNotification(drivingNotificationResponse: DrivingNotificationResponse) {
+  showNotification(drivingNotificationResponse: DrivingNotification) {
     console.log(drivingNotificationResponse);
     drivingNotificationResponse.drivingNotificationType ===
     this.notificationTypeLinkedUser
@@ -57,15 +56,14 @@ export class DrivingNotificationService {
 
   showDrivingStatus(drivingStatusNotification: DrivingStatusNotification) {
     const divNotification = document.getElementById('notification');
-    divNotification.innerText =
-      'blaabla' + drivingStatusNotification.driverEmail;
+    divNotification.innerText = 'USPESNO';
     console.log('notifiiii');
   }
 
   acceptDriving(id: number) {
     console.log(id);
     console.log(this.configService.get_accept_driving_url(id));
-    return this.http.get<DrivingNotificationResponse>(
+    return this.http.get<DrivingNotification>(
       this.configService.get_accept_driving_url(id),
       {
         headers: this.configService.getHeader(),

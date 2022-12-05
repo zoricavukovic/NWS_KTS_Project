@@ -15,11 +15,11 @@ insert into regular_users (id, email, password, name, surname, phone_number, cit
     (nextval('users_id_gen'), 'zoka200015@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Zorica', 'Vukovic', '0651234567', 'Novi Sad', 'default-user.png',2, false, true, false);
 
 insert into vehicle_type_infos (num_of_seats, start_price, vehicle_type) values
-    (9, 200, 0);
+    (9, 3, 0);
 insert into vehicle_type_infos (num_of_seats, start_price, vehicle_type) values
-    (5, 100, 1);
+    (5, 2, 1);
 insert into vehicle_type_infos (num_of_seats, start_price, vehicle_type) values
-    (7, 150, 2);
+    (7, 1, 2);
 
 -- insert into routes (kilometres, location_id, )
 insert into locations (city, lat, lon, street, number, zip_code) values
@@ -69,20 +69,21 @@ insert into drivers (id, email, password, name, surname, phone_number, city, pro
     (nextval('users_id_gen'), 'mile@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Mile', 'Milic', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, null, null, 4.1, 0, 1, 1, true, false, false);
 
 insert into drivers (id, email, password, name, surname, phone_number, city, profile_picture, role_id, active, blocked, start_shift, end_shift, rate, working_minutes, location_id, vehicle_id, verified, online, drive) values
-    (nextval('users_id_gen'), 'milan@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Milan', 'Milanovic', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, null, null, 4, 0, 1, 2, true, false, true);
+    (nextval('users_id_gen'), 'milan@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Milan', 'Milanovic', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, null, null, 4, 0, 1, 2, true, false,false);
 
 insert into drivers (id, email, password, name, surname, phone_number, city, profile_picture, role_id, active, blocked, start_shift, end_shift, rate, working_minutes, location_id, vehicle_id, verified, online, drive) values
     (nextval('users_id_gen'), 'eki@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Esad', 'Esadic', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, null, null, 0, 0, 1, 3, true, false, false);
 
 insert into drivings (active, driver_id, driving_status, duration, paying_limit, price, started, end_date, route_id, driving_id) values
-   (false, 5, 1, 3, null, 400, to_timestamp('03.12.2022. 14:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('03.12.2022. 14:03', 'DD.MM.YYYY HH24:MI'), 1, 5),
-   (false, 5, 1, 2, null, 300, to_timestamp('16.11.2022. 14:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('06.11.2022. 14:02', 'DD.MM.YYYY HH24:MI'),2, 5),
-   (false, 5, 1, 5, null, 600, to_timestamp('02.12.2022. 18:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('06.11.2022. 14:05', 'DD.MM.YYYY HH24:MI'),1, 5),
-   (false, 5, 0, 4, null, 445, to_timestamp('14.12.2021. 14:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('06.11.2022. 14:04', 'DD.MM.YYYY HH24:MI'),2, 5),
-   (false, 5, 1, 4, null, 445, to_timestamp('16.11.2022. 14:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('06.11.2022. 14:04', 'DD.MM.YYYY HH24:MI'),2, 5),
-   (false, 5, 2, 4, null, 445, to_timestamp('16.11.2022. 18:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('06.11.2022. 14:04', 'DD.MM.YYYY HH24:MI'),2, 5),
-   (false, 6, 1, 10, null, 560,to_timestamp('24.08.2022 14:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('06.11.2022. 14:10', 'DD.MM.YYYY HH24:MI'),3, 6),
-   (false, 6, 1, 10, null, 500,to_timestamp('24.10.2022 14:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('06.11.2022. 14:10', 'DD.MM.YYYY HH24:MI'),3, 6);
+   (false, 5, 1, 3, null, 4, to_timestamp('06.11.2022. 14:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('06.11.2022. 14:03', 'DD.MM.YYYY HH24:MI'), 1, 5),
+   (false, 5, 1, 2, null, 3, to_timestamp('16.11.2022. 14:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('06.11.2022. 14:02', 'DD.MM.YYYY HH24:MI'),2, 5),
+   (false, 5, 1, 5, null, 6, to_timestamp('16.11.2022. 18:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('06.11.2022. 14:05', 'DD.MM.YYYY HH24:MI'),1, 5),
+   (false, 5, 0, 4, null, 4.5, to_timestamp('14.12.2021. 14:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('06.11.2022. 14:04', 'DD.MM.YYYY HH24:MI'),2, 5),
+   (false, 5, 1, 4, null, 4, to_timestamp('16.11.2022. 14:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('06.11.2022. 14:04', 'DD.MM.YYYY HH24:MI'),2, 5),
+   (false, 5, 2, 4, null, 4.5, to_timestamp('16.11.2022. 18:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('06.11.2022. 14:04', 'DD.MM.YYYY HH24:MI'),2, 5),
+   (false, 6, 1, 10, null, 5.6,to_timestamp('24.08.2022 14:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('06.11.2022. 14:10', 'DD.MM.YYYY HH24:MI'),3, 6),
+   (false, 6, 1, 10, null, 5,to_timestamp('24.10.2022 14:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('06.11.2022. 14:10', 'DD.MM.YYYY HH24:MI'),3, 6);
+
 
 insert into admins (id, email, password, name, surname, phone_number, city, profile_picture, role_id, verified, online) values
     (nextval('users_id_gen'), 'admin@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Admin', 'Admin', '012345578', 'Novi Sad', 'default-user.png', 1, true, false);
@@ -138,7 +139,7 @@ insert into paying_info(currency, token_price, max_num_of_tokens_per_transaction
     ('EUR', 1, 20);
 
 insert into token_banks(user_id, num_of_tokens, total_token_amount_spent, total_money_amount_spent, paying_info_id) values
-    (2, 6, 0, 6, 1),
+    (2, 10, 0, 6, 1),
     (3, 8, 0, 8, 1),
     (4, 0, 0, 0, 1);
 

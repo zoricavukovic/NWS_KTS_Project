@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { DrivingDetailsComponent } from '../driving/driving-details/driving-details.component';
+import { DrivingDetailsComponent } from '../driving/driving-details-components/driving-details/driving-details.component';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { HomePageComponent } from '../home/home-page/home-page.component';
