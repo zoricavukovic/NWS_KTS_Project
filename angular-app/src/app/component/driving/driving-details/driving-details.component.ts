@@ -13,10 +13,10 @@ import { Driver } from 'src/app/model/user/driver';
 import { UserService } from 'src/app/service/user.service';
 import { DrivingService } from 'src/app/service/driving.service';
 import { DriverService } from 'src/app/service/driver.service';
-import {drawPolyline, refreshMap, removeSpecificPolyline} from '../../../util/map-functions';
+import {drawPolylineOnMap, drawPolylineOnMapHaveRoute, removeLine} from '../../../util/map-functions';
 import { Vehicle } from 'src/app/model/vehicle/vehicle';
-import * as L from 'leaflet';
 import { User } from 'src/app/model/user/user';
+import {Route} from "../../../model/route/route";
 
 @Component({
   selector: 'app-driving-details',
@@ -37,7 +37,7 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
   favouriteRoute: boolean = false;
   isDriver: boolean;
   isRegularUser: boolean;
-  routePolyline: L.Polyline;
+  routePolyline: google.maps.Polyline;
   loggedUser: User = null;
 
   currentUserSubscription: Subscription;
@@ -70,7 +70,7 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
       .subscribe((driving: Driving) => {
         this.driving = driving;
         if (this.map) {
-          this.routePolyline = drawPolyline(this.map, this.driving?.route);
+          this.routePolyline = drawPolylineOnMapHaveRoute(this.map, this.driving?.route);
         }
 
         this.driverSubscription = this.driverService
@@ -140,7 +140,7 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    removeSpecificPolyline(this.map, this.routePolyline);
+    removeLine(this.routePolyline);
     if (this.currentUserSubscription) {
       this.currentUserSubscription.unsubscribe();
     }

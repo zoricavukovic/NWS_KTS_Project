@@ -3066,14 +3066,10 @@ td.mat-footer-cell {
 }
 
 .box {
-  position: absolute;
-  z-index: 99999;
-  top: 0.1rem;
-  left: 0.2rem;
-  max-width: 30rem;
+  max-width: 40rem;
   background-color: var(--gray);
   color: var(--deep-blue);
-  padding: 1%;
+  padding: 1rem;
   border-radius: 15px;
   overflow: hidden;
   clear: both;
@@ -3143,48 +3139,20 @@ h1 {
 }
 .pac-item-query {
   font-size: 16px !important;
+  color:var(--deep-blue);
 }
 
+.pac-logo::after {
+   display: none;
+}
 
 .pac-item {
-  cursor: default;
-  padding: 0 4px;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-  line-height: 30px;
-  text-align: left;
-  font-size: 16px;
+  font-size: 13px !important;
+  color:var(--deep-blue);
 }
+
 .pac-item:hover {
-  background-color: var(--gray);
+  background-color: var(--gray-transparent);
 }
-.pac-item-selected,
-.pac-item-selected:hover {
-  background-color: #ebf2fe
-}
-.pac-matched {
-  font-weight: 700
-}
-.pac-item-query {
-  font-size: 13px;
-  padding-right: 3px;
-  color: #000
-}
-.pac-icon {
-  width: 15px;
-  height: 20px;
-  margin-right: 7px;
-  margin-top: 6px;
-  display: inline-block;
-  vertical-align: top;
-  background-image: url(https://maps.gstatic.com/mapfiles/api-3/images/autocomplete-icons.png);
-  background-size: 34px
-}
-/*.pac-logo {*/
-/*  padding: 10px 0 !important;*/
-/*}*/
-/*.pac-logo::after {*/
-/*  padding: 10px 0 !important;*/
-/*}*/
+
 

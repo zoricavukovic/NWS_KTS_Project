@@ -76,6 +76,7 @@ import { ReportsHistoryComponent } from './component/report/reports-history/repo
 import { ConfirmBlockingDialogComponent } from './component/user/confirm-blocking-dialog/confirm-blocking-dialog.component';
 import {SplitButtonModule} from "primeng/splitbutton";
 import { PaymentSuccessComponent } from './component/payment/payment-success/payment-success.component';
+import {GoogleMapsModule} from "@angular/google-maps";
 
 
 @NgModule({
@@ -151,6 +152,7 @@ import { PaymentSuccessComponent } from './component/payment/payment-success/pay
             closeButton: true,
         }),
         GooglePlaceModule,
+        GoogleMapsModule,
         ScrollingModule,
         AvatarModule,
         AvatarGroupModule,

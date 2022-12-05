@@ -1,6 +1,4 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import * as L from 'leaflet';
-import {OpenStreetMapProvider} from 'leaflet-geosearch';
 import {SearchingRoutesForm} from '../../../model/route/searching-routes-form';
 import {RouteService} from '../../../service/route.service';
 import {PossibleRoute} from '../../../model/route/possible-routes';
@@ -8,15 +6,6 @@ import {User} from '../../../model/user/user';
 import {Subscription} from 'rxjs';
 import {AuthService} from '../../../service/auth.service';
 import {PossibleRoutesViaPoints} from '../../../model/route/possible-routes-via-points';
-import {
-  changeOrAddMarker,
-  drawPolylineOnMap,
-  drawPolylineOnMapWithoutClickEvent,
-  removeLayer,
-  removeMarker,
-  removeOneLayer,
-} from '../../../util/map-functions';
-
 import {Location} from '../../../model/route/location';
 import {VehicleService} from '../../../service/vehicle.service';
 import {Vehicle} from '../../../model/vehicle/vehicle';
@@ -25,7 +14,15 @@ import {Address} from "ngx-google-places-autocomplete/objects/address";
 import {ToastrService} from "ngx-toastr";
 import {Route} from "../../../model/route/route";
 import {DrivingLocation} from "../../../model/route/driving-location";
-import {MenuItem} from "primeng/api";
+import {
+  addCarMarkers,
+  addMarker,
+  drawPolylineOnMap,
+  getRouteCoordinates,
+  removeAllPolyline,
+  removeLine,
+  removeMarker
+} from "../../../util/map-functions";
 
 @Component({
   selector: 'home-page',
@@ -36,19 +33,17 @@ export class HomePageComponent implements OnInit, OnDestroy {
   routeChoiceView = true;
   filterVehicleView = false;
 
-  @Input() map: L.Map;
+  @Input() map: google.maps.Map;
   currentUser: User = null;
   isDriver: boolean;
   isRegular: boolean;
 
-  provider1: OpenStreetMapProvider = new OpenStreetMapProvider();
-
   maxNumberOfLocations = 5;
   possibleRoutesViaPoints: PossibleRoutesViaPoints[] = [];
-  drawPolylineList: L.Polyline[] = [];
+  drawPolylineList: google.maps.Polyline[] = [];
   searchingRoutesForm: SearchingRoutesForm[] = [];
   vehicles: Vehicle[];
-  carMarkers: L.Marker[] = [];
+  carMarkers: google.maps.Marker[] = [];
   selectedRoute: Route;
 
   rgbDeepBlue: number[] = [44, 75, 97];
@@ -86,14 +81,15 @@ export class HomePageComponent implements OnInit, OnDestroy {
     const lng: number = address.geometry.location.lng();
     const lat: number = address.geometry.location.lat();
 
-    this.addMarker(index, {y: lat, x: lng});
-
+    this.searchingRoutesForm.at(index).marker = addMarker(this.map, {lat: lat, lng: lng});
+    this.searchingRoutesForm.at(index).marker.setIcon(this.getIconUrl(index));
     this.createLocation(address, index);
 
   }
+
   ngOnInit(): void {
     this.vehicleService.getAllVehicle().subscribe(vehicleCurrentLocation => {
-      this.carMarkers = changeOrAddMarker(
+      this.carMarkers = addCarMarkers(
         this.map,
         this.carMarkers,
         this.vehicles,
@@ -119,7 +115,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
       this.deleteMarker(i);
     }
 
-    this.carMarkers.forEach(marker => removeMarker(this.map, marker));
+    this.carMarkers.forEach(marker => removeMarker(marker));
     this.removeAllPolylines();
     if (this.authSubscription) {
       this.authSubscription.unsubscribe();
@@ -198,47 +194,43 @@ export class HomePageComponent implements OnInit, OnDestroy {
       this.routePathIndex.push(0);
 
       routes.at(0).possibleRouteDTOList.forEach(oneRoute => {
-        const latLongs = this.getLatLongsRoute(oneRoute);
-        this.drawPolyline(routes.at(0).possibleRouteDTOList.indexOf(oneRoute), 0, latLongs);
+        const routeCoordinates = getRouteCoordinates(oneRoute);
+        this.drawPolyline(routes.at(0).possibleRouteDTOList.indexOf(oneRoute), 0, routeCoordinates);
       })
     }
     else{
       routes.forEach(route => {
         this.routePathIndex.push(0);
-        const latLongs = this.getLatLongsRoute(route.possibleRouteDTOList.at(0));
-        this.drawPolylineList.push(drawPolylineOnMapWithoutClickEvent(this.map, latLongs));
+        const routeCoordinates = getRouteCoordinates(route.possibleRouteDTOList.at(0));
+        this.drawPolylineList.push(drawPolylineOnMap(this.map, routeCoordinates,"#283b50" , 9));
 
       });
     }
   }
 
-  private getLatLongsRoute(route: PossibleRoute): number[] {
-    let latLongs = [];
-    route.pointList.forEach(latLng => latLongs.push([latLng[0], latLng[1]]));
 
-    return latLongs;
-  }
-
-  private drawPolyline(indexOfSelectedPath: number, indexOfRouteInPossibleRoutes: number, latLongs): void {
+  private drawPolyline(indexOfSelectedPath: number, indexOfRouteInPossibleRoutes: number, latLongs: google.maps.LatLngLiteral[]): void {
     const color: string = indexOfSelectedPath === 0 ? "#283b50" : "#cdd1d3";
     const weight: number = indexOfSelectedPath === 0 ? 9 : 7;
-    const polyline: L.Polyline = drawPolylineOnMap(this.map, latLongs, color, weight);
+    const polyline: google.maps.Polyline = drawPolylineOnMap(this.map, latLongs, color, weight);
+    polyline.setOptions({clickable: true});
     this.drawPolylineList[indexOfSelectedPath] = polyline;
     const that = this;
-    polyline.on("click", function () {
+    google.maps.event.addListener(polyline, 'click', function() {
       that.routePathIndex[indexOfRouteInPossibleRoutes] = indexOfSelectedPath;
       that.drawPolylineList.forEach(p => {
-        p.setStyle({
-          color: '#cdd1d3',
-          weight: 7,
+        p.setOptions({
+          strokeColor: '#cdd1d3',
+          strokeWeight: 7,
         });
 
-        polyline.setStyle({
-          color: '#283b50',
-          weight: 9,
+        polyline.setOptions({
+          strokeColor: '#283b50',
+          strokeWeight: 9,
         });
       });
     });
+
   }
 
   changeOptionRouteOnClick(route: PossibleRoute, indexOfSelectedPath: number, indexOfRouteInPossibleRoutes: number): void {
@@ -248,11 +240,8 @@ export class HomePageComponent implements OnInit, OnDestroy {
       this.swapColorsOfRoutes(indexOfSelectedPath);
     } else {
       this.removeOnePolyline(indexOfRouteInPossibleRoutes);
-      let latLongs = [];
-      route.pointList.forEach(latLng => latLongs.push([latLng[0], latLng[1]]));
-      let color: string = "#283b50";
-      const weight: number = 9;
-      this.drawPolylineList[indexOfRouteInPossibleRoutes] = drawPolylineOnMap(this.map, latLongs, color, weight);
+      const routeCoordinates = getRouteCoordinates(route);
+      this.drawPolylineList[indexOfRouteInPossibleRoutes] = drawPolylineOnMap(this.map, routeCoordinates, "#283b50", 9);
     }
   }
 
@@ -341,42 +330,11 @@ export class HomePageComponent implements OnInit, OnDestroy {
     );
   }
 
-  private addMarker(index: number, place) {
-    const customIcon = L.icon({
-      iconUrl: this.getIconUrl(index),
-      iconSize: [30, 30],
-    });
-    const markerOptions = {
-      title: 'Location',
-      clickable: true,
-      icon: customIcon,
-    };
 
-    this.searchingRoutesForm.at(index).marker = L.marker(
-      [place.y, place.x],
-      markerOptions
-    );
-    this.searchingRoutesForm.at(index).marker.addTo(this.map);
-    this.map.panBy(L.point(place.y, place.x));
-  }
-
-  private addMarkerWithLonAndLat(index: number, lat: number, lon: number) {
-    const customIcon = L.icon({
-      iconUrl: this.getIconUrl(index),
-      iconSize: [30, 30],
-    });
-    const markerOptions = {
-      title: 'Location',
-      clickable: true,
-      icon: customIcon,
-    };
-
-    this.searchingRoutesForm.at(index).marker = L.marker(
-      [lon, lat],
-      markerOptions
-    );
-    this.searchingRoutesForm.at(index).marker.addTo(this.map);
-    this.map.panBy(L.point(lon, lat));
+  private addMarkerWithLonAndLat(index: number, lon: number, lat: number) {
+    const markerCoordinates: google.maps.LatLngLiteral = {lat: lat, lng: lon};
+    this.searchingRoutesForm.at(index).marker = addMarker(this.map, markerCoordinates);
+    this.searchingRoutesForm.at(index).marker.setIcon(this.getIconUrl(index));
   }
 
   private deleteMarker(index: number) {
@@ -384,21 +342,21 @@ export class HomePageComponent implements OnInit, OnDestroy {
       this.searchingRoutesForm.at(index).marker !== null &&
       this.searchingRoutesForm.at(index).marker !== undefined
     ) {
-      removeMarker(this.map, this.searchingRoutesForm.at(index).marker);
+      removeMarker(this.searchingRoutesForm.at(index).marker);
       this.removeAllPolylines();
     }
   }
 
   private removeAllPolylines() {
     if (this.polylineFound()) {
-      removeLayer(this.map, this.drawPolylineList);
+      removeAllPolyline(this.drawPolylineList);
       this.drawPolylineList = [];
     }
   }
 
   private removeOnePolyline(index: number) {
     if (this.drawPolylineList.at(index)) {
-      removeOneLayer(this.map, this.drawPolylineList.at(index));
+      removeLine(this.drawPolylineList.at(index));
       this.drawPolylineList[index] = null;
     }
   }
@@ -495,8 +453,8 @@ export class HomePageComponent implements OnInit, OnDestroy {
         );
         const indexOfSelectedPath = route.possibleRouteDTOList.indexOf(minTimePath);
         this.routePathIndex[this.possibleRoutesViaPoints.indexOf(route)] = indexOfSelectedPath;
-        const latLongs = this.getLatLongsRoute(route.possibleRouteDTOList.at(indexOfSelectedPath));
-        this.drawPolylineList.push(drawPolylineOnMapWithoutClickEvent(this.map, latLongs));
+        const routeCoordinates = getRouteCoordinates(route.possibleRouteDTOList.at(indexOfSelectedPath));
+        this.drawPolylineList.push(drawPolylineOnMap(this.map, routeCoordinates, "#283b50", 9));
       })
     }
 
@@ -521,8 +479,8 @@ export class HomePageComponent implements OnInit, OnDestroy {
         );
         const indexOfSelectedPath = route.possibleRouteDTOList.indexOf(minDistancePath);
         this.routePathIndex[this.possibleRoutesViaPoints.indexOf(route)] = indexOfSelectedPath;
-        const latLongs = this.getLatLongsRoute(route.possibleRouteDTOList.at(indexOfSelectedPath));
-        this.drawPolylineList.push(drawPolylineOnMapWithoutClickEvent(this.map, latLongs));
+        const routeCoordinates = getRouteCoordinates(route.possibleRouteDTOList.at(indexOfSelectedPath));
+        this.drawPolylineList.push(drawPolylineOnMap(this.map, routeCoordinates, "#283b50", 9));
       })
     }
   }
@@ -530,14 +488,14 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
   private swapColorsOfRoutes(indexOfSelectedPath: number): void {
     this.drawPolylineList.forEach(p => {
-      p.setStyle({
-        color: '#cdd1d3',
-        weight: 7
+      p.setOptions({
+        strokeColor: '#cdd1d3',
+        strokeWeight: 7
       });
     });
-    this.drawPolylineList.at(indexOfSelectedPath).setStyle({
-      color: '#283b50',
-      weight: 9
+    this.drawPolylineList.at(indexOfSelectedPath).setOptions({
+      strokeColor: '#283b50',
+      strokeWeight: 9
     });
   }
 }
