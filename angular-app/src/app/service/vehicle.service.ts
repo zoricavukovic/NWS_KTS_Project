@@ -51,6 +51,7 @@ export class VehicleService {
   }
 
   getVehicleByVehicleType(vehicleType: string) {
+    console.log(this.configService.getHeader());
     return this.http.get<Vehicle>(
       this.configService.get_vehicle_by_vehicle_type(vehicleType),
       { headers: this.configService.getHeader() }

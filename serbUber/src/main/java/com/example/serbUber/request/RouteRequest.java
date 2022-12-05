@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.SortedSet;
 
 import static com.example.serbUber.exception.ErrorMessagesConstants.*;
 
@@ -25,15 +26,20 @@ public class RouteRequest {
     @Positive(message = WRONG_KM_NUM)
     private double distance;
 
+    @NotEmpty(message = "Route path must be selected.")
+    private SortedSet<Integer> routePathIndex;
+
     public RouteRequest(
 
             final double timeInMin,
             final double distance,
-            final List<DrivingLocationIndexRequest> locations
+            final List<DrivingLocationIndexRequest> locations,
+            final SortedSet<Integer> routePathIndex
     ) {
         this.timeInMin = timeInMin;
         this.distance = distance;
         this.locations = locations;
+        this.routePathIndex = routePathIndex;
     }
 
     public double getTimeInMin() {
@@ -58,5 +64,13 @@ public class RouteRequest {
 
     public void setDistance(double distance) {
         this.distance = distance;
+    }
+
+    public SortedSet<Integer> getRoutePathIndex() {
+        return routePathIndex;
+    }
+
+    public void setRoutePathIndex(SortedSet<Integer> routePathIndex) {
+        this.routePathIndex = routePathIndex;
     }
 }

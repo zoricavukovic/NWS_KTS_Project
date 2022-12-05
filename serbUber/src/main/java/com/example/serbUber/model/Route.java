@@ -1,9 +1,8 @@
 package com.example.serbUber.model;
+
 import org.hibernate.annotations.SortNatural;
 
 import javax.persistence.*;
-import java.util.List;
-import java.util.Set;
 import java.util.SortedSet;
 
 @Entity
@@ -24,17 +23,24 @@ public class Route {
     @Column(name="time", nullable = false)
     private double timeInMin;
 
+    @ElementCollection
+    @CollectionTable(name ="route_path_index")
+    @SortNatural
+    private SortedSet<Integer> routePathIndex;
+
     public Route(){
     }
 
     public Route(
         final SortedSet<DrivingLocationIndex> locations,
         final double distance,
-        final double timeInMin
+        final double timeInMin,
+        final SortedSet<Integer> routePathIndex
     ) {
         this.locations = locations;
         this.distance = distance;
         this.timeInMin = timeInMin;
+        this.routePathIndex = routePathIndex;
     }
 
     public Long getId() {
@@ -63,5 +69,17 @@ public class Route {
 
     public void setTimeInMin(double timeInMin) {
         this.timeInMin = timeInMin;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public SortedSet<Integer> getRoutePathIndex() {
+        return routePathIndex;
+    }
+
+    public void setRoutePathIndex(SortedSet<Integer> routePathIndex) {
+        this.routePathIndex = routePathIndex;
     }
 }

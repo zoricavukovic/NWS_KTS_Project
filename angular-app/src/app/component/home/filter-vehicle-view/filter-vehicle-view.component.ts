@@ -148,9 +148,12 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
       vehicleType: this.vehicleType,
     };
 
-    this.drivingNotificationService.saveDrivingNotification(
-      drivingNotification
-    );
+    this.drivingNotificationSubscription = this.drivingNotificationService
+      .saveDrivingNotification(drivingNotification)
+      .subscribe(response => {
+        console.log('balalalla');
+        console.log(response);
+      });
     this.vehiclePassengersView = false;
     this.loadingView = true;
   }

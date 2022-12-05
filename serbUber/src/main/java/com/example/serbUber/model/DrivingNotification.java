@@ -24,7 +24,7 @@ public class DrivingNotification {
 
     @OneToOne()
     @JoinColumn(name = "sender_id", referencedColumnName = "id")
-    private User sender;
+    private RegularUser sender;
 
     @Column(name="started")
     private LocalDateTime started;
@@ -52,7 +52,7 @@ public class DrivingNotification {
     public DrivingNotification(
             final Route route,
             final double price,
-            final User sender,
+            final RegularUser sender,
             final LocalDateTime started,
             final int duration,
             final boolean babySeat,
@@ -93,11 +93,11 @@ public class DrivingNotification {
         this.price = price;
     }
 
-    public User getSender() {
+    public RegularUser getSender() {
         return sender;
     }
 
-    public void setSender(User sender) {
+    public void setSender(RegularUser sender) {
         this.sender = sender;
     }
 

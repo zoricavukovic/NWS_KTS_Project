@@ -18,6 +18,7 @@ export class DrivingNotificationService {
   ) {}
 
   saveDrivingNotification(drivingNotificationRequest: DrivingNotification) {
+    console.log(drivingNotificationRequest);
     return this.http.post(
       this.configService.driving_notifications_url,
       drivingNotificationRequest,
@@ -55,8 +56,7 @@ export class DrivingNotificationService {
 
   showDrivingStatus(drivingStatusNotification: DrivingStatusNotification) {
     const divNotification = document.getElementById('notification');
-    divNotification.innerText =
-      'blaabla' + drivingStatusNotification.driverEmail;
+    divNotification.innerText = 'USPESNO';
     console.log('notifiiii');
   }
 

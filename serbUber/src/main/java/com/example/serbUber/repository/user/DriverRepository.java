@@ -28,7 +28,8 @@ public interface DriverRepository extends JpaRepository<Driver, Long> {
     double getRatingForDriver(Long id);
 
     //1. vozac je trenutno slobodan, voznja: a) zavrsena u proslosti or b) treba da se realizuje u buducnosti nakon ove voznje
-    @Query("select d from Driver d left join fetch d.drivings dr left join fetch d.vehicle vehicle left join fetch vehicle.vehicleTypeInfo info where d.active=true and info.vehicleType= ?3 and dr.driverId = d.id and " +
+    @Query("select d from Driver d left join fetch d.drivings dr left join fetch d.vehicle vehicle" +
+            " left join fetch vehicle.vehicleTypeInfo info where d.active=true and dr.driverId = d.id and " +
             "d.drive = false and dr.active = false and (dr.started < ?1 or dr.started > ?2)")
     List<Driver> getActiveAndFreeDrivers(LocalDateTime start, LocalDateTime end, VehicleType vehicleType);
 

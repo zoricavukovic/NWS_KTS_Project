@@ -1,6 +1,7 @@
 package com.example.serbUber.model;
 
 import com.example.serbUber.model.user.RegularUser;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Fetch;
 
 import javax.persistence.*;
@@ -41,12 +42,12 @@ public class Driving {
     @Column(name="driver_id", nullable = false)
     private Long driverId;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "drivings_users", joinColumns = @JoinColumn(name = "driving_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
+    @ManyToMany(mappedBy = "drivings")
+    @JsonIgnore
     private Set<RegularUser> users;
 
-    @ElementCollection
-    private Map<Long, Boolean> usersPaid = new HashMap<>();
+//    @ElementCollection
+//    private Map<Long,Boolean> usersPaid = new HashMap<>();
 
     @Column(name="price", nullable = false)
     private double price;
@@ -55,7 +56,7 @@ public class Driving {
     public Driving() {
     }
 
-    public Driving(int duration, LocalDateTime started, LocalDateTime end, LocalDateTime payingLimit, Route route, DrivingStatus drivingStatus, Long driverId, Set<RegularUser> users, Map<Long, Boolean> usersPaid, double price) {
+    public Driving(int duration, LocalDateTime started, LocalDateTime end, LocalDateTime payingLimit, Route route, DrivingStatus drivingStatus, Long driverId, double price) {
         this.duration = duration;
         this.started = started;
         this.end = end;
@@ -63,8 +64,6 @@ public class Driving {
         this.route = route;
         this.drivingStatus = drivingStatus;
         this.driverId = driverId;
-        this.users = users;
-        this.usersPaid = usersPaid;
         this.price = price;
     }
 
@@ -132,13 +131,7 @@ public class Driving {
         this.driverId = driverId;
     }
 
-    public void setUsersPaid(Map<Long, Boolean> usersPaid) {
-        this.usersPaid = usersPaid;
-    }
-    public Map<Long, Boolean> getUsersPaid() {
-        return usersPaid;
-    }
-
+    @JsonIgnore
     public Set<RegularUser> getUsers() {
         return users;
     }
@@ -162,4 +155,12 @@ public class Driving {
     public void setEnd(LocalDateTime end) {
         this.end = end;
     }
+
+//    public Map<Long, Boolean> getUsersPaid() {
+//        return usersPaid;
+//    }
+//
+//    public void setUsersPaid(Map<Long, Boolean> usersPaid) {
+//        this.usersPaid = usersPaid;
+//    }
 }

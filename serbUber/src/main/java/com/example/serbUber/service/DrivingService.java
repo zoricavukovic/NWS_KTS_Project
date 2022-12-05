@@ -57,9 +57,15 @@ public class DrivingService implements IDrivingService {
             final double price
     ) {
         LocalDateTime end = started.plusMinutes(duration);
-        Driving driving = drivingRepository.save(
-                new Driving(duration, started, end, payingLimit, route, drivingStatus, driverId, users, usersPaid, price)
-        );
+
+        Driving driving = drivingRepository.save(new Driving(duration, started, end, payingLimit, route, drivingStatus, driverId, price));
+        users.forEach(user -> {
+            List<Driving> drivingsOfUser = user.getDrivings();
+            drivingsOfUser.add(driving);
+            user.setDrivings(drivingsOfUser);
+            userService.saveUser(user);
+        });
+
 
         return new DrivingDTO(driving);
     }
@@ -142,6 +148,24 @@ public class DrivingService implements IDrivingService {
         return new DrivingDTO(driving);
     }
 
+    public DrivingDTO paidDriving(final Long id) throws EntityNotFoundException {
+        Driving driving = getDriving(id);
+        driving.setDrivingStatus(DrivingStatus.ACCEPTED);
+
+        drivingRepository.save(driving);
+
+        return new DrivingDTO(driving);
+    }
+
+    public DrivingDTO removeDriver(Long id) throws EntityNotFoundException {
+        Driving driving = getDriving(id);
+        driving.setDriverId(0L);
+
+        drivingRepository.save(driving);
+
+        return new DrivingDTO(driving);
+    }
+
     public int getNumberOfAllDrivingsForUser(final Long id) throws EntityNotFoundException {
         User user = userService.getUserById(id);
         return user.getRole().isDriver() ?
@@ -168,8 +192,7 @@ public class DrivingService implements IDrivingService {
 
         webSocketService.sendDrivingStatus(
                 drivingStatusNotificationDTO,
-                drivingStatusNotification.getDriving().getUsers(),
-                driver.getEmail());
+                drivingStatusNotification.getDriving().getUsers());
 
         return new DrivingDTO(driving);
     }

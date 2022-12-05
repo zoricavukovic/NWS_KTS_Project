@@ -143,26 +143,17 @@
         <mat-divider></mat-divider>
       </div>
     </div>
-    <<<<<<< HEAD
     <br />
     <div
       class="continue-button"
       *ngIf="currentUser && possibleRoutesViaPoints.length > 0">
-      =======
-      <br />
-      <div
-        class="continue-button"
-        *ngIf="currentUser && possibleRoutesViaPoints.length > 0">
-        >>>>>>> 9b1fa16cb94831e7249f952d4460588c4c22bd19
-        <button mat-raised-button (click)="chooseVehicleAndPassengers()">
-          <strong>Chose vehicle type</strong>
-        </button>
-      </div>
+      <button mat-raised-button (click)="chooseVehicleAndPassengers()">
+        <strong>Chose vehicle type</strong>
+      </button>
     </div>
-    <div *ngIf="filterVehicleView">
-      <app-filter-vehicle-view
-        [route]="selectedRoute"></app-filter-vehicle-view>
-    </div>
+  </div>
+  <div *ngIf="filterVehicleView">
+    <app-filter-vehicle-view [route]="selectedRoute"></app-filter-vehicle-view>
   </div>
   <app-driver-home-page-container *ngIf="isDriver" [driverId]="currentUser.id">
   </app-driver-home-page-container>

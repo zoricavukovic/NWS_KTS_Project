@@ -21,10 +21,10 @@ import java.util.stream.IntStream;
 
 import static com.example.serbUber.SerbUberApplication.hopper;
 import static com.example.serbUber.dto.RouteDTO.fromRoutes;
+import static com.example.serbUber.exception.EntityType.ROUTE;
 import static com.example.serbUber.util.Constants.START_LIST_INDEX;
 import static com.example.serbUber.util.Constants.getBeforeLastIndexOfList;
 import static com.example.serbUber.util.GraphHopperUtil.routing;
-import static com.example.serbUber.exception.EntityType.ROUTE;
 
 @Component
 @Qualifier("routeServiceConfiguration")
@@ -63,13 +63,15 @@ public class RouteService implements IRouteService {
     public RouteDTO createDTO(
             final SortedSet<DrivingLocationIndex> locations,
             final double distance,
-            final double time
+            final double time,
+            final SortedSet<Integer> routePathIndex
     ) {
 
         Route route = routeRepository.save(new Route(
                 locations,
                 distance,
-                time
+                time,
+                routePathIndex
         ));
 
         return new RouteDTO(route);
@@ -78,13 +80,15 @@ public class RouteService implements IRouteService {
     public Route create(
             final SortedSet<DrivingLocationIndex> locations,
             final double distance,
-            final double time
+            final double time,
+            final SortedSet<Integer> routePathIndex
     ) {
 
         return routeRepository.save(new Route(
                 locations,
                 distance,
-                time
+                time,
+                routePathIndex
         ));
     }
 
@@ -99,7 +103,7 @@ public class RouteService implements IRouteService {
         return possibleRoutesViaPointsDTOs;
     }
 
-    public Route createRoute(List<DrivingLocationIndexRequest> locations, double time, double distance){
+    public Route createRoute(List<DrivingLocationIndexRequest> locations, double time, double distance, SortedSet<Integer> routePathIndex){
         SortedSet<DrivingLocationIndex> drivingLocations = new TreeSet<>(); //???
         locations.forEach(locationIndex -> {
             Location location = locationService.create( locationIndex.getLocation().getCity(),
@@ -113,7 +117,7 @@ public class RouteService implements IRouteService {
             drivingLocations.add(drivingLocationIndex);
         });
 
-        return create(drivingLocations, distance, time);
+        return create(drivingLocations, distance, time, routePathIndex);
     }
 
     private void addPossibleRoutesViaPoints(

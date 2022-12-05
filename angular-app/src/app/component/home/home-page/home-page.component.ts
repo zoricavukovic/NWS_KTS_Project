@@ -423,6 +423,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
   chooseVehicleAndPassengers(): void {
     this.selectedRoute = this.createRoute();
+    console.log('blaaaa');
     this.routeChoiceView = false;
     this.filterVehicleView = true;
   }
@@ -475,6 +476,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
       locations: this.createListDrivingLocation(),
       distance: this.calculateDistance(),
       timeInMin: this.calculateMinutes(),
+      routePathIndex: this.routePathIndex,
     };
   }
 

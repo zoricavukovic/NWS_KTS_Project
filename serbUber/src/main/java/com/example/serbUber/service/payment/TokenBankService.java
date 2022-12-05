@@ -11,8 +11,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 
-import static com.example.serbUber.util.Constants.EMPTY_BANK_ACCOUNT;
-import static com.example.serbUber.util.Constants.ZERO_TOKENS;
+import java.util.Optional;
+
+import static com.example.serbUber.util.Constants.*;
 
 @Component
 @Qualifier("tokenBankConfiguration")
@@ -62,5 +63,19 @@ public class TokenBankService implements ITokenBankService {
                 EMPTY_BANK_ACCOUNT,
                 payingInfoService.getDefaultPayingInfo());
         return tokenBankRepository.save(tokenBank);
+    }
+
+    public TokenBank updateNumOfTokens(final Long userId, final double price) throws EntityNotFoundException {
+        TokenBank tokenBank = getTokenBankById(userId);
+        tokenBank.setNumOfTokens(tokenBank.getNumOfTokens() - price);
+        return tokenBankRepository.save(tokenBank);
+    }
+
+    public double getTokensForUser(final Long id) throws EntityNotFoundException {
+        Optional<TokenBank> tokenBank = tokenBankRepository.getTokenBankById(id);
+        if(tokenBank.isPresent()){
+            return tokenBank.get().getNumOfTokens();
+        }
+        throw new EntityNotFoundException(id, EntityType.USER);
     }
 }

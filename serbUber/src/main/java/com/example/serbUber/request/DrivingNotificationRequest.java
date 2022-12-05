@@ -2,7 +2,6 @@ package com.example.serbUber.request;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,7 +11,7 @@ import static com.example.serbUber.exception.ErrorMessagesConstants.WRONG_EMAIL;
 
 public class DrivingNotificationRequest {
 
-    private RouteRequest routeRequest;
+    private RouteRequest route;
     @Valid
     @Positive(message = POSITIVE_MESSAGE)
     private double price;
@@ -20,7 +19,7 @@ public class DrivingNotificationRequest {
     @Email(message = WRONG_EMAIL)
     private String senderEmail;
     private List<String> passengers;
-    @FutureOrPresent(message = "Started time cannot be in past.")
+
     private LocalDateTime started;
     @Positive(message = "Duration of driving must be positive")
     private int duration;
@@ -32,7 +31,7 @@ public class DrivingNotificationRequest {
     }
 
     public DrivingNotificationRequest(RouteRequest routeRequest, double price, String senderEmail, List<String> passengers, LocalDateTime started, int duration, boolean babySeat, boolean petFriendly, String vehicleType, double time, double distance) {
-        this.routeRequest = routeRequest;
+        this.route = routeRequest;
         this.price = price;
         this.senderEmail = senderEmail;
         this.passengers = passengers;
@@ -107,11 +106,11 @@ public class DrivingNotificationRequest {
         this.vehicleType = vehicleType;
     }
 
-    public RouteRequest getRouteRequest() {
-        return routeRequest;
+    public RouteRequest getRoute() {
+        return route;
     }
 
-    public void setRouteRequest(RouteRequest routeRequest) {
-        this.routeRequest = routeRequest;
+    public void setRoute(RouteRequest route) {
+        this.route = route;
     }
 }
