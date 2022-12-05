@@ -1,0 +1,28 @@
+<div *ngIf="driving" id="route-div" class="box mat-elevation-z1">
+  <h1><b>Driving</b></h1>
+  <app-driving-details-route
+    [locations]="driving.route.locations"></app-driving-details-route>
+  <br />
+  <app-driving-details-actions
+    [favouriteRoute]="favouriteRoute"
+    (setFavouriteRouteEvent)="
+      setFavouriteRoute($event)
+    "></app-driving-details-actions>
+  <br />
+  <vehicle-details [vehicle]="driver?.vehicle"></vehicle-details>
+  <br />
+  <app-driving-details-driver
+    *ngIf="!isDriver"
+    [driver]="driver"
+    [base64Prefix]="base64Prefix"></app-driving-details-driver>
+  <br />
+  <app-driving-details-passengers
+    *ngIf="!isRegularUser"
+    [users]="driving.users"
+    [base64Prefix]="base64Prefix"></app-driving-details-passengers>
+  <div style="text-align: right">
+    <h2>
+      <b>={{ driving.price }}.00 RSD</b>
+    </h2>
+  </div>
+</div>

@@ -16,14 +16,14 @@ import {
   removeOneLayer,
 } from '../../../util/map-functions';
 
-import {Location} from '../../../model/route/location';
-import {VehicleService} from '../../../service/vehicle.service';
-import {Vehicle} from '../../../model/vehicle/vehicle';
-import {Options} from "ngx-google-places-autocomplete/objects/options/options";
-import {Address} from "ngx-google-places-autocomplete/objects/address";
-import {ToastrService} from "ngx-toastr";
-import {Route} from "../../../model/route/route";
-import {DrivingLocation} from "../../../model/route/driving-location";
+import { Location } from '../../../model/route/location';
+import { VehicleService } from '../../../service/vehicle.service';
+import { Vehicle } from '../../../model/vehicle/vehicle';
+import { Options } from 'ngx-google-places-autocomplete/objects/options/options';
+import { Address } from 'ngx-google-places-autocomplete/objects/address';
+import { ToastrService } from 'ngx-toastr';
+import { Route } from '../../../model/route/route';
+import { DrivingLocation } from '../../../model/route/driving-location';
 
 @Component({
   selector: 'home-page',
@@ -61,8 +61,10 @@ export class HomePageComponent implements OnInit, OnDestroy {
     },
   ];
   options: Options = new Options({
-    bounds: undefined, fields: ["address_component", "formatted_address","name", "geometry"], strictBounds: false,
-    componentRestrictions: {country: 'rs'}
+    bounds: undefined,
+    fields: ['address_component', 'formatted_address', 'name', 'geometry'],
+    strictBounds: false,
+    componentRestrictions: { country: 'rs' },
   });
 
   routePathIndex: number[] = [];
@@ -84,10 +86,9 @@ export class HomePageComponent implements OnInit, OnDestroy {
     const lng: number = address.geometry.location.lng();
     const lat: number = address.geometry.location.lat();
 
-    this.addMarker(index, {y: lat, x: lng});
+    this.addMarker(index, { y: lat, x: lng });
 
     this.createLocation(address, index);
-
   }
   ngOnInit(): void {
     this.vehicleService.getAllVehicle().subscribe(vehicleCurrentLocation => {
@@ -107,8 +108,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
         this.currentUser = user;
         this.isDriver = this.authService.userIsDriver();
         this.isRegular = this.authService.userIsRegular();
-      }
-    );
+      });
 
     let div = L.DomUtil.get('route-div');
     L.DomEvent.on(div, 'mousewheel', L.DomEvent.stopPropagation);
@@ -129,7 +129,6 @@ export class HomePageComponent implements OnInit, OnDestroy {
       this.routeSubscription.unsubscribe();
     }
   }
-
 
   addOneMoreLocation() {
     this.possibleRoutesViaPoints = [];
@@ -162,9 +161,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
   getPossibleRoutes() {
     this.rideIsRequested = true;
 
-
     this.createListDrivingLocation();
-
 
     if (!this.formIsInvalid()) {
       const locationsForCreateRoutes: Location[] = [];
@@ -183,9 +180,11 @@ export class HomePageComponent implements OnInit, OnDestroy {
           this.possibleRoutesViaPoints = res;
           if (res.length > 0) {
             this.changeCurrentRoutes(res);
-          }
-          else {
-            this.toast.error('Cannot find routes for chosen places', 'Unavailable routes');
+          } else {
+            this.toast.error(
+              'Cannot find routes for chosen places',
+              'Unavailable routes'
+            );
           }
         });
     }
@@ -195,18 +194,23 @@ export class HomePageComponent implements OnInit, OnDestroy {
     this.routePathIndex = [];
     this.removeAllPolylines();
 
-    if (routes.length === 1){
+    if (routes.length === 1) {
       this.routePathIndex.push(0);
 
       routes.at(0).possibleRouteDTOList.forEach(oneRoute => {
         const latLongs = this.getLatLongsRoute(oneRoute);
-        this.drawPolyline(routes.at(0).possibleRouteDTOList.indexOf(oneRoute), 0, latLongs);
-      })
-    }
-    else{
+        this.drawPolyline(
+          routes.at(0).possibleRouteDTOList.indexOf(oneRoute),
+          0,
+          latLongs
+        );
+      });
+    } else {
       routes.forEach(route => {
         this.routePathIndex.push(0);
-        const latLongs = this.getLatLongsRoute(route.possibleRouteDTOList.at(0));
+        const latLongs = this.getLatLongsRoute(
+          route.possibleRouteDTOList.at(0)
+        );
         // drawPolylineOnMapWithoutClickEvent(this.map, latLongs, this.drawPolylineList);
       });
     }
@@ -219,12 +223,22 @@ export class HomePageComponent implements OnInit, OnDestroy {
     return latLongs;
   }
 
-  private drawPolyline(indexOfSelectedPath: number, indexOfRouteInPossibleRoutes: number, latLongs): void {
-    const color: string = indexOfSelectedPath === 0 ? "#283b50" : "#cdd1d3";
+  private drawPolyline(
+    indexOfSelectedPath: number,
+    indexOfRouteInPossibleRoutes: number,
+    latLongs
+  ): void {
+    const color: string = indexOfSelectedPath === 0 ? '#283b50' : '#cdd1d3';
     const weight: number = indexOfSelectedPath === 0 ? 9 : 7;
-    const polyline: L.Polyline = drawPolylineOnMap(this.map, latLongs, color, weight, this.drawPolylineList);
+    const polyline: L.Polyline = drawPolylineOnMap(
+      this.map,
+      latLongs,
+      color,
+      weight,
+      this.drawPolylineList
+    );
     const that = this;
-    polyline.on("click", function () {
+    polyline.on('click', function () {
       that.routePathIndex[indexOfRouteInPossibleRoutes] = indexOfSelectedPath;
       that.drawPolylineList.forEach(p => {
         p.setStyle({
@@ -240,28 +254,37 @@ export class HomePageComponent implements OnInit, OnDestroy {
     });
   }
 
-  changeOptionRouteOnClick(route: PossibleRoute, indexOfSelectedPath: number, indexOfRouteInPossibleRoutes: number): void {
+  changeOptionRouteOnClick(
+    route: PossibleRoute,
+    indexOfSelectedPath: number,
+    indexOfRouteInPossibleRoutes: number
+  ): void {
     this.routePathIndex[indexOfRouteInPossibleRoutes] = indexOfSelectedPath;
 
-    if (this.searchingRoutesForm.length === 2){
+    if (this.searchingRoutesForm.length === 2) {
       this.drawPolylineList.forEach(p => {
         p.setStyle({
           color: '#cdd1d3',
-          weight: 7
+          weight: 7,
         });
       });
       this.drawPolylineList.at(indexOfSelectedPath).setStyle({
         color: '#283b50',
-        weight: 9
+        weight: 9,
       });
-
     } else {
       this.removeOnePolyline(indexOfSelectedPath);
       let latLongs = [];
       route.pointList.forEach(latLng => latLongs.push([latLng[0], latLng[1]]));
-      let color: string = "#283b50";
+      let color: string = '#283b50';
       const weight: number = 9;
-      drawPolylineOnMap(this.map, latLongs, color, weight, this.drawPolylineList);
+      drawPolylineOnMap(
+        this.map,
+        latLongs,
+        color,
+        weight,
+        this.drawPolylineList
+      );
     }
 
     // this.chooseVehicleAndPassengers(route);
@@ -289,43 +312,40 @@ export class HomePageComponent implements OnInit, OnDestroy {
     let city = '';
     let street = '';
     let zipCode = '';
-    for(let i=0; i<address.address_components.length;i++)
-    {
+    for (let i = 0; i < address.address_components.length; i++) {
       const mapAddress = address.address_components[i];
-      if(mapAddress.long_name !==''){
-
-        if(mapAddress.types[0] === "street_number"){
+      if (mapAddress.long_name !== '') {
+        if (mapAddress.types[0] === 'street_number') {
           houseNumber = mapAddress.long_name;
         }
-        if(mapAddress.types[0] === "route"){
+        if (mapAddress.types[0] === 'route') {
           street = mapAddress.long_name;
         }
 
-        if(mapAddress.types[0] === "locality"){
-          city  = mapAddress.long_name;
+        if (mapAddress.types[0] === 'locality') {
+          city = mapAddress.long_name;
         }
-        if(mapAddress.types[0] === "administrative_area_level_1"){
+        if (mapAddress.types[0] === 'administrative_area_level_1') {
           // this.mapState = mapAddress.long_name;
         }
-        if(mapAddress.types[0] === "country"){
+        if (mapAddress.types[0] === 'country') {
           // this.mapcountry = mapAddress.long_name;
         }
-        if(mapAddress.types[0] === "postal_code"){
-          zipCode  = mapAddress.long_name;
+        if (mapAddress.types[0] === 'postal_code') {
+          zipCode = mapAddress.long_name;
         }
       }
-
     }
     const lng: number = address.geometry.location.lng();
     const lat: number = address.geometry.location.lat();
     this.searchingRoutesForm.at(index).location = {
-      "city": city,
-      "lon": lng,
-      "lat": lat,
-      "street": street,
-      "number": houseNumber,
-      "zipCode": zipCode
-    }
+      city: city,
+      lon: lng,
+      lat: lat,
+      street: street,
+      number: houseNumber,
+      zipCode: zipCode,
+    };
   }
 
   private getIconUrl(index: number): string {
@@ -420,18 +440,22 @@ export class HomePageComponent implements OnInit, OnDestroy {
   formIsInvalid(): boolean {
     let formIsInvalid: boolean = false;
     this.searchingRoutesForm.forEach(searchingRoute => {
-      if (searchingRoute.location === undefined || searchingRoute.location === null){
+      if (
+        searchingRoute.location === undefined ||
+        searchingRoute.location === null
+      ) {
         formIsInvalid = true;
       }
-    })
+    });
 
     return formIsInvalid;
   }
 
   fieldIsInvalid(index: number): boolean {
-
-    return this.searchingRoutesForm.at(index).location === undefined ||
-      this.searchingRoutesForm.at(index).location === null;
+    return (
+      this.searchingRoutesForm.at(index).location === undefined ||
+      this.searchingRoutesForm.at(index).location === null
+    );
   }
 
   getFromToLabel(index: number): string {
@@ -444,29 +468,29 @@ export class HomePageComponent implements OnInit, OnDestroy {
     const drivingLocations: DrivingLocation[] = [];
     this.searchingRoutesForm.forEach(searchingRoute => {
       drivingLocations.push({
-        index:  this.searchingRoutesForm.indexOf(searchingRoute) + 1,
-        location: searchingRoute.location
+        index: this.searchingRoutesForm.indexOf(searchingRoute) + 1,
+        location: searchingRoute.location,
       });
-    })
+    });
 
     return drivingLocations;
   }
 
   private createRoute(): Route {
-
     return {
       locations: this.createListDrivingLocation(),
       distance: this.calculateDistance(),
-      timeInMin: this.calculateMinutes()
-    }
-
+      timeInMin: this.calculateMinutes(),
+    };
   }
 
   private calculateMinutes(): number {
     let minutes = 0;
     this.routePathIndex.forEach(index => {
-      minutes += this.possibleRoutesViaPoints.at(this.routePathIndex.indexOf(index)).possibleRouteDTOList.at(index).timeInMin;
-    })
+      minutes += this.possibleRoutesViaPoints
+        .at(this.routePathIndex.indexOf(index))
+        .possibleRouteDTOList.at(index).timeInMin;
+    });
 
     return minutes;
   }
@@ -474,8 +498,10 @@ export class HomePageComponent implements OnInit, OnDestroy {
   private calculateDistance(): number {
     let distance = 0;
     this.routePathIndex.forEach(index => {
-      distance += this.possibleRoutesViaPoints.at(this.routePathIndex.indexOf(index)).possibleRouteDTOList.at(index).distance;
-    })
+      distance += this.possibleRoutesViaPoints
+        .at(this.routePathIndex.indexOf(index))
+        .possibleRouteDTOList.at(index).distance;
+    });
 
     return distance;
   }

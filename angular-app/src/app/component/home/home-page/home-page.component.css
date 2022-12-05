@@ -14,32 +14,32 @@
 }
 
 .viewport {
-  max-height: 10rem;
-  overflow: scroll !important;
+  max-height: 9rem;
+  overflow-y: scroll !important;
 }
 
 .stepper-possible-routes {
-  background-color:var(--gray);
+  background-color: var(--gray);
 }
 
 .confirm-ride-button {
-  background-color:var(--deep-blue);
+  background-color: var(--deep-blue);
 }
 
 .text-deep-blue {
-  color:var(--deep-blue);
+  color: var(--deep-blue);
 }
 
 mat-error {
-  margin-left:0.2rem;
+  margin-left: 0.2rem;
 }
 
 .continue-button {
-  float:right;
+  float: right;
 }
 
 .options-button {
-  float:right;
+  float: right;
   background-color: var(--gray);
   color: var(--deep-blue);
 }

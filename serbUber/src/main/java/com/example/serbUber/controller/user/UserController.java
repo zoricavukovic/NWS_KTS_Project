@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-import static com.example.serbUber.exception.ErrorMessagesConstants.MISSING_ID;
+import static com.example.serbUber.exception.ErrorMessagesConstants.*;
 
 @RestController
 @RequestMapping("/users")
@@ -163,5 +165,14 @@ public class UserController {
             regularUserRequest.getProfilePicture()
         );
     }
+
+    @GetMapping("/byEmail/{email}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
+    public UserDTO getUserByEmail(@Valid @Email(message=WRONG_EMAIL) @NotBlank(message=EMPTY_EMAIL) @PathVariable String email) throws EntityNotFoundException {
+
+        return userService.getUserDTOByEmail(email);
+    }
+
 
 }

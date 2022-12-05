@@ -1,0 +1,10 @@
+<mat-list>
+  <mat-list-item *ngFor="let destination of locations">
+    <div style="display: flex; font-size: 15px">
+      <mat-icon mat-list-icon class="icon">location_on</mat-icon>
+      <div mat-line style="margin-top: 0.4rem">
+        {{ destination.location.street }} {{ destination.location.number }}
+      </div>
+    </div>
+  </mat-list-item>
+</mat-list>

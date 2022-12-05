@@ -11,7 +11,7 @@ import { DrivingNotificationRequest } from '../model/request/driving-notificatio
 import { DrivingNotificationService } from './driving-notification.service';
 import { DriverService } from './driver.service';
 import { DriverActivityResetNotification } from '../model/notification/driver-activity-reset-notification';
-import { DrivingNotificationResponse } from '../model/notification/driving-notification-response';
+import { DrivingNotification } from '../model/notification/driving-notification';
 import { BlockNotification } from '../model/notification/block-notification';
 import { Router } from '@angular/router';
 
@@ -142,7 +142,7 @@ export class WebSocketService {
 
   private isDrivingNotification(message: string): boolean {
     try {
-      const parsed: DrivingNotificationResponse = JSON.parse(message);
+      const parsed: DrivingNotification = JSON.parse(message);
       return parsed.drivingNotificationType === 'LINKED_USERS';
     } catch (e) {
       return false;

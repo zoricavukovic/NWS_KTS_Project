@@ -10,7 +10,7 @@ import { FavouriteRouteRequest } from '../model/route/favourite-route-request';
 import { User } from '../model/user/user';
 import { Observable } from 'rxjs';
 import { Role } from '../model/user/role';
-import {RegistrationResponse} from "../model/user/registration-response";
+import { RegistrationResponse } from '../model/user/registration-response';
 import { BlockNotification } from '../model/notification/block-notification';
 
 @Injectable({
@@ -30,7 +30,8 @@ export class UserService {
   ): Observable<User> {
     return this.http.put<User>(
       this.configService.reset_password,
-      passwordUpdateRequest);
+      passwordUpdateRequest
+    );
   }
 
   updateProfileData(data: UserDetails): Observable<User> {
@@ -47,14 +48,20 @@ export class UserService {
 
   unblockUser(id: number, isDriver: boolean): Observable<boolean> {
     return this.http.put<boolean>(
-      (isDriver) ? this.configService.get_unblock_driver_url(id) : this.configService.get_unblock_regular_url(id), 
-      null, {headers: this.configService.getHeader(),});
+      isDriver
+        ? this.configService.get_unblock_driver_url(id)
+        : this.configService.get_unblock_regular_url(id),
+      null,
+      { headers: this.configService.getHeader() }
+    );
   }
 
   getBlockedData(id: number, isDriver: boolean): Observable<boolean> {
     return this.http.get<boolean>(
-      (isDriver) ? this.configService.get_blocked_data_driver_url(id) : this.configService.get_blocked_data_regular_url(id),
-      {headers: this.configService.getHeader(),}
+      isDriver
+        ? this.configService.get_blocked_data_driver_url(id)
+        : this.configService.get_blocked_data_regular_url(id),
+      { headers: this.configService.getHeader() }
     );
   }
 
@@ -72,8 +79,9 @@ export class UserService {
     });
   }
 
-  registerRegularUser(registrationRequest: RegularUser): Observable<RegistrationResponse> {
-
+  registerRegularUser(
+    registrationRequest: RegularUser
+  ): Observable<RegistrationResponse> {
     return this.http.post<RegistrationResponse>(
       this.configService.registration_url,
       registrationRequest
@@ -119,7 +127,13 @@ export class UserService {
 
   getUser(id: string): Observable<User> {
     return this.http.get<User>(this.configService.user_by_id_url(id), {
-      headers: this.configService.getHeader()
+      headers: this.configService.getHeader(),
+    });
+  }
+
+  getUserByEmail(email: string): Observable<User> {
+    return this.http.get<User>(this.configService.get_user_by_email(email), {
+      headers: this.configService.getHeader(),
     });
   }
 

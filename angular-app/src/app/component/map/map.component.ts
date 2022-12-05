@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import * as L from 'leaflet';
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
-import { DrivingDetailsComponent } from '../driving/driving-details/driving-details.component';
+import { DrivingDetailsComponent } from '../driving/driving-details-components/driving-details/driving-details.component';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { HomePageComponent } from '../home/home-page/home-page.component';
@@ -17,7 +17,8 @@ delete L.Icon.Default.prototype._getIconUrl;
 export class MapComponent implements OnInit, OnDestroy {
   map: L.Map;
   provider1 = new OpenStreetMapProvider();
-  @ViewChild(DrivingDetailsComponent) private drivingDetailsComponent: DrivingDetailsComponent;
+  @ViewChild(DrivingDetailsComponent)
+  private drivingDetailsComponent: DrivingDetailsComponent;
   @ViewChild(HomePageComponent) private homePageComponent: HomePageComponent;
 
   constructor(public router: Router, public actRoute: ActivatedRoute) {

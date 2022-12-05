@@ -7,7 +7,7 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './material/material.module';
 import { LoginComponent } from './component/user/auth/login/login.component';
-import { GooglePlaceModule } from "ngx-google-places-autocomplete";
+import { GooglePlaceModule } from 'ngx-google-places-autocomplete';
 import {
   SocialLoginModule,
   SocialAuthServiceConfig,
@@ -23,7 +23,7 @@ import { DriverVehicleComponent } from './component/vehicle/create-vehicle/drive
 import { CarouselModule } from 'primeng/carousel';
 import { ButtonModule } from 'primeng/button';
 import { ShowDrivingsComponent } from './component/driving/show-drivings/show-drivings.component';
-import { DrivingDetailsComponent } from './component/driving/driving-details/driving-details.component';
+import { DrivingDetailsComponent } from './component/driving/driving-details-components/driving-details/driving-details.component';
 import { RatingDialogComponent } from './component/review/rating-dialog/rating-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { SendResetPasswordEmailComponent } from './component/user/auth/send-reset-password-link/send-reset-password-link.component';
@@ -65,6 +65,7 @@ import { DriverHomePageContainerComponent } from './component/home/driver-home-p
 import { AvatarModule } from 'primeng/avatar';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { AvatarGroupModule } from 'primeng/avatargroup';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SuccessfullVerificationComponent } from './component/user/auth/successfull-verification/successfull-verification.component';
 import { RejectDrivingComponent } from './component/driving/reject-driving/reject-driving.component';
 import { BasicUserProfileComponent } from './component/user/basic-user-profile/basic-user-profile.component';
@@ -74,6 +75,11 @@ import { UserAverageRateComponent } from './component/review/user-average-rate/u
 import { ReviewsHistoryComponent } from './component/review/reviews-history/reviews-history.component';
 import { ReportsHistoryComponent } from './component/report/reports-history/reports-history.component';
 import { ConfirmBlockingDialogComponent } from './component/user/confirm-blocking-dialog/confirm-blocking-dialog.component';
+import { DrivingDetailsRouteComponent } from './component/driving/driving-details-components/driving-details-route/driving-details-route.component';
+import { DrivingDetailsActionsComponent } from './component/driving/driving-details-components/driving-details-actions/driving-details-actions.component';
+import { DrivingDetailsDriverComponent } from './component/driving/driving-details-components/driving-details-driver/driving-details-driver.component';
+import { DrivingDetailsPassengersComponent } from './component/driving/driving-details-components/driving-details-passengers/driving-details-passengers.component';
+import { AcceptingDrivingViewComponent } from './component/home/accepting-driving-view/accepting-driving-view.component';
 
 @NgModule({
   declarations: [
@@ -119,6 +125,11 @@ import { ConfirmBlockingDialogComponent } from './component/user/confirm-blockin
     ReviewsHistoryComponent,
     ReportsHistoryComponent,
     ConfirmBlockingDialogComponent,
+    DrivingDetailsRouteComponent,
+    DrivingDetailsActionsComponent,
+    DrivingDetailsDriverComponent,
+    DrivingDetailsPassengersComponent,
+    AcceptingDrivingViewComponent,
   ],
   imports: [
     BrowserModule,
@@ -141,6 +152,7 @@ import { ConfirmBlockingDialogComponent } from './component/user/confirm-blockin
     MatRadioModule,
     MatPaginatorModule,
     MatChipsModule,
+    MatProgressSpinnerModule,
     ToastrModule.forRoot({
       positionClass: 'toast-bottom-left',
       preventDuplicates: true,

@@ -65,6 +65,11 @@ public class UserService implements IUserService {
             .orElseThrow(() -> new EntityNotFoundException(email, EntityType.USER));
     }
 
+    public UserDTO getUserDTOByEmail(String email) throws EntityNotFoundException {
+
+        return new UserDTO(getUserByEmail(email));
+    }
+
     public boolean checkIfUserAlreadyExists(String email) {
         Optional<User> user = userRepository.getUserByEmail(email);
 

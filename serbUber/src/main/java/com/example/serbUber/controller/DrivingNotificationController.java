@@ -28,7 +28,7 @@ public class DrivingNotificationController {
     public DrivingNotificationDTO create(@Valid @RequestBody DrivingNotificationRequest drivingNotificationRequest) throws EntityNotFoundException {
 
         return this.drivingNotificationService.createDrivingNotificationDTO(
-            drivingNotificationRequest.getLocations(),
+            drivingNotificationRequest.getRouteRequest(),
             drivingNotificationRequest.getSenderEmail(),
             drivingNotificationRequest.getPrice(),
             drivingNotificationRequest.getPassengers(),
@@ -36,9 +36,7 @@ public class DrivingNotificationController {
             drivingNotificationRequest.getDuration(),
             drivingNotificationRequest.isBabySeat(),
             drivingNotificationRequest.isPetFriendly(),
-            drivingNotificationRequest.getVehicleType(),
-            drivingNotificationRequest.getTime(),
-            drivingNotificationRequest.getDistance()
+            drivingNotificationRequest.getVehicleType()
         );
     }
 

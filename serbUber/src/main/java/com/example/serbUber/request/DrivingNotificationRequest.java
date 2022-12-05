@@ -1,6 +1,5 @@
 package com.example.serbUber.request;
 
-
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.FutureOrPresent;
@@ -13,7 +12,7 @@ import static com.example.serbUber.exception.ErrorMessagesConstants.WRONG_EMAIL;
 
 public class DrivingNotificationRequest {
 
-    private List<DrivingLocationIndexRequest> locations;
+    private RouteRequest routeRequest;
     @Valid
     @Positive(message = POSITIVE_MESSAGE)
     private double price;
@@ -28,16 +27,12 @@ public class DrivingNotificationRequest {
     private boolean babySeat;
     private boolean petFriendly;
     private String vehicleType;
-    @Positive(message = "Time of driving must be positive")
-    private double time;
-    @Positive(message = "Number of kilometers must be positive")
-    private double distance;
 
     public DrivingNotificationRequest() {
     }
 
-    public DrivingNotificationRequest(List<DrivingLocationIndexRequest> locations, double price, String senderEmail, List<String> passengers, LocalDateTime started, int duration, boolean babySeat, boolean petFriendly, String vehicleType, double time, double distance) {
-        this.locations = locations;
+    public DrivingNotificationRequest(RouteRequest routeRequest, double price, String senderEmail, List<String> passengers, LocalDateTime started, int duration, boolean babySeat, boolean petFriendly, String vehicleType, double time, double distance) {
+        this.routeRequest = routeRequest;
         this.price = price;
         this.senderEmail = senderEmail;
         this.passengers = passengers;
@@ -46,8 +41,6 @@ public class DrivingNotificationRequest {
         this.babySeat = babySeat;
         this.petFriendly = petFriendly;
         this.vehicleType = vehicleType;
-        this.distance = distance;
-        this.time = time;
     }
 
     public double getPrice() {
@@ -114,27 +107,11 @@ public class DrivingNotificationRequest {
         this.vehicleType = vehicleType;
     }
 
-    public List<DrivingLocationIndexRequest> getLocations() {
-        return locations;
+    public RouteRequest getRouteRequest() {
+        return routeRequest;
     }
 
-    public void setLocations(List<DrivingLocationIndexRequest> locations) {
-        this.locations = locations;
-    }
-
-    public double getTime() {
-        return time;
-    }
-
-    public void setTime(double time) {
-        this.time = time;
-    }
-
-    public double getDistance() {
-        return distance;
-    }
-
-    public void setDistance(double distance) {
-        this.distance = distance;
+    public void setRouteRequest(RouteRequest routeRequest) {
+        this.routeRequest = routeRequest;
     }
 }

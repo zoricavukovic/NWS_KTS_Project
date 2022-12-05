@@ -3,11 +3,12 @@ import { FormControl } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 import { User } from 'src/app/model/user/user';
+import { Vehicle } from 'src/app/model/vehicle/vehicle';
 import { AuthService } from 'src/app/service/auth.service';
 import { DrivingNotificationService } from 'src/app/service/driving-notification.service';
 import { UserService } from 'src/app/service/user.service';
 import { VehicleService } from 'src/app/service/vehicle.service';
-import {Route} from "../../../model/route/route";
+import { Route } from '../../../model/route/route';
 
 @Component({
   selector: 'app-filter-vehicle-view',
@@ -16,6 +17,10 @@ import {Route} from "../../../model/route/route";
 })
 export class FilterVehicleViewComponent implements OnInit, OnDestroy {
   @Input() route: Route;
+
+  vehiclePassengersView = true;
+  loadingView = false;
+  vehicle: Vehicle;
 
   petFriendly = false;
   babySeat = false;
@@ -26,6 +31,7 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
 
   allRegularUsers: string[] = [];
   selectedPassengers: string[] = [];
+  passengers: User[] = [];
 
   passengerCtrl: FormControl = new FormControl();
 
@@ -34,6 +40,8 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
   private authSubscription: Subscription;
   private drivingNotificationSubscription: Subscription;
   private vehicleTypesSubscription: Subscription;
+  private vehicleSubscription: Subscription;
+  private userSubscription: Subscription;
 
   constructor(
     private userService: UserService,
@@ -42,7 +50,6 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
     private drivingNotificationService: DrivingNotificationService,
     private toast: ToastrService
   ) {
-
     console.log(this.route);
   }
 
@@ -52,6 +59,7 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
       .getSubjectCurrentUser()
       .subscribe(user => {
         this.currentUser = user;
+        this.passengers.push(user);
       });
 
     this.allUsersSubscription = this.userService
@@ -80,6 +88,8 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
         this.selectedPassengers.length + 1
       ) {
         this.selectedPassengers.push(email);
+        this.findPassengerObj(email);
+        console.log(this.passengers);
         this.passengerCtrl.setValue(null);
         const index = this.allRegularUsers.indexOf(email);
         this.allRegularUsers.splice(index, 1);
@@ -104,12 +114,19 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
 
     if (index >= 0) {
       this.selectedPassengers.splice(index, 1);
+      this.passengers.splice(index, 1);
       this.allRegularUsers.push(passenger);
     }
   }
 
   setVehicleTypeAndShowPrice(vehicleType: string) {
     this.vehicleType = vehicleType;
+    this.vehicleSubscription = this.vehicleService
+      .getVehicleByVehicleType(vehicleType)
+      .subscribe(response => {
+        this.vehicle = response;
+        console.log(response);
+      });
     console.log(this.vehicleType);
     this.priceSubscription = this.vehicleService
       .getPriceForVehicleAndRoute(this.vehicleType, 3800)
@@ -119,37 +136,33 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
   }
 
   findDriver() {
-    if (this.selectedPassengers.length === 0) {
-      console.log('nisuu, trazi vozaca');
-    } else {
-      /*const first_route = this.route.pointList.at(0);
-      const end_route = this.route.pointList.at(
-        this.route.pointList.length - 1
-        );*/
-      const first_route = [45.262402102988666, 19.83108921294311];
-      const end_route = [45.2431212554299, 19.820428580417126];
-      const drivingNotification = {
-        lonStarted: first_route[0],
-        latStarted: first_route[1],
-        lonEnd: end_route[0],
-        latEnd: end_route[1],
-        senderEmail: this.currentUser.email,
-        price: this.price,
-        passengers: this.selectedPassengers,
-        started: new Date(),
-        duration: 5,
-        petFriendly: this.petFriendly,
-        babySeat: this.babySeat,
-        vehicleType: this.vehicleType,
-      };
+    const drivingNotification = {
+      route: this.route,
+      price: this.price,
+      senderEmail: this.currentUser.email,
+      passengers: this.selectedPassengers,
+      started: new Date(),
+      duration: 5,
+      petFriendly: this.petFriendly,
+      babySeat: this.babySeat,
+      vehicleType: this.vehicleType,
+    };
 
-      console.log(drivingNotification);
-      this.drivingNotificationSubscription = this.drivingNotificationService
-        .saveDrivingNotification(drivingNotification)
-        .subscribe(response => {
-          console.log('usppelo');
-        });
-    }
+    this.drivingNotificationService.saveDrivingNotification(
+      drivingNotification
+    );
+    this.vehiclePassengersView = false;
+    this.loadingView = true;
+  }
+
+  private findPassengerObj(email: string): void {
+    let user: User;
+    this.userSubscription = this.userService
+      .getUserByEmail(email)
+      .subscribe((userResponse: User) => {
+        user = userResponse;
+        this.passengers.push(user);
+      });
   }
 
   ngOnDestroy(): void {

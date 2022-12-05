@@ -11,6 +11,7 @@ import com.example.serbUber.model.user.RegularUser;
 import com.example.serbUber.model.user.User;
 import com.example.serbUber.repository.DrivingNotificationRepository;
 import com.example.serbUber.request.DrivingLocationIndexRequest;
+import com.example.serbUber.request.RouteRequest;
 import com.example.serbUber.service.interfaces.IDrivingNotificationService;
 import com.example.serbUber.service.user.DriverService;
 import com.example.serbUber.service.user.RegularUserService;
@@ -51,7 +52,7 @@ public class DrivingNotificationService implements IDrivingNotificationService {
     }
 
     public DrivingNotificationDTO createDrivingNotificationDTO(
-            final List<DrivingLocationIndexRequest> locations,
+            final RouteRequest routeRequest,
             final String senderEmail,
             final double price,
             final List<String> passengers,
@@ -59,9 +60,7 @@ public class DrivingNotificationService implements IDrivingNotificationService {
             final int duration,
             final boolean babySeat,
             final boolean petFriendly,
-            final String vehicleType,
-            final double time,
-            final double distance
+            final String vehicleType
     ) throws EntityNotFoundException {
         RegularUser sender = regularUserService.getRegularByEmail(senderEmail);
         Set<RegularUser> receivers = new HashSet<>();
@@ -74,7 +73,7 @@ public class DrivingNotificationService implements IDrivingNotificationService {
         });
         //TODO:
         Vehicle selectedVehicle = vehicleService.getVehicleByType(vehicleType);
-        Route route = routeService.createRoute(locations, time, distance);
+        Route route = routeService.createRoute(routeRequest.getLocations(), routeRequest.getTimeInMin(), routeRequest.getDistance());
         DrivingNotification notification = createDrivingNotification(
                 route, price, receivers, sender, started, duration, babySeat, petFriendly, selectedVehicle
         );

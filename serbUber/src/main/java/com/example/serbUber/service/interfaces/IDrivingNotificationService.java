@@ -3,6 +3,7 @@ package com.example.serbUber.service.interfaces;
 import com.example.serbUber.dto.DrivingNotificationDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.request.DrivingLocationIndexRequest;
+import com.example.serbUber.request.RouteRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -12,7 +13,7 @@ import java.util.List;
 public interface IDrivingNotificationService {
 
    DrivingNotificationDTO createDrivingNotificationDTO( ///driving dto
-                                                        final List<DrivingLocationIndexRequest> locations,
+                                                        final RouteRequest routeRequest,
                                                         final String senderEmail,
                                                         final double price,
                                                         final List<String> passengers,
@@ -20,9 +21,7 @@ public interface IDrivingNotificationService {
                                                         final int duration,
                                                         final boolean babySeat,
                                                         final boolean petFriendly,
-                                                        final String vehicleType,
-                                                        final double time,
-                                                        final double distance
+                                                        final String vehicleType
 
     ) throws EntityNotFoundException;
 
