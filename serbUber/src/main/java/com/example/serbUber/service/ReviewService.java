@@ -103,14 +103,15 @@ public class ReviewService implements IReviewService {
     private void calculateRateVehicle(double vehicleRate, DriverDTO driverDTO, int numberOfReviewsBeforeUpdate)
             throws EntityNotFoundException
     {
-        double updatedRateVehicle = driverDTO.getVehicle().getRate() * numberOfReviewsBeforeUpdate + vehicleRate;
+        double updatedRateVehicle = Math.round(
+            (driverDTO.getVehicle().getRate() * numberOfReviewsBeforeUpdate + vehicleRate)*100.0)/100.0;
         vehicleService.updateRate(driverDTO.getVehicle().getId(), updatedRateVehicle);
     }
 
     private void calculateRateDriver(DriverDTO driverDTO, int numberOfReviews, double driverRate)
             throws EntityNotFoundException
     {
-        double updatedRateDriver = driverDTO.getRate() * numberOfReviews + driverRate;
+        double updatedRateDriver = Math.round((driverDTO.getRate() * numberOfReviews + driverRate)*100.0)/100.0;
         driverService.updateRate(driverDTO.getId(), updatedRateDriver);
     }
 

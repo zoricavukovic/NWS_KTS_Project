@@ -13,6 +13,7 @@ import com.example.serbUber.service.RouteService;
 import com.example.serbUber.service.VerifyService;
 import com.example.serbUber.service.WebSocketService;
 import com.example.serbUber.service.interfaces.IRegularUserService;
+import com.example.serbUber.service.payment.TokenBankService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +26,7 @@ import static com.example.serbUber.exception.ErrorMessagesConstants.UNBLOCK_UNBL
 import static com.example.serbUber.util.Constants.ROLE_REGULAR_USER;
 import static com.example.serbUber.util.Constants.getProfilePicture;
 import static com.example.serbUber.util.JwtProperties.getHashedNewUserPassword;
+import static com.example.serbUber.util.PictureHandler.convertPictureToBase64ByName;
 
 @Component
 @Qualifier("regularUserServiceConfiguration")
@@ -35,25 +37,31 @@ public class RegularUserService implements IRegularUserService {
     private final RoleService roleService;
     private final RouteService routeService;
     private final WebSocketService webSocketService;
+    private final TokenBankService tokenBankService;
 
     public RegularUserService(
             final RegularUserRepository regularUserRepository,
             final VerifyService verifyService,
             final RouteService routeService,
             final RoleService roleService,
-            final WebSocketService webSocketService
+            final WebSocketService webSocketService,
+            final TokenBankService tokenBankService
     ) {
         this.regularUserRepository = regularUserRepository;
         this.verifyService = verifyService;
         this.routeService = routeService;
         this.roleService = roleService;
         this.webSocketService = webSocketService;
+        this.tokenBankService = tokenBankService;
     }
 
     public List<RegularUserDTO> getAll() {
         List<RegularUser> regularUsers = regularUserRepository.findAll();
 
-        return fromRegularUsers(regularUsers);
+        List<RegularUserDTO> regularUserDTOs = fromRegularUsers(regularUsers);
+        regularUserDTOs.forEach(user ->  user.setProfilePicture(convertPictureToBase64ByName(user.getProfilePicture())));
+
+        return regularUserDTOs;
     }
 
     public RegularUserDTO get(Long id) throws EntityNotFoundException {
@@ -96,6 +104,7 @@ public class RegularUserService implements IRegularUserService {
                 roleService.get(ROLE_REGULAR_USER)
             ));
             VerifyDTO verifyDTO = verifyService.create(regularUser.getId(), regularUser.getEmail());
+            this.tokenBankService.createTokenBank(regularUser);
 
             return new RegistrationDTO(verifyDTO.getId(), email);
         } catch (EntityNotFoundException ex) {
@@ -117,16 +126,14 @@ public class RegularUserService implements IRegularUserService {
 
     public boolean removeFromFavouriteRoutes(Long userId, Long routeId) throws EntityNotFoundException {
         RegularUser user = getRegularById(userId);
-        System.out.println("routeeee" + routeId);
+
         List<Route> favouriteRoutes = user.getFavouriteRoutes();
         for(Route r : favouriteRoutes){
             if(r.getId().equals(routeId)){
-                System.out.println("toooooo");
                 favouriteRoutes.remove(r);
                 break;
             }
         }
-        System.out.println("routeeeee" + favouriteRoutes.size());
         user.setFavouriteRoutes(favouriteRoutes);
         regularUserRepository.save(user);
         return true;

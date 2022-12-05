@@ -30,9 +30,15 @@ export function removeMarker(map: L.Map, marker: L.Marker) {
   map.removeLayer(marker);
 }
 
-export function drawPolylineOnMap(map: L.Map, latLongs: number[], color: string, weight: number, polylineList): L.Polyline {
-  let polyline = L.polyline(latLongs, { color: color, weight: weight }).addTo(map);
-  polylineList.push(polyline);
+export function drawPolylineOnMap(map: L.Map, latLongs: number[], color: string, weight: number): L.Polyline {
+  const polyline: L.Polyline = L.polyline(latLongs, { color: color, weight: weight }).addTo(map);
+  map.fitBounds(polyline.getBounds());
+
+  return polyline;
+}
+
+export function drawPolylineOnMapWithoutClickEvent(map: L.Map, latLongs: number[]): L.Polyline {
+  const polyline: L.Polyline = L.polyline(latLongs, { color: "#283b50", weight: 9 }).addTo(map);
   map.fitBounds(polyline.getBounds());
 
   return polyline;
@@ -40,11 +46,8 @@ export function drawPolylineOnMap(map: L.Map, latLongs: number[], color: string,
 
 export function refreshMap(map){
   map.off();
-  // map.remove();
   map.eachLayer((layer) => {
-
       map.removeLayer(layer);
-
   })
 }
 

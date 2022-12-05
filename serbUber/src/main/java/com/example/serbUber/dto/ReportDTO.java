@@ -7,8 +7,6 @@ import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.example.serbUber.util.PictureHandler.convertPictureToBase64ByName;
-
 public class ReportDTO {
 
     private final Long id;
@@ -26,8 +24,7 @@ public class ReportDTO {
     public static List<ReportDTO> fromReports(List<Report> reports) {
         List<ReportDTO> dtos = new LinkedList<>();
         reports.forEach(report -> {
-            report.getSender().setProfilePicture(convertPictureToBase64ByName(report.getSender().getProfilePicture()));
-            dtos.add(new ReportDTO(report));
+           dtos.add(new ReportDTO(report));
         });
 
         return dtos;

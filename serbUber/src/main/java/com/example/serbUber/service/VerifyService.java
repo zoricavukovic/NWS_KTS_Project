@@ -48,10 +48,11 @@ public class VerifyService implements IVerifyService {
     ) throws MailCannotBeSentException {
         try {
             VerifyDTO verifyDTO = this.save(userId, email);
-            emailService.sendMail(email, "Verification mail",
-                    String.format("Your code is: %d \nClick here to activate your account: %s%s",
-                        verifyDTO.getSecurityCode(), FRONT_VERIFY_URL, verifyDTO.getId())
+            emailService.sendVerificationMail(
+                verifyDTO.getSecurityCode(),
+                String.format("%s%s",FRONT_VERIFY_URL, verifyDTO.getId())
             );
+
             return verifyDTO;
 
         } catch (Exception e) {
@@ -95,7 +96,7 @@ public class VerifyService implements IVerifyService {
     public void generateNewSecurityCode(final Long verifyId)
             throws EntityNotFoundException, MailCannotBeSentException {
         Verify verify = get(verifyId);
-        this.create(verify.getUserId(), verify.getEmail());
+        create(verify.getUserId(), verify.getEmail());
         verifyRepository.delete(verify);
     }
 

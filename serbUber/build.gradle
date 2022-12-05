@@ -43,6 +43,7 @@ dependencies {
 	implementation 'com.google.apis:google-api-services-drive:v3-rev20220815-2.0.0'
 	implementation 'org.springframework.social:spring-social-facebook:2.0.3.RELEASE'
 	implementation 'com.auth0:java-jwt:4.2.1'
+	implementation 'com.paypal.sdk:rest-api-sdk:1.14.0'
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	implementation 'com.graphhopper:graphhopper-core:6.2'
 	runtimeOnly 'org.postgresql:postgresql'

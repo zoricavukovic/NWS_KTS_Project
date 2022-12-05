@@ -1,14 +1,11 @@
 package com.example.serbUber.dto;
 
 import com.example.serbUber.model.Driving;
-import com.example.serbUber.model.Notification;
 import com.example.serbUber.model.Review;
 import com.example.serbUber.model.user.RegularUser;
 
 import java.util.LinkedList;
 import java.util.List;
-
-import static com.example.serbUber.util.PictureHandler.convertPictureToBase64ByName;
 
 public class ReviewDTO {
 
@@ -29,13 +26,12 @@ public class ReviewDTO {
     }
 
     public static List<ReviewDTO> fromReviews(List<Review> reviews) {
-        List<ReviewDTO> dtos = new LinkedList<>();
+        List<ReviewDTO> reviewsDTO = new LinkedList<>();
         reviews.forEach(review -> {
-                review.getSender().setProfilePicture(convertPictureToBase64ByName(review.getSender().getProfilePicture()));
-                dtos.add(new ReviewDTO(review));
+            reviewsDTO.add(new ReviewDTO(review));
         });
 
-        return dtos;
+        return reviewsDTO;
     }
 
     public double getVehicleRate() {

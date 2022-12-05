@@ -11,6 +11,8 @@ public enum EntityType {
     CHAT_ROOM,
     ROUTE,
     ROLE,
+    TOKEN_BANK,
+    PAYING_INFO,
     DRIVING_NOTIFICATION;
 
     public static String getEntityErrorMessage(String id, EntityType entityType){
@@ -53,6 +55,14 @@ public enum EntityType {
             case CHAT_ROOM -> {
 
                 return "ChatRoom for user : " + id + " is not found";
+            }
+            case TOKEN_BANK -> {
+
+                return "Token Bank with : " + id + " is not found";
+            }
+            case PAYING_INFO -> {
+
+                return "Paying info with : " + id + " is not found";
             }
             default -> {
 

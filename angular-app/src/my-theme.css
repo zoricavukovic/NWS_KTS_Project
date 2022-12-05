@@ -391,6 +391,10 @@ input.mat-input-element {
   font-size: 18px;
   font-weight: 400;
 }
+
+.mat-menu-content:not(:empty) {
+  padding: 0 !important;
+}
 .mat-paginator,
 .mat-paginator-page-size .mat-select-trigger {
   font-family: Arial, 'Helvetica', sans-serif;
@@ -3173,3 +3177,54 @@ h1 {
   right: 20%;
   bottom: 0;
 }
+
+.pac-container {
+  background-color:var(--gray) !important;
+}
+.pac-item-query {
+  font-size: 16px !important;
+}
+
+
+.pac-item {
+  cursor: default;
+  padding: 0 4px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  line-height: 30px;
+  text-align: left;
+  font-size: 16px;
+}
+.pac-item:hover {
+  background-color: var(--gray);
+}
+.pac-item-selected,
+.pac-item-selected:hover {
+  background-color: #ebf2fe
+}
+.pac-matched {
+  font-weight: 700
+}
+.pac-item-query {
+  font-size: 13px;
+  padding-right: 3px;
+  color: #000
+}
+.pac-icon {
+  width: 15px;
+  height: 20px;
+  margin-right: 7px;
+  margin-top: 6px;
+  display: inline-block;
+  vertical-align: top;
+  background-image: url(https://maps.gstatic.com/mapfiles/api-3/images/autocomplete-icons.png);
+  background-size: 34px
+}
+/*.pac-logo {*/
+/*  padding: 10px 0 !important;*/
+/*}*/
+/*.pac-logo::after {*/
+/*  padding: 10px 0 !important;*/
+/*}*/
+

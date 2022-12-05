@@ -21,10 +21,10 @@ import static com.example.serbUber.dto.user.UserDTO.fromUsers;
 import static com.example.serbUber.model.user.User.passwordsDontMatch;
 import static com.example.serbUber.util.Constants.ROLE_ADMIN;
 import static com.example.serbUber.util.EmailConstants.FRONT_RESET_PASSWORD_URL;
-import static com.example.serbUber.util.EmailConstants.RESET_PASSWORD_SUBJECT;
 import static com.example.serbUber.util.JwtProperties.getHashedNewUserPassword;
 import static com.example.serbUber.util.JwtProperties.oldPasswordsMatch;
 import static com.example.serbUber.util.PictureHandler.checkPictureValidity;
+import static com.example.serbUber.util.PictureHandler.convertPictureToBase64ByName;
 
 @Component
 @Qualifier("userServiceConfiguration")
@@ -82,8 +82,10 @@ public class UserService implements IUserService {
     }
 
     public UserDTO get(Long id) throws EntityNotFoundException {
+        UserDTO userDTO = new UserDTO(getUserById(id));
+        userDTO.setProfilePicture(convertPictureToBase64ByName(userDTO.getProfilePicture()));
 
-        return new UserDTO(getUserById(id));
+        return userDTO;
     }
 
     public UserDTO updateDriver(
@@ -160,10 +162,7 @@ public class UserService implements IUserService {
 
     public boolean sendEmailForResetPassword(String email) throws EntityNotFoundException {
         User user = getUserByEmail(email);
-
-        emailService.sendMail(user.getEmail(), RESET_PASSWORD_SUBJECT,
-            String.format("Click here to reset your password: %s%s",
-                FRONT_RESET_PASSWORD_URL, email));
+        emailService.sendResetPasswordMail(user.getEmail(), String.format("%s%s", FRONT_RESET_PASSWORD_URL, email));
 
         return true;
     }

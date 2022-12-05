@@ -3,7 +3,7 @@ package com.example.serbUber.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name="driving-status-notifications")
+@Table(name="driving_status_notifications")
 public class DrivingStatusNotification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

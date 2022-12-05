@@ -18,7 +18,7 @@ public class UserDTO{
     private final String surname;
     private final String phoneNumber;
     private final String city;
-    private final String profilePicture;
+    private String profilePicture;
     private Role role;
     private final String password;
     private boolean online = false;
@@ -30,7 +30,7 @@ public class UserDTO{
         this.surname = user.getSurname();
         this.phoneNumber = user.getPhoneNumber();
         this.city = user.getCity();
-        this.profilePicture = convertPictureToBase64ByName(user.getProfilePicture());
+        this.profilePicture = user.getProfilePicture();
         this.role = user.getRole();
         this.password = user.getPassword();
         this.online = user.isOnline();
@@ -54,7 +54,7 @@ public class UserDTO{
         this.surname = surname;
         this.phoneNumber = phoneNumber;
         this.city = city;
-        this.profilePicture = convertPictureToBase64ByName(profilePicture);
+        this.profilePicture = profilePicture;
         this.role = role;
         this.password = password;
         this.online = online;
@@ -67,7 +67,7 @@ public class UserDTO{
         this.surname = driver.getSurname();
         this.phoneNumber = driver.getPhoneNumber();
         this.city = driver.getCity();
-        this.profilePicture = convertPictureToBase64ByName(driver.getProfilePicture());
+        this.profilePicture = driver.getProfilePicture();
         this.role = driver.getRole();
         this.password = driver.getPassword();
         this.online = driver.isOnline();
@@ -80,7 +80,7 @@ public class UserDTO{
         this.surname = regularUser.getSurname();
         this.phoneNumber = regularUser.getPhoneNumber();
         this.city = regularUser.getCity();
-        this.profilePicture = convertPictureToBase64ByName(regularUser.getProfilePicture());
+        this.profilePicture = regularUser.getProfilePicture();
         this.role = regularUser.getRole();
         this.password = regularUser.getPassword();
         this.online = regularUser.isOnline();
@@ -138,4 +138,9 @@ public class UserDTO{
     public boolean isOnline() {
         return online;
     }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = convertPictureToBase64ByName(profilePicture);
+    }
+
 }

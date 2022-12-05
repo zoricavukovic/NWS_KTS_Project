@@ -76,9 +76,29 @@
     </div>
 
     <div class="mat-elevation-z3" *ngIf="possibleRoutesViaPoints.length > 0">
-      <button mat-button (click)="getPossibleRoutes()" class="options-button">
+      <button
+        mat-button
+        [matMenuTriggerFor]="menu"
+        aria-label="Options"
+        class="options-button">
         Options
       </button>
+      <mat-menu #menu="matMenu" style="background-color:red; !important;">
+        <button
+          mat-menu-item
+          (click)="chooseFastestRoute()"
+          style="background-color:var(--gray); !important;color: var(--deep-blue)">
+          <mat-icon>access_time</mat-icon>
+          <span>Fastest route</span>
+        </button>
+        <button
+          mat-menu-item
+          (click)="chooseShortestRoute()"
+          style="background-color:var(--gray); !important; color: var(--deep-blue)">
+          <mat-icon>map</mat-icon>
+          <span>Shortest route</span>
+        </button>
+      </mat-menu>
     </div>
 
     <div *ngIf="possibleRoutesViaPoints.length > 0" class="devider-container">
@@ -100,7 +120,7 @@
           [value]="possibleRoute.possibleRouteDTOList"
           [numVisible]="1"
           [numScroll]="1"
-          [circular]="true"
+          [circular]="false"
           [responsiveOptions]="responsiveOptions">
           <ng-template let-route pTemplate="item">
             <div>
@@ -123,18 +143,27 @@
         <mat-divider></mat-divider>
       </div>
     </div>
+    <<<<<<< HEAD
     <br />
     <div
       class="continue-button"
       *ngIf="currentUser && possibleRoutesViaPoints.length > 0">
-      <button mat-raised-button (click)="chooseVehicleAndPassengers()">
-        Continue
-      </button>
+      =======
+      <br />
+      <div
+        class="continue-button"
+        *ngIf="currentUser && possibleRoutesViaPoints.length > 0">
+        >>>>>>> 9b1fa16cb94831e7249f952d4460588c4c22bd19
+        <button mat-raised-button (click)="chooseVehicleAndPassengers()">
+          <strong>Chose vehicle type</strong>
+        </button>
+      </div>
+    </div>
+    <div *ngIf="filterVehicleView">
+      <app-filter-vehicle-view
+        [route]="selectedRoute"></app-filter-vehicle-view>
     </div>
   </div>
-  <div *ngIf="filterVehicleView">
-    <app-filter-vehicle-view [route]="selectedRoute"></app-filter-vehicle-view>
-  </div>
+  <app-driver-home-page-container *ngIf="isDriver" [driverId]="currentUser.id">
+  </app-driver-home-page-container>
 </div>
-<app-driver-home-page-container *ngIf="isDriver" [driverId]="currentUser.id">
-</app-driver-home-page-container>

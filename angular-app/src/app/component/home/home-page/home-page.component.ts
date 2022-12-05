@@ -11,6 +11,7 @@ import { PossibleRoutesViaPoints } from '../../../model/route/possible-routes-vi
 import {
   changeOrAddMarker,
   drawPolylineOnMap,
+  drawPolylineOnMapWithoutClickEvent,
   removeLayer,
   removeMarker,
   removeOneLayer,
@@ -41,7 +42,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
   provider1: OpenStreetMapProvider = new OpenStreetMapProvider();
 
-  maxNumberOfLocations: number = 5;
+  maxNumberOfLocations = 5;
   possibleRoutesViaPoints: PossibleRoutesViaPoints[] = [];
   drawPolylineList: L.Polyline[] = [];
   searchingRoutesForm: SearchingRoutesForm[] = [];
@@ -109,10 +110,6 @@ export class HomePageComponent implements OnInit, OnDestroy {
         this.isDriver = this.authService.userIsDriver();
         this.isRegular = this.authService.userIsRegular();
       });
-
-    let div = L.DomUtil.get('route-div');
-    L.DomEvent.on(div, 'mousewheel', L.DomEvent.stopPropagation);
-    L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation);
   }
 
   ngOnDestroy(): void {
@@ -161,6 +158,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
   getPossibleRoutes() {
     this.rideIsRequested = true;
 
+    this.removeAllPolylines();
     this.createListDrivingLocation();
 
     if (!this.formIsInvalid()) {
@@ -211,13 +209,15 @@ export class HomePageComponent implements OnInit, OnDestroy {
         const latLongs = this.getLatLongsRoute(
           route.possibleRouteDTOList.at(0)
         );
-        // drawPolylineOnMapWithoutClickEvent(this.map, latLongs, this.drawPolylineList);
+        this.drawPolylineList.push(
+          drawPolylineOnMapWithoutClickEvent(this.map, latLongs)
+        );
       });
     }
   }
 
   private getLatLongsRoute(route: PossibleRoute): number[] {
-    let latLongs = [];
+    const latLongs = [];
     route.pointList.forEach(latLng => latLongs.push([latLng[0], latLng[1]]));
 
     return latLongs;
@@ -234,9 +234,9 @@ export class HomePageComponent implements OnInit, OnDestroy {
       this.map,
       latLongs,
       color,
-      weight,
-      this.drawPolylineList
+      weight
     );
+    this.drawPolylineList[indexOfSelectedPath] = polyline;
     const that = this;
     polyline.on('click', function () {
       that.routePathIndex[indexOfRouteInPossibleRoutes] = indexOfSelectedPath;
@@ -261,33 +261,25 @@ export class HomePageComponent implements OnInit, OnDestroy {
   ): void {
     this.routePathIndex[indexOfRouteInPossibleRoutes] = indexOfSelectedPath;
 
-    if (this.searchingRoutesForm.length === 2) {
-      this.drawPolylineList.forEach(p => {
-        p.setStyle({
-          color: '#cdd1d3',
-          weight: 7,
-        });
-      });
-      this.drawPolylineList.at(indexOfSelectedPath).setStyle({
-        color: '#283b50',
-        weight: 9,
-      });
+    if (this.hasOneDestination()) {
+      this.swapColorsOfRoutes(indexOfSelectedPath);
     } else {
-      this.removeOnePolyline(indexOfSelectedPath);
-      let latLongs = [];
+      this.removeOnePolyline(indexOfRouteInPossibleRoutes);
+      const latLongs = [];
       route.pointList.forEach(latLng => latLongs.push([latLng[0], latLng[1]]));
-      let color: string = '#283b50';
-      const weight: number = 9;
-      drawPolylineOnMap(
+      const color = '#283b50';
+      const weight = 9;
+      this.drawPolylineList[indexOfRouteInPossibleRoutes] = drawPolylineOnMap(
         this.map,
         latLongs,
         color,
-        weight,
-        this.drawPolylineList
+        weight
       );
     }
+  }
 
-    // this.chooseVehicleAndPassengers(route);
+  private hasOneDestination() {
+    return this.searchingRoutesForm.length === 2;
   }
 
   getIconName(index: number): string {
@@ -411,23 +403,25 @@ export class HomePageComponent implements OnInit, OnDestroy {
       this.searchingRoutesForm.at(index).marker !== undefined
     ) {
       removeMarker(this.map, this.searchingRoutesForm.at(index).marker);
+      this.removeAllPolylines();
     }
   }
 
   private removeAllPolylines() {
     if (this.polylineFound()) {
       removeLayer(this.map, this.drawPolylineList);
+      this.drawPolylineList = [];
     }
   }
 
   private removeOnePolyline(index: number) {
     if (this.drawPolylineList.at(index)) {
       removeOneLayer(this.map, this.drawPolylineList.at(index));
+      this.drawPolylineList[index] = null;
     }
   }
 
   chooseVehicleAndPassengers(): void {
-    console.log(this.createRoute());
     this.selectedRoute = this.createRoute();
     this.routeChoiceView = false;
     this.filterVehicleView = true;
@@ -438,7 +432,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
   }
 
   formIsInvalid(): boolean {
-    let formIsInvalid: boolean = false;
+    let formIsInvalid = false;
     this.searchingRoutesForm.forEach(searchingRoute => {
       if (
         searchingRoute.location === undefined ||
@@ -504,5 +498,82 @@ export class HomePageComponent implements OnInit, OnDestroy {
     });
 
     return distance;
+  }
+
+  public chooseFastestRoute() {
+    if (this.hasOneDestination()) {
+      const minTimePath = this.possibleRoutesViaPoints
+        .at(0)
+        .possibleRouteDTOList.reduce((a, b) =>
+          a.timeInMin < b.timeInMin ? a : b
+        );
+      const indexOfSelectedPath = this.possibleRoutesViaPoints
+        .at(0)
+        .possibleRouteDTOList.indexOf(minTimePath);
+      this.routePathIndex[0] = indexOfSelectedPath;
+      this.swapColorsOfRoutes(indexOfSelectedPath);
+    } else {
+      this.removeAllPolylines();
+      this.possibleRoutesViaPoints.forEach(route => {
+        const minTimePath = route.possibleRouteDTOList.reduce((a, b) =>
+          a.timeInMin < b.timeInMin ? a : b
+        );
+        const indexOfSelectedPath =
+          route.possibleRouteDTOList.indexOf(minTimePath);
+        this.routePathIndex[this.possibleRoutesViaPoints.indexOf(route)] =
+          indexOfSelectedPath;
+        const latLongs = this.getLatLongsRoute(
+          route.possibleRouteDTOList.at(indexOfSelectedPath)
+        );
+        this.drawPolylineList.push(
+          drawPolylineOnMapWithoutClickEvent(this.map, latLongs)
+        );
+      });
+    }
+  }
+
+  public chooseShortestRoute() {
+    if (this.hasOneDestination()) {
+      const minTimePath = this.possibleRoutesViaPoints
+        .at(0)
+        .possibleRouteDTOList.reduce((a, b) =>
+          a.distance < b.distance ? a : b
+        );
+      const indexOfSelectedPath = this.possibleRoutesViaPoints
+        .at(0)
+        .possibleRouteDTOList.indexOf(minTimePath);
+      this.routePathIndex[0] = indexOfSelectedPath;
+      this.swapColorsOfRoutes(indexOfSelectedPath);
+    } else {
+      this.removeAllPolylines();
+      this.possibleRoutesViaPoints.forEach(route => {
+        const minDistancePath = route.possibleRouteDTOList.reduce((a, b) =>
+          a.distance < b.distance ? a : b
+        );
+        const indexOfSelectedPath =
+          route.possibleRouteDTOList.indexOf(minDistancePath);
+        this.routePathIndex[this.possibleRoutesViaPoints.indexOf(route)] =
+          indexOfSelectedPath;
+        const latLongs = this.getLatLongsRoute(
+          route.possibleRouteDTOList.at(indexOfSelectedPath)
+        );
+        this.drawPolylineList.push(
+          drawPolylineOnMapWithoutClickEvent(this.map, latLongs)
+        );
+      });
+    }
+  }
+
+  private swapColorsOfRoutes(indexOfSelectedPath: number): void {
+    this.drawPolylineList.forEach(p => {
+      p.setStyle({
+        color: '#cdd1d3',
+        weight: 7,
+      });
+    });
+    this.drawPolylineList.at(indexOfSelectedPath).setStyle({
+      color: '#283b50',
+      weight: 9,
+    });
   }
 }

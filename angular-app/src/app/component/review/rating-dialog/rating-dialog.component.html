@@ -8,6 +8,6 @@
     [(ngModel)]="message"></textarea>
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="cancelBtn()">Cancel</button>
+  <button mat-button [mat-dialog-close]="null">Cancel</button>
   <button mat-button cdkFocusInitial (click)="confirm()">Confirm</button>
 </div>

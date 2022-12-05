@@ -31,4 +31,7 @@ public class ErrorMessagesConstants {
     public static final String ACTIVITY_STATUS_CANNOT_BE_CHANGED_MESSAGE = "Activity status cannot be changed, you worked 8 hours.";
     public static final String ACTIVE_DRIVING_IN_PROGRESS_MESSAGE = "You cannot change status to not active, you have active driving in progress.";
     public static final String UNBLOCK_UNBLOCKED_USER_MESSAGE = "Cannot unblock user that is not blocked.";
+    public static final String MISSIN_NUM_OF_TOKENS = "Number of tokens must be greater than 0.";
+    public static final String PAYPAL_PAYMENT_EXCEPTION = "Payment cannot be realized, something went wrong.";
+
 }

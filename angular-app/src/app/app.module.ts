@@ -80,6 +80,8 @@ import { DrivingDetailsActionsComponent } from './component/driving/driving-deta
 import { DrivingDetailsDriverComponent } from './component/driving/driving-details-components/driving-details-driver/driving-details-driver.component';
 import { DrivingDetailsPassengersComponent } from './component/driving/driving-details-components/driving-details-passengers/driving-details-passengers.component';
 import { AcceptingDrivingViewComponent } from './component/home/accepting-driving-view/accepting-driving-view.component';
+import { SplitButtonModule } from 'primeng/splitbutton';
+import { PaymentSuccessComponent } from './component/payment/payment-success/payment-success.component';
 
 @NgModule({
   declarations: [
@@ -130,6 +132,7 @@ import { AcceptingDrivingViewComponent } from './component/home/accepting-drivin
     DrivingDetailsDriverComponent,
     DrivingDetailsPassengersComponent,
     AcceptingDrivingViewComponent,
+    PaymentSuccessComponent,
   ],
   imports: [
     BrowserModule,
@@ -163,6 +166,7 @@ import { AcceptingDrivingViewComponent } from './component/home/accepting-drivin
     AvatarModule,
     AvatarGroupModule,
     NgxPaginationModule,
+    SplitButtonModule,
   ],
   entryComponents: [EditProfileComponent],
   providers: [

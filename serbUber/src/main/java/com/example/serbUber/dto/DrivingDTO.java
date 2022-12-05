@@ -8,8 +8,6 @@ import com.example.serbUber.model.user.RegularUser;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static com.example.serbUber.util.PictureHandler.convertPictureToBase64ByName;
-
 public class DrivingDTO {
 
     private Long id;
@@ -42,7 +40,6 @@ public class DrivingDTO {
     }
 
     private Set<RegularUser> setPictureForUsers(Set<RegularUser> users){
-        users.forEach(user -> user.setProfilePicture(convertPictureToBase64ByName(user.getProfilePicture())));
 
         return users;
     }
