@@ -286,8 +286,8 @@ public class DriverService implements IDriverService{
         driver.setActive(false);
         driver.setBlocked(true);
         driverRepository.save(driver);
-        this.emailService.sendMail(driver.getEmail(), "Blocke on SerbUber", reason);
-        this.webSocketService.sendBlockedNotification(driver.getEmail(), reason);
+        emailService.sendBlockDriverMail(driver.getEmail(), reason);
+        webSocketService.sendBlockedNotification(driver.getEmail(), reason);
 
         return true;
     }
