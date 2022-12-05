@@ -121,16 +121,14 @@ public class RegularUserService implements IRegularUserService {
 
     public boolean removeFromFavouriteRoutes(Long userId, Long routeId) throws EntityNotFoundException {
         RegularUser user = getRegularById(userId);
-        System.out.println("routeeee" + routeId);
+
         List<Route> favouriteRoutes = user.getFavouriteRoutes();
         for(Route r : favouriteRoutes){
             if(r.getId().equals(routeId)){
-                System.out.println("toooooo");
                 favouriteRoutes.remove(r);
                 break;
             }
         }
-        System.out.println("routeeeee" + favouriteRoutes.size());
         user.setFavouriteRoutes(favouriteRoutes);
         regularUserRepository.save(user);
         return true;
