@@ -134,18 +134,18 @@ insert into reports(id, admin_email, answered, sender_id, receiver_id, message, 
     (nextval('notifications_id_gen'), null, false, 3, 5, 'Vozac je skrenuo sa zadate putanje!', '01.12.2022. 13:00'),
     (nextval('notifications_id_gen'), null, false, 5, 2,'Ana je prosula sok po sedistu!', '01.12.2022. 13:25');
 
-insert into paying_info(id, currency, token_price, max_num_of_tokens_per_transaction) values
-    (1, 'EUR', 1, 20);
+insert into paying_info(currency, token_price, max_num_of_tokens_per_transaction) values
+    ('EUR', 1, 20);
 
-insert into token_banks(id, user_id, num_of_tokens, total_token_amount_spent, total_money_amount_spent, paying_info_id) values
-    (1, 2, 6, 0, 6, 1),
-    (2, 3, 8, 0, 8, 1),
-    (3, 4, 0, 0, 0, 1);
+insert into token_banks(user_id, num_of_tokens, total_token_amount_spent, total_money_amount_spent, paying_info_id) values
+    (2, 6, 0, 6, 1),
+    (3, 8, 0, 8, 1),
+    (4, 0, 0, 0, 1);
 
-insert into token_transactions(id, time_stamp, num_of_bought_tokens, total_price, token_bank_id) values
-    (1, '2022-12-01 14:03', 4, 4, 1),
-    (2, '2022-12-03 14:00', 4, 4, 1),
-    (3, '2022-12-03 15:00', 8, 8, 2);
+insert into token_transactions(time_stamp, num_of_bought_tokens, total_price, token_bank_id) values
+    ('2022-12-01 14:03', 4, 4, 1),
+    ('2022-12-03 14:00', 4, 4, 1),
+    ('2022-12-03 15:00', 8, 8, 2);
 
 
 

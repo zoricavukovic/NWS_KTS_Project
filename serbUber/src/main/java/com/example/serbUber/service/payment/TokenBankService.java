@@ -10,9 +10,6 @@ import com.example.serbUber.service.interfaces.ITokenBankService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
-import java.util.LinkedList;
-import java.util.List;
 
 import static com.example.serbUber.util.Constants.EMPTY_BANK_ACCOUNT;
 import static com.example.serbUber.util.Constants.ZERO_TOKENS;
@@ -57,13 +54,13 @@ public class TokenBankService implements ITokenBankService {
         return tokenBankRepository.save(tokenBank);
     }
 
-    public TokenBank createTokenBank(RegularUser regularUser) throws EntityNotFoundException {
-
-        return tokenBankRepository.save(new TokenBank(
+    public TokenBank createTokenBank(final RegularUser regularUser) throws EntityNotFoundException {
+        TokenBank tokenBank = new TokenBank(
                 regularUser,
                 ZERO_TOKENS,
                 EMPTY_BANK_ACCOUNT,
                 EMPTY_BANK_ACCOUNT,
-                payingInfoService.getDefaultPayingInfo()));
+                payingInfoService.getDefaultPayingInfo());
+        return tokenBankRepository.save(tokenBank);
     }
 }
