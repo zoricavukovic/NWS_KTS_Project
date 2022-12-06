@@ -1,0 +1,36 @@
+
+.transactions-content {
+    margin-top: 0.5rem;
+    border: 4px solid var(--gray-transparent);
+    min-height: 15rem;
+    max-height: 20rem;
+    width: 24rem;
+    overflow-y: auto;
+}
+
+.transaction-row {
+    display: flex;
+    font-size: 1.3rem;
+    font-weight: bold;
+    background-color: var(--gray-transparent);
+    margin: 0.7rem;
+    border-radius: 1rem;
+    padding: 0.7rem;
+    justify-content: space-evenly;
+}
+
+.transaction-row > p {
+    margin-bottom: 0;
+}
+
+.bought-tokens {
+    display: flex;
+}
+
+.bought-tokens > mat-icon {
+    scale: 0.9;
+}
+
+.no-content {
+    font-size: 1.1rem;
+}

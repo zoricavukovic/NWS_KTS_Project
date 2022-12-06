@@ -1,7 +1,6 @@
 package com.example.serbUber.model.token;
 
 import com.example.serbUber.model.user.RegularUser;
-import com.example.serbUber.model.user.User;
 
 import javax.persistence.*;
 import java.util.LinkedList;
@@ -20,7 +19,7 @@ public class TokenBank {
     private RegularUser user;
 
     @Column(name="num_of_tokens", nullable = false)
-    private int numOfTokens;
+    private double numOfTokens;
 
     @Column(name="total_token_amount_spent", nullable = false)
     private double totalTokenAmountSpent;
@@ -41,7 +40,7 @@ public class TokenBank {
 
     public TokenBank(
             final RegularUser user,
-            final int numOfTokens,
+            final double numOfTokens,
             final double totalTokenAmountSpent,
             final double totalMoneyAmountSpent,
             final List<TokenTransaction> transactions,
@@ -85,11 +84,11 @@ public class TokenBank {
         this.user = user;
     }
 
-    public int getNumOfTokens() {
+    public double getNumOfTokens() {
         return numOfTokens;
     }
 
-    public void setNumOfTokens(int numOfTokens) {
+    public void setNumOfTokens(double numOfTokens) {
         this.numOfTokens = numOfTokens;
     }
 
@@ -125,7 +124,7 @@ public class TokenBank {
         this.payingInfo = payingInfo;
     }
 
-    public void addTokens(final int numOfTokens) {
+    public void addTokens(final double numOfTokens) {
         this.numOfTokens += numOfTokens;
     }
 

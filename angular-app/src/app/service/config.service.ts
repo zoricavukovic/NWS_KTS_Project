@@ -39,6 +39,11 @@ export class ConfigService {
   private _send_verify_code_again = this._api_url + '/verify/send-code-again';
   private _vehicle_type_infos = this._api_url + '/vehicle-type-infos';
 
+  private _token_bank_url = this._api_url + '/token-banks';
+  private _paypal_url = this._api_url + '/paypal'
+  private _create_payment = this._paypal_url + '/create-payment';
+  private _complete_payment = this._paypal_url + '/complete-payment';
+
   private _drivings_pagination_url = this._api_url + '/drivings';
   private _drivings_details_url = this._api_url + '/drivings/details/';
   private _drivings_count_url = this._api_url + '/drivings/number/';
@@ -246,6 +251,10 @@ export class ConfigService {
     return `${this._users_url}/${id}`;
   }
 
+  token_bank_by_user_id_url(id: string): string {
+    return `${this._token_bank_url}/${id}`;
+  }
+
   get_count_drivings(id: number): string {
     return this._drivings_count_url + id;
   }
@@ -304,5 +313,13 @@ export class ConfigService {
 
   get block_user_url(): string {
     return this._block_user_url;
+  }
+
+  get create_payment_url(): string {
+    return this._create_payment;
+  }
+
+  get complete_payment_url(): string {
+    return this._complete_payment;
   }
 }

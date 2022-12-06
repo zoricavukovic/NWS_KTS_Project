@@ -1,4 +1,4 @@
-package com.example.serbUber.controller;
+package com.example.serbUber.controller.payment;
 
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.PayPalPaymentException;

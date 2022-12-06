@@ -13,11 +13,11 @@ public class CreatePaymentRequest {
 
     @NotNull(message = MISSIN_NUM_OF_TOKENS)
     @Positive(message = MISSIN_NUM_OF_TOKENS)
-    private final int numOfTokens;
+    private final double numOfTokens;
 
     public CreatePaymentRequest(
             final Long tokenBankId,
-            final int numOfTokens
+            final double numOfTokens
     ) {
         this.tokenBankId = tokenBankId;
         this.numOfTokens = numOfTokens;
@@ -27,7 +27,7 @@ public class CreatePaymentRequest {
         return tokenBankId;
     }
 
-    public int getNumOfTokens() {
+    public double getNumOfTokens() {
         return numOfTokens;
     }
 }

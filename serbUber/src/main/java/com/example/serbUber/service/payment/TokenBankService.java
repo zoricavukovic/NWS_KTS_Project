@@ -1,5 +1,6 @@
 package com.example.serbUber.service.payment;
 
+import com.example.serbUber.dto.payment.TokenBankDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.EntityType;
 import com.example.serbUber.model.token.TokenBank;
@@ -40,9 +41,15 @@ public class TokenBankService implements ITokenBankService {
                 .orElseThrow(() -> new EntityNotFoundException(id, EntityType.TOKEN_BANK));
     }
 
+    public TokenBank getTokenBankByUserId(final Long userId) throws EntityNotFoundException {
+
+        return tokenBankRepository.getTokenBankByUserId(userId)
+                .orElseThrow(() -> new EntityNotFoundException(userId, EntityType.TOKEN_BANK));
+    }
+
     public TokenBank updateTokenBank(
             final Long tokenBankId,
-            final int numOfTokens
+            final double numOfTokens
     ) throws EntityNotFoundException {
         TokenBank tokenBank = getTokenBankById(tokenBankId);
         TokenTransaction tokenTransaction = this.tokenTransactionService.createTransactionObject(
@@ -54,13 +61,20 @@ public class TokenBankService implements ITokenBankService {
         return tokenBankRepository.save(tokenBank);
     }
 
-    public TokenBank createTokenBank(final RegularUser regularUser) throws EntityNotFoundException {
-        TokenBank tokenBank = new TokenBank(
+    public TokenBankDTO createTokenBank(final RegularUser regularUser) throws EntityNotFoundException {
+
+        return new TokenBankDTO(
+                tokenBankRepository.save(new TokenBank(
                 regularUser,
                 ZERO_TOKENS,
                 EMPTY_BANK_ACCOUNT,
                 EMPTY_BANK_ACCOUNT,
-                payingInfoService.getDefaultPayingInfo());
-        return tokenBankRepository.save(tokenBank);
+                payingInfoService.getDefaultPayingInfo()))
+        );
+    }
+
+    public TokenBankDTO getByUserId(Long userId) throws EntityNotFoundException {
+
+        return new TokenBankDTO(getTokenBankByUserId(userId));
     }
 }

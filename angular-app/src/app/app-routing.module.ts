@@ -18,6 +18,8 @@ import { SuccessfullVerificationComponent } from './component/user/auth/successf
 import {DrivingDetailsComponent} from "./component/driving/driving-details/driving-details.component";
 import { BasicUserProfileComponent } from './component/user/basic-user-profile/basic-user-profile.component';
 import { PaymentSuccessComponent } from './component/payment/payment-success/payment-success.component';
+import { FinancialCardComponent } from './component/payment/financial-card/financial-card.component';
+import { ProcessingPaymentComponent } from './component/payment/processing-payment/processing-payment.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'map-view/-1', pathMatch: 'full' },
@@ -39,7 +41,8 @@ const routes: Routes = [
   { path: 'users', component: ShowUsersComponent },
   { path: 'favourite-routes', component: FavouriteRoutesComponent },
   { path: 'user-profile/:id', component: BasicUserProfileComponent },
-  { path: 'payment/success', component: PaymentSuccessComponent },
+  { path: 'payment/process-payment/:tokenBankId/:numOfTokens/process', component: ProcessingPaymentComponent },
+  { path: 'payment/financial-card/:id', component: FinancialCardComponent },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
 ];
 

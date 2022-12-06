@@ -37,7 +37,7 @@ public class PayPalService implements IPayPalService {
 
     public Map<String, String> createPayment(
             Long tokenBankId,
-            int numOfTokens
+            double numOfTokens
     ) throws EntityNotFoundException, PayPalPaymentException {
         TokenBank tokenBank = this.tokenBankService.getTokenBankById(tokenBankId);
         checkIfNumOfTokensAllowed(tokenBank.getPayingInfo().getMaxNumOfTokensPerTransaction(), numOfTokens);
@@ -48,7 +48,7 @@ public class PayPalService implements IPayPalService {
 
         Payer payer = createPayer();
         Payment payment = createPayment(payer, transactions);
-        payment.setRedirectUrls(createRedirectUrls());
+        payment.setRedirectUrls(createRedirectUrls(tokenBankId, numOfTokens));
 
         return createResponse(payment);
     }
@@ -56,7 +56,7 @@ public class PayPalService implements IPayPalService {
     public boolean completePayment(
             final String paymentId,
             final String payerId,
-            final int numOfTokens,
+            final double numOfTokens,
             final Long tokenBankId
     )
             throws PayPalPaymentException, EntityNotFoundException {
@@ -69,7 +69,7 @@ public class PayPalService implements IPayPalService {
         return createCompletePaymentResponse(payment, paymentExecution, numOfTokens, tokenBankId);
     }
 
-    private Amount createAmount(final TokenBank tokenBank, final int numOfTokens) {
+    private Amount createAmount(final TokenBank tokenBank, final double numOfTokens) {
         Amount amount = new Amount();
         amount.setCurrency(tokenBank.getPayingInfo().getCurrency());
         amount.setTotal(String.format("%.2f", getTotalPrice(numOfTokens, tokenBank.getPayingInfo().getTokenPrice())));
@@ -101,10 +101,10 @@ public class PayPalService implements IPayPalService {
         return  payment;
     }
 
-    private RedirectUrls createRedirectUrls() {
+    private RedirectUrls createRedirectUrls(final Long tokenBankId, final double numOfTokens) {
         RedirectUrls redirectUrls = new RedirectUrls();
-        redirectUrls.setCancelUrl(REDIRECT_URL_SUCCESS);
-        redirectUrls.setReturnUrl(REDIRECT_URL_CANCEL);
+        redirectUrls.setCancelUrl(REDIRECT_URL_CANCEL);
+        redirectUrls.setReturnUrl(String.format("%s/%s/%s/process", REDIRECT_URL_SUCCESS, tokenBankId, numOfTokens));
 
         return redirectUrls;
     }
@@ -145,7 +145,7 @@ public class PayPalService implements IPayPalService {
         return response;
     }
 
-    private void checkIfNumOfTokensAllowed(int maxNumOfTokens, int wantedNumOfTokens)
+    private void checkIfNumOfTokensAllowed(int maxNumOfTokens, double wantedNumOfTokens)
             throws PayPalPaymentException
     {
         if (wantedNumOfTokens > maxNumOfTokens) {
@@ -154,7 +154,7 @@ public class PayPalService implements IPayPalService {
         }
     }
 
-    private double getTotalPrice(int numOfTokens, double pricePerToken) {
+    private double getTotalPrice(final double numOfTokens, final double pricePerToken) {
 
         return numOfTokens * pricePerToken;
     }
@@ -162,7 +162,7 @@ public class PayPalService implements IPayPalService {
     private boolean createCompletePaymentResponse(
             final Payment payment,
             final PaymentExecution paymentExecution,
-            final int numOfTokens,
+            final double numOfTokens,
             final Long tokenBankId
     ) throws PayPalPaymentException, EntityNotFoundException {
         try {

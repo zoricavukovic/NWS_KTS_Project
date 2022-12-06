@@ -1,0 +1,63 @@
+.buying-new-container {
+    margin-top: 1rem;
+    margin-left: 5rem;
+    border: 4px solid var(--gray-transparent);
+    min-height: 16rem;
+    min-width: 20rem;
+}
+
+.buying-new-container > p {
+    font-size: 1.3rem;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-top: 2rem;
+    font-weight: bold;
+}
+
+.token-input {
+    max-width: 10rem;
+    margin-left: 6rem;
+    margin-top: 2rem;
+}
+
+form mat-icon {
+    margin-left: 0.7rem;
+    scale: 1.2;
+}
+
+form p {
+    font-size: 1.8rem;
+    font-weight: bold;
+    display: inline;
+    margin-left: 0.6rem;
+}
+
+button {
+    padding: 5px 10px;
+    border: 1px solid #FF9933;
+    border-radius: 5px;
+    background-image: linear-gradient(#FFF0A8, #F9B421);
+    margin-top: 1rem;
+    margin-left: 15rem;
+    display: block;
+    min-width: 138px;
+    position: relative;    
+}
+
+  
+.paypal-logo {
+    display: inline-block;
+    text-shadow: 0px 1px 0px rgba(255, 255, 255, 0.6);
+    font-size: 1.3rem;
+}
+
+i.pay {
+    font-weight: bold;
+    color: #253b80;
+}
+
+i.pal {
+    font-weight: bold;
+    color: #179bd7;
+}
