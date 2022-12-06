@@ -10,7 +10,10 @@ import { DrivingService } from 'src/app/service/driving.service';
 import { DriverService } from 'src/app/service/driver.service';
 import { Vehicle } from 'src/app/model/vehicle/vehicle';
 import { User } from 'src/app/model/user/user';
-import {drawPolylineOnMapHaveRoute, removeLine} from "../../../../util/map-functions";
+import {
+  drawPolylineOnMapHaveRoute,
+  removeLine,
+} from '../../../../util/map-functions';
 
 @Component({
   selector: 'app-driving-details',
@@ -61,15 +64,18 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
     this.id = +this.route.snapshot.paramMap.get('id');
     this.destinations = [];
     this.drivingsSubscription = this.drivingService
-      .getDrivingDetails(this.id)
+      .get(this.id)
       .subscribe((driving: Driving) => {
         this.driving = driving;
         if (this.map) {
-          this.routePolyline = drawPolylineOnMapHaveRoute(this.map, this.driving?.route);
+          this.routePolyline = drawPolylineOnMapHaveRoute(
+            this.map,
+            this.driving?.route
+          );
         }
 
         this.driverSubscription = this.driverService
-          .getDriver(driving?.driverId)
+          .get(driving?.driverId)
           .subscribe((response: Driver) => {
             this.driver = response;
           });
@@ -93,9 +99,10 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
   }
 
   setFavouriteRoute(favourite: boolean) {
+    console.log(favourite);
     if (favourite) {
       this.userService
-        .removeFromFavouriteRoutes(
+        .updateFavouriteRoutes(
           this.userService.createFavouriteRequest(
             this.authService.getCurrentUserId,
             this.driving.route.id

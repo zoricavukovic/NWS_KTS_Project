@@ -7,19 +7,20 @@ import { Vehicle } from '../model/vehicle/vehicle';
 import { ChatRoom } from '../model/message/chat-room';
 import { ChatRoomWithNotify } from '../model/message/chat-room-with-notify';
 import { VehicleCurrentLocation } from '../model/vehicle/vehicle-current-location';
+import { GenericService } from './generic.service';
+import { HeadersService } from './headers.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class VehicleService {
+export class VehicleService extends GenericService<Vehicle> {
   vehicles$ = new BehaviorSubject<VehicleCurrentLocation[]>([]);
-  constructor(private http: HttpClient, private configService: ConfigService) {}
-
-  getVehicleTypeInfos(): Observable<VehicleTypeInfo[]> {
-    return this.http.get<VehicleTypeInfo[]>(
-      this.configService.vehicle_type_infos,
-      { headers: this.configService.getHeader() }
-    );
+  constructor(
+    private http: HttpClient,
+    private configService: ConfigService,
+    private headersService: HeadersService
+  ) {
+    super(http, `${configService.api_url}/vehicles`, headersService);
   }
 
   getPriceForVehicleAndRoute(type: string, kilometers: number) {
@@ -50,8 +51,7 @@ export class VehicleService {
     this.vehicles$.next(vehiclesCurrentLocation);
   }
 
-  getVehicleByVehicleType(vehicleType: string) {
-    console.log(this.configService.getHeader());
+  getVehicleByVehicleType(vehicleType: string): Observable<Vehicle> {
     return this.http.get<Vehicle>(
       this.configService.get_vehicle_by_vehicle_type(vehicleType),
       { headers: this.configService.getHeader() }

@@ -12,12 +12,20 @@ import { Observable } from 'rxjs';
 import { Role } from '../model/user/role';
 import { RegistrationResponse } from '../model/user/registration-response';
 import { BlockNotification } from '../model/notification/block-notification';
+import { GenericService } from './generic.service';
+import { HeadersService } from './headers.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class UserService {
-  constructor(private http: HttpClient, private configService: ConfigService) {}
+export class UserService extends GenericService<User> {
+  constructor(
+    private http: HttpClient,
+    private headersService: HeadersService,
+    private configService: ConfigService
+  ) {
+    super(http, `${configService.api_url}/users`, headersService);
+  }
 
   sendResetPasswordEmail(email: string): Observable<boolean> {
     return this.http.get<boolean>(
@@ -97,16 +105,16 @@ export class UserService {
   }
 
   addToFavouriteRoutes(favouriteRouteRequest: FavouriteRouteRequest) {
-    return this.http.post<any>(
+    return this.http.post<boolean>(
       this.configService.add_favourite_route_url,
       favouriteRouteRequest,
       { headers: this.configService.getHeader() }
     );
   }
 
-  removeFromFavouriteRoutes(favouriteRouteRequest: FavouriteRouteRequest) {
-    return this.http.post<any>(
-      this.configService.remove_favourite_route_url,
+  updateFavouriteRoutes(favouriteRouteRequest: FavouriteRouteRequest) {
+    return this.http.post<boolean>(
+      this.configService.add_favourite_route_url,
       favouriteRouteRequest,
       { headers: this.configService.getHeader() }
     );
@@ -117,18 +125,6 @@ export class UserService {
       this.configService.is_favourite_route(routeId, userId),
       { headers: this.configService.getHeader() }
     );
-  }
-
-  getAllRegularUsers() {
-    return this.http.get<User[]>(this.configService.all_users_url, {
-      headers: this.configService.getHeader(),
-    });
-  }
-
-  getUser(id: string): Observable<User> {
-    return this.http.get<User>(this.configService.user_by_id_url(id), {
-      headers: this.configService.getHeader(),
-    });
   }
 
   getUserByEmail(email: string): Observable<User> {

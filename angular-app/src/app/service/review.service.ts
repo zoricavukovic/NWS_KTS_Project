@@ -3,20 +3,19 @@ import { HttpClient } from '@angular/common/http';
 import { ConfigService } from './config.service';
 import { Observable } from 'rxjs';
 import { RateReview, Review } from '../model/review/rate-review';
+import { HeadersService } from './headers.service';
+import { GenericService } from './generic.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ReviewService {
-  constructor(private http: HttpClient, private configService: ConfigService) {}
-
-  saveReview(reviewRequest: RateReview): Observable<RateReview> {
-
-    return this.http.post<RateReview>(
-      this.configService.rate_driver_vehicle_url,
-      reviewRequest,
-      { headers: this.configService.getHeader() }
-    );
+export class ReviewService extends GenericService<RateReview> {
+  constructor(
+    private http: HttpClient,
+    private configService: ConfigService,
+    private headersService: HeadersService
+  ) {
+    super(http, `${configService.api_url}/reviews`, headersService);
   }
 
   getReviewedDrivingsForUser(id: number): Observable<number[]> {
@@ -45,7 +44,7 @@ export class ReviewService {
       driverRate: driverRate,
       message: message,
       drivingId: drivingId,
-      userId: userId
+      userId: userId,
     };
   }
 }

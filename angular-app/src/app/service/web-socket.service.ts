@@ -21,8 +21,8 @@ import { Router } from '@angular/router';
 export class WebSocketService {
   private stompClient = null;
   private globalStompClient = null;
-  initialized: boolean = false;
-  initializedGlobal: boolean = false;
+  initialized = false;
+  initializedGlobal = false;
 
   constructor(
     private chatRoomService: ChatRoomService,
@@ -65,6 +65,7 @@ export class WebSocketService {
   }
 
   checkNotificationType(message: string) {
+    console.log(this.isDrivingNotification(message));
     if (this.isActivityResetNotification(message)) {
       this.driverService.showActivityStatusResetNotification(
         JSON.parse(message)
@@ -130,16 +131,21 @@ export class WebSocketService {
   private isActivityResetNotification(message: string): boolean {
     try {
       const parsed: DriverActivityResetNotification = JSON.parse(message);
-      return (parsed.email !== null && parsed.email !== undefined && (parsed.active !== null || true));
+      return (
+        parsed.email !== null &&
+        parsed.email !== undefined &&
+        (parsed.active !== null || true)
+      );
     } catch (e) {
       return false;
     }
   }
 
   private isDrivingNotification(message: string): boolean {
+    console.log(message);
     try {
       const parsed: DrivingNotification = JSON.parse(message);
-      return parsed.drivingNotificationType === 'LINKED_USERS';
+      return parsed.drivingNotificationType === 'LINKED_USER';
     } catch (e) {
       return false;
     }

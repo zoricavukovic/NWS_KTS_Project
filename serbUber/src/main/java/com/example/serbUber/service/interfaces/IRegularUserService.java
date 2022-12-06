@@ -14,8 +14,7 @@ public interface IRegularUserService {
     List<RegularUserDTO> getAll();
     RegularUserDTO get(final Long id) throws EntityNotFoundException;
     RegularUser getRegularById(final Long id) throws EntityNotFoundException;
-    boolean addToFavouriteRoutes(final Long userId, final Long routeId) throws EntityNotFoundException;
-    boolean removeFromFavouriteRoutes(final Long userId, final Long routeId) throws EntityNotFoundException;
+    boolean updateFavouriteRoutes(final Long userId, final Long routeId) throws EntityNotFoundException;
     boolean isFavouriteRoute(final Long routeId, final Long userId);
     List<RouteDTO> getFavouriteRoutes(final Long id) throws EntityNotFoundException;
     boolean blockRegular(final Long id, final String reason)
@@ -29,6 +28,6 @@ public interface IRegularUserService {
         final String city,
         final String profilePicture
     ) throws MailCannotBeSentException, EntityAlreadyExistsException, EntityNotFoundException;
-    boolean getIsBlocked(Long id);
-    boolean unblock(Long id) throws EntityNotFoundException, EntityUpdateException;
+    boolean getIsBlocked(final Long id);
+    boolean unblock(final Long id) throws EntityNotFoundException, EntityUpdateException;
 }

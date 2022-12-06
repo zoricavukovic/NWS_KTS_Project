@@ -3,6 +3,7 @@ package com.example.serbUber.service;
 import com.example.serbUber.dto.*;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.model.DrivingNotification;
+import com.example.serbUber.model.DrivingNotificationType;
 import com.example.serbUber.model.user.RegularUser;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -34,7 +35,8 @@ public class WebSocketService {
     public void sendDrivingNotification(DrivingNotification drivingNotification) {
         DrivingNotificationWebSocketDTO dto = new DrivingNotificationWebSocketDTO(
                 drivingNotification.getId(),
-                drivingNotification.getSender().getEmail()
+                drivingNotification.getSender().getEmail(),
+                DrivingNotificationType.LINKED_USER
         );
         drivingNotification.getReceivers().forEach(receiver -> {
             this.messagingTemplate.convertAndSendToUser(receiver.getEmail(), "/connect", dto);

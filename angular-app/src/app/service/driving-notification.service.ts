@@ -4,70 +4,57 @@ import { ConfigService } from './config.service';
 import { ToastrService } from 'ngx-toastr';
 import { DrivingNotification } from '../model/notification/driving-notification';
 import { DrivingStatusNotification } from '../model/notification/driving-status-notification';
+import { GenericService } from './generic.service';
+import { HeadersService } from './headers.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class DrivingNotificationService {
+export class DrivingNotificationService extends GenericService<DrivingNotification> {
   private notificationTypeLinkedUser = 'LINKED_USER';
 
   constructor(
     private http: HttpClient,
     private configService: ConfigService,
+    private headersService: HeadersService,
     private toast: ToastrService
-  ) {}
-
-  saveDrivingNotification(drivingNotificationRequest: DrivingNotification) {
-    console.log(drivingNotificationRequest);
-    return this.http.post(
-      this.configService.driving_notifications_url,
-      drivingNotificationRequest,
-      { headers: this.configService.getHeader() }
+  ) {
+    super(
+      http,
+      `${configService.api_url}/driving-notifications`,
+      headersService
     );
-  }
-
-  accept() {
-    alert('bla');
   }
 
   showNotification(drivingNotificationResponse: DrivingNotification) {
-    console.log(drivingNotificationResponse);
-    drivingNotificationResponse.drivingNotificationType ===
-    this.notificationTypeLinkedUser
-      ? this.toast
-          .info(
-            `User ${drivingNotificationResponse.senderEmail} add you as linked passenger.Tap to accept!`
-          )
-          .onTap.subscribe(action => {
-            console.log('blaaa');
-            this.acceptDriving(drivingNotificationResponse.id).subscribe(
-              bla => {
-                console.log(bla);
-              }
-            );
-          })
-      : this.toast
-          .info(
-            `Driver ${drivingNotificationResponse.senderEmail} reject your driving. \nReason for rejecting is
-      ${drivingNotificationResponse.reason}`
-          )
-          .onTap.subscribe(action => console.log(action));
+    this.toast
+      .info(
+        `User ${drivingNotificationResponse.senderEmail} add you as linked passenger.Tap to accept!`
+      )
+      .onTap.subscribe(action => {
+        console.log('blaaa');
+        this.updatePerPath(drivingNotificationResponse.id).subscribe(bla => {
+          console.log(bla);
+        });
+      });
   }
 
   showDrivingStatus(drivingStatusNotification: DrivingStatusNotification) {
-    const divNotification = document.getElementById('notification');
-    divNotification.innerText = 'USPESNO';
-    console.log('notifiiii');
-  }
-
-  acceptDriving(id: number) {
-    console.log(id);
-    console.log(this.configService.get_accept_driving_url(id));
-    return this.http.get<DrivingNotification>(
-      this.configService.get_accept_driving_url(id),
-      {
-        headers: this.configService.getHeader(),
-      }
-    );
+    if (drivingStatusNotification.drivingStatus === 'ACCEPTED') {
+      document.getElementById('minutes').innerText =
+        drivingStatusNotification.minutes.toString();
+      //document.getElementById('acceptDriving').style.visibility = 'visible';
+      document.getElementById('acceptDriving').style.display = 'inline';
+    } else if (drivingStatusNotification.drivingStatus === 'PENDING') {
+      document.getElementById('minutes').innerText =
+        'Nije pronadjen slobodan vozac';
+      //document.getElementById('acceptDriving').style.visibility = 'visible';
+      document.getElementById('acceptDriving').style.display = 'inline';
+    } else if (drivingStatusNotification.drivingStatus === 'REJECTED') {
+      this.toast.info(
+        `Driver ${drivingStatusNotification.driverEmail} reject your driving. \nReason for rejecting is
+  ${drivingStatusNotification.reason}`
+      );
+    }
   }
 }

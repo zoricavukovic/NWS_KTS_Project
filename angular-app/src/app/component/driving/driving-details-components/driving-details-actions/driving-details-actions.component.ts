@@ -10,6 +10,6 @@ export class DrivingDetailsActionsComponent {
   @Output() setFavouriteRouteEvent = new EventEmitter<boolean>();
 
   setFavouriteRouteEmitter() {
-    this.setFavouriteRouteEvent.emit(true);
+    this.setFavouriteRouteEvent.emit(this.favouriteRoute);
   }
 }

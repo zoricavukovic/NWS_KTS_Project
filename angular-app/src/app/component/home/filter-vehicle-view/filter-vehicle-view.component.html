@@ -40,7 +40,7 @@
   <br />
 
   <div style="text-align: right">
-    <h2>={{ price }}.00 RSD</h2>
+    <h2>={{ price }}</h2>
   </div>
 
   <button
@@ -52,12 +52,19 @@
   </button>
 </div>
 
-<div *ngIf="loadingView">
+<div id="acceptDriving">
   <app-accepting-driving-view
     [vehicle]="vehicle"
     [locations]="route.locations"
     [passengers]="passengers"
     [price]="price"></app-accepting-driving-view>
+
+  <!--NA MAPI SE VIDI KRETANJE VOZACA-->
 </div>
 
-<div id="notification"></div>
+<div id="overlay" *ngIf="loadingView">
+  <div class="spinner-loading">
+    <mat-spinner></mat-spinner>
+  </div>
+  Requesting driving...
+</div>

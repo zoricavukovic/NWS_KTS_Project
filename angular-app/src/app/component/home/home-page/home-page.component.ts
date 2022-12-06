@@ -1,19 +1,19 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {SearchingRoutesForm} from '../../../model/route/searching-routes-form';
-import {RouteService} from '../../../service/route.service';
-import {PossibleRoute} from '../../../model/route/possible-routes';
-import {User} from '../../../model/user/user';
-import {Subscription} from 'rxjs';
-import {AuthService} from '../../../service/auth.service';
-import {PossibleRoutesViaPoints} from '../../../model/route/possible-routes-via-points';
-import {Location} from '../../../model/route/location';
-import {VehicleService} from '../../../service/vehicle.service';
-import {Vehicle} from '../../../model/vehicle/vehicle';
-import {Options} from "ngx-google-places-autocomplete/objects/options/options";
-import {Address} from "ngx-google-places-autocomplete/objects/address";
-import {ToastrService} from "ngx-toastr";
-import {Route} from "../../../model/route/route";
-import {DrivingLocation} from "../../../model/route/driving-location";
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { SearchingRoutesForm } from '../../../model/route/searching-routes-form';
+import { RouteService } from '../../../service/route.service';
+import { PossibleRoute } from '../../../model/route/possible-routes';
+import { User } from '../../../model/user/user';
+import { Subscription } from 'rxjs';
+import { AuthService } from '../../../service/auth.service';
+import { PossibleRoutesViaPoints } from '../../../model/route/possible-routes-via-points';
+import { Location } from '../../../model/route/location';
+import { VehicleService } from '../../../service/vehicle.service';
+import { Vehicle } from '../../../model/vehicle/vehicle';
+import { Options } from 'ngx-google-places-autocomplete/objects/options/options';
+import { Address } from 'ngx-google-places-autocomplete/objects/address';
+import { ToastrService } from 'ngx-toastr';
+import { Route } from '../../../model/route/route';
+import { DrivingLocation } from '../../../model/route/driving-location';
 import {
   addCarMarkers,
   addMarker,
@@ -21,8 +21,8 @@ import {
   getRouteCoordinates,
   removeAllPolyline,
   removeLine,
-  removeMarker
-} from "../../../util/map-functions";
+  removeMarker,
+} from '../../../util/map-functions';
 
 @Component({
   selector: 'home-page',
@@ -83,7 +83,10 @@ export class HomePageComponent implements OnInit, OnDestroy {
     const lng: number = address.geometry.location.lng();
     const lat: number = address.geometry.location.lat();
 
-    this.searchingRoutesForm.at(index).marker = addMarker(this.map, {lat: lat, lng: lng});
+    this.searchingRoutesForm.at(index).marker = addMarker(this.map, {
+      lat: lat,
+      lng: lng,
+    });
     this.searchingRoutesForm.at(index).marker.setIcon(this.getIconUrl(index));
     this.createLocation(address, index);
   }
@@ -104,7 +107,9 @@ export class HomePageComponent implements OnInit, OnDestroy {
       .getSubjectCurrentUser()
       .subscribe(user => {
         this.currentUser = user;
+        console.log(this.currentUser);
         this.isDriver = this.authService.userIsDriver();
+        console.log(this.isDriver);
         this.isRegular = this.authService.userIsRegular();
       });
   }
@@ -194,26 +199,42 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
       routes.at(0).possibleRouteDTOList.forEach(oneRoute => {
         const routeCoordinates = getRouteCoordinates(oneRoute);
-        this.drawPolyline(routes.at(0).possibleRouteDTOList.indexOf(oneRoute), 0, routeCoordinates);
-      })
-    }
-    else{
+        this.drawPolyline(
+          routes.at(0).possibleRouteDTOList.indexOf(oneRoute),
+          0,
+          routeCoordinates
+        );
+      });
+    } else {
       routes.forEach(route => {
         this.routePathIndex.push(0);
-        const routeCoordinates = getRouteCoordinates(route.possibleRouteDTOList.at(0));
-        this.drawPolylineList.push(drawPolylineOnMap(this.map, routeCoordinates,"#283b50" , 9));
+        const routeCoordinates = getRouteCoordinates(
+          route.possibleRouteDTOList.at(0)
+        );
+        this.drawPolylineList.push(
+          drawPolylineOnMap(this.map, routeCoordinates, '#283b50', 9)
+        );
       });
     }
   }
 
-  private drawPolyline(indexOfSelectedPath: number, indexOfRouteInPossibleRoutes: number, latLongs: google.maps.LatLngLiteral[]): void {
-    const color: string = indexOfSelectedPath === 0 ? "#283b50" : "#cdd1d3";
+  private drawPolyline(
+    indexOfSelectedPath: number,
+    indexOfRouteInPossibleRoutes: number,
+    latLongs: google.maps.LatLngLiteral[]
+  ): void {
+    const color: string = indexOfSelectedPath === 0 ? '#283b50' : '#cdd1d3';
     const weight: number = indexOfSelectedPath === 0 ? 9 : 7;
-    const polyline: google.maps.Polyline = drawPolylineOnMap(this.map, latLongs, color, weight);
-    polyline.setOptions({clickable: true});
+    const polyline: google.maps.Polyline = drawPolylineOnMap(
+      this.map,
+      latLongs,
+      color,
+      weight
+    );
+    polyline.setOptions({ clickable: true });
     this.drawPolylineList[indexOfSelectedPath] = polyline;
     const that = this;
-    google.maps.event.addListener(polyline, 'click', function() {
+    google.maps.event.addListener(polyline, 'click', function () {
       that.routePathIndex[indexOfRouteInPossibleRoutes] = indexOfSelectedPath;
       that.drawPolylineList.forEach(p => {
         p.setOptions({
@@ -227,7 +248,6 @@ export class HomePageComponent implements OnInit, OnDestroy {
         });
       });
     });
-
   }
 
   changeOptionRouteOnClick(
@@ -242,7 +262,12 @@ export class HomePageComponent implements OnInit, OnDestroy {
     } else {
       this.removeOnePolyline(indexOfRouteInPossibleRoutes);
       const routeCoordinates = getRouteCoordinates(route);
-      this.drawPolylineList[indexOfRouteInPossibleRoutes] = drawPolylineOnMap(this.map, routeCoordinates, "#283b50", 9);
+      this.drawPolylineList[indexOfRouteInPossibleRoutes] = drawPolylineOnMap(
+        this.map,
+        routeCoordinates,
+        '#283b50',
+        9
+      );
     }
   }
 
@@ -327,10 +352,12 @@ export class HomePageComponent implements OnInit, OnDestroy {
     );
   }
 
-
   private addMarkerWithLonAndLat(index: number, lon: number, lat: number) {
-    const markerCoordinates: google.maps.LatLngLiteral = {lat: lat, lng: lon};
-    this.searchingRoutesForm.at(index).marker = addMarker(this.map, markerCoordinates);
+    const markerCoordinates: google.maps.LatLngLiteral = { lat: lat, lng: lon };
+    this.searchingRoutesForm.at(index).marker = addMarker(
+      this.map,
+      markerCoordinates
+    );
     this.searchingRoutesForm.at(index).marker.setIcon(this.getIconUrl(index));
   }
 
@@ -456,11 +483,17 @@ export class HomePageComponent implements OnInit, OnDestroy {
         const minTimePath = route.possibleRouteDTOList.reduce((a, b) =>
           a.timeInMin < b.timeInMin ? a : b
         );
-        const indexOfSelectedPath = route.possibleRouteDTOList.indexOf(minTimePath);
-        this.routePathIndex[this.possibleRoutesViaPoints.indexOf(route)] = indexOfSelectedPath;
-        const routeCoordinates = getRouteCoordinates(route.possibleRouteDTOList.at(indexOfSelectedPath));
-        this.drawPolylineList.push(drawPolylineOnMap(this.map, routeCoordinates, "#283b50", 9));
-      })
+        const indexOfSelectedPath =
+          route.possibleRouteDTOList.indexOf(minTimePath);
+        this.routePathIndex[this.possibleRoutesViaPoints.indexOf(route)] =
+          indexOfSelectedPath;
+        const routeCoordinates = getRouteCoordinates(
+          route.possibleRouteDTOList.at(indexOfSelectedPath)
+        );
+        this.drawPolylineList.push(
+          drawPolylineOnMap(this.map, routeCoordinates, '#283b50', 9)
+        );
+      });
     }
   }
 
@@ -482,11 +515,17 @@ export class HomePageComponent implements OnInit, OnDestroy {
         const minDistancePath = route.possibleRouteDTOList.reduce((a, b) =>
           a.distance < b.distance ? a : b
         );
-        const indexOfSelectedPath = route.possibleRouteDTOList.indexOf(minDistancePath);
-        this.routePathIndex[this.possibleRoutesViaPoints.indexOf(route)] = indexOfSelectedPath;
-        const routeCoordinates = getRouteCoordinates(route.possibleRouteDTOList.at(indexOfSelectedPath));
-        this.drawPolylineList.push(drawPolylineOnMap(this.map, routeCoordinates, "#283b50", 9));
-      })
+        const indexOfSelectedPath =
+          route.possibleRouteDTOList.indexOf(minDistancePath);
+        this.routePathIndex[this.possibleRoutesViaPoints.indexOf(route)] =
+          indexOfSelectedPath;
+        const routeCoordinates = getRouteCoordinates(
+          route.possibleRouteDTOList.at(indexOfSelectedPath)
+        );
+        this.drawPolylineList.push(
+          drawPolylineOnMap(this.map, routeCoordinates, '#283b50', 9)
+        );
+      });
     }
   }
 
@@ -494,12 +533,12 @@ export class HomePageComponent implements OnInit, OnDestroy {
     this.drawPolylineList.forEach(p => {
       p.setOptions({
         strokeColor: '#cdd1d3',
-        strokeWeight: 7
+        strokeWeight: 7,
       });
     });
     this.drawPolylineList.at(indexOfSelectedPath).setOptions({
       strokeColor: '#283b50',
-      strokeWeight: 9
+      strokeWeight: 9,
     });
   }
 }

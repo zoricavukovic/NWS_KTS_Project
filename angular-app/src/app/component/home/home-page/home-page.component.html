@@ -155,6 +155,8 @@
   <div *ngIf="filterVehicleView">
     <app-filter-vehicle-view [route]="selectedRoute"></app-filter-vehicle-view>
   </div>
-  <app-driver-home-page-container *ngIf="isDriver" [driverId]="currentUser.id">
+</div>
+<div *ngIf="isDriver">
+  <app-driver-home-page-container [driverId]="currentUser.id">
   </app-driver-home-page-container>
 </div>

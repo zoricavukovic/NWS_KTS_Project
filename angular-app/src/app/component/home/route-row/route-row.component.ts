@@ -13,6 +13,7 @@ export class RouteRowComponent implements OnInit {
   rgbDeepBlue: number[] = [44, 75, 97];
 
   ngOnInit(): void {
+    console.log(this.route);
     this.color =
       'rgb(' +
       this.incrementShadeOfColor(0, 0) +

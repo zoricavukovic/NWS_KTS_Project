@@ -82,7 +82,7 @@ import { DrivingDetailsPassengersComponent } from './component/driving/driving-d
 import { AcceptingDrivingViewComponent } from './component/home/accepting-driving-view/accepting-driving-view.component';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { PaymentSuccessComponent } from './component/payment/payment-success/payment-success.component';
-import {GoogleMapsModule} from "@angular/google-maps";
+import { GoogleMapsModule } from '@angular/google-maps';
 
 @NgModule({
   declarations: [
@@ -157,9 +157,9 @@ import {GoogleMapsModule} from "@angular/google-maps";
     MatPaginatorModule,
     MatChipsModule,
     ToastrModule.forRoot({
-        positionClass: 'toast-bottom-left',
-        preventDuplicates: true,
-        closeButton: true,
+      positionClass: 'toast-bottom-left',
+      preventDuplicates: true,
+      closeButton: true,
     }),
     GooglePlaceModule,
     GoogleMapsModule,
@@ -168,6 +168,7 @@ import {GoogleMapsModule} from "@angular/google-maps";
     AvatarGroupModule,
     NgxPaginationModule,
     SplitButtonModule,
+    MatProgressSpinnerModule,
   ],
   entryComponents: [EditProfileComponent],
   providers: [

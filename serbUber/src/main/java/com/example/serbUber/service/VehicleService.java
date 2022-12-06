@@ -106,7 +106,7 @@ public class VehicleService implements IVehicleService {
     }
 
     public Vehicle getVehicleByType(String vehicleType){
-        VehicleType type = VehicleType.getVehicleType(vehicleType);
+        VehicleType type = VehicleType.getVehicleType(vehicleType.toLowerCase());
         return vehicleRepository.getVehicleByType(type);
     }
 

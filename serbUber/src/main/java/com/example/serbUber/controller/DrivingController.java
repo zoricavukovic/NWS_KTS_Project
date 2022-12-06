@@ -73,7 +73,7 @@ public class DrivingController {
         return drivingService.getNumberOfAllDrivingsForUser(id);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/now-and-future/{id}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ROLE_DRIVER')")
     public List<DrivingDTO> getAllNowAndFutureDrivings(
@@ -85,7 +85,7 @@ public class DrivingController {
 
 
 
-    @GetMapping("/details/{id}")
+    @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
     public DrivingDTO getDriving(@PathVariable Long id) throws EntityNotFoundException {

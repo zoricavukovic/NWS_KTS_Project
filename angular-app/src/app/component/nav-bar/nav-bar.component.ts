@@ -8,14 +8,12 @@ import { ConfigService } from 'src/app/service/config.service';
 import { DriverService } from 'src/app/service/driver.service';
 import { ToastrService } from 'ngx-toastr';
 
-
 @Component({
   selector: 'nav-bar',
   templateUrl: './nav-bar.component.html',
   styleUrls: ['./nav-bar.component.css'],
 })
 export class NavBarComponent implements OnInit, OnDestroy {
-  
   logoutSubscription: Subscription;
   driverData: Driver;
   driverUpdateSubscription: Subscription;
@@ -38,8 +36,9 @@ export class NavBarComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.authSubscription = this.authService.getSubjectCurrentUser().subscribe(
-      user => {
+    this.authSubscription = this.authService
+      .getSubjectCurrentUser()
+      .subscribe(user => {
         this.loggedUser = user;
         this.isAdmin = this.authService.userIsAdmin();
         this.isRegular = this.authService.userIsRegular();
@@ -49,8 +48,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
         } else {
           this.driverService.resetGlobalDriver();
         }
-      }
-    );
+      });
 
     if (this.isDriver) {
       this.followDriverChanges();
@@ -58,38 +56,43 @@ export class NavBarComponent implements OnInit, OnDestroy {
   }
 
   followDriverChanges(): void {
-    this.driverSubscription = this.driverService.getGlobalDriver().subscribe(
-      driver => {
+    this.driverSubscription = this.driverService
+      .getGlobalDriver()
+      .subscribe(driver => {
         if (driver) {
           this.driverData = driver;
           this.driverActivityStatus = this.driverData.active;
         }
-      }
-    )
+      });
   }
 
   loadDriver(): void {
-    this.driverService.getDriver(this.loggedUser.id)
+    this.driverService.get(this.loggedUser.id).subscribe((response: Driver) => {
+      this.driverData = response;
+      this.driverActivityStatus = this.driverData.active;
+      this.driverService.setGlobalDriver(response);
+    });
+  }
+
+  changeDriverStatus() {
+    this.driverUpdateSubscription = this.driverService
+      .updateActivityStatus(
+        this.driverService.createDriverUpdateActivityRequest(
+          this.driverData.id,
+          !this.driverActivityStatus
+        )
+      )
       .subscribe(
         (response: Driver) => {
           this.driverData = response;
           this.driverActivityStatus = this.driverData.active;
-          this.driverService.setGlobalDriver(response);
-      });
+        },
+        error => {
+          this.driverActivityStatus = !this.driverActivityStatus;
+          this.toast.error(error.error, 'Changing activity status failed');
+        }
+      );
   }
-
-  changeDriverStatus() {
-    this.driverUpdateSubscription = this.driverService.updateActivityStatus(
-      this.driverService.createDriverUpdateActivityRequest(this.driverData.id, !this.driverActivityStatus)
-    ).subscribe((response: Driver) => {
-      this.driverData = response;
-      this.driverActivityStatus = this.driverData.active;
-      },
-      error => {
-        this.driverActivityStatus = !this.driverActivityStatus;
-        this.toast.error(error.error, 'Changing activity status failed');
-      });
-    }
 
   redirectToEditPage() {
     this.router.navigate(['/edit-profile-data']);
@@ -104,16 +107,17 @@ export class NavBarComponent implements OnInit, OnDestroy {
   }
 
   logOut() {
-    this.logoutSubscription = this.authService
-      .setOfflineStatus()
-      .subscribe(response => {
+    this.logoutSubscription = this.authService.setOfflineStatus().subscribe(
+      response => {
         this.authService.logOut();
         this.driverData = null;
         this.driverService.resetGlobalDriver();
         this.router.navigate(['/login']);
-      }, error => {
+      },
+      error => {
         this.toast.error(error.error, 'Cannot log out!');
-      });
+      }
+    );
   }
 
   ngOnDestroy(): void {
@@ -126,5 +130,4 @@ export class NavBarComponent implements OnInit, OnDestroy {
       this.driverService.resetGlobalDriver();
     }
   }
-
 }

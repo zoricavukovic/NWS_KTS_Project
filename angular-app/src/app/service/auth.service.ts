@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoginRequest } from '../model/user/login-request';
 import { LoginResponse } from '../model/user/login-response';
@@ -72,7 +72,7 @@ export class AuthService {
 
   getLoggedParsedUser(): User {
     const userString = localStorage.getItem('user');
-    if (userString !== null && userString !== undefined){
+    if (userString !== null && userString !== undefined) {
       const user: User = JSON.parse(userString);
 
       return user;
@@ -84,7 +84,6 @@ export class AuthService {
   userIsAdmin(): boolean {
     const user: User = this.getLoggedParsedUser();
     if (user && user.role.name === this.ROLE_ADMIN) {
-
       return true;
     }
 
@@ -94,7 +93,6 @@ export class AuthService {
   userIsRegular(): boolean {
     const user: User = this.getLoggedParsedUser();
     if (user && user.role.name === this.ROLE_REGULAR_USER) {
-
       return true;
     }
 
@@ -104,7 +102,6 @@ export class AuthService {
   userIsDriver(): boolean {
     const user: User = this.getLoggedParsedUser();
     if (user && user.role.name === this.ROLE_DRIVER) {
-
       return true;
     }
 
@@ -119,47 +116,24 @@ export class AuthService {
   getSubjectCurrentUser(): BehaviorSubject<User> {
     let user = localStorage.getItem('user');
     if (user !== null && user !== undefined) {
-        const parsedUser: User = JSON.parse(user);
-        const currentUser: User = new User(
-            parsedUser.id,
-            parsedUser.email,
-            parsedUser.name,
-            parsedUser.surname,
-            parsedUser.phoneNumber,
-            parsedUser.city,
-            parsedUser.role,
-            parsedUser.profilePicture
-          )
-        this.currentUser$.next(currentUser);
+      const parsedUser: User = JSON.parse(user);
+      const currentUser: User = new User(
+        parsedUser.id,
+        parsedUser.email,
+        parsedUser.name,
+        parsedUser.surname,
+        parsedUser.phoneNumber,
+        parsedUser.city,
+        parsedUser.role,
+        parsedUser.profilePicture
+      );
+      this.currentUser$.next(currentUser);
     } else {
-
       this.currentUser$.next(null);
     }
 
     return this.currentUser$;
   }
-
-  // public get getCurrentUser(): User {
-  //   const user = localStorage.getItem('user');
-  //   if (user !== null && user !== undefined) {
-  //     const parsedUser: User = JSON.parse(user);
-  //     this.currentUserSubject$.next(
-  //       new User(
-  //         parsedUser.id,
-  //         parsedUser.email,
-  //         parsedUser.name,
-  //         parsedUser.surname,
-  //         parsedUser.phoneNumber,
-  //         parsedUser.city,
-  //         parsedUser.role,
-  //         parsedUser.profilePicture
-  //       )
-  //     );
-  //   } else {
-  //     this.currentUserSubject$.next(null);
-  //   }
-  //   return this.currentUserSubject$.value;
-  // }
 
   public get getCurrentUserId(): number {
     const user = localStorage.getItem('user');

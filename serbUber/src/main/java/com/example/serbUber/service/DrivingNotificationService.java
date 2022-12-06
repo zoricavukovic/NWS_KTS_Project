@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import static com.example.serbUber.SerbUberApplication.hopper;
 
@@ -119,6 +120,7 @@ public class DrivingNotificationService implements IDrivingNotificationService {
             Driver driver = driverService.getDriverForDriving(drivingNotification);
             passengers.add(drivingNotification.getSender());
             if (driver == null) {
+                System.out.println("nema vozacaaa");
                 DrivingStatusNotificationDTO drivingStatusNotificationDTO = new DrivingStatusNotificationDTO(0L, 0, DrivingStatus.PENDING, "Not found driver", drivingNotification.getId());
                 webSocketService.sendDrivingStatus(drivingStatusNotificationDTO, passengers);
             } else {
@@ -156,7 +158,9 @@ public class DrivingNotificationService implements IDrivingNotificationService {
         GHRequest request = new GHRequest(currentLocationForDriver.getLat(), currentLocationForDriver.getLon(), userLocation.getLat(), userLocation.getLon());
         request.setProfile("car");
         GHResponse routeHopper = hopper.route(request);
-        return routeHopper.getBest().getTime();
+        System.out.println("vreemeee" + TimeUnit.MILLISECONDS.toMinutes(routeHopper.getBest().getTime()));
+        System.out.println((routeHopper.getBest().getTime()/1000)/60);
+        return TimeUnit.MILLISECONDS.toMinutes(routeHopper.getBest().getTime()) + 1;
     }
 
     public boolean isPaidDriving(final Set<RegularUser> passengers, final double price){

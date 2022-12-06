@@ -29,7 +29,7 @@ export class RatingDialogComponent implements OnDestroy {
 
   confirm(): void {
     this.reviewSubscription = this.reviewService
-      .saveReview(
+      .create(
         this.reviewService.createRateReview(
           this.ratingVehicle,
           this.ratingDriver,
@@ -37,7 +37,8 @@ export class RatingDialogComponent implements OnDestroy {
           this.drivingId,
           this.userId
         )
-      ).subscribe(data => {
+      )
+      .subscribe(data => {
         this.dialogRef.close(data);
       });
   }

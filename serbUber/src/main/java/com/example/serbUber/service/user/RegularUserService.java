@@ -64,20 +64,20 @@ public class RegularUserService implements IRegularUserService {
         return regularUserDTOs;
     }
 
-    public RegularUserDTO get(Long id) throws EntityNotFoundException {
+    public RegularUserDTO get(final Long id) throws EntityNotFoundException {
         Optional<RegularUser> optionalRegularUser = regularUserRepository.findById(id);
 
         return optionalRegularUser.map(RegularUserDTO::new)
             .orElseThrow(() ->  new EntityNotFoundException(id, EntityType.USER));
     }
 
-    public RegularUser getRegularById(Long id) throws EntityNotFoundException {
+    public RegularUser getRegularById(final Long id) throws EntityNotFoundException {
 
         return regularUserRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException(id, EntityType.USER));
     }
 
-    public RegularUser getRegularByEmail(String email) throws EntityNotFoundException {
+    public RegularUser getRegularByEmail(final String email) throws EntityNotFoundException {
         return regularUserRepository.getRegularUserByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException(email, EntityType.USER));
     }
@@ -114,37 +114,28 @@ public class RegularUserService implements IRegularUserService {
         }
     }
 
-    public boolean addToFavouriteRoutes(Long userId, Long routeId) throws EntityNotFoundException {
+    public boolean updateFavouriteRoutes(final Long userId, final Long routeId) throws EntityNotFoundException {
         RegularUser user = getRegularById(userId);
         Route route  = routeService.get(routeId);
         List<Route> favouriteRoutes = user.getFavouriteRoutes();
-        favouriteRoutes.add(route);
-        user.setFavouriteRoutes(favouriteRoutes);
-        regularUserRepository.save(user);
-        return true;
-    }
-
-    public boolean removeFromFavouriteRoutes(Long userId, Long routeId) throws EntityNotFoundException {
-        RegularUser user = getRegularById(userId);
-
-        List<Route> favouriteRoutes = user.getFavouriteRoutes();
-        for(Route r : favouriteRoutes){
-            if(r.getId().equals(routeId)){
-                favouriteRoutes.remove(r);
-                break;
-            }
+        if(favouriteRoutes.contains(route)){
+            favouriteRoutes.remove(route);
+        }
+        else{
+            favouriteRoutes.add(route);
         }
         user.setFavouriteRoutes(favouriteRoutes);
         regularUserRepository.save(user);
         return true;
     }
 
-    public boolean isFavouriteRoute(Long routeId, Long userId) {
+
+    public boolean isFavouriteRoute(final Long routeId, final Long userId) {
         RegularUser u = regularUserRepository.getUserWithFavouriteRouteId(routeId, userId);
         return u != null;
     }
 
-    public List<RouteDTO> getFavouriteRoutes(Long id) throws EntityNotFoundException {
+    public List<RouteDTO> getFavouriteRoutes(final Long id) throws EntityNotFoundException {
         Optional<RegularUser> u = regularUserRepository.findById(id);
         if(u.isPresent()){
             return fromRoutes(u.get().getFavouriteRoutes());
@@ -152,7 +143,7 @@ public class RegularUserService implements IRegularUserService {
         throw new EntityNotFoundException(id, EntityType.USER);
     }
 
-    public boolean blockRegular(final Long id, String reason)
+    public boolean blockRegular(final Long id, final String reason)
             throws EntityNotFoundException, EntityUpdateException
     {
         RegularUser regularUser = getRegularById(id);
@@ -168,12 +159,12 @@ public class RegularUserService implements IRegularUserService {
         return true;
     }
 
-    public boolean getIsBlocked(Long id) {
+    public boolean getIsBlocked(final Long id) {
 
         return regularUserRepository.getIsBlocked(id);
     }
 
-    public boolean unblock(Long id)
+    public boolean unblock(final Long id)
             throws EntityNotFoundException, EntityUpdateException {
         RegularUser regularUser = getRegularById(id);
         if (!regularUser.isBlocked()) {

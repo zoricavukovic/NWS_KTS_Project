@@ -6,7 +6,9 @@ import { User } from 'src/app/model/user/user';
 import { Vehicle } from 'src/app/model/vehicle/vehicle';
 import { AuthService } from 'src/app/service/auth.service';
 import { DrivingNotificationService } from 'src/app/service/driving-notification.service';
+import { RegularUserService } from 'src/app/service/regular-user.service';
 import { UserService } from 'src/app/service/user.service';
+import { VehicleTypeInfoService } from 'src/app/service/vehicle-type-info.service';
 import { VehicleService } from 'src/app/service/vehicle.service';
 import { Route } from '../../../model/route/route';
 
@@ -20,6 +22,7 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
 
   vehiclePassengersView = true;
   loadingView = false;
+  acceptedDrivingView = false;
   vehicle: Vehicle;
 
   petFriendly = false;
@@ -45,9 +48,11 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
 
   constructor(
     private userService: UserService,
+    private regularUserService: RegularUserService,
     private authService: AuthService,
     private vehicleService: VehicleService,
     private drivingNotificationService: DrivingNotificationService,
+    private vehicleTypeInfoService: VehicleTypeInfoService,
     private toast: ToastrService
   ) {
     console.log(this.route);
@@ -62,18 +67,18 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
         this.passengers.push(user);
       });
 
-    this.allUsersSubscription = this.userService
-      .getAllRegularUsers()
-      .subscribe(users => {
-        for (const user of users) {
+    this.allUsersSubscription = this.regularUserService
+      .getAll()
+      .subscribe(regularUsersResponse => {
+        for (const user of regularUsersResponse) {
           if (user.email !== this.currentUser.email) {
             this.allRegularUsers.push(user.email);
           }
         }
       });
 
-    this.vehicleTypesSubscription = this.vehicleService
-      .getVehicleTypeInfos()
+    this.vehicleTypesSubscription = this.vehicleTypeInfoService
+      .getAll()
       .subscribe(vehicleTypes => {
         for (const type of vehicleTypes) {
           this.vehicleTypesSeats[type.vehicleType] = type.numOfSeats;
@@ -121,6 +126,7 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
 
   setVehicleTypeAndShowPrice(vehicleType: string) {
     this.vehicleType = vehicleType;
+    console.log(this.vehicleType);
     this.vehicleSubscription = this.vehicleService
       .getVehicleByVehicleType(vehicleType)
       .subscribe(response => {
@@ -147,15 +153,14 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
       babySeat: this.babySeat,
       vehicleType: this.vehicleType,
     };
-
-    this.drivingNotificationSubscription = this.drivingNotificationService
-      .saveDrivingNotification(drivingNotification)
-      .subscribe(response => {
-        console.log('balalalla');
-        console.log(response);
-      });
     this.vehiclePassengersView = false;
     this.loadingView = true;
+    this.drivingNotificationSubscription = this.drivingNotificationService
+      .create(drivingNotification)
+      .subscribe(response => {
+        console.log(response);
+        this.loadingView = false;
+      });
   }
 
   private findPassengerObj(email: string): void {

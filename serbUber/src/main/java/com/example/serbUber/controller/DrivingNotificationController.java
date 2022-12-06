@@ -39,7 +39,7 @@ public class DrivingNotificationController {
         );
     }
 
-    @GetMapping("/accept/{id}")
+    @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ROLE_REGULAR_USER')")
     @ResponseStatus(HttpStatus.OK)
     public DrivingNotificationDTO acceptDriving(@PathVariable Long id) throws EntityNotFoundException {

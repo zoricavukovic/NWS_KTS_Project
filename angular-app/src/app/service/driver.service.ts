@@ -5,48 +5,50 @@ import { Driver } from '../model/user/driver';
 import { DriverActivityStatusRequest } from '../model/user/user-profile-update';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
+import { GenericService } from './generic.service';
+import { HeadersService } from './headers.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class DriverService {
-
+export class DriverService extends GenericService<Driver> {
   public currentDriver$: BehaviorSubject<Driver>;
 
   constructor(
-    private http: HttpClient, 
+    private http: HttpClient,
+    private headersService: HeadersService,
     private configService: ConfigService,
     private toast: ToastrService
-    ) {
-      this.currentDriver$ = new BehaviorSubject<Driver>(null);
-    }
-
-  createDriverUpdateActivityRequest(id: number, active: boolean): DriverActivityStatusRequest {
-
-    return {id: id, active: active};
+  ) {
+    super(http, `${configService.api_url}/drivers`, headersService);
+    this.currentDriver$ = new BehaviorSubject<Driver>(null);
   }
 
-  getAllDrivers() {
-    return this.http.get<Driver[]>(this.configService.all_drivers_url, {
-      headers: this.configService.getHeader(),
-    });
-  }
-
-  getDriver(driverId: number) {
-    return this.http.get<Driver>(this.configService.driver_info_url(driverId), {
-      headers: this.configService.getHeader(),
-    });
+  createDriverUpdateActivityRequest(
+    id: number,
+    active: boolean
+  ): DriverActivityStatusRequest {
+    return { id: id, active: active };
   }
 
   updateActivityStatus(data: DriverActivityStatusRequest): Observable<Driver> {
-    return this.http.put<Driver>(this.configService.driver_update_activity, data, {
-      headers: this.configService.getHeader(),
-    });
+    return this.http.put<Driver>(
+      this.configService.driver_update_activity,
+      data,
+      {
+        headers: this.configService.getHeader(),
+      }
+    );
   }
 
-  showActivityStatusResetNotification(notification: DriverActivityStatusRequest): void {
-    this.toast.info("Your activity status is changed to not active.", 'Working overrtime!');
-    let driver: Driver = this.currentDriver$.value;
+  showActivityStatusResetNotification(
+    notification: DriverActivityStatusRequest
+  ): void {
+    this.toast.info(
+      'Your activity status is changed to not active.',
+      'Working overrtime!'
+    );
+    const driver: Driver = this.currentDriver$.value;
     driver.active = notification.active;
     this.currentDriver$.next(driver);
   }
@@ -62,5 +64,4 @@ export class DriverService {
   resetGlobalDriver(): void {
     this.currentDriver$.next(null);
   }
-
 }

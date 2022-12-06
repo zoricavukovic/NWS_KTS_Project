@@ -25,7 +25,7 @@ public interface DrivingRepository extends JpaRepository<Driving, Long> {
     Optional<Driving> getDrivingById(Long id);
 
     @Query(value = "select distinct d from Driving d left join fetch d.route r left join fetch r.locations dest left join fetch d.users u " +
-        "where d.driverId = ?1 and ((d.drivingStatus <> 2 and d.started > current_timestamp) or (d.active = true and d.started < current_timestamp)) order by d.started asc")
+        "where d.driverId = ?1 and ((d.drivingStatus = 2 and d.started > current_timestamp) or (d.active = true and d.started < current_timestamp)) order by d.started asc")
     List<Driving> getAllNowAndFutureDrivings(Long id);
 
     @Query(value="select d from Driving d left join fetch d.route r left join fetch r.locations dest  left join fetch d.users u where u.id=?1")
