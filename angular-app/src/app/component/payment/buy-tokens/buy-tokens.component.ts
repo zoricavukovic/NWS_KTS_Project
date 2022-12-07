@@ -51,12 +51,17 @@ export class BuyTokensComponent implements OnInit, OnDestroy {
             );
           }
       );
+    } else {
+      this.toast.error(
+        `Number of tokens must be in range 1-${this.tokenBank.payingInfo.maxNumOfTokensPerTransaction}`,
+        'Payment creation failed!'
+      );
     }
   }
 
   checkNumGreaterThanAllowed(): boolean {
 
-    return Number(this.tokenForm.get('tokenFormControl').value) > this.tokenBank.payingInfo.maxNumOfTokensPerTransaction;
+    return +this.tokenForm.get('tokenFormControl').value > this.tokenBank.payingInfo.maxNumOfTokensPerTransaction;
   }
 
   calculateValue(): string {
@@ -73,6 +78,8 @@ export class BuyTokensComponent implements OnInit, OnDestroy {
     if (this.paymentSubscription) {
       this.paymentSubscription.unsubscribe();
     }
+
+    this.tokenForm.reset();
   }
 
 }

@@ -3,7 +3,7 @@
     margin-top: 0.5rem;
     border: 4px solid var(--gray-transparent);
     min-height: 15rem;
-    max-height: 20rem;
+    max-height: 15rem;
     width: 24rem;
     overflow-y: auto;
 }

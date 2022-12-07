@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { TokenBank } from 'src/app/model/payment/token-bank';
@@ -9,7 +9,7 @@ import { PaymentService } from 'src/app/service/payment.service';
   templateUrl: './financial-card.component.html',
   styleUrls: ['./financial-card.component.css']
 })
-export class FinancialCardComponent implements OnInit {
+export class FinancialCardComponent implements OnInit, OnDestroy {
 
   tokenBank: TokenBank;
   tokenBankSubscription: Subscription;
@@ -34,6 +34,12 @@ export class FinancialCardComponent implements OnInit {
           console.log(error)
         }
       );
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.tokenBankSubscription) {
+      this.tokenBankSubscription.unsubscribe();
     }
   }
 }

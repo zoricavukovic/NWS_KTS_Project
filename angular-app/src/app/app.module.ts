@@ -75,7 +75,6 @@ import { ReviewsHistoryComponent } from './component/review/reviews-history/revi
 import { ReportsHistoryComponent } from './component/report/reports-history/reports-history.component';
 import { ConfirmBlockingDialogComponent } from './component/user/confirm-blocking-dialog/confirm-blocking-dialog.component';
 import {SplitButtonModule} from "primeng/splitbutton";
-import { PaymentSuccessComponent } from './component/payment/payment-success/payment-success.component';
 import { FinancialCardComponent } from './component/payment/financial-card/financial-card.component';
 import {KnobModule} from 'primeng/knob';
 import { BuyTokensComponent } from './component/payment/buy-tokens/buy-tokens.component';
@@ -83,6 +82,8 @@ import { TransactionsHistoryComponent } from './component/payment/transactions-h
 import { PaymentStatisticsComponent } from './component/payment/payment-statistics/payment-statistics.component';
 import { ProcessingPaymentComponent } from './component/payment/processing-payment/processing-payment.component';
 import {ProgressSpinnerModule} from 'primeng/progressspinner';
+import { ChangePayingInfoComponent } from './component/payment/change-paying-info/change-paying-info.component';
+import { PaymentStatusComponent } from './component/payment/payment-status/payment-status.component';
 
 @NgModule({
   declarations: [
@@ -128,12 +129,13 @@ import {ProgressSpinnerModule} from 'primeng/progressspinner';
     ReviewsHistoryComponent,
     ReportsHistoryComponent,
     ConfirmBlockingDialogComponent,
-    PaymentSuccessComponent,
     FinancialCardComponent,
     BuyTokensComponent,
     TransactionsHistoryComponent,
     PaymentStatisticsComponent,
     ProcessingPaymentComponent,
+    ChangePayingInfoComponent,
+    PaymentStatusComponent,
   ],
     imports: [
         BrowserModule,

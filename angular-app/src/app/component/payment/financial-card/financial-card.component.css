@@ -4,6 +4,7 @@
     padding: 3% 5%;
     max-width: 65rem;
     margin-top: 1rem;
+    background-color: white;
 }
 
 h1 {
@@ -14,7 +15,7 @@ h1 {
 .credit-card {
     height: 10rem;
     width: 20rem;
-    background-color: rgb(243, 223, 199);
+    background-color: #f1e8d5;
     border-radius: 1rem;
     margin-left: 2rem;
 }
@@ -39,19 +40,23 @@ div.credit-card > p {
 
 .transparent-wallet {
     background-color: rgba(76, 107, 175, 0.2);
+    backdrop-filter: blur(0.6px);
     width: 24rem;
     height: 6rem;
     border-radius: 1rem;
     margin-top: -4.2rem;
+    z-index: 1;
 }
 
 .non-transparent-wallet {
-    background-color: rgb(214, 168, 113);
+    background-color: var(--brown);
+    /* background-color: #e9f3fb; */
     width: 24rem;
-    height: 7rem;
+    height: 8rem;
     border-bottom-left-radius: 1rem;
     border-bottom-right-radius: 1rem;
-    margin-top: -1.5rem;
+    margin-top: -2.2rem;
+    z-index: 3;
 }
 
 .non-transparent-wallet > h1 {

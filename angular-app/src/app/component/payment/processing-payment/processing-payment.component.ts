@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { CreatePayment } from 'src/app/model/payment/payment';
+import { ToastrService } from 'ngx-toastr';
 import { PaymentService } from 'src/app/service/payment.service';
 
 @Component({
@@ -15,20 +15,24 @@ export class ProcessingPaymentComponent implements OnInit, OnDestroy {
   paymentId: string = '';
   tokenBankId: number;
   numOfTokens: number;
+  
+  showLoadingScreen: boolean = true;
 
   paymentSubscription: Subscription;
   pickedNumOfTokensSubscription: Subscription; 
 
   constructor(
-    private route: ActivatedRoute,
-    private paymentService: PaymentService
+    private activatedRoute: ActivatedRoute,
+    private paymentService: PaymentService,
+    private toast: ToastrService,
+    private route: Router
   ) {}
 
   ngOnInit(): void {
-    this.numOfTokens = +this.route.snapshot.paramMap.get('numOfTokens');
-    this.tokenBankId = +this.route.snapshot.paramMap.get('tokenBankId');
+    this.numOfTokens = +this.activatedRoute.snapshot.paramMap.get('numOfTokens');
+    this.tokenBankId = +this.activatedRoute.snapshot.paramMap.get('tokenBankId');
 
-    this.route.queryParams.subscribe(params => {
+    this.activatedRoute.queryParams.subscribe(params => {
       this.payerId = params['PayerID'];
       this.paymentId = params['paymentId'];
     });
@@ -43,10 +47,20 @@ export class ProcessingPaymentComponent implements OnInit, OnDestroy {
       this.paymentService.completePaymentRequest(this.tokenBankId, this.numOfTokens, this.payerId, this.paymentId))
       .subscribe(
         response => {
-          console.log(response);
+          this.showLoadingScreen = false;
+          this.toast.success(
+            'Transaction is successfully completed.',
+            'Payment completed!!'
+            );
+          this.route.navigate(['payment/status/1']);
         },
         error => {
-          console.log(error);
+          this.showLoadingScreen = false;
+          this.toast.error(
+            error.error,
+            'Payment completion failed!'
+            );
+          this.route.navigate(['payment/status/-1']);
         }
       );
   }

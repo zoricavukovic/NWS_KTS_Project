@@ -149,7 +149,7 @@ public class PayPalService implements IPayPalService {
             throws PayPalPaymentException
     {
         if (wantedNumOfTokens > maxNumOfTokens) {
-            throw new PayPalPaymentException(String.format("You cannot but more than %s per tokens transaction.",
+            throw new PayPalPaymentException(String.format("You cannot buy more than %s tokens per transaction.",
                     maxNumOfTokens));
         }
     }
