@@ -16,9 +16,8 @@ import { RejectDrivingComponent } from '../../driving/reject-driving/reject-driv
 export class DriverHomePageContainerComponent implements OnInit, OnDestroy {
   @Input() driverId: number;
   drivingSubscription: Subscription;
-  nowAndFutureDrivings: Driving[] = [];
-  maxNumberOfShowedUsers = 3;
-  reasonForRejectingDriving = '';
+  nowAndFutureDrivings: Driving[];
+  reasonForRejectingDriving: string;
 
   constructor(
     public configService: ConfigService,
@@ -26,7 +25,10 @@ export class DriverHomePageContainerComponent implements OnInit, OnDestroy {
     private router: Router,
     private dialog: MatDialog,
     private toast: ToastrService
-  ) {}
+  ) {
+    this.nowAndFutureDrivings = [];
+    this.reasonForRejectingDriving = '';
+  }
 
   ngOnInit(): void {
     this.drivingSubscription = this.drivingService
@@ -43,48 +45,17 @@ export class DriverHomePageContainerComponent implements OnInit, OnDestroy {
     }
   }
 
-  getDrivingStartLocation(driving: Driving) {
-    return `${driving.route.locations[0].location.street}, ${driving.route.locations[0].location.number}`;
-  }
-
-  getDrivingDestination(driving: Driving) {
-    return `${
-      driving.route.locations[driving.route.locations.length - 1].location
-        .street
-    }, ${
-      driving.route.locations[driving.route.locations.length - 1].location
-        .number
-    }`;
-  }
-
-  endDrivingDate(startDate, duration) {
-    const start = new Date(Date.parse(startDate));
-
-    return new Date(start.getTime() + duration * 60000);
-  }
-
-  showOnMapDriving(driving: Driving) {}
-
-  finishDriving(drivingId: number, drivingIndex: number): void {
-    this.drivingService.updatePerPath(drivingId).subscribe(
-      res => this.updateDrivingStatus(drivingIndex),
+  finishDriving(drivingIndex: number): void {
+    this.drivingSubscription = this.drivingService.finishDriving(this.nowAndFutureDrivings.at(drivingIndex).id).subscribe(
+      res => {
+        this.removeDriving(drivingIndex);
+        this.toast.success("Successfully finished driving");
+      },
       error => this.toast.error(error.error, 'Finishing driving failed')
     );
   }
 
-  getNumOfNotShowedUsers(driving: Driving): string {
-    return `+${driving.users.length - this.maxNumberOfShowedUsers}`;
-  }
-
-  showDrivingDetails(drivingId: number): void {
-    this.router.navigate([`/map-view/${drivingId}`]);
-  }
-
-  goToUserProfile(id: number): void {
-    this.router.navigate([`/user-profile/${id}`]);
-  }
-
-  openRejectDrivingDialog(drivingId: number | undefined, index: number) {
+  openRejectDrivingDialog(drivingIndex: number) {
     const dialogConfig = new MatDialogConfig();
 
     dialogConfig.data = {
@@ -94,39 +65,38 @@ export class DriverHomePageContainerComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(reason => {
       if (this.reasonEntered(reason)) {
-        this.rejectDriving(drivingId, index, reason);
+        this.rejectDriving(this.nowAndFutureDrivings.at(drivingIndex).id, drivingIndex, reason);
       }
     });
   }
 
-  startDriving(drivingId: number | undefined, index: number) {
-    this.drivingService.updatePerPath(drivingId).subscribe(
+  startDriving(drivingIndex: number) {
+    this.drivingSubscription = this.drivingService.startDriving(this.nowAndFutureDrivings.at(drivingIndex).id).subscribe(
       response => {
-        this.nowAndFutureDrivings.at(index).drivingStatus = 'ACTIVE';
-        this.nowAndFutureDrivings.at(index).active = true;
+        this.nowAndFutureDrivings.at(drivingIndex).drivingStatus = response.drivingStatus;
+        this.nowAndFutureDrivings.at(drivingIndex).active = response.active;
+        this.nowAndFutureDrivings.at(drivingIndex).started = response.started;
+        this.toast.success("Follow your current drive", "Successfully start driving");
       },
       error => this.toast.error(error.error, 'Starting driving failed')
     );
   }
 
   private reasonEntered(reason: string) {
-    return reason !== '' || reason !== undefined;
+    return reason !== '' && reason !== undefined;
   }
 
   private rejectDriving(drivingId: number, index: number, reason: string) {
-    this.drivingService.rejectDriving(drivingId, reason).subscribe(
+    this.drivingSubscription = this.drivingService.rejectDriving(drivingId, reason).subscribe(
       response => {
-        this.removeRejectedDriving(index);
+        this.removeDriving(index);
+        this.toast.success("Successfully reject driving");
       },
       error => this.toast.error(error.error, 'Reject driving failed')
     );
   }
 
-  private removeRejectedDriving(index: number): void {
-    this.nowAndFutureDrivings.splice(index, 1);
-  }
-
-  private updateDrivingStatus(drivingIndex: number) {
+  private removeDriving(drivingIndex: number): void {
     this.nowAndFutureDrivings.splice(drivingIndex, 1);
   }
 }

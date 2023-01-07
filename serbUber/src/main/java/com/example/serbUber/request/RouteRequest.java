@@ -27,14 +27,14 @@ public class RouteRequest {
     private double distance;
 
     @NotEmpty(message = "Route path must be selected.")
-    private SortedSet<Integer> routePathIndex;
+    private List<Integer> routePathIndex;
 
     public RouteRequest(
 
             final double timeInMin,
             final double distance,
             final List<DrivingLocationIndexRequest> locations,
-            final SortedSet<Integer> routePathIndex
+            final List<Integer> routePathIndex
     ) {
         this.timeInMin = timeInMin;
         this.distance = distance;
@@ -66,11 +66,11 @@ public class RouteRequest {
         this.distance = distance;
     }
 
-    public SortedSet<Integer> getRoutePathIndex() {
+    public List<Integer> getRoutePathIndex() {
         return routePathIndex;
     }
 
-    public void setRoutePathIndex(SortedSet<Integer> routePathIndex) {
+    public void setRoutePathIndex(List<Integer> routePathIndex) {
         this.routePathIndex = routePathIndex;
     }
 }

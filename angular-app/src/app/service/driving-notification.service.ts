@@ -5,7 +5,8 @@ import { ToastrService } from 'ngx-toastr';
 import { DrivingNotification } from '../model/notification/driving-notification';
 import { DrivingStatusNotification } from '../model/notification/driving-status-notification';
 import { GenericService } from './generic.service';
-import { HeadersService } from './headers.service';
+import {Router} from "@angular/router";
+import {Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root',
@@ -16,14 +17,10 @@ export class DrivingNotificationService extends GenericService<DrivingNotificati
   constructor(
     private http: HttpClient,
     private configService: ConfigService,
-    private headersService: HeadersService,
-    private toast: ToastrService
+    private toast: ToastrService,
+    private _router: Router
   ) {
-    super(
-      http,
-      `${configService.api_url}/driving-notifications`,
-      headersService
-    );
+    super(http, `${configService.api_url}/driving-notifications`);
   }
 
   showNotification(drivingNotificationResponse: DrivingNotification) {
@@ -33,9 +30,7 @@ export class DrivingNotificationService extends GenericService<DrivingNotificati
       )
       .onTap.subscribe(action => {
         console.log('blaaa');
-        this.updatePerPath(drivingNotificationResponse.id).subscribe(bla => {
-          console.log(bla);
-        });
+        this._router.navigate(["driving", drivingNotificationResponse.id]);
       });
   }
 
@@ -56,5 +51,10 @@ export class DrivingNotificationService extends GenericService<DrivingNotificati
   ${drivingStatusNotification.reason}`
       );
     }
+  }
+
+  updateRideStatus(drivingId: number, accept: boolean, email: string): Observable<DrivingNotification> {
+
+    return this._http.put<DrivingNotification>(`${this.configService.api_url}/driving-notifications/update-status/${drivingId}/${accept}/${email}`, null);
   }
 }

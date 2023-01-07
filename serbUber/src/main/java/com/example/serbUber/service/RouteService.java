@@ -1,9 +1,11 @@
 package com.example.serbUber.service;
 
+import com.example.serbUber.dto.LngLatLiteralDTO;
 import com.example.serbUber.dto.PossibleRouteDTO;
 import com.example.serbUber.dto.PossibleRoutesViaPointsDTO;
 import com.example.serbUber.dto.RouteDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
+import com.example.serbUber.exception.EntityType;
 import com.example.serbUber.model.DrivingLocationIndex;
 import com.example.serbUber.model.Location;
 import com.example.serbUber.model.Route;
@@ -63,15 +65,13 @@ public class RouteService implements IRouteService {
     public RouteDTO createDTO(
             final SortedSet<DrivingLocationIndex> locations,
             final double distance,
-            final double time,
-            final SortedSet<Integer> routePathIndex
+            final double time
     ) {
 
         Route route = routeRepository.save(new Route(
                 locations,
                 distance,
-                time,
-                routePathIndex
+                time
         ));
 
         return new RouteDTO(route);
@@ -80,15 +80,13 @@ public class RouteService implements IRouteService {
     public Route create(
             final SortedSet<DrivingLocationIndex> locations,
             final double distance,
-            final double time,
-            final SortedSet<Integer> routePathIndex
+            final double time
     ) {
 
         return routeRepository.save(new Route(
                 locations,
                 distance,
-                time,
-                routePathIndex
+                time
         ));
     }
 
@@ -103,8 +101,37 @@ public class RouteService implements IRouteService {
         return possibleRoutesViaPointsDTOs;
     }
 
-    public Route createRoute(List<DrivingLocationIndexRequest> locations, double time, double distance, SortedSet<Integer> routePathIndex){
-        SortedSet<DrivingLocationIndex> drivingLocations = new TreeSet<>(); //???
+    public List<double[]> getRoutePath(final Long id) throws EntityNotFoundException {
+        Route route = this.routeRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(id, EntityType.ROUTE));
+        List<DrivingLocationIndex> locations = route.getLocations().stream().toList();
+
+        List<double[]> points = new LinkedList<>();
+
+        IntStream.range(START_LIST_INDEX, locations.size()-1)
+            .forEach(index ->
+            {
+                DrivingLocationIndex firstLocation = locations.get(index);
+                DrivingLocationIndex secondLocation = locations.get(index + 1);
+                PossibleRouteDTO path = getPossibleRoutesDTO(
+                    firstLocation.getLocation().getLat(),
+                    firstLocation.getLocation().getLon(),
+                    secondLocation.getLocation().getLat(),
+                    secondLocation.getLocation().getLon()
+                ).get(firstLocation.getRouteIndex());
+                points.addAll(path.getPointList());
+            });
+
+        return points;
+    }
+
+    public Route createRoute(
+        final List<DrivingLocationIndexRequest> locations,
+        final double time,
+        final double distance,
+        final List<Integer> routePathIndex
+    ){
+        SortedSet<DrivingLocationIndex> drivingLocations = new TreeSet<>();
         locations.forEach(locationIndex -> {
             Location location = locationService.create( locationIndex.getLocation().getCity(),
                     locationIndex.getLocation().getStreet(),
@@ -113,13 +140,21 @@ public class RouteService implements IRouteService {
                     locationIndex.getLocation().getLon(),
                     locationIndex.getLocation().getLat()
             );
-            DrivingLocationIndex drivingLocationIndex = drivingLocationIndexService.create(location, locationIndex.getIndex());
+            DrivingLocationIndex drivingLocationIndex = drivingLocationIndexService.create(
+                location,
+                locationIndex.getIndex(),
+                isDestination(locations.indexOf(locationIndex), locations.size()) ?
+                    -1 : routePathIndex.get(locations.indexOf(locationIndex))
+            );
             drivingLocations.add(drivingLocationIndex);
         });
 
-        return create(drivingLocations, distance, time, routePathIndex);
+        return create(drivingLocations, distance, time);
     }
+    private boolean isDestination(int indexOfLocation, int numOfLocations){
 
+        return indexOfLocation == numOfLocations - 1;
+    }
     private void addPossibleRoutesViaPoints(
         List<LongLatRequest> longLatRequestList,
         List<PossibleRoutesViaPointsDTO> possibleRoutesViaPointsDTOs,
@@ -127,16 +162,28 @@ public class RouteService implements IRouteService {
     ) {
 
         possibleRoutesViaPointsDTOs.add(
-            new PossibleRoutesViaPointsDTO(getPossibleRoutesDTO(longLatRequestList.get(index),
-                longLatRequestList.get(index + 1))
+            new PossibleRoutesViaPointsDTO(
+                getPossibleRoutesDTO(longLatRequestList.get(index).getLat(), longLatRequestList.get(index).getLon(),
+                longLatRequestList.get(index + 1).getLat(), longLatRequestList.get(index + 1).getLon())
             )
         );
     }
 
-    private List<PossibleRouteDTO> getPossibleRoutesDTO(LongLatRequest firstPoint, LongLatRequest secondPoint) {
+    private List<PossibleRouteDTO> getPossibleRoutesDTO(
+        final double firstPointLat,
+        final double firstPointLng,
+        final double secondPointLat,
+        final double secondPointLng
+    ) {
         List<PossibleRouteDTO> possibleRouteDTOs = new LinkedList<>();
 
-        List<ResponsePath> responsePaths = routing(hopper, firstPoint, secondPoint);
+        List<ResponsePath> responsePaths = routing(
+            hopper,
+            firstPointLat,
+            firstPointLng,
+            secondPointLat,
+            secondPointLng
+        );
 
         responsePaths.forEach( responsePath -> possibleRouteDTOs.add(
             new PossibleRouteDTO(responsePath.getDistance(), responsePath.getTime(), getPointsDTO(responsePath))

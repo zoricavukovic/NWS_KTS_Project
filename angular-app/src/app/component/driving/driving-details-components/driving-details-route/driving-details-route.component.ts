@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { DrivingLocation } from 'src/app/model/route/driving-location';
+import { DrivingLocation } from "../../../../model/route/driving-location";
 
 @Component({
   selector: 'app-driving-details-route',

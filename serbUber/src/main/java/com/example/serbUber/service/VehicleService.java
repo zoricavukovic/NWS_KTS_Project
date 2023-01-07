@@ -12,6 +12,7 @@ import com.example.serbUber.repository.VehicleRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import static com.example.serbUber.dto.VehicleCurrentLocationDTO.fromVehiclesToVehicleCurrentLocationDTO;
@@ -24,15 +25,18 @@ public class VehicleService implements IVehicleService {
     private final VehicleRepository vehicleRepository;
     private final VehicleTypeInfoService vehicleTypeInfoService;
     private final WebSocketService webSocketService;
+    private final RouteService routeService;
 
     public VehicleService(
             final VehicleRepository vehicleRepository,
             final VehicleTypeInfoService vehicleTypeInfoService,
-            final WebSocketService webSocketService
+            final WebSocketService webSocketService,
+            final RouteService routeService
     ) {
         this.vehicleRepository = vehicleRepository;
         this.vehicleTypeInfoService = vehicleTypeInfoService;
         this.webSocketService = webSocketService;
+        this.routeService = routeService;
     }
 
     public Vehicle create(
@@ -40,14 +44,13 @@ public class VehicleService implements IVehicleService {
             final boolean babySeat,
             final VehicleType vehicleType
     ) throws EntityNotFoundException {
-        Vehicle vehicle = vehicleRepository.save(new Vehicle(
+
+        return vehicleRepository.save(new Vehicle(
                 petFriendly,
                 babySeat,
                 vehicleTypeInfoService.get(vehicleType),
                 Constants.STARTING_RATE
         ));
-
-        return vehicle;
     }
 
     public List<VehicleDTO> getAll() {
@@ -78,27 +81,37 @@ public class VehicleService implements IVehicleService {
         vehicleRepository.deleteById(id);
     }
 
-    public List<VehicleCurrentLocationDTO> getAllVehiclesForActiveDriver() {
+    public List<VehicleCurrentLocationDTO> getAllVehiclesForActiveDriver() throws EntityNotFoundException {
 
         List<Vehicle> vehicles = vehicleRepository.getAllVehiclesForActiveDriver();
 
-        return fromVehiclesToVehicleCurrentLocationDTO(vehicles);
+        List<List<double[]>> listOfVehiclesRoutes = new LinkedList<>();
+        for (Vehicle vehicle : vehicles) {
+            List<double[]> coordinatesList = routeService.getRoutePath(vehicle.getActiveRoute().getId());
+            listOfVehiclesRoutes.add(coordinatesList);
+        }
+
+        return fromVehiclesToVehicleCurrentLocationDTO(vehicles, listOfVehiclesRoutes);
     }
 
-    public List<VehicleCurrentLocationDTO> updateCurrentVehiclesLocation() {
+    public List<VehicleCurrentLocationDTO> updateCurrentVehiclesLocation() throws EntityNotFoundException {
         List<Vehicle> vehicles = vehicleRepository.getAllVehiclesForActiveDriver();
-        vehicles.forEach(this::saveCurrentVehicleLocation);
-//
-//        List<VehicleDTO> vehicleDTOs = fromVehiclesWithAdditionalFields(vehicles);
-        List<VehicleCurrentLocationDTO> vehicleCurrentLocationDTOs = fromVehiclesToVehicleCurrentLocationDTO(vehicles);
+        List<List<double[]>> listOfVehiclesRoutes = new LinkedList<>();
+        for (Vehicle vehicle : vehicles) {
+            List<double[]> coordinatesList = routeService.getRoutePath(vehicle.getActiveRoute().getId());
+            listOfVehiclesRoutes.add(coordinatesList);
+            saveCurrentVehicleLocation(vehicle, coordinatesList);
+        }
+        List<VehicleCurrentLocationDTO> vehicleCurrentLocationDTOs = fromVehiclesToVehicleCurrentLocationDTO(vehicles, listOfVehiclesRoutes);
         webSocketService.sendVehicleCurrentLocation(vehicleCurrentLocationDTOs);
 
         return vehicleCurrentLocationDTOs;
     }
 
-    private void saveCurrentVehicleLocation(Vehicle vehicle) {
+    private void saveCurrentVehicleLocation(Vehicle vehicle, List<double[]> vehicleRoutePath) throws EntityNotFoundException {
         int currentLocationIndex = vehicle.getCurrentLocationIndex();
-        int nextLocationIndex = (vehicle.getActiveRoute().getLocations().size() - 1 == currentLocationIndex)?
+
+        int nextLocationIndex = (vehicleRoutePath.size() - 1 == currentLocationIndex)?
             currentLocationIndex :
             currentLocationIndex + 1;
         vehicle.setCurrentLocationIndex(nextLocationIndex);

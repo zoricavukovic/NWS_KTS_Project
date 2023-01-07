@@ -1,4 +1,4 @@
-<div class="button-container">
+<div *ngIf="!canAcceptOrDeclineRide()" class="button-container">
   <button mat-raised-button>Request now</button>
   <button mat-raised-button>Request later</button>
   <button mat-icon-button color="warn" (click)="setFavouriteRouteEmitter()">
@@ -17,4 +17,8 @@
       >favorite</mat-icon
     >
   </button>
+</div>
+<div *ngIf="canAcceptOrDeclineRide()" class="button-container">
+  <button mat-raised-button color="primary" style="color:var(--deep-blue)" (click)="declineRide()">Decline</button>
+  <button mat-raised-button (click)="acceptRide()">Accept</button>
 </div>

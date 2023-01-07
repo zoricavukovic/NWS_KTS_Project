@@ -1,8 +1,12 @@
 package com.example.serbUber.model;
 
+import com.example.serbUber.dto.LngLatLiteralDTO;
 import com.example.serbUber.util.Constants;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 @Entity
 @Table(name="vehicles")
@@ -87,18 +91,11 @@ public class Vehicle {
         return this.activeRoute != null;
     }
 
-    public Location getLocationForIndexInRoute(){
-        int index = 0;
+    public Location getLocationForIndexInRoute(double[] lngLat){
         if (this.activeRoute != null) {
-            for (DrivingLocationIndex location : this.activeRoute.getLocations()) {
-                if (this.currentLocationIndex == index) {
 
-                    return location.getLocation();
-                }
-                index++;
-            }
+            return new Location(lngLat[0], lngLat[1]);
         }
-
         return null;
     }
 

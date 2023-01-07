@@ -2,6 +2,9 @@ package com.example.serbUber.service.interfaces;
 
 import com.example.serbUber.dto.DrivingDTO;
 import com.example.serbUber.dto.DrivingPageDTO;
+import com.example.serbUber.dto.SimpleDrivingInfoDTO;
+import com.example.serbUber.exception.DriverAlreadyHasStartedDrivingException;
+import com.example.serbUber.exception.DrivingShouldNotStartYetException;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.model.Driving;
 import com.example.serbUber.model.DrivingStatus;
@@ -42,9 +45,11 @@ public interface IDrivingService {
 
     DrivingDTO rejectDriving(final Long id, String reason) throws EntityNotFoundException;
 
-    DrivingDTO startDriving(final Long id) throws EntityNotFoundException;
+    DrivingDTO startDriving(final Long id) throws EntityNotFoundException, DriverAlreadyHasStartedDrivingException, DrivingShouldNotStartYetException;
 
     DrivingDTO paidDriving(final Long id) throws EntityNotFoundException;
 
-    DrivingDTO removeDriver(Long id) throws EntityNotFoundException;
+    DrivingDTO removeDriver(final Long id) throws EntityNotFoundException;
+
+    SimpleDrivingInfoDTO checkUserHasActiveDriving(final Long userId);
 }

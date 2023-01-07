@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
@@ -83,6 +83,13 @@ import { AcceptingDrivingViewComponent } from './component/home/accepting-drivin
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { PaymentSuccessComponent } from './component/payment/payment-success/payment-success.component';
 import { GoogleMapsModule } from '@angular/google-maps';
+import { HomePagePassengerComponent } from './component/home/home-page-pessanger/home-page-passenger.component';
+import { RoutesOptionComponent } from './component/home/routes-option/routes-option.component';
+import { SimpleDrivingDetailContainerComponent } from './component/home/simple-driving-detail-container/simple-driving-detail-container.component';
+import {CustomInterceptor} from "./interceptor/custom.interceptor";
+import { ActiveDriveContainerComponent } from './component/home/active-drive-container/active-drive-container.component';
+import { WaitingForAcceptRideContainerComponent } from './component/home/waiting-for-accept-ride-container/waiting-for-accept-ride-container.component';
+import { NotificationsComponent } from './component/notifications/notifications.component';
 
 @NgModule({
   declarations: [
@@ -134,6 +141,12 @@ import { GoogleMapsModule } from '@angular/google-maps';
     DrivingDetailsPassengersComponent,
     AcceptingDrivingViewComponent,
     PaymentSuccessComponent,
+    HomePagePassengerComponent,
+    RoutesOptionComponent,
+    SimpleDrivingDetailContainerComponent,
+    ActiveDriveContainerComponent,
+    WaitingForAcceptRideContainerComponent,
+    NotificationsComponent
   ],
   imports: [
     BrowserModule,
@@ -172,6 +185,11 @@ import { GoogleMapsModule } from '@angular/google-maps';
   ],
   entryComponents: [EditProfileComponent],
   providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: CustomInterceptor,
+      multi: true
+    },
     {
       provide: 'SocialAuthServiceConfig',
       useValue: {

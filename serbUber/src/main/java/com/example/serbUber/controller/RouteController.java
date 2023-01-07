@@ -1,8 +1,10 @@
 package com.example.serbUber.controller;
 
+import com.example.serbUber.dto.LngLatLiteralDTO;
 import com.example.serbUber.dto.PossibleRouteDTO;
 import com.example.serbUber.dto.PossibleRoutesViaPointsDTO;
 import com.example.serbUber.dto.RouteDTO;
+import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.request.LocationsForRoutesRequest;
 import com.example.serbUber.request.LongLatRequest;
 import com.example.serbUber.request.RouteRequest;
@@ -15,7 +17,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
+
+import static com.example.serbUber.exception.ErrorMessagesConstants.MISSING_ID;
 
 @RestController
 @RequestMapping("/routes")
@@ -33,16 +38,11 @@ public class RouteController {
         return this.routeService.getAll();
     }
 
-    @PostMapping()
-    @ResponseStatus(HttpStatus.CREATED)
-    public RouteDTO create(@Valid @RequestBody RouteRequest routeRequest) {
-        /* TODO postojalo od ranije, a izmenjeno da se ne dobija location vec locationRequest
-        return this.routeService.create(
-                routeRequest.getStartPoint(),
-                routeRequest.getDestinations(),
-                routeRequest.getKilometers()
-        );*/
-        return null;
+    @GetMapping("/path/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<double[]> getRoutePath(@Valid @NotNull(message = MISSING_ID) @PathVariable Long id) throws EntityNotFoundException {
+
+        return this.routeService.getRoutePath(id);
     }
 
     @PostMapping(path = "/possible")

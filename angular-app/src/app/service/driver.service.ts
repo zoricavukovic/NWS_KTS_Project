@@ -6,7 +6,6 @@ import { DriverActivityStatusRequest } from '../model/user/user-profile-update';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { GenericService } from './generic.service';
-import { HeadersService } from './headers.service';
 
 @Injectable({
   providedIn: 'root',
@@ -16,11 +15,10 @@ export class DriverService extends GenericService<Driver> {
 
   constructor(
     private http: HttpClient,
-    private headersService: HeadersService,
     private configService: ConfigService,
     private toast: ToastrService
   ) {
-    super(http, `${configService.api_url}/drivers`, headersService);
+    super(http, `${configService.api_url}/drivers`);
     this.currentDriver$ = new BehaviorSubject<Driver>(null);
   }
 
@@ -34,10 +32,7 @@ export class DriverService extends GenericService<Driver> {
   updateActivityStatus(data: DriverActivityStatusRequest): Observable<Driver> {
     return this.http.put<Driver>(
       this.configService.driver_update_activity,
-      data,
-      {
-        headers: this.configService.getHeader(),
-      }
+      data
     );
   }
 

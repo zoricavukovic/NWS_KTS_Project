@@ -14,15 +14,15 @@ import { ShowUsersComponent } from './component/admin/show-users/show-users.comp
 import { MapComponent } from './component/map/map.component';
 import { FavouriteRoutesComponent } from './component/favourite-route/favourite-routes/favourite-routes.component';
 import { SuccessfullVerificationComponent } from './component/user/auth/successfull-verification/successfull-verification.component';
-import { DrivingDetailsComponent } from './component/driving/driving-details-components/driving-details/driving-details.component';
 import { BasicUserProfileComponent } from './component/user/basic-user-profile/basic-user-profile.component';
 import { PaymentSuccessComponent } from './component/payment/payment-success/payment-success.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'map-view/-1', pathMatch: 'full' },
   { path: 'map-view/:id', component: MapComponent },
+  { path: 'driving/:id', component: MapComponent },
   { path: 'login', component: LoginComponent },
   { path: 'registration', component: RegistrationComponent },
+  { path: 'notifications', component: RegistrationComponent },
   { path: 'forgot-password', component: SendResetPasswordEmailComponent },
   { path: 'verify/:id', component: VerifyComponent },
   {path: 'successfull-verification', component: SuccessfullVerificationComponent},
@@ -39,6 +39,7 @@ const routes: Routes = [
   { path: 'favourite-routes', component: FavouriteRoutesComponent },
   { path: 'user-profile/:id', component: BasicUserProfileComponent },
   { path: 'payment/success', component: PaymentSuccessComponent },
+  { path: '', redirectTo: 'map-view/-1', pathMatch: 'full' },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
 ];
 

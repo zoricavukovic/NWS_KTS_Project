@@ -17,7 +17,7 @@ public class DrivingLocationIndexService implements IDrivingLocationIndexService
         this.drivingLocationIndexRepository = drivingLocationIndexRepository;
     }
     
-    public DrivingLocationIndex create(Location location, int index){
-        return drivingLocationIndexRepository.save(new DrivingLocationIndex(location, index));
+    public DrivingLocationIndex create(final Location location, final int index, final int routeIndex){
+        return drivingLocationIndexRepository.save(new DrivingLocationIndex(location, index, routeIndex));
     }
 }

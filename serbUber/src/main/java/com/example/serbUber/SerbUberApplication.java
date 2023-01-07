@@ -1,5 +1,7 @@
 package com.example.serbUber;
 
+import com.example.serbUber.service.UpdateCarPositionTask;
+import com.github.myzhan.locust4j.Locust;
 import com.graphhopper.GraphHopper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,6 +16,13 @@ import static com.example.serbUber.util.GraphHopperUtil.createGraphHopperInstanc
 public class SerbUberApplication {
 
 	public static GraphHopper hopper = createGraphHopperInstance("src/main/resources/core/files/serbia-latest.osm.pbf");
-	public static void main(String[] args) { SpringApplication.run(SerbUberApplication.class, args);}
+	public static void main(String[] args) {
+		SpringApplication.run(SerbUberApplication.class, args);
+//		Locust locust = Locust.getInstance();
+//		locust.setMasterHost("127.0.0.1");
+//		locust.setMasterPort(5557);
+//		locust.dryRun(new UpdateCarPositionTask());
+//		locust.run(new UpdateCarPositionTask());
+	}
 
 }

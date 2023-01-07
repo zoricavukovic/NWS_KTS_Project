@@ -25,7 +25,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
   isAdmin: boolean;
   isRegular: boolean;
   isDriver: boolean;
-  driverActivityStatus: boolean = false;
+  driverActivityStatus: boolean;
 
   constructor(
     public configService: ConfigService,
@@ -33,7 +33,9 @@ export class NavBarComponent implements OnInit, OnDestroy {
     private router: Router,
     private driverService: DriverService,
     private toast: ToastrService
-  ) {}
+  ) {
+    this.driverActivityStatus = false;
+  }
 
   ngOnInit(): void {
     this.authSubscription = this.authService

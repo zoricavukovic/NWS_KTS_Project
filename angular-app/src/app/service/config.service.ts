@@ -1,4 +1,3 @@
-import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 
@@ -6,13 +5,6 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class ConfigService {
-  getHeader(): HttpHeaders {
-    return new HttpHeaders().set(
-      'Authorization',
-      localStorage.getItem('token')
-    );
-  }
-
   public role_driver = 'ROLE_DRIVER';
   public role_regular_user = 'ROLE_REGULAR_USER';
 
@@ -143,6 +135,10 @@ export class ConfigService {
     return this._drivings_pagination_url + '/now-and-future/' + id;
   }
 
+  check_user_has_active_driving_url(id: number): string {
+    return `${this._drivings_pagination_url}/has-active/user/${id}`;
+  }
+
   driving_details_url(id: number): string {
     return this._drivings_details_url + id;
   }
@@ -227,6 +223,10 @@ export class ConfigService {
     return this._routes_url + '/possible';
   }
 
+  routePathUrl(routeId: number): string {
+    return this._routes_url + '/path/' + routeId;
+  }
+
   get add_favourite_route_url(): string {
     return this._add_favourite_route_url;
   }
@@ -263,7 +263,7 @@ export class ConfigService {
     return this._get_favourite_routes + userId;
   }
 
-  get_finish_driving_url(drivingId: number): string {
+  finish_driving_url(drivingId: number): string {
     return `${this._drivings_finish_driving_url}/${drivingId}`;
   }
 

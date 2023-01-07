@@ -1,7 +1,5 @@
 package com.example.serbUber.model;
 
-import org.hibernate.annotations.NaturalId;
-
 import javax.persistence.*;
 
 @Entity
@@ -18,9 +16,13 @@ public class DrivingLocationIndex implements Comparable<DrivingLocationIndex>{
     @Column(name="index")
     private Integer index;
 
-    public DrivingLocationIndex(Location location, int index) {
+    @Column(name="route_index")
+    private int routeIndex;
+
+    public DrivingLocationIndex(Location location, int index, int routeIndex) {
         this.location = location;
         this.index = index;
+        this.routeIndex = routeIndex;
     }
 
     public DrivingLocationIndex() {
@@ -52,6 +54,14 @@ public class DrivingLocationIndex implements Comparable<DrivingLocationIndex>{
 
     @Override
     public int compareTo(DrivingLocationIndex drivingLocationIndex) {
-        return index.compareTo( drivingLocationIndex.getIndex() );
+        return index.compareTo(drivingLocationIndex.getIndex());
+    }
+
+    public int getRouteIndex() {
+        return routeIndex;
+    }
+
+    public void setRouteIndex(int routeIndex) {
+        this.routeIndex = routeIndex;
     }
 }

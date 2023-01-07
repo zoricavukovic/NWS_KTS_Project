@@ -14,20 +14,16 @@ import java.util.SortedSet;
 @Service
 public interface IRouteService {
     List<RouteDTO> getAll();
-    Route get(Long id) throws EntityNotFoundException;
-    RouteDTO createDTO(
-            final SortedSet<DrivingLocationIndex> locations,
-            final double distance,
-            final double time,
-            final SortedSet<Integer> routePathIndex
-    );
+    Route get(final Long id) throws EntityNotFoundException;
 
     Route create(
             final SortedSet<DrivingLocationIndex> locations,
             final double distance,
-            final double time,
-            final SortedSet<Integer> routePathIndex
+            final double time
     );
-    List<PossibleRoutesViaPointsDTO> getPossibleRoutes(LocationsForRoutesRequest locationsForRouteRequest);
+    List<PossibleRoutesViaPointsDTO> getPossibleRoutes(
+        final LocationsForRoutesRequest locationsForRouteRequest
+    );
 
+    List<double[]> getRoutePath(final Long id) throws EntityNotFoundException;
 }

@@ -12,8 +12,7 @@ import { User } from '../model/user/user';
 export class VerifyService {
   constructor(
     private http: HttpClient,
-    private configService: ConfigService,
-    private router: Router
+    private configService: ConfigService
   ) {}
 
   verify(verifyRequest: VerifyRequest): Observable<User> {

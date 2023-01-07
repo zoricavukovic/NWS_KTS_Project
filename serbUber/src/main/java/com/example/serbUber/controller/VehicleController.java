@@ -33,14 +33,14 @@ public class VehicleController {
 
     @GetMapping("/active")
     @ResponseStatus(HttpStatus.OK)
-    public List<VehicleCurrentLocationDTO> getAllActiveVehicles() {
+    public List<VehicleCurrentLocationDTO> getAllActiveVehicles() throws EntityNotFoundException {
 
         return vehicleService.getAllVehiclesForActiveDriver();
     }
 
     @PutMapping("/update-current-location")
     @ResponseStatus(HttpStatus.OK)
-    public List<VehicleCurrentLocationDTO> updateCurrentVehiclesLocation() {
+    public List<VehicleCurrentLocationDTO> updateCurrentVehiclesLocation() throws EntityNotFoundException {
 
         return vehicleService.updateCurrentVehiclesLocation();
     }

@@ -1,13 +1,13 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { LoginRequest } from '../model/user/login-request';
-import { LoginResponse } from '../model/user/login-response';
-import { User } from '../model/user/user';
-import { Route } from '../model/route/route';
-import { ConfigService } from './config.service';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { Router } from '@angular/router';
-import { WebSocketService } from './web-socket.service';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {LoginRequest} from '../model/user/login-request';
+import {LoginResponse} from '../model/user/login-response';
+import {User} from '../model/user/user';
+import {Route} from '../model/route/route';
+import {ConfigService} from './config.service';
+import {BehaviorSubject, Observable} from 'rxjs';
+import {Router} from '@angular/router';
+import {WebSocketService} from './web-socket.service';
 
 @Injectable({
   providedIn: 'root',
@@ -15,9 +15,9 @@ import { WebSocketService } from './web-socket.service';
 export class AuthService {
   public currentUser$: BehaviorSubject<User>;
 
-  ROLE_ADMIN: string = 'ROLE_ADMIN';
-  ROLE_REGULAR_USER: string = 'ROLE_REGULAR_USER';
-  ROLE_DRIVER: string = 'ROLE_DRIVER';
+  ROLE_ADMIN: string;
+  ROLE_REGULAR_USER: string;
+  ROLE_DRIVER: string;
 
   constructor(
     private http: HttpClient,
@@ -26,6 +26,9 @@ export class AuthService {
     private chatService: WebSocketService
   ) {
     this.currentUser$ = new BehaviorSubject<User>(null);
+    this.ROLE_ADMIN= 'ROLE_ADMIN';
+    this.ROLE_REGULAR_USER = 'ROLE_REGULAR_USER';
+    this.ROLE_DRIVER = 'ROLE_DRIVER';
   }
 
   login(loginRequest: LoginRequest): Observable<LoginResponse> {
@@ -50,7 +53,7 @@ export class AuthService {
   }
 
   setLocalStorage(loginResponse: LoginResponse): void {
-    localStorage.setItem('token', 'Bearer ' + loginResponse.token);
+    localStorage.setItem('token', loginResponse.token);
     localStorage.setItem('user', JSON.stringify(loginResponse.userDTO));
     localStorage.setItem('email', loginResponse.userDTO.email);
     this.currentUser$.next(loginResponse.userDTO);
@@ -65,17 +68,14 @@ export class AuthService {
   setOfflineStatus(): Observable<User> {
     return this.http.post<User>(
       this.configService.logout_url,
-      this.currentUser$?.value?.email,
-      { headers: this.configService.getHeader() }
+      this.currentUser$?.value?.email
     );
   }
 
   getLoggedParsedUser(): User {
     const userString = localStorage.getItem('user');
     if (userString !== null && userString !== undefined) {
-      const user: User = JSON.parse(userString);
-
-      return user;
+      return JSON.parse(userString);
     }
 
     return null;
@@ -83,29 +83,20 @@ export class AuthService {
 
   userIsAdmin(): boolean {
     const user: User = this.getLoggedParsedUser();
-    if (user && user.role.name === this.ROLE_ADMIN) {
-      return true;
-    }
 
-    return false;
+    return user && user.role.name === this.ROLE_ADMIN;
   }
 
   userIsRegular(): boolean {
     const user: User = this.getLoggedParsedUser();
-    if (user && user.role.name === this.ROLE_REGULAR_USER) {
-      return true;
-    }
 
-    return false;
+    return user && user.role.name === this.ROLE_REGULAR_USER;
   }
 
   userIsDriver(): boolean {
     const user: User = this.getLoggedParsedUser();
-    if (user && user.role.name === this.ROLE_DRIVER) {
-      return true;
-    }
 
-    return false;
+    return user && user.role.name === this.ROLE_DRIVER;
   }
 
   setUserInLocalStorage(user: User): void {
@@ -114,7 +105,7 @@ export class AuthService {
   }
 
   getSubjectCurrentUser(): BehaviorSubject<User> {
-    let user = localStorage.getItem('user');
+    const user = localStorage.getItem('user');
     if (user !== null && user !== undefined) {
       const parsedUser: User = JSON.parse(user);
       const currentUser: User = new User(
@@ -144,19 +135,9 @@ export class AuthService {
     return -1;
   }
 
-  tokenIsPresent() {
-    const accessToken = this.getToken();
-    return accessToken !== null;
-  }
-
-  getToken() {
-    return localStorage.getItem('token');
-  }
-
-  getFavouriteRoutesForUser(userId: number) {
+  getFavouriteRoutesForUser(userId: number): Observable<Route[]> {
     return this.http.get<Route[]>(
-      this.configService.get_favourite_routes(userId),
-      { headers: this.configService.getHeader() }
+      this.configService.get_favourite_routes(userId)
     );
   }
 }

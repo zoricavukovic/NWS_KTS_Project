@@ -68,6 +68,8 @@ public class SpringConfig extends WebSecurityConfigurerAdapter {
             .permitAll()
             .antMatchers("/routes/possible")
             .permitAll()
+            .antMatchers("/routes/path/**")
+            .permitAll()
             .antMatchers("/verify/**")
             .permitAll()
             .antMatchers("/ws/**")
