@@ -17,7 +17,6 @@ public interface IDrivingNotificationService {
                                                         final String senderEmail,
                                                         final double price,
                                                         final List<String> passengers,
-                                                        final LocalDateTime started,
                                                         final int duration,
                                                         final boolean babySeat,
                                                         final boolean petFriendly,
@@ -25,6 +24,6 @@ public interface IDrivingNotificationService {
 
     ) throws EntityNotFoundException;
 
-    DrivingNotificationDTO acceptDriving(final Long id) throws EntityNotFoundException;
+    DrivingNotificationDTO updateStatus(final Long id, final String email, final boolean accepted) throws EntityNotFoundException;
     
 }

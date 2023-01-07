@@ -32,9 +32,7 @@ export class ChatRoomService {
 
   getUserChatRoom(email: string): BehaviorSubject<ChatRoom> {
     this.http
-      .get<ChatRoom>(this.configService.chat_rooms_url + '/' + email, {
-        headers: this.configService.getHeader(),
-      })
+      .get<ChatRoom>(this.configService.chat_rooms_url + '/' + email)
       .subscribe(res => {
         this.chatRoomClient$.next(res);
       });
@@ -44,9 +42,7 @@ export class ChatRoomService {
 
   getAllChatRooms(email: string): BehaviorSubject<ChatRoom[]> {
     this.http
-      .get<ChatRoom[]>(this.configService.all_chat_rooms_url + email, {
-        headers: this.configService.getHeader(),
-      })
+      .get<ChatRoom[]>(this.configService.all_chat_rooms_url + email)
       .subscribe(res => {
         this.adminChatRooms$.next(res);
       });
@@ -57,16 +53,14 @@ export class ChatRoomService {
   addMessageToChatRoom(messageReq: MessageRequest): Observable<ChatRoom> {
     return this.http.post<ChatRoom>(
       this.configService.chat_rooms_url,
-      messageReq,
-      { headers: this.configService.getHeader() }
+      messageReq
     );
   }
 
   resolveChatRoom(id: number): Observable<ChatRoom> {
     return this.http.post<ChatRoom>(
       this.configService.resolve_chat_room_url,
-      id,
-      { headers: this.configService.getHeader() }
+      id
     );
   }
 
@@ -75,8 +69,7 @@ export class ChatRoomService {
   ): Observable<ChatRoom> {
     return this.http.post<ChatRoom>(
       this.configService.set_messages_as_seen,
-      messageSeenRequest,
-      { headers: this.configService.getHeader() }
+      messageSeenRequest
     );
   }
 

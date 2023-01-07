@@ -34,6 +34,8 @@ export class MapComponent implements OnInit, OnDestroy {
   private initMap(): void {
     this.map = new google.maps.Map(document.getElementById("map") as HTMLElement, {
       center: this.center,
+      mapId: '18f859a923044aa6',
+      mapTypeId:google.maps.MapTypeId[Symbol.hasInstance],
       zoom: this.zoom,
       zoomControl: true,
       zoomControlOptions: {

@@ -27,6 +27,20 @@ public class GlobalExceptionHandler {
         return entityNotFoundException.getMessage();
     }
 
+    @ExceptionHandler(value = DriverAlreadyHasStartedDrivingException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String driverAlreadyHasStartedDrivingException(DriverAlreadyHasStartedDrivingException driverAlreadyHasStartedDrivingException) {
+
+        return driverAlreadyHasStartedDrivingException.getMessage();
+    }
+
+    @ExceptionHandler(value = DrivingShouldNotStartYetException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String drivingShouldNotStartYetException(DrivingShouldNotStartYetException drivingShouldNotStartYetException) {
+
+        return drivingShouldNotStartYetException.getMessage();
+    }
+
     @ExceptionHandler(value = PasswordsDoNotMatchException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String passwordsDoNotMatchException(PasswordsDoNotMatchException passwordsDoNotMatchException) {

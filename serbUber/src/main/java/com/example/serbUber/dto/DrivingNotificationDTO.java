@@ -11,6 +11,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import static com.example.serbUber.model.DrivingNotification.getListOfUsers;
+
 public class DrivingNotificationDTO {
 
     private Route route;
@@ -20,7 +22,6 @@ public class DrivingNotificationDTO {
     private int duration;
     private Vehicle vehicle;
     private Set<RegularUser> receivers;
-    private int answeredPassengers;
     private double price;
 
     public DrivingNotificationDTO(final DrivingNotification drivingNotification) {
@@ -28,8 +29,7 @@ public class DrivingNotificationDTO {
         this.price = drivingNotification.getPrice();
         this.senderEmail = drivingNotification.getSender().getEmail();
         this.vehicle = drivingNotification.getVehicle();
-        this.answeredPassengers = drivingNotification.getAnsweredPassengers();
-        this.receivers = drivingNotification.getReceivers();
+        this.receivers = getListOfUsers(drivingNotification.getReceiversReviewed());
     }
 
     public static List<DrivingNotificationDTO> fromDrivingNotifications(List<DrivingNotification> notifications) {
@@ -95,14 +95,6 @@ public class DrivingNotificationDTO {
 
     public void setReceivers(Set<RegularUser> receivers) {
         this.receivers = receivers;
-    }
-
-    public int getAnsweredPassengers() {
-        return answeredPassengers;
-    }
-
-    public void setAnsweredPassengers(int answeredPassengers) {
-        this.answeredPassengers = answeredPassengers;
     }
 
     public Route getRoute() {

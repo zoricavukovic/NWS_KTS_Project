@@ -10,7 +10,8 @@ import {
 import { Route } from 'src/app/model/route/route';
 import { User } from 'src/app/model/user/user';
 import { UserService } from 'src/app/service/user.service';
-import { drawPolylineOnMapHaveRoute } from '../../../util/map-functions';
+import { drawPolylineWithLngLatArray } from '../../../util/map-functions';
+import {RouteService} from "../../../service/route.service";
 
 @Component({
   selector: 'favourite-route-row',
@@ -30,11 +31,13 @@ export class FavouriteRouteRowComponent
   startPoint: string;
   endPoint: string;
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService, private routeService: RouteService) {}
 
   ngAfterViewInit(): void {
-    if (this.map) {
-      drawPolylineOnMapHaveRoute(this.map, this.route);
+    if (this.map){
+      this.routeService.getRoutePath(this.route?.id).subscribe(path =>
+        drawPolylineWithLngLatArray(this.map, path)
+      )
     }
   }
 

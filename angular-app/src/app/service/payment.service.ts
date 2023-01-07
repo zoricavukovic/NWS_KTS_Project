@@ -8,15 +8,12 @@ import { ConfigService } from './config.service';
 export class PaymentService {
 
   constructor(
-    private http: HttpClient, 
+    private http: HttpClient,
     private configService: ConfigService
     ) { }
 
     createPayment(num: number) {
       return this.http.post<any>(
-        "http://localhost:8080/paypal/create-payment",
-        num,
-        { headers: this.configService.getHeader() }
-      );
+        "http://localhost:8080/paypal/create-payment", num);
     }
 }

@@ -1,10 +1,12 @@
 package com.example.serbUber.model;
 
 import com.example.serbUber.model.user.RegularUser;
-import com.example.serbUber.model.user.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Map;
 import java.util.Set;
 
 @Entity
@@ -42,12 +44,8 @@ public class DrivingNotification {
     @JoinColumn(name = "vehicle_id", referencedColumnName = "id")
     private Vehicle vehicle;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "passenger_driving_notifications", joinColumns = @JoinColumn(name = "notification_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
-    private Set<RegularUser> receivers;
-
-    @Column(name="answered_passengers")
-    private int answeredPassengers = 0;
+    @ElementCollection
+    private Map<RegularUser, Integer> receiversReviewed;
 
     public DrivingNotification(
             final Route route,
@@ -58,8 +56,8 @@ public class DrivingNotification {
             final boolean babySeat,
             final boolean petFriendly,
             final Vehicle vehicle,
-            final Set<RegularUser> receivers
-            ) {
+            final Map<RegularUser, Integer> receiversReviewed
+    ) {
         this.route = route;
         this.price = price;
         this.sender = sender;
@@ -68,7 +66,7 @@ public class DrivingNotification {
         this.petFriendly = petFriendly;
         this.babySeat = babySeat;
         this.vehicle = vehicle;
-        this.receivers = receivers;
+        this.receiversReviewed = receiversReviewed;
     }
 
     public DrivingNotification() {}
@@ -145,20 +143,19 @@ public class DrivingNotification {
         this.vehicle = vehicle;
     }
 
-    public Set<RegularUser> getReceivers() {
-        return receivers;
+    public Map<RegularUser, Integer> getReceiversReviewed() {
+        return receiversReviewed;
     }
 
-    public void setReceivers(Set<RegularUser> receivers) {
-        this.receivers = receivers;
+    public void setReceiversReviewed(Map<RegularUser, Integer> receiversReviewed) {
+        this.receiversReviewed = receiversReviewed;
     }
 
-    public int getAnsweredPassengers() {
-        return answeredPassengers;
-    }
+    public static Set<RegularUser> getListOfUsers(Map<RegularUser, Integer> receiversReviewed){
+        Set<RegularUser> users = new HashSet<>();
+        receiversReviewed.forEach((key, value)-> users.add(key));
 
-    public void setAnsweredPassengers(int answeredPassengers) {
-        this.answeredPassengers = answeredPassengers;
+        return users;
     }
 }
 

@@ -1,5 +1,7 @@
 package com.example.serbUber.exception;
 
+import static com.example.serbUber.util.Constants.MAX_MINUTES_BEFORE_DRIVING_CAN_START;
+
 public class ErrorMessagesConstants {
 
     public static final String WRONG_EMAIL = "Email is not in the right format.";
@@ -33,5 +35,6 @@ public class ErrorMessagesConstants {
     public static final String UNBLOCK_UNBLOCKED_USER_MESSAGE = "Cannot unblock user that is not blocked.";
     public static final String MISSIN_NUM_OF_TOKENS = "Number of tokens must be greater than 0.";
     public static final String PAYPAL_PAYMENT_EXCEPTION = "Payment cannot be realized, something went wrong.";
-
+    public static final String DRIVER_ALREADY_HAS_STARTED_DRIVING_EXCEPTION = "Driver already has started driving.";
+    public static final String DRIVING_SHOULD_NOT_START_YET = String.format("The max number of minutes before driving can start is %d.", MAX_MINUTES_BEFORE_DRIVING_CAN_START);
 }

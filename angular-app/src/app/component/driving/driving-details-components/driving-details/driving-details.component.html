@@ -1,5 +1,6 @@
 <div *ngIf="driving" id="route-div" class="box mat-elevation-z1">
-  <h1><b>Driving</b></h1>
+  <h1 *ngIf="!canAcceptOrDeclineRide()"><b>Driving</b></h1>
+  <h1 *ngIf="canAcceptOrDeclineRide()"><b>Accept ride</b></h1>
   <app-driving-details-route
     [locations]="driving.route.locations"></app-driving-details-route>
   <br />

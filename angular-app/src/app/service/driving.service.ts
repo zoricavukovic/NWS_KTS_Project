@@ -4,18 +4,18 @@ import { ConfigService } from './config.service';
 import { Observable } from 'rxjs';
 import { Driving } from '../model/driving/driving';
 import { GenericService } from './generic.service';
-import { HeadersService } from './headers.service';
+import {SimpleDrivingInfo} from "../model/driving/simple-driving-info";
 
 @Injectable({
   providedIn: 'root',
 })
 export class DrivingService extends GenericService<Driving> {
+
   constructor(
     private http: HttpClient,
-    private headersService: HeadersService,
     private configService: ConfigService
   ) {
-    super(http, `${configService.api_url}/drivings`, headersService);
+    super(http, `${configService.api_url}/drivings`);
   }
 
   getDrivingsForUser(
@@ -25,7 +25,6 @@ export class DrivingService extends GenericService<Driving> {
     selectedSortBy: string,
     selectedSortOrder: string
   ) {
-    console.log(this.configService.getHeader());
     return this.http.get(
       this.configService.drivings_url_with_pagination_and_sort(
         id,
@@ -33,31 +32,39 @@ export class DrivingService extends GenericService<Driving> {
         pageSize,
         selectedSortBy,
         selectedSortOrder
-      ),
-      { headers: this.configService.getHeader() }
+      )
     );
   }
 
   getDrivingsForDriver(driverId: number): Observable<Driving[]> {
-    return this.http.get<Driving[]>(
-      this.configService.now_future_drivings_url(driverId),
-      { headers: this.configService.getHeader() }
-    );
+
+    return this.http.get<Driving[]>(this.configService.now_future_drivings_url(driverId));
   }
 
   getCountDrivings(id: number) {
-    return this.http.get<number>(this.configService.get_count_drivings(id), {
-      headers: this.configService.getHeader(),
-    });
+    return this.http.get<number>(this.configService.get_count_drivings(id));
   }
 
   rejectDriving(drivingId: number, reason: string): Observable<Driving> {
+
     return this.http.put<Driving>(
       this.configService.reject_driving_url(drivingId),
-      reason,
-      {
-        headers: this.configService.getHeader(),
-      }
+      reason
     );
+  }
+
+  finishDriving(drivingId: number): Observable<Driving> {
+
+    return this.http.put<Driving>(this.configService.finish_driving_url(drivingId), null);
+  }
+
+  startDriving(drivingId: number):Observable<Driving> {
+
+    return this.http.put<Driving>(this.configService.start_driving_url(drivingId), null);
+  }
+
+  checkIfUserHasActiveDriving(id: number): Observable<SimpleDrivingInfo> {
+
+    return this.http.get<SimpleDrivingInfo>(this.configService.check_user_has_active_driving_url(id));
   }
 }

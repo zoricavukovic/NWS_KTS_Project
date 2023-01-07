@@ -7,13 +7,13 @@ import { ChatRoom } from '../model/message/chat-room';
 import { ChatRoomWithNotify } from '../model/message/chat-room-with-notify';
 import { VehicleService } from './vehicle.service';
 import { VehicleCurrentLocation } from '../model/vehicle/vehicle-current-location';
-import { DrivingNotificationRequest } from '../model/request/driving-notification-request';
 import { DrivingNotificationService } from './driving-notification.service';
 import { DriverService } from './driver.service';
 import { DriverActivityResetNotification } from '../model/notification/driver-activity-reset-notification';
 import { DrivingNotification } from '../model/notification/driving-notification';
 import { BlockNotification } from '../model/notification/block-notification';
 import { Router } from '@angular/router';
+import {ToastrService} from "ngx-toastr";
 
 @Injectable({
   providedIn: 'root',
@@ -29,7 +29,8 @@ export class WebSocketService {
     private vehicleService: VehicleService,
     private drivingNotificationService: DrivingNotificationService,
     private driverService: DriverService,
-    private router: Router
+    private router: Router,
+    private toast: ToastrService
   ) {
     if (!this.stompClient) {
       this.initialized = false;
@@ -44,6 +45,7 @@ export class WebSocketService {
 
   connect() {
     if (!this.initialized && localStorage.getItem('email') !== null) {
+
       this.initialized = true;
       const serverUrl = environment.webSocketUrl;
       const ws = new SockJS(serverUrl);
@@ -72,6 +74,7 @@ export class WebSocketService {
       );
     } else if (this.isBlockingNotification(message)) {
       this.logOutUser();
+
     } else {
       this.isMessageType(message)
         ? this.chatRoomService.addMessage(JSON.parse(message))
@@ -178,18 +181,6 @@ export class WebSocketService {
       '/app/send/message',
       {},
       JSON.stringify(this.createChatRoomWithNotify(chatRoom, notifyAdmin))
-    );
-  }
-
-  sendNotification(drivingNotificationRequest: DrivingNotificationRequest) {
-    if (!this.stompClient) {
-      this.initialized = false;
-      this.connect();
-    }
-    this.stompClient.send(
-      '/app/send/notification',
-      {},
-      JSON.stringify(drivingNotificationRequest)
     );
   }
 

@@ -13,7 +13,6 @@ import { Role } from '../model/user/role';
 import { RegistrationResponse } from '../model/user/registration-response';
 import { BlockNotification } from '../model/notification/block-notification';
 import { GenericService } from './generic.service';
-import { HeadersService } from './headers.service';
 
 @Injectable({
   providedIn: 'root',
@@ -21,10 +20,9 @@ import { HeadersService } from './headers.service';
 export class UserService extends GenericService<User> {
   constructor(
     private http: HttpClient,
-    private headersService: HeadersService,
     private configService: ConfigService
   ) {
-    super(http, `${configService.api_url}/users`, headersService);
+    super(http, `${configService.api_url}/users`);
   }
 
   sendResetPasswordEmail(email: string): Observable<boolean> {
@@ -43,15 +41,13 @@ export class UserService extends GenericService<User> {
   }
 
   updateProfileData(data: UserDetails): Observable<User> {
-    return this.http.put<User>(this.configService.users_url, data, {
-      headers: this.configService.getHeader(),
-    });
+
+    return this.http.put<User>(this.configService.users_url, data);
   }
 
   blockUser(data: BlockNotification): Observable<boolean> {
-    return this.http.put<boolean>(this.configService.block_user_url, data, {
-      headers: this.configService.getHeader(),
-    });
+
+    return this.http.put<boolean>(this.configService.block_user_url, data);
   }
 
   unblockUser(id: number, isDriver: boolean): Observable<boolean> {
@@ -59,8 +55,7 @@ export class UserService extends GenericService<User> {
       isDriver
         ? this.configService.get_unblock_driver_url(id)
         : this.configService.get_unblock_regular_url(id),
-      null,
-      { headers: this.configService.getHeader() }
+      null
     );
   }
 
@@ -68,23 +63,18 @@ export class UserService extends GenericService<User> {
     return this.http.get<boolean>(
       isDriver
         ? this.configService.get_blocked_data_driver_url(id)
-        : this.configService.get_blocked_data_regular_url(id),
-      { headers: this.configService.getHeader() }
+        : this.configService.get_blocked_data_regular_url(id)
     );
   }
 
   updateProfilePicture(data: UserProfilePictureRequest): Observable<User> {
-    return this.http.put<User>(
-      this.configService.users_update_profile_pic,
-      data,
-      { headers: this.configService.getHeader() }
-    );
+
+    return this.http.put<User>(this.configService.users_update_profile_pic, data);
   }
 
   updatePassword(data: PasswordUpdateRequest): Observable<User> {
-    return this.http.put<User>(this.configService.users_update_password, data, {
-      headers: this.configService.getHeader(),
-    });
+
+    return this.http.put<User>(this.configService.users_update_password, data);
   }
 
   registerRegularUser(
@@ -97,40 +87,31 @@ export class UserService extends GenericService<User> {
   }
 
   registerDriver(driverRequest: Driver): Observable<User> {
-    return this.http.post<User>(
-      this.configService.register_driver,
-      driverRequest,
-      { headers: this.configService.getHeader() }
-    );
+
+    return this.http.post<User>(this.configService.register_driver, driverRequest);
   }
 
   addToFavouriteRoutes(favouriteRouteRequest: FavouriteRouteRequest) {
-    return this.http.post<boolean>(
-      this.configService.add_favourite_route_url,
-      favouriteRouteRequest,
-      { headers: this.configService.getHeader() }
-    );
+
+    return this.http.post<boolean>(this.configService.add_favourite_route_url, favouriteRouteRequest);
   }
 
   updateFavouriteRoutes(favouriteRouteRequest: FavouriteRouteRequest) {
     return this.http.post<boolean>(
       this.configService.add_favourite_route_url,
-      favouriteRouteRequest,
-      { headers: this.configService.getHeader() }
+      favouriteRouteRequest
     );
   }
 
   isFavouriteRouteForUser(routeId: number, userId: number) {
     return this.http.get(
-      this.configService.is_favourite_route(routeId, userId),
-      { headers: this.configService.getHeader() }
+      this.configService.is_favourite_route(routeId, userId)
     );
   }
 
   getUserByEmail(email: string): Observable<User> {
-    return this.http.get<User>(this.configService.get_user_by_email(email), {
-      headers: this.configService.getHeader(),
-    });
+
+    return this.http.get<User>(this.configService.get_user_by_email(email));
   }
 
   createUserDetails(

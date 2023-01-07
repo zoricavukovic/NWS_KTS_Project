@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import {Component, Input, OnInit, OnDestroy, Output, EventEmitter} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
@@ -19,10 +19,8 @@ import { Route } from '../../../model/route/route';
 })
 export class FilterVehicleViewComponent implements OnInit, OnDestroy {
   @Input() route: Route;
-
+  @Output() waitingForAcceptDrive = new  EventEmitter<boolean>();
   vehiclePassengersView = true;
-  loadingView = false;
-  acceptedDrivingView = false;
   vehicle: Vehicle;
 
   petFriendly = false;
@@ -142,24 +140,26 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
   }
 
   findDriver() {
+    this.waitingForAcceptDrive.emit(true);
     const drivingNotification = {
       route: this.route,
       price: this.price,
       senderEmail: this.currentUser.email,
       passengers: this.selectedPassengers,
-      started: new Date(),
       duration: 5,
       petFriendly: this.petFriendly,
       babySeat: this.babySeat,
       vehicleType: this.vehicleType,
     };
-    this.vehiclePassengersView = false;
-    this.loadingView = true;
+
+    console.log("odogovr1");
     this.drivingNotificationSubscription = this.drivingNotificationService
       .create(drivingNotification)
       .subscribe(response => {
+        console.log("odogovr2");
         console.log(response);
-        this.loadingView = false;
+        console.log("odogovr3");
+        // this.waitingForAcceptDrive.emit(false);
       });
   }
 

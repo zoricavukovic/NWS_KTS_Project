@@ -33,4 +33,10 @@ public interface DrivingRepository extends JpaRepository<Driving, Long> {
 
     @Query(value="select d from Driving d left join fetch d.route r left join fetch r.locations dest  left join fetch d.users u where d.driverId=?1")
     List<Driving> getNumberOfAllDrivingsForDriver(Long id);
+
+    @Query("select d from Driving d where d.driverId=?1 and d.active = true")
+    Optional<Driving> getActiveDrivingForDriver(Long driverId);
+
+    @Query("select DISTINCT d from Driving d inner join d.users user where user.id=?1 and d.active = true")
+    Optional<Driving> getActiveDrivingForUser(Long userId);
 }

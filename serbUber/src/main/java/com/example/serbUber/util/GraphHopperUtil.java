@@ -43,12 +43,14 @@ public class GraphHopperUtil {
 
     public static List<ResponsePath> routing(
         GraphHopper hopper,
-        LongLatRequest startLocation,
-        LongLatRequest endLocation
+        final double firstPointLat,
+        final double firstPointLng,
+        final double secondPointLat,
+        final double secondPointLng
     ) {
         GHRequest req = new GHRequest().setProfile("car")
-            .addPoint(new GHPoint(startLocation.getLat(), startLocation.getLon()))
-            .addPoint(new GHPoint(endLocation.getLat(), endLocation.getLon()))
+            .addPoint(new GHPoint(firstPointLat, firstPointLng))
+            .addPoint(new GHPoint(secondPointLat, secondPointLng))
             .setHeadings(Arrays.asList(180d, 90d))
             .putHint(Parameters.CH.DISABLE, true);
 
@@ -57,8 +59,8 @@ public class GraphHopperUtil {
             throw new RuntimeException(res.getErrors().toString());
 
         req = new GHRequest().setProfile("car")
-            .addPoint(new GHPoint(startLocation.getLat(), startLocation.getLon()))
-            .addPoint(new GHPoint(endLocation.getLat(), endLocation.getLon()))
+            .addPoint(new GHPoint(firstPointLat, firstPointLng))
+            .addPoint(new GHPoint(secondPointLat, secondPointLng))
             .setAlgorithm(Parameters.Algorithms.ALT_ROUTE);
         req.getHints().putObject(Parameters.Algorithms.AltRoute.MAX_PATHS, 3);
         res = hopper.route(req);

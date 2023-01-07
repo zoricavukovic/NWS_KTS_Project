@@ -11,9 +11,12 @@ import { DriverService } from 'src/app/service/driver.service';
 import { Vehicle } from 'src/app/model/vehicle/vehicle';
 import { User } from 'src/app/model/user/user';
 import {
-  drawPolylineOnMapHaveRoute,
-  removeLine,
+  drawAllMarkers,
+  drawPolylineWithLngLatArray,
+  removeAllMarkers, removeAllMarkersFromList,
+  removeLine
 } from '../../../../util/map-functions';
+import {RouteService} from "../../../../service/route.service";
 
 @Component({
   selector: 'app-driving-details',
@@ -24,7 +27,7 @@ import {
   ],
 })
 export class DrivingDetailsComponent implements OnInit, OnDestroy {
-  @Input() map;
+  @Input() map: google.maps.Map;
   id: number;
   vehicleRating: number;
   driving: Driving;
@@ -35,6 +38,7 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
   isDriver: boolean;
   isRegularUser: boolean;
   routePolyline: google.maps.Polyline;
+  markers: google.maps.Marker[];
   loggedUser: User = null;
   base64Prefix = this.configService.base64_show_photo_prefix;
 
@@ -44,12 +48,6 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
   vehicleRatingSubscription: Subscription;
   favouriteRouteSubscription: Subscription;
 
-  vehicle_image = {
-    VAN: '/assets/images/van.png',
-    SUV: '/assets/images/suv.png',
-    CAR: '/assets/images/car.png',
-  };
-
   constructor(
     private route: ActivatedRoute,
     private configService: ConfigService,
@@ -57,21 +55,27 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private drivingService: DrivingService,
     private driverService: DriverService,
+    private routeService: RouteService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
+    this.router.events.subscribe((event) => {
+      this.ngOnDestroy();
+    });
     this.id = +this.route.snapshot.paramMap.get('id');
     this.destinations = [];
     this.drivingsSubscription = this.drivingService
       .get(this.id)
       .subscribe((driving: Driving) => {
+        console.log(driving);
         this.driving = driving;
-        if (this.map) {
-          this.routePolyline = drawPolylineOnMapHaveRoute(
-            this.map,
-            this.driving?.route
-          );
+        if (this.map){
+          this.routeService.getRoutePath(driving?.route?.id).subscribe(path => {
+              this.markers = drawAllMarkers(driving?.route?.locations, this.map);
+              this.routePolyline = drawPolylineWithLngLatArray(this.map, path);
+            }
+          )
         }
 
         this.driverSubscription = this.driverService
@@ -125,8 +129,14 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
+  canAcceptOrDeclineRide(): boolean{
+
+    return this.router.url.includes("driving");
+  }
+
   ngOnDestroy(): void {
     removeLine(this.routePolyline);
+    removeAllMarkersFromList(this.markers);
     if (this.currentUserSubscription) {
       this.currentUserSubscription.unsubscribe();
     }

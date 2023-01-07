@@ -3,6 +3,9 @@ package com.example.serbUber.service;
 import com.example.serbUber.dto.DrivingDTO;
 import com.example.serbUber.dto.DrivingPageDTO;
 import com.example.serbUber.dto.DrivingStatusNotificationDTO;
+import com.example.serbUber.dto.SimpleDrivingInfoDTO;
+import com.example.serbUber.exception.DriverAlreadyHasStartedDrivingException;
+import com.example.serbUber.exception.DrivingShouldNotStartYetException;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.EntityType;
 import com.example.serbUber.model.*;
@@ -19,10 +22,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import static com.example.serbUber.dto.DrivingDTO.fromDrivings;
 import static com.example.serbUber.dto.DrivingPageDTO.fromDrivingsPage;
+import static com.example.serbUber.util.Constants.MAX_MINUTES_BEFORE_DRIVING_CAN_START;
 
 @Component
 @Qualifier("drivingServiceConfiguration")
@@ -89,13 +94,6 @@ public class DrivingService implements IDrivingService {
         return fromDrivingsPage(results.getContent(), results.getSize(), results.getTotalPages());
     }
 
-    private int calculateTotalNumberOfPages(final int totalNumber, final int pageSize){
-        return totalNumber % pageSize == 0 ?
-                totalNumber / pageSize :
-                totalNumber / pageSize + 1;
-    }
-
-
     private Page<Driving> getDrivingPage(final Long id, final Pageable page) throws EntityNotFoundException {
         User user = userService.getUserById(id);
         Page<Driving> drivings = drivingRepository.findByUserId(id, page);
@@ -139,15 +137,6 @@ public class DrivingService implements IDrivingService {
         return fromDrivings(drivingRepository.getAllNowAndFutureDrivings(id));
     }
 
-    public DrivingDTO finishDriving(final Long id) throws EntityNotFoundException {
-        Driving driving = getDriving(id);
-        driving.setActive(false);
-
-        drivingRepository.save(driving);
-
-        return new DrivingDTO(driving);
-    }
-
     public DrivingDTO paidDriving(final Long id) throws EntityNotFoundException {
         Driving driving = getDriving(id);
         driving.setDrivingStatus(DrivingStatus.ACCEPTED);
@@ -166,6 +155,12 @@ public class DrivingService implements IDrivingService {
         return new DrivingDTO(driving);
     }
 
+    public SimpleDrivingInfoDTO checkUserHasActiveDriving(final Long id) {
+        Optional<Driving> optionalDriving = drivingRepository.getActiveDrivingForUser(id);
+
+        return optionalDriving.map(SimpleDrivingInfoDTO::new).orElse(null);
+    }
+
     public int getNumberOfAllDrivingsForUser(final Long id) throws EntityNotFoundException {
         User user = userService.getUserById(id);
         return user.getRole().isDriver() ?
@@ -175,7 +170,7 @@ public class DrivingService implements IDrivingService {
 
     public DrivingDTO rejectDriving(final Long id, final String reason) throws EntityNotFoundException {
         Driving driving = getDriving(id);
-        User driver = userService.getUserById(driving.getDriverId());
+//        User driver = userService.getUserById(driving.getDriverId());
         driving.setDrivingStatus(DrivingStatus.REJECTED);
         drivingRepository.save(driving);
 
@@ -190,19 +185,53 @@ public class DrivingService implements IDrivingService {
               driving.getId()
               );
 
-        webSocketService.sendDrivingStatus(
+        webSocketService.sendRejectDriving(
                 drivingStatusNotificationDTO,
                 drivingStatusNotification.getDriving().getUsers());
 
         return new DrivingDTO(driving);
     }
 
-    public DrivingDTO startDriving(final Long id) throws EntityNotFoundException {
+    public DrivingDTO startDriving(final Long id) throws EntityNotFoundException, DriverAlreadyHasStartedDrivingException, DrivingShouldNotStartYetException {
         Driving driving = getDriving(id);
+        if (driverHasActiveDriving(driving.getDriverId())){
+            throw new DriverAlreadyHasStartedDrivingException();
+        }
+
+        if (drivingShouldNotStartYet(driving)){
+            throw new DrivingShouldNotStartYetException();
+        }
+
+        driving.setStarted(LocalDateTime.now());
         driving.setActive(true);
         driving.setDrivingStatus(DrivingStatus.ACCEPTED);
         drivingRepository.save(driving);
 
+        webSocketService.startDrivingNotification(new SimpleDrivingInfoDTO(driving),driving.getUsers());
+
         return new DrivingDTO(driving);
+    }
+
+    public DrivingDTO finishDriving(final Long id) throws EntityNotFoundException {
+        Driving driving = getDriving(id);
+        driving.setActive(false);
+        driving.setDrivingStatus(DrivingStatus.FINISHED);
+        driving.setEnd(LocalDateTime.now());
+
+        drivingRepository.save(driving);
+
+        webSocketService.finishDrivingNotification(new SimpleDrivingInfoDTO(driving),driving.getUsers());
+
+        return new DrivingDTO(driving);
+    }
+
+    private boolean drivingShouldNotStartYet(Driving driving) {
+
+        return ChronoUnit.MINUTES.between(LocalDateTime.now(), driving.getStarted()) > MAX_MINUTES_BEFORE_DRIVING_CAN_START;
+    }
+
+    private boolean driverHasActiveDriving(Long driverId) throws DriverAlreadyHasStartedDrivingException {
+
+        return drivingRepository.getActiveDrivingForDriver(driverId).isPresent();
     }
 }
