@@ -3,34 +3,27 @@ import { HttpClient } from '@angular/common/http';
 import { ConfigService } from './config.service';
 import { Observable } from 'rxjs';
 import { RateReview, Review } from '../model/review/rate-review';
+import { GenericService } from './generic.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ReviewService {
-  constructor(private http: HttpClient, private configService: ConfigService) {}
-
-  saveReview(reviewRequest: RateReview): Observable<RateReview> {
-
-    return this.http.post<RateReview>(
-      this.configService.rate_driver_vehicle_url,
-      reviewRequest,
-      { headers: this.configService.getHeader() }
-    );
+export class ReviewService extends GenericService<RateReview> {
+  constructor(
+    private http: HttpClient,
+    private configService: ConfigService
+  ) {
+    super(http, `${configService.api_url}/reviews`);
   }
 
   getReviewedDrivingsForUser(id: number): Observable<number[]> {
-    return this.http.get<number[]>(
-      this.configService.reviewed_drivings_url(id),
-      { headers: this.configService.getHeader() }
-    );
+
+    return this.http.get<number[]>(this.configService.reviewed_drivings_url(id));
   }
 
   getReviewsForDriver(id: number): Observable<Review[]> {
-    return this.http.get<Review[]>(
-      this.configService.get_reviews_for_driver(id),
-      { headers: this.configService.getHeader() }
-    );
+
+    return this.http.get<Review[]>(this.configService.get_reviews_for_driver(id));
   }
 
   createRateReview(
@@ -45,7 +38,7 @@ export class ReviewService {
       driverRate: driverRate,
       message: message,
       drivingId: drivingId,
-      userId: userId
+      userId: userId,
     };
   }
 }

@@ -4,14 +4,14 @@ export class SearchingRoutesForm {
   location: Location;
   inputPlace: string;
   filteredPlaces;
-  marker;
+  marker: google.maps.Marker;
   constructor();
 
   constructor(
     location?: Location,
     inputPlace?: string,
     filteredPlaces?,
-    marker?
+    marker?:google.maps.Marker
   ) {
     this.location = location;
     this.inputPlace = inputPlace;

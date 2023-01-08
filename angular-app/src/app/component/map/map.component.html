@@ -1,7 +1,11 @@
-<div id="map">
-  <app-driving-details *ngIf="actRoute.snapshot.paramMap.get('id') !== '-1'" [map]="map"></app-driving-details>
-  <home-page *ngIf="actRoute.snapshot.paramMap.get('id') === '-1'" [map]="map"></home-page>
+<div id="wrapper">
+  <div id="map"></div>
+  <div id="float-div">
+    <app-home-page *ngIf="actRoute.snapshot.paramMap.get('id') === '-1'" [map]="map"></app-home-page>
+    <app-driving-details *ngIf="actRoute.snapshot.paramMap.get('id') !== '-1'" [map]="map"></app-driving-details>
+  </div>
 </div>
+
 
 
 

@@ -1,11 +1,9 @@
 package com.example.serbUber.controller.user;
 
 import com.example.serbUber.dto.RouteDTO;
-import com.example.serbUber.dto.user.RegistrationDTO;
 import com.example.serbUber.dto.user.RegularUserDTO;
 import com.example.serbUber.exception.*;
 import com.example.serbUber.request.user.FavouriteRouteRequest;
-import com.example.serbUber.request.user.RegularUserRequest;
 import com.example.serbUber.service.user.RegularUserService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -38,9 +36,9 @@ public class RegularUserController {
     @PostMapping("/favourite")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
-    public boolean addToFavouriteRoutes(@RequestBody FavouriteRouteRequest request) throws EntityNotFoundException {
+    public boolean updateFavouriteRoutes(@RequestBody FavouriteRouteRequest request) throws EntityNotFoundException {
 
-        return regularUserService.addToFavouriteRoutes(request.getUserId(), request.getRouteId());
+        return regularUserService.updateFavouriteRoutes(request.getUserId(), request.getRouteId());
     }
 
     @GetMapping("/blocked-data/{id}")
@@ -51,14 +49,6 @@ public class RegularUserController {
     ) throws EntityNotFoundException {
 
         return regularUserService.getIsBlocked(id);
-    }
-
-    @PostMapping("/removeFavourite")
-    @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_REGULAR_USER')")
-    public boolean removeFromFavouriteRoutes(@RequestBody FavouriteRouteRequest request) throws EntityNotFoundException {
-
-        return regularUserService.removeFromFavouriteRoutes(request.getUserId(), request.getRouteId());
     }
 
     @GetMapping("/favourite-route/{routeId}/{userId}")

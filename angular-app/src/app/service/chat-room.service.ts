@@ -32,21 +32,17 @@ export class ChatRoomService {
 
   getUserChatRoom(email: string): BehaviorSubject<ChatRoom> {
     this.http
-    .get<ChatRoom>(this.configService.chat_rooms_url + '/' + email, {
-      headers: this.configService.getHeader(),
-    })
-    .subscribe(res => {
-      this.chatRoomClient$.next(res);
-    });
+      .get<ChatRoom>(this.configService.chat_rooms_url + '/' + email)
+      .subscribe(res => {
+        this.chatRoomClient$.next(res);
+      });
 
     return this.chatRoomClient$;
   }
 
   getAllChatRooms(email: string): BehaviorSubject<ChatRoom[]> {
     this.http
-      .get<ChatRoom[]>(this.configService.all_chat_rooms_url + email, {
-        headers: this.configService.getHeader(),
-      })
+      .get<ChatRoom[]>(this.configService.all_chat_rooms_url + email)
       .subscribe(res => {
         this.adminChatRooms$.next(res);
       });
@@ -57,16 +53,14 @@ export class ChatRoomService {
   addMessageToChatRoom(messageReq: MessageRequest): Observable<ChatRoom> {
     return this.http.post<ChatRoom>(
       this.configService.chat_rooms_url,
-      messageReq,
-      { headers: this.configService.getHeader() }
+      messageReq
     );
   }
 
   resolveChatRoom(id: number): Observable<ChatRoom> {
     return this.http.post<ChatRoom>(
       this.configService.resolve_chat_room_url,
-      id,
-      { headers: this.configService.getHeader() }
+      id
     );
   }
 
@@ -75,8 +69,7 @@ export class ChatRoomService {
   ): Observable<ChatRoom> {
     return this.http.post<ChatRoom>(
       this.configService.set_messages_as_seen,
-      messageSeenRequest,
-      { headers: this.configService.getHeader() }
+      messageSeenRequest
     );
   }
 
@@ -102,9 +95,9 @@ export class ChatRoomService {
     currentChatRoom: ChatRoom,
     adminLogged: boolean
   ): number {
-    let notificationsNum: number = 0;
+    let notificationsNum = 0;
     if (currentChatRoom) {
-      for (let mes of currentChatRoom.messages) {
+      for (const mes of currentChatRoom.messages) {
         if (adminLogged && this.clientMessageNotSeen(mes)) {
           notificationsNum += 1;
         } else if (!adminLogged && this.adminMessageNotSeen(mes)) {
@@ -121,18 +114,18 @@ export class ChatRoomService {
       chatRoomWithNotify.notifyAdmin &&
       chatRoomWithNotify.chatRoom.admin.email === this.getCurrentUserEmail()
     ) {
-      this.toast.info(
-        'New message received!',
-        `You have new message from ${
-          chatRoomWithNotify.chatRoom.client.name +
-          '' +
-          chatRoomWithNotify.chatRoom.client.surname
-        }.`
-      ).onTap.subscribe(
-        (res) => {
-          this.router.navigate(['/messages'])
-        }
-      );
+      this.toast
+        .info(
+          'New message received!',
+          `You have new message from ${
+            chatRoomWithNotify.chatRoom.client.name +
+            '' +
+            chatRoomWithNotify.chatRoom.client.surname
+          }.`
+        )
+        .onTap.subscribe(res => {
+          this.router.navigate(['/messages']);
+        });
     }
   }
 
@@ -145,10 +138,10 @@ export class ChatRoomService {
   }
 
   addMessage(chatRoomWithNotify: ChatRoomWithNotify): void {
-    let chatRoom = chatRoomWithNotify.chatRoom;
+    const chatRoom = chatRoomWithNotify.chatRoom;
     this.chatRoomClient$.next(chatRoom);
 
-    let copyChatRoom: ChatRoom[] = this.adminChatRooms$.value;
+    const copyChatRoom: ChatRoom[] = this.adminChatRooms$.value;
 
     for (let i = 0; i < copyChatRoom.length; i++) {
       if (copyChatRoom[i].id === chatRoom.id) {

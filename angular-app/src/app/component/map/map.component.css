@@ -1,13 +1,14 @@
-/*#map {*/
-/*  margin-top: 3%;*/
-/*  margin-left:5%;*/
-/*  height: 33rem;*/
-/*  width: 50rem;*/
-/*  z-index: 0;*/
-/*  overflow:hidden;*/
-/*}*/
-
 #map {
-  height: 100% !important;
-  z-index: 0 !important;
+  height: 55rem !important;
+}
+
+#wrapper {
+  position:relative;
+}
+
+#float-div {
+  position: absolute;
+  top: 0.1rem;
+  left: 0.2rem;
+  z-index: 99;
 }

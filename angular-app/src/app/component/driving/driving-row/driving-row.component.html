@@ -18,16 +18,16 @@
   </mat-card-title>
   <br />
   <mat-card-subtitle
-    ><p>{{ driving.started | date: 'dd.MM.yyyy. HH:mm' }}</p>
+    ><p>{{ driving.started | date : 'dd.MM.yyyy. HH:mm' }}</p>
     <p class="date">
       {{
         endDrivingDate(driving.started, driving.duration)
-          | date: 'dd.MM.yyyy. HH:mm'
+          | date : 'dd.MM.yyyy. HH:mm'
       }}
     </p></mat-card-subtitle
   >
   <mat-card-content class="price"
-    >Price: {{ driving.price }}.00</mat-card-content
+    >Price: {{ driving.price }}</mat-card-content
   >
   <br />
   <br />

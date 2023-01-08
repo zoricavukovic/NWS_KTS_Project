@@ -7,13 +7,13 @@ import { ChatRoom } from '../model/message/chat-room';
 import { ChatRoomWithNotify } from '../model/message/chat-room-with-notify';
 import { VehicleService } from './vehicle.service';
 import { VehicleCurrentLocation } from '../model/vehicle/vehicle-current-location';
-import { DrivingNotificationRequest } from '../model/request/driving-notification-request';
 import { DrivingNotificationService } from './driving-notification.service';
 import { DriverService } from './driver.service';
 import { DriverActivityResetNotification } from '../model/notification/driver-activity-reset-notification';
-import { DrivingNotificationResponse } from '../model/notification/driving-notification-response';
+import { DrivingNotification } from '../model/notification/driving-notification';
 import { BlockNotification } from '../model/notification/block-notification';
 import { Router } from '@angular/router';
+import {ToastrService} from "ngx-toastr";
 
 @Injectable({
   providedIn: 'root',
@@ -21,15 +21,16 @@ import { Router } from '@angular/router';
 export class WebSocketService {
   private stompClient = null;
   private globalStompClient = null;
-  initialized: boolean = false;
-  initializedGlobal: boolean = false;
+  initialized = false;
+  initializedGlobal = false;
 
   constructor(
     private chatRoomService: ChatRoomService,
     private vehicleService: VehicleService,
     private drivingNotificationService: DrivingNotificationService,
     private driverService: DriverService,
-    private router: Router
+    private router: Router,
+    private toast: ToastrService
   ) {
     if (!this.stompClient) {
       this.initialized = false;
@@ -44,6 +45,7 @@ export class WebSocketService {
 
   connect() {
     if (!this.initialized && localStorage.getItem('email') !== null) {
+
       this.initialized = true;
       const serverUrl = environment.webSocketUrl;
       const ws = new SockJS(serverUrl);
@@ -65,12 +67,14 @@ export class WebSocketService {
   }
 
   checkNotificationType(message: string) {
+    console.log(this.isDrivingNotification(message));
     if (this.isActivityResetNotification(message)) {
       this.driverService.showActivityStatusResetNotification(
         JSON.parse(message)
       );
     } else if (this.isBlockingNotification(message)) {
       this.logOutUser();
+
     } else {
       this.isMessageType(message)
         ? this.chatRoomService.addMessage(JSON.parse(message))
@@ -130,16 +134,21 @@ export class WebSocketService {
   private isActivityResetNotification(message: string): boolean {
     try {
       const parsed: DriverActivityResetNotification = JSON.parse(message);
-      return (parsed.email !== null && parsed.email !== undefined && (parsed.active !== null || true));
+      return (
+        parsed.email !== null &&
+        parsed.email !== undefined &&
+        (parsed.active !== null || true)
+      );
     } catch (e) {
       return false;
     }
   }
 
   private isDrivingNotification(message: string): boolean {
+    console.log(message);
     try {
-      const parsed: DrivingNotificationResponse = JSON.parse(message);
-      return parsed.drivingNotificationType === 'LINKED_USERS';
+      const parsed: DrivingNotification = JSON.parse(message);
+      return parsed.drivingNotificationType === 'LINKED_USER';
     } catch (e) {
       return false;
     }
@@ -172,18 +181,6 @@ export class WebSocketService {
       '/app/send/message',
       {},
       JSON.stringify(this.createChatRoomWithNotify(chatRoom, notifyAdmin))
-    );
-  }
-
-  sendNotification(drivingNotificationRequest: DrivingNotificationRequest) {
-    if (!this.stompClient) {
-      this.initialized = false;
-      this.connect();
-    }
-    this.stompClient.send(
-      '/app/send/notification',
-      {},
-      JSON.stringify(drivingNotificationRequest)
     );
   }
 

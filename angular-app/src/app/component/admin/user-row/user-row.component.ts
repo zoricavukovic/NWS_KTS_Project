@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { User } from 'src/app/model/user/user';
 import { ConfigService } from 'src/app/service/config.service';
 import { Router } from '@angular/router';
+import { RegularUser } from 'src/app/model/user/regular-user';
 
 @Component({
   selector: 'user-row',
@@ -9,7 +10,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./user-row.component.css'],
 })
 export class UserRowComponent {
-  @Input() user: User;
+  @Input() user: RegularUser;
   @Input() index: number;
 
   constructor(private configService: ConfigService, private router: Router) {}

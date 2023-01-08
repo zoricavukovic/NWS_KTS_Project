@@ -46,6 +46,8 @@ dependencies {
 	implementation 'com.paypal.sdk:rest-api-sdk:1.14.0'
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	implementation 'com.graphhopper:graphhopper-core:6.2'
+	implementation 'com.github.myzhan:locust4j:1.0.0'
+	implementation 'com.jayway.restassured:rest-assured:2.9.0'
 	runtimeOnly 'org.postgresql:postgresql'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'

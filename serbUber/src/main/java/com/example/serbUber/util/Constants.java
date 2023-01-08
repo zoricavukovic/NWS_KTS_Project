@@ -43,6 +43,7 @@ public class Constants {
     public static final String REDIRECT_URL_SUCCESS = "http://localhost:4200/payment/process-payment";
     public static final String PAYPAL_APPROVAL_URL = "approval_url";
     public static final Long DEFAULT_PAYING_INFO_ID = 1L;
+    public static final int MAX_MINUTES_BEFORE_DRIVING_CAN_START = 5;
 
     public static int generateSecurityCode() {
         return (int)(Math.random() * (Constants.MAX_SECURITY_NUM - Constants.MIN_SECURITY_NUM + 1) + Constants.MIN_SECURITY_NUM);

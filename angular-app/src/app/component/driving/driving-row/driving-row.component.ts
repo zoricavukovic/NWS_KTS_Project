@@ -14,7 +14,6 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class DrivingRowComponent implements OnInit, OnDestroy {
   @Input() driving: Driving;
-  @Input() index: number;
   @Input() user: User;
   isRegularUser = true;
 

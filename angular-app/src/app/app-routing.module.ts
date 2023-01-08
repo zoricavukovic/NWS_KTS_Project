@@ -6,7 +6,6 @@ import { ShowDrivingsComponent } from './component/driving/show-drivings/show-dr
 import { VerifyComponent } from './component/user/auth/verify/verify.component';
 import { SendResetPasswordEmailComponent } from './component/user/auth/send-reset-password-link/send-reset-password-link.component';
 import { ResetPasswordComponent } from './component/user/auth/reset-password/reset-password.component';
-import { HomePageComponent } from './component/home/home-page/home-page.component';
 import { ProfilePageComponent } from './component/user/profile-page/profile-page.component';
 import { EditProfileComponent } from './component/user/edit-profile/edit-profile.component';
 import { HistoryLiveChatComponent } from './component/chat/history-live-chat/history-live-chat.component';
@@ -21,13 +20,14 @@ import { ProcessingPaymentComponent } from './component/payment/processing-payme
 import { PaymentStatusComponent } from './component/payment/payment-status/payment-status.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'map-view/-1', pathMatch: 'full' },
   { path: 'map-view/:id', component: MapComponent },
+  { path: 'driving/:id', component: MapComponent },
   { path: 'login', component: LoginComponent },
   { path: 'registration', component: RegistrationComponent },
+  { path: 'notifications', component: RegistrationComponent },
   { path: 'forgot-password', component: SendResetPasswordEmailComponent },
   { path: 'verify/:id', component: VerifyComponent },
-  { path: 'successfull-verification', component: SuccessfullVerificationComponent },
+  {path: 'successfull-verification', component: SuccessfullVerificationComponent},
   { path: 'drivings/:id', component: ShowDrivingsComponent },
   { path: 'reset-password/:email', component: ResetPasswordComponent },
   { path: 'profile-page', component: ProfilePageComponent },

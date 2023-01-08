@@ -56,7 +56,7 @@ public class TokenBank {
 
     public TokenBank(
             final RegularUser user,
-            final int numOfTokens,
+            final double numOfTokens,
             final double totalTokenAmountSpent,
             final double totalMoneyAmountSpent,
             final PayingInfo payingInfo

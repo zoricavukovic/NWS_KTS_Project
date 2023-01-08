@@ -10,7 +10,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+
+import static com.example.serbUber.exception.ErrorMessagesConstants.*;
 
 @RestController
 @RequestMapping("/driving-notifications")
@@ -24,28 +27,29 @@ public class DrivingNotificationController {
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyRole('ROLE_REGULAR_USER')")
-
     public DrivingNotificationDTO create(@Valid @RequestBody DrivingNotificationRequest drivingNotificationRequest) throws EntityNotFoundException {
 
         return this.drivingNotificationService.createDrivingNotificationDTO(
-            drivingNotificationRequest.getLocations(),
+            drivingNotificationRequest.getRoute(),
             drivingNotificationRequest.getSenderEmail(),
             drivingNotificationRequest.getPrice(),
             drivingNotificationRequest.getPassengers(),
-            drivingNotificationRequest.getStarted(),
             drivingNotificationRequest.getDuration(),
             drivingNotificationRequest.isBabySeat(),
             drivingNotificationRequest.isPetFriendly(),
-            drivingNotificationRequest.getVehicleType(),
-            drivingNotificationRequest.getTime(),
-            drivingNotificationRequest.getDistance()
+            drivingNotificationRequest.getVehicleType()
         );
     }
 
-    @GetMapping("/accept/{id}")
+    @PutMapping("/update-status/{id}/{accepted}/{email}")
     @PreAuthorize("hasAnyRole('ROLE_REGULAR_USER')")
     @ResponseStatus(HttpStatus.OK)
-    public DrivingNotificationDTO acceptDriving(@PathVariable Long id) throws EntityNotFoundException {
-        return this.drivingNotificationService.acceptDriving(id);
+    public DrivingNotificationDTO acceptDriving(
+        @Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable Long id,
+        @Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable boolean accepted,
+        @Valid @Email(message = WRONG_EMAIL) @NotNull(message = EMPTY_EMAIL) @PathVariable String email
+    ) throws EntityNotFoundException {
+
+        return this.drivingNotificationService.updateStatus(id, email, accepted);
     }
 }

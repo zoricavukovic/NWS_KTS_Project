@@ -33,14 +33,14 @@ public class VehicleController {
 
     @GetMapping("/active")
     @ResponseStatus(HttpStatus.OK)
-    public List<VehicleCurrentLocationDTO> getAllActiveVehicles() {
+    public List<VehicleCurrentLocationDTO> getAllActiveVehicles() throws EntityNotFoundException {
 
         return vehicleService.getAllVehiclesForActiveDriver();
     }
 
     @PutMapping("/update-current-location")
     @ResponseStatus(HttpStatus.OK)
-    public List<VehicleCurrentLocationDTO> updateCurrentVehiclesLocation() {
+    public List<VehicleCurrentLocationDTO> updateCurrentVehiclesLocation() throws EntityNotFoundException {
 
         return vehicleService.updateCurrentVehiclesLocation();
     }
@@ -59,5 +59,10 @@ public class VehicleController {
         return vehicleService.getRatingForVehicle(id);
     }
 
-
+    @GetMapping("/{vehicleType}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
+    public VehicleDTO getVehicleByVehicleType(@PathVariable String vehicleType){
+        return vehicleService.getVehicleDTOByVehicleType(vehicleType);
+    }
 }

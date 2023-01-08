@@ -8,41 +8,69 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.SortedSet;
 
-import static com.example.serbUber.exception.ErrorMessagesConstants.WRONG_KM_NUM;
+import static com.example.serbUber.exception.ErrorMessagesConstants.*;
 
 public class RouteRequest {
-    @NotNull(message = "Location must be selected.")
-    @Valid
-    private LocationRequest startPoint;
+
+    @NotNull(message = NOT_NULL_MESSAGE)
+    @Positive(message = POSITIVE_MESSAGE)
+    private double timeInMin;
 
     @NotEmpty(message = "Destinations must be selected.")
     @Valid
-    private List<LocationRequest> destinations = new LinkedList<>();
+    private List<DrivingLocationIndexRequest> locations = new LinkedList<>();
 
     @NotNull(message = WRONG_KM_NUM)
     @Positive(message = WRONG_KM_NUM)
-    private double kilometers;
+    private double distance;
+
+    @NotEmpty(message = "Route path must be selected.")
+    private List<Integer> routePathIndex;
 
     public RouteRequest(
-            final LocationRequest startPoint,
-            final List<LocationRequest> destinations,
-            final double kilometers
+
+            final double timeInMin,
+            final double distance,
+            final List<DrivingLocationIndexRequest> locations,
+            final List<Integer> routePathIndex
     ) {
-        this.startPoint = startPoint;
-        this.destinations = destinations;
-        this.kilometers = kilometers;
+        this.timeInMin = timeInMin;
+        this.distance = distance;
+        this.locations = locations;
+        this.routePathIndex = routePathIndex;
     }
 
-    public LocationRequest getStartPoint() {
-        return startPoint;
+    public double getTimeInMin() {
+        return timeInMin;
     }
 
-    public List<LocationRequest> getDestinations() {
-        return destinations;
+    public void setTimeInMin(double timeInMin) {
+        this.timeInMin = timeInMin;
     }
 
-    public double getKilometers() {
-        return kilometers;
+    public List<DrivingLocationIndexRequest> getLocations() {
+        return locations;
+    }
+
+    public void setLocations(List<DrivingLocationIndexRequest> locations) {
+        this.locations = locations;
+    }
+
+    public double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(double distance) {
+        this.distance = distance;
+    }
+
+    public List<Integer> getRoutePathIndex() {
+        return routePathIndex;
+    }
+
+    public void setRoutePathIndex(List<Integer> routePathIndex) {
+        this.routePathIndex = routePathIndex;
     }
 }

@@ -1,91 +1,140 @@
 import { Route } from '../model/route/route';
-import {Location} from "../model/route/location";
-import * as L from 'leaflet';
+import {LngLat, Location} from "../model/route/location";
 import {Vehicle} from "../model/vehicle/vehicle";
 import {VehicleCurrentLocation} from "../model/vehicle/vehicle-current-location";
+import {PossibleRoute} from "../model/route/possible-routes";
+import {SearchingRoutesForm} from "../model/route/searching-routes-form";
+import {DrivingLocation} from "../model/route/driving-location";
 
-export function drawPolyline(map, route: Route): L.Polyline {
-  let latLongs = [];
-  route.locations.forEach(locationIndex =>
-    latLongs.push([locationIndex.location.lat, locationIndex.location.lon])
-  );
-
-  let currentPolyline = L.polyline(latLongs, { color: 'red', weight: 7 }).addTo(
-    map
-  );
-  map.fitBounds(currentPolyline.getBounds());
-
-  return currentPolyline;
+export function addMarker(map: google.maps.Map, markerCoordinates: google.maps.LatLng | google.maps.LatLngLiteral)
+  :google.maps.Marker
+{
+  map.setCenter(markerCoordinates);
+  map.setZoom(16);
+  return new google.maps.Marker(
+    {
+      position: markerCoordinates,
+      map: map,
+      title: 'Location'
+    });
 }
 
-export function removeLayer(map, drawPolyline) {
-  drawPolyline.forEach(polyline => map.removeLayer(polyline));
-}
-
-export function removeOneLayer(map, polyline) {
-  map.removeLayer(polyline);
-}
-
-export function removeMarker(map: L.Map, marker: L.Marker) {
-  map.removeLayer(marker);
-}
-
-export function drawPolylineOnMap(map: L.Map, latLongs: number[], color: string, weight: number): L.Polyline {
-  const polyline: L.Polyline = L.polyline(latLongs, { color: color, weight: weight }).addTo(map);
-  map.fitBounds(polyline.getBounds());
-
-  return polyline;
-}
-
-export function drawPolylineOnMapWithoutClickEvent(map: L.Map, latLongs: number[]): L.Polyline {
-  const polyline: L.Polyline = L.polyline(latLongs, { color: "#283b50", weight: 9 }).addTo(map);
-  map.fitBounds(polyline.getBounds());
-
-  return polyline;
-}
-
-export function refreshMap(map){
-  map.off();
-  map.eachLayer((layer) => {
-      map.removeLayer(layer);
+export function drawAllMarkers(locations: DrivingLocation[] | undefined, map: google.maps.Map): google.maps.Marker[] {
+  const markers: google.maps.Marker[] = [];
+  locations.forEach(location => {
+    const markerCoordinates: google.maps.LatLngLiteral = { lat: location.location.lat, lng: location.location.lon };
+    markers.push(addMarker(map, markerCoordinates));
   })
+  return markers;
 }
 
-export function removeSpecificPolyline(map, polyline: L.Polyline){
-  map.off();
-  map.eachLayer((layer) => {
-    if (  layer === polyline) {
-      map.removeLayer(layer);
+export function removeMarker(marker: google.maps.Marker) {
+  marker.setMap(null);
+}
+
+export function removeAllMarkers(markers: SearchingRoutesForm[]): void{
+  for (let i; i < markers.length; i++) {
+    if (markers.at(i).marker){
+      removeMarker(markers.at(i).marker);
     }
-  })
+  }
 }
 
-export function addCarMarker(map, location: Location, iconName: string): L.Marker {
-  const customIcon = L.icon({
-    iconUrl: iconName,
-    iconSize: [45, 45],
+export function removeAllMarkersFromList(markers: google.maps.Marker[]): void{
+  markers.forEach(marker => removeMarker(marker));
+}
+
+export function polylineFound(polylines: google.maps.Polyline[]): boolean {
+
+  return polylines !== null && polylines !== undefined;
+}
+
+export function removeAllPolyline(polylines: google.maps.Polyline[]): google.maps.Polyline[]{
+  if (polylineFound(polylines)) {
+    polylines.forEach(polyline => removeLine(polyline));
+  }
+
+  return [];
+}
+
+export function removeLine(polyline: google.maps.Polyline): void {
+  polyline.setMap(null);
+}
+
+export function drawPolylineOnMapHaveRoute(map: google.maps.Map, route: Route | undefined): google.maps.Polyline | null {
+  if (route){
+    let latLongs: google.maps.LatLngLiteral[] = [];
+    route.locations.forEach(locationIndex =>
+      latLongs.push({lat:locationIndex.location.lat, lng:locationIndex.location.lon})
+    );
+
+    return drawPolylineOnMap(map, latLongs, "#283b50", 9);
+  }
+  return null;
+}
+
+export function drawPolylineWithLngLatArray(map: google.maps.Map, lngLatList: LngLat[]): google.maps.Polyline {
+  let latLongs: google.maps.LatLngLiteral[] = [];
+  lngLatList.forEach(lngLat =>
+    latLongs.push({lat:lngLat[0], lng:lngLat[1]})
+  );
+  return drawPolylineOnMap(map, latLongs, "#283b50", 9);
+}
+
+
+export function drawPolylineOnMap(map: google.maps.Map, routeCoordinates: google.maps.LatLngLiteral[], color: string, weight: number)
+  : google.maps.Polyline {
+  const polyline: google.maps.Polyline = new google.maps.Polyline({
+    path: routeCoordinates,
+    strokeColor: color,
+    strokeOpacity: 1.0,
+    strokeWeight: weight,
   });
-  const markerOptions = {
-    title: 'Car',
-    clickable: true,
-    icon: customIcon,
+  console.log(routeCoordinates);
+  let bounds = new google.maps.LatLngBounds();
+  for (let i = 0; i < routeCoordinates.length; i++) {
+    bounds.extend(routeCoordinates[i]);
+  }
+  map.fitBounds(bounds);
+  addLine(map, polyline);
+
+  return polyline;
+}
+
+export function addLine(map: google.maps.Map, polyline: google.maps.Polyline): void {
+  polyline.setMap(map);
+}
+
+export function getRouteCoordinates(route: PossibleRoute): google.maps.LatLngLiteral[] {
+  let routeCoordinates: google.maps.LatLngLiteral[] = [];
+  route.pointList.forEach(latLng =>
+    routeCoordinates.push({ lat: latLng[0], lng: latLng[1] })
+  );
+
+  return routeCoordinates;
+}
+
+export function addCarMarker(map, location: Location, iconName: string): google.maps.Marker {
+  const customIcon = {
+    url: iconName,
+    scaledSize: new google.maps.Size(45, 45)
   };
 
-  const carMarker = L.marker(
-    [location?.lat, location?.lon],
-    markerOptions
-  );
-  carMarker.addTo(map);
-
-  return carMarker;
+  return new google.maps.Marker(
+    {
+      position: {lat:location?.lat, lng:location?.lon},
+      map: map,
+      title: 'Car',
+      icon: customIcon
+    });
 }
 
-export function changeOrAddMarker(
-  map, carMarkers: L.Marker[], vehicles: Vehicle[], vehicleCurrentLocation: VehicleCurrentLocation[]
-): L.Marker[] {
+export function addCarMarkers(
+  map: google.maps.Map, carMarkers: google.maps.Marker[], vehicles: Vehicle[], vehicleCurrentLocation: VehicleCurrentLocation[]
+): google.maps.Marker[] {
   if (map !== undefined){
-    carMarkers.forEach(marker => removeMarker(map, marker));
-    let markers: L.Marker = [];
+    carMarkers.forEach(marker => removeMarker(marker));
+    let markers: google.maps.Marker[] = [];
     vehicleCurrentLocation.forEach(currentVehicle => {
       markers.push(currentVehicle.inDrive === true ?
         addCarMarker(map, currentVehicle?.currentLocation, '/assets/images/car.png'):
@@ -97,5 +146,4 @@ export function changeOrAddMarker(
   }
 
   return carMarkers;
-
 }

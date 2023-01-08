@@ -1,8 +1,7 @@
-export interface DrivingNotificationResponse {
-  lonStarted: number;
-  latStarted: number;
-  lonEnd: number;
-  latEnd: number;
+import { Route } from '../route/route';
+
+export interface DrivingNotification {
+  route: Route;
   senderEmail: string;
   price: number;
   receiverEmail?: string;

@@ -33,6 +33,14 @@
         >Tokens</a
       >
       <a
+        *ngIf="isRegular"
+        [routerLink]="['/notifications']"
+        routerLinkActive="active"
+        mat-button
+        color="primary"
+      >Notifications</a
+      >
+      <a
         *ngIf="isAdmin"
         [routerLink]="['/drivers']"
         routerLinkActive="active"

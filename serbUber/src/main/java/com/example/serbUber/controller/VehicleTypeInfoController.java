@@ -37,7 +37,7 @@ public class VehicleTypeInfoController {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
     public double getPriceForSelectedRouteAndVehicle(@PathVariable VehicleType type, @PathVariable double kilometers) throws EntityNotFoundException {
         double priceForType = this.vehicleTypeInfoService.getPriceForVehicle(type);
-        return priceForType + (kilometers/1000)*120;
+        return priceForType + (kilometers/1000)*1; // *1 token -> 1token=1e
     }
 
     @PostMapping()

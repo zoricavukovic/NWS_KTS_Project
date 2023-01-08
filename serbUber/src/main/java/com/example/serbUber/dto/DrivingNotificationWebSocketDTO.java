@@ -6,9 +6,12 @@ public class DrivingNotificationWebSocketDTO {
     private Long id;
     private String senderEmail;
 
-    public DrivingNotificationWebSocketDTO(Long id, String senderEmail) {
+    private DrivingNotificationType drivingNotificationType;
+
+    public DrivingNotificationWebSocketDTO(Long id, String senderEmail, DrivingNotificationType drivingNotificationType) {
         this.id = id;
         this.senderEmail = senderEmail;
+        this.drivingNotificationType = drivingNotificationType;
     }
 
     public Long getId() {
@@ -27,4 +30,11 @@ public class DrivingNotificationWebSocketDTO {
         this.senderEmail = senderEmail;
     }
 
+    public DrivingNotificationType getDrivingNotificationType() {
+        return drivingNotificationType;
+    }
+
+    public void setDrivingNotificationType(DrivingNotificationType drivingNotificationType) {
+        this.drivingNotificationType = drivingNotificationType;
+    }
 }

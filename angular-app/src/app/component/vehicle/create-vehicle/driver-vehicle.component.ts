@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { VehicleTypeInfo } from 'src/app/model/vehicle/vehicle-type-info';
+import { VehicleTypeInfoService } from 'src/app/service/vehicle-type-info.service';
 import { VehicleService } from 'src/app/service/vehicle.service';
 
 @Component({
@@ -33,11 +34,14 @@ export class DriverVehicleComponent implements OnInit, OnDestroy {
   responsiveOptions;
   index = 0;
 
-  constructor(private vehicleService: VehicleService) {}
+  constructor(
+    private vehicleService: VehicleService,
+    private vehicleTypeInfoService: VehicleTypeInfoService
+  ) {}
 
   ngOnInit(): void {
-    this.vehicleTypesSubscription = this.vehicleService
-      .getVehicleTypeInfos()
+    this.vehicleTypesSubscription = this.vehicleTypeInfoService
+      .getAll()
       .subscribe(vehicleTypes => {
         vehicleTypes.forEach(
           (vehicleType, index) =>

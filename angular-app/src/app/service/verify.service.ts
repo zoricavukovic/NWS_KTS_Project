@@ -12,28 +12,24 @@ import { User } from '../model/user/user';
 export class VerifyService {
   constructor(
     private http: HttpClient,
-    private configService: ConfigService,
-    private router: Router
+    private configService: ConfigService
   ) {}
 
   verify(verifyRequest: VerifyRequest): Observable<User> {
     return this.http.put<User>(this.configService.verify_url, verifyRequest);
   }
 
-  sendCodeAgain(verifyId: Number): Observable<User> {
+  sendCodeAgain(verifyId: number): Observable<User> {
     return this.http.post<User>(
       this.configService.send_verify_code_url,
       verifyId
     );
   }
 
-  createVerifyRequest(
-    verifyId: number,
-    securityCode: number,
-  ): VerifyRequest {
+  createVerifyRequest(verifyId: number, securityCode: number): VerifyRequest {
     return {
       verifyId: verifyId,
-      securityCode: securityCode
+      securityCode: securityCode,
     };
   }
 }

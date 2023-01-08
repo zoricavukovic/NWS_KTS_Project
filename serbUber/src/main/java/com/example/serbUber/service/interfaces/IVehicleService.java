@@ -22,7 +22,9 @@ public interface IVehicleService {
     Vehicle updateRate(Long id, double rate) throws EntityNotFoundException;
     void delete(Long id);
 
-    List<VehicleCurrentLocationDTO> getAllVehiclesForActiveDriver();
+    List<VehicleCurrentLocationDTO> getAllVehiclesForActiveDriver() throws EntityNotFoundException;
 
-    List<VehicleCurrentLocationDTO> updateCurrentVehiclesLocation();
+    List<VehicleCurrentLocationDTO> updateCurrentVehiclesLocation() throws EntityNotFoundException;
+
+    VehicleDTO getVehicleDTOByVehicleType(String vehicleType);
 }

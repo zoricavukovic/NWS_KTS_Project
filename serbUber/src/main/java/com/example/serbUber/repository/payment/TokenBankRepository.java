@@ -15,6 +15,4 @@ public interface TokenBankRepository extends JpaRepository<TokenBank, Long> {
 
     @Query("select tb from TokenBank tb left join fetch tb.transactions t left join fetch tb.user u join fetch tb.payingInfo pi where u.id=?1")
     Optional<TokenBank> getTokenBankByUserId(Long id);
-
-
 }

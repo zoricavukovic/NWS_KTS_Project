@@ -1,0 +1,24 @@
+<div *ngIf="!canAcceptOrDeclineRide()" class="button-container">
+  <button mat-raised-button>Request now</button>
+  <button mat-raised-button>Request later</button>
+  <button mat-icon-button color="warn" (click)="setFavouriteRouteEmitter()">
+    <mat-icon
+      *ngIf="!favouriteRoute"
+      matTooltip="Add to favourite routes"
+      matTooltipClass="tooltip"
+      matTooltipHideDelay="1000"
+      >favorite_border</mat-icon
+    >
+    <mat-icon
+      *ngIf="favouriteRoute"
+      matTooltip="Remove from favourite routes"
+      matTooltipClass="tooltip"
+      matTooltipHideDelay="1000"
+      >favorite</mat-icon
+    >
+  </button>
+</div>
+<div *ngIf="canAcceptOrDeclineRide()" class="button-container">
+  <button mat-raised-button color="primary" style="color:var(--deep-blue)" (click)="declineRide()">Decline</button>
+  <button mat-raised-button (click)="acceptRide()">Accept</button>
+</div>

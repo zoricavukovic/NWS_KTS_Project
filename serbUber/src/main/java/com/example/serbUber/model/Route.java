@@ -1,9 +1,8 @@
 package com.example.serbUber.model;
+
 import org.hibernate.annotations.SortNatural;
 
 import javax.persistence.*;
-import java.util.List;
-import java.util.Set;
 import java.util.SortedSet;
 
 @Entity
@@ -63,5 +62,9 @@ public class Route {
 
     public void setTimeInMin(double timeInMin) {
         this.timeInMin = timeInMin;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

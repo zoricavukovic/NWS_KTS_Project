@@ -1,0 +1,43 @@
+#content{
+  position: relative;
+}
+
+#icon-details {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+
+  background-color:var(--deep-blue);
+  border-radius:50%;
+}
+
+.spinner {
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  top: 0;
+  left: 3rem;
+}
+
+.spinner-div {
+  position: relative;
+  width: 100px;
+  margin-top:1.8rem;
+  height: 5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.text-container {
+  margin-right: 2rem;
+  margin-top:-0.85rem;
+  font-size:1.4rem;
+  text-align: center;
+}
+
+.flex-div {
+  display: flex;
+  flex-direction: column;
+}

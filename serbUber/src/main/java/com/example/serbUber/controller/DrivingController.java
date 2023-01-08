@@ -2,6 +2,9 @@ package com.example.serbUber.controller;
 
 import com.example.serbUber.dto.DrivingDTO;
 import com.example.serbUber.dto.DrivingPageDTO;
+import com.example.serbUber.dto.SimpleDrivingInfoDTO;
+import com.example.serbUber.exception.DriverAlreadyHasStartedDrivingException;
+import com.example.serbUber.exception.DrivingShouldNotStartYetException;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.request.DrivingRequest;
 import com.example.serbUber.service.DrivingService;
@@ -73,7 +76,7 @@ public class DrivingController {
         return drivingService.getNumberOfAllDrivingsForUser(id);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/now-and-future/{id}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ROLE_DRIVER')")
     public List<DrivingDTO> getAllNowAndFutureDrivings(
@@ -85,7 +88,7 @@ public class DrivingController {
 
 
 
-    @GetMapping("/details/{id}")
+    @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
     public DrivingDTO getDriving(@PathVariable Long id) throws EntityNotFoundException {
@@ -104,7 +107,7 @@ public class DrivingController {
     @PutMapping("/start/{id}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ROLE_DRIVER')")
-    public DrivingDTO startDriving(@PathVariable Long id) throws EntityNotFoundException {
+    public DrivingDTO startDriving(@PathVariable Long id) throws EntityNotFoundException, DriverAlreadyHasStartedDrivingException, DrivingShouldNotStartYetException {
 
         return drivingService.startDriving(id);
     }
@@ -119,5 +122,13 @@ public class DrivingController {
     ) throws EntityNotFoundException {
 
         return drivingService.rejectDriving(id, reason);
+    }
+
+    @GetMapping("/has-active/user/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ROLE_REGULAR_USER')")
+    public SimpleDrivingInfoDTO checkUserHasActiveDriving(@Valid @NotNull(message = NOT_NULL_MESSAGE)@PathVariable final Long id){
+
+        return drivingService.checkUserHasActiveDriving(id);
     }
 }

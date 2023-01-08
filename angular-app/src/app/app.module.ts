@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './material/material.module';
 import { LoginComponent } from './component/user/auth/login/login.component';
-import { GooglePlaceModule } from "ngx-google-places-autocomplete";
+import { GooglePlaceModule } from 'ngx-google-places-autocomplete';
 import {
   SocialLoginModule,
   SocialAuthServiceConfig,
@@ -23,7 +23,7 @@ import { DriverVehicleComponent } from './component/vehicle/create-vehicle/drive
 import { CarouselModule } from 'primeng/carousel';
 import { ButtonModule } from 'primeng/button';
 import { ShowDrivingsComponent } from './component/driving/show-drivings/show-drivings.component';
-import { DrivingDetailsComponent } from './component/driving/driving-details/driving-details.component';
+import { DrivingDetailsComponent } from './component/driving/driving-details-components/driving-details/driving-details.component';
 import { RatingDialogComponent } from './component/review/rating-dialog/rating-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { SendResetPasswordEmailComponent } from './component/user/auth/send-reset-password-link/send-reset-password-link.component';
@@ -65,6 +65,7 @@ import { DriverHomePageContainerComponent } from './component/home/driver-home-p
 import { AvatarModule } from 'primeng/avatar';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { AvatarGroupModule } from 'primeng/avatargroup';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SuccessfullVerificationComponent } from './component/user/auth/successfull-verification/successfull-verification.component';
 import { RejectDrivingComponent } from './component/driving/reject-driving/reject-driving.component';
 import { BasicUserProfileComponent } from './component/user/basic-user-profile/basic-user-profile.component';
@@ -84,6 +85,19 @@ import { ProcessingPaymentComponent } from './component/payment/processing-payme
 import {ProgressSpinnerModule} from 'primeng/progressspinner';
 import { ChangePayingInfoComponent } from './component/payment/change-paying-info/change-paying-info.component';
 import { PaymentStatusComponent } from './component/payment/payment-status/payment-status.component';
+import { DrivingDetailsRouteComponent } from './component/driving/driving-details-components/driving-details-route/driving-details-route.component';
+import { DrivingDetailsActionsComponent } from './component/driving/driving-details-components/driving-details-actions/driving-details-actions.component';
+import { DrivingDetailsDriverComponent } from './component/driving/driving-details-components/driving-details-driver/driving-details-driver.component';
+import { DrivingDetailsPassengersComponent } from './component/driving/driving-details-components/driving-details-passengers/driving-details-passengers.component';
+import { AcceptingDrivingViewComponent } from './component/home/accepting-driving-view/accepting-driving-view.component';
+import { GoogleMapsModule } from '@angular/google-maps';
+import { HomePagePassengerComponent } from './component/home/home-page-pessanger/home-page-passenger.component';
+import { RoutesOptionComponent } from './component/home/routes-option/routes-option.component';
+import { SimpleDrivingDetailContainerComponent } from './component/home/simple-driving-detail-container/simple-driving-detail-container.component';
+import {CustomInterceptor} from "./interceptor/custom.interceptor";
+import { ActiveDriveContainerComponent } from './component/home/active-drive-container/active-drive-container.component';
+import { WaitingForAcceptRideContainerComponent } from './component/home/waiting-for-accept-ride-container/waiting-for-accept-ride-container.component';
+import { NotificationsComponent } from './component/notifications/notifications.component';
 
 @NgModule({
   declarations: [
@@ -136,44 +150,60 @@ import { PaymentStatusComponent } from './component/payment/payment-status/payme
     ProcessingPaymentComponent,
     ChangePayingInfoComponent,
     PaymentStatusComponent,
+    DrivingDetailsRouteComponent,
+    DrivingDetailsActionsComponent,
+    DrivingDetailsDriverComponent,
+    DrivingDetailsPassengersComponent,
+    AcceptingDrivingViewComponent,
+    HomePagePassengerComponent,
+    RoutesOptionComponent,
+    SimpleDrivingDetailContainerComponent,
+    ActiveDriveContainerComponent,
+    WaitingForAcceptRideContainerComponent,
+    NotificationsComponent
   ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        BrowserAnimationsModule,
-        HttpClientModule,
-        MaterialModule,
-        FormsModule,
-        ReactiveFormsModule,
-        SocialLoginModule,
-        CarouselModule,
-        ProgressSpinnerModule,
-        KnobModule,
-        ButtonModule,
-        MatDialogModule,
-        RatingModule,
-        TimelineModule,
-        NgxStarsModule,
-        NgToastModule,
-        MglTimelineModule,
-        MatTooltipModule,
-        MatRadioModule,
-        MatPaginatorModule,
-        MatChipsModule,
-        ToastrModule.forRoot({
-            positionClass: 'toast-bottom-left',
-            preventDuplicates: true,
-            closeButton: true,
-        }),
-        GooglePlaceModule,
-        ScrollingModule,
-        AvatarModule,
-        AvatarGroupModule,
-        NgxPaginationModule,
-        SplitButtonModule,
-    ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    HttpClientModule,
+    MaterialModule,
+    FormsModule,
+    ReactiveFormsModule,
+    SocialLoginModule,
+    CarouselModule,
+    ButtonModule,
+    MatDialogModule,
+    RatingModule,
+    TimelineModule,
+    NgxStarsModule,
+    NgToastModule,
+    MglTimelineModule,
+    MatTooltipModule,
+    MatRadioModule,
+    MatPaginatorModule,
+    MatChipsModule,
+    ToastrModule.forRoot({
+      positionClass: 'toast-bottom-left',
+      preventDuplicates: true,
+      closeButton: true,
+    }),
+    GooglePlaceModule,
+    GoogleMapsModule,
+    ScrollingModule,
+    AvatarModule,
+    AvatarGroupModule,
+    NgxPaginationModule,
+    SplitButtonModule,
+    MatProgressSpinnerModule,
+  ],
   entryComponents: [EditProfileComponent],
   providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: CustomInterceptor,
+      multi: true
+    },
     {
       provide: 'SocialAuthServiceConfig',
       useValue: {

@@ -11,7 +11,7 @@ import { ConfigService } from './config.service';
 export class PaymentService {
 
   constructor(
-    private http: HttpClient, 
+    private http: HttpClient,
     private configService: ConfigService
     ) {}
 

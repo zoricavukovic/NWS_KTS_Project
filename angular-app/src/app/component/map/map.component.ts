@@ -1,13 +1,8 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import * as L from 'leaflet';
-import { OpenStreetMapProvider } from 'leaflet-geosearch';
-import { DrivingDetailsComponent } from '../driving/driving-details/driving-details.component';
+import { DrivingDetailsComponent } from '../driving/driving-details-components/driving-details/driving-details.component';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { HomePageComponent } from '../home/home-page/home-page.component';
-declare let L;
-
-delete L.Icon.Default.prototype._getIconUrl;
 
 @Component({
   selector: 'map',
@@ -15,45 +10,38 @@ delete L.Icon.Default.prototype._getIconUrl;
   styleUrls: ['./map.component.css'],
 })
 export class MapComponent implements OnInit, OnDestroy {
-  map: L.Map;
-  provider1 = new OpenStreetMapProvider();
+
   @ViewChild(DrivingDetailsComponent) private drivingDetailsComponent: DrivingDetailsComponent;
   @ViewChild(HomePageComponent) private homePageComponent: HomePageComponent;
 
-  constructor(public router: Router, public actRoute: ActivatedRoute) {
-    // this.actRoute.url.subscribe(url =>{
-    //   this.tekst = url;
-    //   var container = L.DomUtil.get('map');
-    //   if(container != null){
-    //     container = null;
-    //   }
-    // });
-  }
+  map: google.maps.Map;
+  center: google.maps.LatLngLiteral = {lat: 45.25167, lng: 19.83694};
+  zoom= 13;
+
+  constructor(public router: Router, public actRoute: ActivatedRoute) {}
 
   ngOnInit(): void {
-    // if (this.map !== undefined) { this.map = this.map.remove(); }
-    // this.map?.off();
-    // this.map.remove();
     this.initMap();
   }
 
-  initMap() {
-    this.map = L.map('map').setView([45.25167, 19.83694], 13);
-    L.control
-      .zoom({
-        position: 'topright',
-      })
-      .addTo(this.map);
-    L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      crossOrigin: true,
-    }).addTo(this.map);
+  ngOnDestroy(): void {
+
+    if (this.map !== undefined) {
+      this.map = null;
+    }
   }
 
-  ngOnDestroy(): void {
-    // refreshMap(this.map);
-    if (this.map !== undefined) {
-      this.map = this.map.remove();
-    }
-    // refreshMap(this.map);
+  private initMap(): void {
+    this.map = new google.maps.Map(document.getElementById("map") as HTMLElement, {
+      center: this.center,
+      mapId: '18f859a923044aa6',
+      mapTypeId:google.maps.MapTypeId[Symbol.hasInstance],
+      zoom: this.zoom,
+      zoomControl: true,
+      zoomControlOptions: {
+        position: google.maps.ControlPosition.TOP_RIGHT,
+      },
+      streetViewControl: false
+    });
   }
 }

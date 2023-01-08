@@ -18,7 +18,7 @@ export class ShowDriversComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.driversSubscription = this.driverService
-      .getAllDrivers()
+      .getAll()
       .subscribe(response => {
         this.drivers = response;
       });

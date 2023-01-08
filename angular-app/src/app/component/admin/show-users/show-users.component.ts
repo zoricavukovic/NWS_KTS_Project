@@ -1,7 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { UserService } from 'src/app/service/user.service';
+import { RegularUserService } from 'src/app/service/regular-user.service';
 import { User } from 'src/app/model/user/user';
+import { RegularUser } from 'src/app/model/user/regular-user';
 
 @Component({
   selector: 'app-show-users',
@@ -9,16 +10,16 @@ import { User } from 'src/app/model/user/user';
   styleUrls: ['./show-users.component.css'],
 })
 export class ShowUsersComponent implements OnInit, OnDestroy {
-  users: User[];
+  regularUsers: RegularUser[];
 
   usersSubscription: Subscription;
-  constructor(private userService: UserService) {}
+  constructor(private regularUserService: RegularUserService) {}
 
   ngOnInit(): void {
-    this.usersSubscription = this.userService
-      .getAllRegularUsers()
-      .subscribe(response => {
-        this.users = response;
+    this.usersSubscription = this.regularUserService
+      .getAll()
+      .subscribe(regularUsersResponse => {
+        this.regularUsers = regularUsersResponse;
       });
   }
 

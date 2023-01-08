@@ -21,16 +21,22 @@ public interface DrivingRepository extends JpaRepository<Driving, Long> {
     @Query(value="select * from drivings d, driving_locations dl, routes r, locations l, drivings_users du, regular_users ru where d.route_id = r.id and d.id = du.driving_id and dl.route_id=r.id and l.id=dl.location_id and ru.id = du.user_id and d.driver_id=?1",nativeQuery = true)
     Page<Driving> findByDriverId(Long id, Pageable pageable);
 
-    @Query("select d from Driving d left join fetch d.route r left join fetch r.locations dest left join fetch d.usersPaid up left join fetch d.users u where d.id=?1 order by dest.id")
+    @Query("select d from Driving d left join fetch d.route r left join fetch r.locations dest  left join fetch d.users u where d.id=?1 order by dest.id")
     Optional<Driving> getDrivingById(Long id);
 
     @Query(value = "select distinct d from Driving d left join fetch d.route r left join fetch r.locations dest left join fetch d.users u " +
-        "where d.driverId = ?1 and ((d.drivingStatus <> 2 and d.started > current_timestamp) or (d.active = true and d.started < current_timestamp)) order by d.started asc")
+        "where d.driverId = ?1 and ((d.drivingStatus = 2 and d.started > current_timestamp) or (d.active = true and d.started < current_timestamp)) order by d.started asc")
     List<Driving> getAllNowAndFutureDrivings(Long id);
 
-    @Query(value="select d from Driving d left join fetch d.route r left join fetch r.locations dest left join fetch d.usersPaid up left join fetch d.users u where u.id=?1")
+    @Query(value="select d from Driving d left join fetch d.route r left join fetch r.locations dest  left join fetch d.users u where u.id=?1")
     List<Driving> getNumberOfAllDrivingsForRegularUser(Long id);
 
-    @Query(value="select d from Driving d left join fetch d.route r left join fetch r.locations dest left join fetch d.usersPaid up left join fetch d.users u where d.driverId=?1")
+    @Query(value="select d from Driving d left join fetch d.route r left join fetch r.locations dest  left join fetch d.users u where d.driverId=?1")
     List<Driving> getNumberOfAllDrivingsForDriver(Long id);
+
+    @Query("select d from Driving d where d.driverId=?1 and d.active = true")
+    Optional<Driving> getActiveDrivingForDriver(Long driverId);
+
+    @Query("select DISTINCT d from Driving d inner join d.users user where user.id=?1 and d.active = true")
+    Optional<Driving> getActiveDrivingForUser(Long userId);
 }
