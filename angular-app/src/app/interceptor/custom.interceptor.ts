@@ -11,7 +11,7 @@ import { Observable } from "rxjs";
 export class CustomInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const accessToken = localStorage.getItem("token");
-
+    console.log(accessToken);
     return accessToken? next.handle(req.clone(
       {headers: req.headers.set('Authorization', 'Bearer ' + accessToken)}))
       : next.handle(req)

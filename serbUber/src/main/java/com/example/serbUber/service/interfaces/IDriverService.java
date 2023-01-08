@@ -1,5 +1,6 @@
 package com.example.serbUber.service.interfaces;
 
+import com.example.serbUber.dto.DriverPageDTO;
 import com.example.serbUber.dto.user.DriverDTO;
 import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.*;
@@ -13,6 +14,7 @@ import java.util.List;
 public interface IDriverService {
     List<DriverDTO> getAll();
     DriverDTO get(final Long id) throws EntityNotFoundException;
+    List<DriverPageDTO> getDriversWithPagination(int pageNumber, int pageSize);
     Driver getDriverById(final Long id) throws EntityNotFoundException;
     UserDTO create(
             final String email,

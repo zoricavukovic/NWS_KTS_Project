@@ -25,6 +25,8 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
   selectedSortBy: string = 'Date';
   selectedSortOrder: string = 'Descending';
 
+  currentPage: number = 0;
+
   sortOrder = [
     { name: 'Descending', checked: true },
     { name: 'Ascending', checked: false },
@@ -68,7 +70,7 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
     this.drivingsSubscription = this.drivingService
       .getDrivingsForUser(
         this.userId,
-        this.pageNumber,
+        this.currentPage,
         this.pageSize,
         this.selectedSortBy,
         this.selectedSortOrder
@@ -119,23 +121,14 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
       });
   }
 
-  onPaginate(pageEvent: PageEvent) {
-    //this.pageSize = +pageEvent.pageSize;
-    console.log(pageEvent.previousPageIndex);
-    this.pageNumber = +pageEvent.pageIndex;
-    this.pageIndex = +pageEvent.pageIndex;
-    if (pageEvent.previousPageIndex < this.pageNumber) {
-      if ((this.pageNumber + 1) * this.pageSize > this.totalPages) {
-        this.pageSize = this.totalPages % this.pageSize;
-      }
-    } else {
-      this.pageSize = this.pageSizeDefault;
-    }
-    console.log(this.pageNumber);
+
+  changePage(newPage: number) {
+    this.currentPage = newPage - 1;
+    console.log("trenutno" + this.currentPage);
     this.drivingService
       .getDrivingsForUser(
         this.userId,
-        this.pageNumber,
+        this.currentPage,
         this.pageSize,
         this.selectedSortBy,
         this.selectedSortOrder

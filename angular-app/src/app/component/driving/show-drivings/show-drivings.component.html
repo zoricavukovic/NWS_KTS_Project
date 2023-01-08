@@ -45,7 +45,7 @@
     message="User don't have any drivings."
     *ngIf="drivings.length === 0"></util-message>
 
-  <div class="paginator" *ngIf="drivings.length !== 0">
+  <!-- <div class="paginator" *ngIf="drivings.length !== 0">
     <mat-paginator
       appPaginator
       [length]="totalPages"
@@ -54,5 +54,9 @@
       aria-label="Select page"
       (page)="onPaginate($event)">
     </mat-paginator>
-  </div>
+  </div> -->
+
+  <app-pagination class="paginator" [totalItems]="totalPages" [pageSize]="currentPage"
+			(onPageSelected)="changePage($event)">
+		</app-pagination>
 </div>

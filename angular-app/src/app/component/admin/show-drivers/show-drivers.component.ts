@@ -11,6 +11,9 @@ import { DriverService } from 'src/app/service/driver.service';
 })
 export class ShowDriversComponent implements OnInit, OnDestroy {
   drivers: Driver[];
+  pageSize = 3;
+  totalPages:number;
+  currentPage = 0;
 
   driversSubscription: Subscription;
 
@@ -18,9 +21,23 @@ export class ShowDriversComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.driversSubscription = this.driverService
-      .getAll()
+      .getWithPagination(this.currentPage, this.pageSize)
       .subscribe(response => {
         this.drivers = response;
+        this.totalPages = response[0].pageNumber;
+      });
+  }
+
+  changePage(newPage: number) {
+    this.currentPage = newPage - 1;
+    console.log("trenutno" + this.currentPage);
+    this.driverService
+      .getWithPagination(this.currentPage, this.pageSize)
+      .subscribe((response: Driver[]) => {
+        this.drivers = response;
+        if(this.drivers.length > 0){
+          this.totalPages = this.drivers[0].pageNumber;
+        }
       });
   }
 

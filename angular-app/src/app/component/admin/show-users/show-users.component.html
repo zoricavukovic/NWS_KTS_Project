@@ -2,14 +2,25 @@
   <div
     *ngFor="let user of regularUsers; let i = index"
     class="div"
-    style="margin-left: 19%">
-    <div *ngIf="i % 2 === 0" style="display: flex">
+    style="margin-left: 11%; margin-top:2rem;">
+    <div *ngIf="i % 3 === 0" style="display: flex">
       <user-row [user]="user" [index]="i"></user-row>
       <user-row
         style="margin-left: 2rem"
         *ngIf="i < regularUsers.length - 1"
         [user]="regularUsers.at(i + 1)"
         [index]="i + 1"></user-row>
+        <user-row
+        style="margin-left: 2rem"
+        *ngIf="i < regularUsers.length - 2"
+        [user]="regularUsers.at(i + 2)"
+        [index]="i + 2"></user-row>
     </div>
   </div>
+
+  <app-pagination class="paginator" [totalItems]="totalPages" [pageSize]="currentPage"
+  (onPageSelected)="changePage($event)">
+</app-pagination>
+
+
 </div>

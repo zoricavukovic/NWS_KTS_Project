@@ -12,6 +12,10 @@ export abstract class GenericService<T> {
     return this._http.get(this.actionUrl) as Observable<T[]>;
   }
 
+  getWithPagination(pageNumber: number, pageSize: number, ): Observable<T[]>{
+    return this._http.get(`${this.actionUrl}/${pageNumber}/${pageSize}`) as Observable<T[]>;
+  }
+
   get(id: number): Observable<T> {
 
     return this._http.get(`${this.actionUrl}/${id}`) as Observable<T>;

@@ -1,0 +1,26 @@
+<div class="text-center">
+      <ul class="pagination justify-content-center">
+        <li
+          class="page-item"
+          (click)="pageSelected(activePage - 1)"
+          *ngIf="activePage > 1"
+        >
+        <button class="paginate left"><i></i><i></i></button>
+        </li>
+  
+        <li
+          class="paginate page-item page-number"
+        >
+         {{activePage}}/{{totalItems}}
+        </li>
+  
+        <li
+          class="page-item"
+          (click)="pageSelected(activePage + 1)"
+          *ngIf="activePage < getNoPages()"
+        >
+        <button class="paginate right"><i></i><i></i></button>
+        </li>
+      </ul>
+  </div>
+  

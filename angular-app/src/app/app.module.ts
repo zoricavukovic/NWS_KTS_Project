@@ -90,6 +90,7 @@ import {CustomInterceptor} from "./interceptor/custom.interceptor";
 import { ActiveDriveContainerComponent } from './component/home/active-drive-container/active-drive-container.component';
 import { WaitingForAcceptRideContainerComponent } from './component/home/waiting-for-accept-ride-container/waiting-for-accept-ride-container.component';
 import { NotificationsComponent } from './component/notifications/notifications.component';
+import { PaginationComponent } from './component/pagination/pagination.component';
 
 @NgModule({
   declarations: [
@@ -146,7 +147,8 @@ import { NotificationsComponent } from './component/notifications/notifications.
     SimpleDrivingDetailContainerComponent,
     ActiveDriveContainerComponent,
     WaitingForAcceptRideContainerComponent,
-    NotificationsComponent
+    NotificationsComponent,
+    PaginationComponent
   ],
   imports: [
     BrowserModule,

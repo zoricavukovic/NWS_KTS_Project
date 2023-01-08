@@ -96,7 +96,6 @@ public class DrivingService implements IDrivingService {
 
     private Page<Driving> getDrivingPage(final Long id, final Pageable page) throws EntityNotFoundException {
         User user = userService.getUserById(id);
-        Page<Driving> drivings = drivingRepository.findByUserId(id, page);
         return user.getRole().isDriver() ?
                 drivingRepository.findByDriverId(id, page) :
                 drivingRepository.findByUserId(id, page);

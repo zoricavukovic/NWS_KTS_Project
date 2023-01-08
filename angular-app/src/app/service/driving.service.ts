@@ -25,6 +25,13 @@ export class DrivingService extends GenericService<Driving> {
     selectedSortBy: string,
     selectedSortOrder: string
   ) {
+    console.log(this.configService.drivings_url_with_pagination_and_sort(
+      id,
+      pageNumber,
+      pageSize,
+      selectedSortBy,
+      selectedSortOrder
+    ));
     return this.http.get(
       this.configService.drivings_url_with_pagination_and_sort(
         id,

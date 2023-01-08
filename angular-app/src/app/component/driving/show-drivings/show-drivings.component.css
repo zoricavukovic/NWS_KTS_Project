@@ -73,7 +73,7 @@ mat-paginator {
 
 .paginator {
   bottom: 0;
-  position: relative;
+  position: absolute;
   width: 100%;
   color: var(--white);
 }

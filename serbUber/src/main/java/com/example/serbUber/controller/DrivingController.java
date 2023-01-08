@@ -54,7 +54,7 @@ public class DrivingController {
         return null;
     }
 
-    @GetMapping("/{id}/{pageNumber}/{pageSize}/{parameter}/{sortOrder}")
+    @GetMapping("/{id}/{pageNumber}/{pageSize}/{parameter}/{sortOrder}/{searchBy}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
     public List<DrivingPageDTO> getAllDrivingsForUserWithPaginationAndSort(
@@ -62,11 +62,12 @@ public class DrivingController {
             @Valid @NotNull(message = NOT_NULL_MESSAGE) @PositiveOrZero(message = POSITIVE_OR_ZERO_MESSAGE) @PathVariable int pageNumber,
             @Valid @NotNull(message = NOT_NULL_MESSAGE) @Positive(message = POSITIVE_MESSAGE) @PathVariable int pageSize,
             @Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable String parameter,
-            @Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable String sortOrder
+            @Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable String sortOrder,
+            @PathVariable String searchBy
         ) throws EntityNotFoundException
     {
 
-        return drivingService.getDrivingsForUser(id, pageNumber, pageSize, parameter, sortOrder);
+        return drivingService.getDrivingsForUser(id, pageNumber, pageSize, parameter, sortOrder, searchBy);
     }
 
     @GetMapping("/number/{id}")

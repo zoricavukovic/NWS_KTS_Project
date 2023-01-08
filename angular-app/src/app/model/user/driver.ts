@@ -15,4 +15,6 @@ export interface Driver {
   confirmPassword?: string;
   vehicle: Vehicle;
   active?: boolean;
+  pageSize?: number;
+  pageNumber?: number;
 }

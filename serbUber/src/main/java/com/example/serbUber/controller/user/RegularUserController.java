@@ -1,7 +1,9 @@
 package com.example.serbUber.controller.user;
 
+import com.example.serbUber.dto.DriverPageDTO;
 import com.example.serbUber.dto.RouteDTO;
 import com.example.serbUber.dto.user.RegularUserDTO;
+import com.example.serbUber.dto.user.RegularUserPageDTO;
 import com.example.serbUber.exception.*;
 import com.example.serbUber.request.user.FavouriteRouteRequest;
 import com.example.serbUber.service.user.RegularUserService;
@@ -12,9 +14,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
-import static com.example.serbUber.exception.ErrorMessagesConstants.NOT_NULL_MESSAGE;
+import static com.example.serbUber.exception.ErrorMessagesConstants.*;
 
 @RestController
 @RequestMapping("/regular-users")
@@ -31,6 +35,14 @@ public class RegularUserController {
     public List<RegularUserDTO> getAll() {
 
         return regularUserService.getAll();
+    }
+
+    @GetMapping("/{pageNumber}/{pageSize}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
+    public List<RegularUserPageDTO> getDriversWithPagination(@Valid @NotNull(message = NOT_NULL_MESSAGE) @PositiveOrZero(message = POSITIVE_OR_ZERO_MESSAGE) @PathVariable int pageNumber,
+                                                             @Valid @NotNull(message = NOT_NULL_MESSAGE) @Positive(message = POSITIVE_MESSAGE) @PathVariable int pageSize){
+        return regularUserService.getRegularUsersWithPagination(pageNumber, pageSize);
     }
 
     @PostMapping("/favourite")
