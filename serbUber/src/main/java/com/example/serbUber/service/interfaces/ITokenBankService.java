@@ -1,6 +1,7 @@
 package com.example.serbUber.service.interfaces;
 
 import com.example.serbUber.dto.payment.TokenBankDTO;
+import com.example.serbUber.dto.payment.TotalInAppSpendingDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.model.token.TokenBank;
 import com.example.serbUber.model.user.RegularUser;
@@ -16,4 +17,6 @@ public interface ITokenBankService {
     TokenBankDTO createTokenBank(RegularUser regularUser) throws EntityNotFoundException;
 
     TokenBankDTO getByUserId(Long userId) throws EntityNotFoundException;
+
+    TotalInAppSpendingDTO getInAppSpending();
 }

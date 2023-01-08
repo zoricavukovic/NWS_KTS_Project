@@ -1,1 +1,17 @@
-<p>change-paying-info works!</p>
+<div class="form-container">
+    <div class="row">
+
+        <div class="column">
+            <h1>Paying info</h1>
+            <app-paying-info-box [payingInfo]="payingInfo"></app-paying-info-box>
+        </div>
+
+        <div class="column">
+            <h1>Total spending on SerbUber</h1>
+            <app-payment-statistics style="max-width: 28rem;" class="statistics-content" [totalAmountMoneySpent]="totalMoneySpent" 
+                [totalAmountTokenSpent]="totalTokenAmountSpent"
+                [totalAmountTokenBought]="totalTokensInApp">
+            </app-payment-statistics>
+        </div>
+    </div>
+</div>

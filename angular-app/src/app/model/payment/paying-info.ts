@@ -1,7 +1,7 @@
 
 export interface PayingInfo {
-    id: number;
-    currency: string;
+    id?: number;
+    currency?: string;
     tokenPrice: number;
     maxNumOfTokensPerTransaction: number;
 }

@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { TokenBank } from 'src/app/model/payment/token-bank';
 import { PaymentService } from 'src/app/service/payment.service';
+import { TokenBankService } from 'src/app/service/token-bank.service';
 
 @Component({
   selector: 'app-financial-card',
@@ -16,14 +17,14 @@ export class FinancialCardComponent implements OnInit, OnDestroy {
   userId: string = "";
 
   constructor(
-    private paymentService: PaymentService,
+    private _tokenBankService: TokenBankService,
     private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
     this.userId = this.route.snapshot.paramMap.get('id');
     if (this.userId) {
-      this.tokenBankSubscription = this.paymentService.getTokenBank(this.userId).subscribe(
+      this.tokenBankSubscription = this._tokenBankService.get(+this.userId).subscribe(
         response => {
           if (response) {
             this.tokenBank = response;

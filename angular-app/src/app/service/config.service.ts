@@ -5,6 +5,7 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class ConfigService {
+
   public role_driver = 'ROLE_DRIVER';
   public role_regular_user = 'ROLE_REGULAR_USER';
 
@@ -31,9 +32,11 @@ export class ConfigService {
   private _send_verify_code_again = this.api_url + '/verify/send-code-again';
   private _vehicle_type_infos = this.api_url + '/vehicle-type-infos';
   private _token_bank_url = this.api_url + '/token-banks';
+  private _in_app_spending_url = this._token_bank_url + '/in-app-spending';
   private _paypal_url = this.api_url + '/paypal'
   private _create_payment = this._paypal_url + '/create-payment';
   private _complete_payment = this._paypal_url + '/complete-payment';
+  private _paying_info = this._paypal_url + '/paying-infos';
 
   private _drivings_pagination_url = this.api_url + '/drivings';
   private _drivings_details_url = this.api_url + '/drivings/details/';
@@ -328,5 +331,9 @@ export class ConfigService {
 
   get complete_payment_url(): string {
     return this._complete_payment;
+  }
+
+  get in_app_spending(): string {
+    return this._in_app_spending_url;
   }
 }

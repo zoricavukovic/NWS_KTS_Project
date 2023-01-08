@@ -1,6 +1,6 @@
 import { Token } from '@angular/compiler';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { TokenBank } from 'src/app/model/payment/token-bank';
 import { PaymentService } from 'src/app/service/payment.service';
 import { Subscription } from 'rxjs';
@@ -34,6 +34,7 @@ export class BuyTokensComponent implements OnInit, OnDestroy {
   });
 
   ngOnInit(): void {
+    this.tokenForm.get('tokenFormControl').addValidators(Validators.max(this.tokenBank.payingInfo.maxNumOfTokensPerTransaction))
   }
 
   createPayment(): void {

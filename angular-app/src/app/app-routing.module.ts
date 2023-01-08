@@ -18,6 +18,7 @@ import { BasicUserProfileComponent } from './component/user/basic-user-profile/b
 import { FinancialCardComponent } from './component/payment/financial-card/financial-card.component';
 import { ProcessingPaymentComponent } from './component/payment/processing-payment/processing-payment.component';
 import { PaymentStatusComponent } from './component/payment/payment-status/payment-status.component';
+import { ChangePayingInfoComponent } from './component/payment/change-paying-info/change-paying-info.component';
 
 const routes: Routes = [
   { path: 'map-view/:id', component: MapComponent },
@@ -43,6 +44,7 @@ const routes: Routes = [
   { path: 'payment/process-payment/:tokenBankId/:numOfTokens/process', component: ProcessingPaymentComponent },
   { path: 'payment/financial-card/:id', component: FinancialCardComponent },
   { path: 'payment/status/:status', component: PaymentStatusComponent },
+  { path: 'payment/change-paying-info', component: ChangePayingInfoComponent },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
 ];
 

@@ -75,7 +75,20 @@ import { UserAverageRateComponent } from './component/review/user-average-rate/u
 import { ReviewsHistoryComponent } from './component/review/reviews-history/reviews-history.component';
 import { ReportsHistoryComponent } from './component/report/reports-history/reports-history.component';
 import { ConfirmBlockingDialogComponent } from './component/user/confirm-blocking-dialog/confirm-blocking-dialog.component';
-import {SplitButtonModule} from "primeng/splitbutton";
+import { DrivingDetailsRouteComponent } from './component/driving/driving-details-components/driving-details-route/driving-details-route.component';
+import { DrivingDetailsActionsComponent } from './component/driving/driving-details-components/driving-details-actions/driving-details-actions.component';
+import { DrivingDetailsDriverComponent } from './component/driving/driving-details-components/driving-details-driver/driving-details-driver.component';
+import { DrivingDetailsPassengersComponent } from './component/driving/driving-details-components/driving-details-passengers/driving-details-passengers.component';
+import { AcceptingDrivingViewComponent } from './component/home/accepting-driving-view/accepting-driving-view.component';
+import { SplitButtonModule } from 'primeng/splitbutton';
+import { GoogleMapsModule } from '@angular/google-maps';
+import { HomePagePassengerComponent } from './component/home/home-page-pessanger/home-page-passenger.component';
+import { RoutesOptionComponent } from './component/home/routes-option/routes-option.component';
+import { SimpleDrivingDetailContainerComponent } from './component/home/simple-driving-detail-container/simple-driving-detail-container.component';
+import {CustomInterceptor} from "./interceptor/custom.interceptor";
+import { ActiveDriveContainerComponent } from './component/home/active-drive-container/active-drive-container.component';
+import { WaitingForAcceptRideContainerComponent } from './component/home/waiting-for-accept-ride-container/waiting-for-accept-ride-container.component';
+import { NotificationsComponent } from './component/notifications/notifications.component';
 import { FinancialCardComponent } from './component/payment/financial-card/financial-card.component';
 import {KnobModule} from 'primeng/knob';
 import { BuyTokensComponent } from './component/payment/buy-tokens/buy-tokens.component';
@@ -85,19 +98,8 @@ import { ProcessingPaymentComponent } from './component/payment/processing-payme
 import {ProgressSpinnerModule} from 'primeng/progressspinner';
 import { ChangePayingInfoComponent } from './component/payment/change-paying-info/change-paying-info.component';
 import { PaymentStatusComponent } from './component/payment/payment-status/payment-status.component';
-import { DrivingDetailsRouteComponent } from './component/driving/driving-details-components/driving-details-route/driving-details-route.component';
-import { DrivingDetailsActionsComponent } from './component/driving/driving-details-components/driving-details-actions/driving-details-actions.component';
-import { DrivingDetailsDriverComponent } from './component/driving/driving-details-components/driving-details-driver/driving-details-driver.component';
-import { DrivingDetailsPassengersComponent } from './component/driving/driving-details-components/driving-details-passengers/driving-details-passengers.component';
-import { AcceptingDrivingViewComponent } from './component/home/accepting-driving-view/accepting-driving-view.component';
-import { GoogleMapsModule } from '@angular/google-maps';
-import { HomePagePassengerComponent } from './component/home/home-page-pessanger/home-page-passenger.component';
-import { RoutesOptionComponent } from './component/home/routes-option/routes-option.component';
-import { SimpleDrivingDetailContainerComponent } from './component/home/simple-driving-detail-container/simple-driving-detail-container.component';
-import {CustomInterceptor} from "./interceptor/custom.interceptor";
-import { ActiveDriveContainerComponent } from './component/home/active-drive-container/active-drive-container.component';
-import { WaitingForAcceptRideContainerComponent } from './component/home/waiting-for-accept-ride-container/waiting-for-accept-ride-container.component';
-import { NotificationsComponent } from './component/notifications/notifications.component';
+import { PayingInfoBoxComponent } from './component/payment/paying-info-box/paying-info-box.component';
+
 
 @NgModule({
   declarations: [
@@ -143,13 +145,6 @@ import { NotificationsComponent } from './component/notifications/notifications.
     ReviewsHistoryComponent,
     ReportsHistoryComponent,
     ConfirmBlockingDialogComponent,
-    FinancialCardComponent,
-    BuyTokensComponent,
-    TransactionsHistoryComponent,
-    PaymentStatisticsComponent,
-    ProcessingPaymentComponent,
-    ChangePayingInfoComponent,
-    PaymentStatusComponent,
     DrivingDetailsRouteComponent,
     DrivingDetailsActionsComponent,
     DrivingDetailsDriverComponent,
@@ -160,7 +155,15 @@ import { NotificationsComponent } from './component/notifications/notifications.
     SimpleDrivingDetailContainerComponent,
     ActiveDriveContainerComponent,
     WaitingForAcceptRideContainerComponent,
-    NotificationsComponent
+    NotificationsComponent,
+    FinancialCardComponent,
+    BuyTokensComponent,
+    TransactionsHistoryComponent,
+    PaymentStatisticsComponent,
+    ProcessingPaymentComponent,
+    ChangePayingInfoComponent,
+    PaymentStatusComponent,
+    PayingInfoBoxComponent,
   ],
   imports: [
     BrowserModule,
@@ -196,6 +199,8 @@ import { NotificationsComponent } from './component/notifications/notifications.
     NgxPaginationModule,
     SplitButtonModule,
     MatProgressSpinnerModule,
+    KnobModule,
+    ProgressSpinnerModule,
   ],
   entryComponents: [EditProfileComponent],
   providers: [

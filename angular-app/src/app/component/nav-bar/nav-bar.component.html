@@ -74,6 +74,15 @@
         color="primary">
         Driver registration
       </a>
+
+      <a
+        *ngIf="isAdmin"
+        [routerLink]="['/payment/change-paying-info']"
+        routerLinkActive="active"
+        mat-button
+        color="primary">
+        Payment
+      </a>
     </div>
   </div>
 

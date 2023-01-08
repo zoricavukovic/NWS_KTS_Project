@@ -36,7 +36,7 @@ public class PayPalService implements IPayPalService {
     public PayPalService(final TokenBankService tokenBankService) {this.tokenBankService = tokenBankService;}
 
     public Map<String, String> createPayment(
-            Long tokenBankId,
+            final Long tokenBankId,
             double numOfTokens
     ) throws EntityNotFoundException, PayPalPaymentException {
         TokenBank tokenBank = this.tokenBankService.getTokenBankById(tokenBankId);

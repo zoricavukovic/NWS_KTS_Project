@@ -11,3 +11,9 @@ export interface TokenBank {
     transactions: TokenTransaction[];
     payingInfo: PayingInfo;
 }
+
+export interface InAppSpending {
+    totalMoneySpent: number;
+    totalTokenAmountSpent: number;
+    totalTokensInApp: number;
+}

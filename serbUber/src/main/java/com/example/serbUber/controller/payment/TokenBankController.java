@@ -1,6 +1,7 @@
 package com.example.serbUber.controller.payment;
 
 import com.example.serbUber.dto.payment.TokenBankDTO;
+import com.example.serbUber.dto.payment.TotalInAppSpendingDTO;
 import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.model.token.TokenBank;
@@ -34,6 +35,15 @@ public class TokenBankController {
     {
 
         return tokenBankService.getByUserId(userId);
+    }
+
+    @GetMapping("/in-app-spending")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public TotalInAppSpendingDTO getInAppSpending()
+    {
+
+        return tokenBankService.getInAppSpending();
     }
 
 }
