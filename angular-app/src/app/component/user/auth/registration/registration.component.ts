@@ -57,6 +57,9 @@ export class RegistrationComponent implements OnInit, OnDestroy {
         Validators.required,
         Validators.pattern('[a-zA-Z ]*'),
       ]),
+      babySeat: new FormControl(false),
+      petFriendly: new FormControl(false),
+      vehicleType: new FormControl('', Validators.required)
     },
     [matchPasswordsValidator()]
   );
@@ -113,12 +116,12 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     if (this.registrationForm.hasError('mismatch')) {
       this.toast.error('Passwords not match');
     }
-    if (isFormValid(this.registrationForm)) {
+    if (!this.registrationForm.invalid) {
       if (this.showDriverForm) {
         const vehicle: Vehicle = {
-          petFriendly: this.petFriendly,
-          babySeat: this.babySeat,
-          vehicleType: this.vehicleType,
+          petFriendly: this.registrationForm.get('petFriendly').value,
+          babySeat: this.registrationForm.get('babySeat').value,
+          vehicleType: this.registrationForm.get('vehicleType').value,
         };
         const driver: Driver = {
           email: this.registrationForm.get('emailFormControl').value,
@@ -169,6 +172,9 @@ export class RegistrationComponent implements OnInit, OnDestroy {
             error => this.toast.error(error.error, 'Registration failed')
           );
       }
+    }
+    else{
+      this.toast.error('Form is invalid. Check all fields.', 'Registration failed')
     }
   }
 

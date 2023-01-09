@@ -36,8 +36,17 @@ export class DrivingNotificationService extends GenericService<DrivingNotificati
 
   showDrivingStatus(drivingStatusNotification: DrivingStatusNotification) {
     if (drivingStatusNotification.drivingStatus === 'ACCEPTED') {
+      console.log(drivingStatusNotification);
+      this._router.navigate([`/map-view/${drivingStatusNotification.id}`]);
+      // document.getElementById('spinner-overlap-div').style.visibility = 'hidden';
       document.getElementById('minutes').innerText =
-        drivingStatusNotification.minutes.toString();
+        drivingStatusNotification.minutes.toString() + "min";
+        setTimeout(() => 
+        {
+          document.getElementById('minutes').innerText =
+          drivingStatusNotification.minutes.toString() + "min";
+        },
+        5000);
       //document.getElementById('acceptDriving').style.visibility = 'visible';
       document.getElementById('acceptDriving').style.display = 'inline';
     } else if (drivingStatusNotification.drivingStatus === 'PENDING') {

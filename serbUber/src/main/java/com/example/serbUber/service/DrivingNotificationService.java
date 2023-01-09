@@ -153,6 +153,7 @@ public class DrivingNotificationService implements IDrivingNotificationService {
                 System.out.println("voznjaaa" + drivingDTO.getId());
                 if (isPaidDriving(drivingNotification.getReceiversReviewed(), drivingNotification.getPrice())) {
                     drivingService.paidDriving(drivingDTO.getId());
+                    System.out.println( "dsds" +drivingDTO.getId());
                     DrivingStatusNotificationDTO drivingStatusNotificationDTO = new DrivingStatusNotificationDTO(driver.getId(), calculateMinutesForStartDriving(driver.getId(), drivingNotification.getRoute()), DrivingStatus.ACCEPTED, "", drivingDTO.getId());
                     webSocketService.sendDrivingStatus(drivingStatusNotificationDTO, receiversReviewed);
                     System.out.println("placenoooo" + drivingStatusNotificationDTO.getMinutes());

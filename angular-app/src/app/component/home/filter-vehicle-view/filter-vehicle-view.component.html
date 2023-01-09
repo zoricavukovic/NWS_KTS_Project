@@ -1,8 +1,6 @@
-<div *ngIf="vehiclePassengersView">
+<div *ngIf="vehiclePassengersView && rideRequestForm" [formGroup]="rideRequestForm">
   <driver-vehicle
-    (petFriendlyEvent)="petFriendly = $event"
-    (babySeatEvent)="babySeat = $event"
-    (vehicleTypeEvent)="setVehicleTypeAndShowPrice($event)"></driver-vehicle>
+    [formGroup] = "rideRequestForm"></driver-vehicle>
   <br />
   <mat-expansion-panel>
     <mat-expansion-panel-header>
@@ -52,12 +50,11 @@
   </button>
 </div>
 
-<div id="acceptDriving">
+<!-- <div id="acceptDriving">
   <app-accepting-driving-view
     [vehicle]="vehicle"
     [locations]="route.locations"
     [passengers]="passengers"
     [price]="price"></app-accepting-driving-view>
 
-  <!--NA MAPI SE VIDI KRETANJE VOZACA-->
-</div>
+</div> -->

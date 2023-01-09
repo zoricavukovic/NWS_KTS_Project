@@ -1,0 +1,65 @@
+<div style="padding:2rem">
+   <app-zaglavlje obrazac="A-1"></app-zaglavlje>
+  <div style="margin-left: 10rem; margin-right: 10rem">
+<!--    staviti [linear]="true"-->
+    <mat-stepper #stepper>
+      <ng-template matStepperIcon="edit">
+        <mat-icon style="background-color: white !important; border-radius: 1rem; padding: 0.1rem">edit</mat-icon>
+      </ng-template>
+      <ng-template matStepperIcon="home">
+        <mat-icon>home</mat-icon>
+      </ng-template>
+      <ng-template matStepperIcon="not_done">
+        <mat-icon style="background-color: white !important; border-radius: 1rem; padding: 0.1rem"></mat-icon>
+      </ng-template>
+
+      <ng-template matStepperIcon="last">
+        <mat-icon>done_all</mat-icon>
+      </ng-template>
+
+      <mat-step [stepControl]="podnosilacFormGroup" state="home">
+        <form [formGroup]="podnosilacFormGroup">
+          <ng-template matStepLabel>Podnosilac</ng-template>
+            <app-podnosilac [isTrademark]="false"></app-podnosilac>
+        </form>
+      </mat-step>
+
+      <mat-step [stepControl]="punomocnikFormGroup" state="not_done">
+        <form [formGroup]="punomocnikFormGroup">
+          <ng-template matStepLabel>Punomoćnik</ng-template>
+          <app-punomocnik></app-punomocnik>
+        </form>
+      </mat-step>
+      <mat-step [stepControl]="autorskoDeloFormGroup" state="not_done">
+        <form [formGroup]="autorskoDeloFormGroup">
+          <ng-template matStepLabel>Autorsko delo</ng-template>
+          <app-autorsko-delo></app-autorsko-delo>
+        </form>
+      </mat-step>
+      <mat-step [stepControl]="autoriFromGroup" state="not_done">
+        <form [formGroup]="autoriFromGroup">
+          <ng-template matStepLabel>Autori</ng-template>
+          <app-autori></app-autori>
+        </form>
+      </mat-step>
+
+      <mat-step [stepControl]="priloziFromGroup" state="not_done">
+        <form [formGroup]="priloziFromGroup">
+          <ng-template matStepLabel>Prilozi</ng-template>
+          <app-prilozi></app-prilozi>
+        </form>
+      </mat-step>
+
+      <mat-step state="last">
+        <ng-template matStepLabel>Kraj</ng-template>
+        <p style="margin-left: 2rem">Uspešno ste kreirali zahtev za unošenje u evidenciju i deponovanje autorskih dela.</p>
+        <div style="display: flex">
+          <button style="margin-left:40.7rem" class="previous-button" (click)="prikaz()" mat-raised-button matStepperPrevious>Nazad</button>
+          <button style="margin-left:1rem" class="next-button" mat-raised-button (click)="save()">Pošalji zahtev</button>
+        </div>
+      </mat-step>
+    </mat-stepper>
+  </div>
+
+</div>
+

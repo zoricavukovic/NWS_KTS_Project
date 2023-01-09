@@ -28,6 +28,7 @@ import {environment} from "../../../../environments/environment";
 import {Router} from "@angular/router";
 import {WebSocketService} from "../../../service/web-socket.service";
 import {SimpleDrivingInfo} from "../../../model/driving/simple-driving-info";
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-home-page-passenger',
@@ -40,15 +41,31 @@ export class HomePagePassengerComponent implements OnInit, OnDestroy {
 
   routeChoiceView: boolean;
   filterVehicleView: boolean;
+  rideRequestForm: FormGroup;
 
-  searchingRoutesForm: SearchingRoutesForm[];
+  
+
+  get searchingForm(){
+    return this.rideRequestForm.get('searchingRoutesForm')['controls'];
+  }
+
+  createEmptySearchForm(): FormGroup{
+    return this.formBuilder.group(new SearchingRoutesForm());
+  }
+
+  createEmptyRoute(): Route{
+    return {
+      locations: [],
+      distance: 0,
+      timeInMin: 0,
+      routePathIndex: []  
+    }
+  }
 
   possibleRoutesViaPoints: PossibleRoutesViaPoints[] = [];
   drawPolylineList: google.maps.Polyline[] = [];
   vehicles: Vehicle[];
   carMarkers: google.maps.Marker[] = [];
-  selectedRoute: Route;
-  routePathIndex: number[] = [];
   loadingViewVar = false;
 
   responsiveOptions = [
@@ -82,14 +99,24 @@ export class HomePagePassengerComponent implements OnInit, OnDestroy {
     private drivingService: DrivingService,
     private toast: ToastrService,
     private router: Router,
-    private webSocketSerice: WebSocketService
+    private webSocketSerice: WebSocketService,
+    private formBuilder: FormBuilder
   ) {
     this.routeChoiceView = true;
     this.filterVehicleView = false;
     this.rideIsRequested = false;
     this.activeRide = null;
-    this.searchingRoutesForm = [];
-    this.addStartAndEndPointInRoutes();
+    this.rideRequestForm = new FormGroup({
+      searchingRoutesForm: this.formBuilder.array([this.createEmptySearchForm(), this.createEmptySearchForm()]),
+      selectedRoute: new FormControl(this.createEmptyRoute()),
+      routePathIndex: new FormControl([]),
+      petFriendly: new FormControl(false),
+      babySeat: new FormControl(false),
+      vehicleType: new FormControl(''),
+      price: new FormControl(0),
+      senderEmail: new FormControl(''),
+      selectedPassengers: new FormControl([])
+    })
   }
 
   ngOnInit(): void {
@@ -113,12 +140,11 @@ export class HomePagePassengerComponent implements OnInit, OnDestroy {
   getPossibleRoutes() {
 
     this.drawPolylineList = removeAllPolyline(this.drawPolylineList);
-
     if (!this.formIsInvalid()) {
       const locationsForCreateRoutes: Location[] = [];
 
-      this.searchingRoutesForm.forEach(searchingRoutesLocation =>
-        locationsForCreateRoutes.push(searchingRoutesLocation.location)
+      this.searchingForm.forEach(searchingRoutesLocation =>
+        locationsForCreateRoutes.push(searchingRoutesLocation.value.location)
       );
 
       this.routeSubscription = this.routeService
@@ -142,11 +168,11 @@ export class HomePagePassengerComponent implements OnInit, OnDestroy {
   }
 
   changeCurrentRoutes(routes: PossibleRoutesViaPoints[]) {
-    this.routePathIndex = [];
+    this.rideRequestForm.get('routePathIndex').setValue([]);
     this.drawPolylineList = removeAllPolyline(this.drawPolylineList);
 
     if (routes.length === 1) {
-      this.routePathIndex.push(0);
+      this.rideRequestForm.get('routePathIndex')?.value.push(0);
 
       routes.at(0).possibleRouteDTOList.forEach(oneRoute => {
         const routeCoordinates = getRouteCoordinates(oneRoute);
@@ -158,7 +184,7 @@ export class HomePagePassengerComponent implements OnInit, OnDestroy {
       });
     } else {
       routes.forEach(route => {
-        this.routePathIndex.push(0);
+        this.rideRequestForm.get('routePathIndex')?.value.push(0);
         const routeCoordinates = getRouteCoordinates(
           route.possibleRouteDTOList.at(0)
         );
@@ -186,7 +212,7 @@ export class HomePagePassengerComponent implements OnInit, OnDestroy {
     this.drawPolylineList[indexOfSelectedPath] = polyline;
     const that = this;
     google.maps.event.addListener(polyline, 'click', function () {
-      that.routePathIndex[indexOfRouteInPossibleRoutes] = indexOfSelectedPath;
+      (that.rideRequestForm.get('routePathIndex')?.value)[indexOfRouteInPossibleRoutes] = indexOfSelectedPath;
       that.drawPolylineList.forEach(p => {
         p.setOptions({
           strokeColor: '#cdd1d3',
@@ -202,7 +228,7 @@ export class HomePagePassengerComponent implements OnInit, OnDestroy {
   }
 
   getFromToLabel(index: number): string {
-    const location: Location = this.searchingRoutesForm.at(index).location;
+    const location: Location = this.searchingForm.at(index).value.location;
 
     return `${location.street} ${location.number}`;
   }
@@ -212,7 +238,7 @@ export class HomePagePassengerComponent implements OnInit, OnDestroy {
     indexOfSelectedPath: number,
     indexOfRouteInPossibleRoutes: number
   ): void {
-    this.routePathIndex[indexOfRouteInPossibleRoutes] = indexOfSelectedPath;
+    (this.rideRequestForm.get('routePathIndex')?.value)[indexOfRouteInPossibleRoutes] = indexOfSelectedPath;
 
     if (this.hasOneDestination()) {
       this.swapColorsOfRoutes(indexOfSelectedPath);
@@ -230,10 +256,10 @@ export class HomePagePassengerComponent implements OnInit, OnDestroy {
 
   private createListDrivingLocation(): DrivingLocation[] {
     const drivingLocations: DrivingLocation[] = [];
-    this.searchingRoutesForm.forEach(searchingRoute => {
+    this.searchingForm.forEach(searchingRoute => {
       drivingLocations.push({
-        index: this.searchingRoutesForm.indexOf(searchingRoute) + 1,
-        location: searchingRoute.location,
+        index: this.searchingForm.indexOf(searchingRoute) + 1,
+        location: searchingRoute.value.location,
       });
     });
 
@@ -245,15 +271,15 @@ export class HomePagePassengerComponent implements OnInit, OnDestroy {
       locations: this.createListDrivingLocation(),
       distance: this.calculateDistance(),
       timeInMin: this.calculateMinutes(),
-      routePathIndex: this.routePathIndex,
+      routePathIndex: this.rideRequestForm.get('routePathIndex').value
     };
   }
 
   private calculateMinutes(): number {
     let minutes = 0;
-    this.routePathIndex.forEach(index => {
+    this.rideRequestForm.get('routePathIndex').value.forEach(index => {
       minutes += this.possibleRoutesViaPoints
-        .at(this.routePathIndex.indexOf(index))
+        .at(this.rideRequestForm.get('routePathIndex').value.indexOf(index))
         .possibleRouteDTOList.at(index).timeInMin;
     });
 
@@ -262,9 +288,9 @@ export class HomePagePassengerComponent implements OnInit, OnDestroy {
 
   private calculateDistance(): number {
     let distance = 0;
-    this.routePathIndex.forEach(index => {
+    this.rideRequestForm.get('routePathIndex').value.forEach(index => {
       distance += this.possibleRoutesViaPoints
-        .at(this.routePathIndex.indexOf(index))
+        .at(this.rideRequestForm.get('routePathIndex').value.indexOf(index))
         .possibleRouteDTOList.at(index).distance;
     });
 
@@ -286,7 +312,7 @@ export class HomePagePassengerComponent implements OnInit, OnDestroy {
 
   private hasOneDestination(): boolean {
 
-    return this.searchingRoutesForm.length === 2;
+    return this.searchingForm.length === 2;
   }
 
   private removeOnePolyline(index: number) {
@@ -306,7 +332,7 @@ export class HomePagePassengerComponent implements OnInit, OnDestroy {
       const indexOfSelectedPath = this.possibleRoutesViaPoints
         .at(0)
         .possibleRouteDTOList.indexOf(minTimePath);
-      this.routePathIndex[0] = indexOfSelectedPath;
+      (this.rideRequestForm.get('routePathIndex')?.value)[0] = indexOfSelectedPath;
       this.swapColorsOfRoutes(indexOfSelectedPath);
     } else {
       this.drawPolylineList = removeAllPolyline(this.drawPolylineList);
@@ -316,7 +342,7 @@ export class HomePagePassengerComponent implements OnInit, OnDestroy {
         );
         const indexOfSelectedPath =
           route.possibleRouteDTOList.indexOf(minTimePath);
-        this.routePathIndex[this.possibleRoutesViaPoints.indexOf(route)] =
+          this.searchingForm[this.possibleRoutesViaPoints.indexOf(route)] =
           indexOfSelectedPath;
         const routeCoordinates = getRouteCoordinates(
           route.possibleRouteDTOList.at(indexOfSelectedPath)
@@ -338,7 +364,7 @@ export class HomePagePassengerComponent implements OnInit, OnDestroy {
       const indexOfSelectedPath = this.possibleRoutesViaPoints
         .at(0)
         .possibleRouteDTOList.indexOf(minTimePath);
-      this.routePathIndex[0] = indexOfSelectedPath;
+        (this.rideRequestForm.get('routePathIndex')?.value)[0] = indexOfSelectedPath;
       this.swapColorsOfRoutes(indexOfSelectedPath);
     } else {
       this.drawPolylineList = removeAllPolyline(this.drawPolylineList);
@@ -348,7 +374,7 @@ export class HomePagePassengerComponent implements OnInit, OnDestroy {
         );
         const indexOfSelectedPath =
           route.possibleRouteDTOList.indexOf(minDistancePath);
-        this.routePathIndex[this.possibleRoutesViaPoints.indexOf(route)] =
+          (this.rideRequestForm.get('routePathIndex')?.value)[this.possibleRoutesViaPoints.indexOf(route)] =
           indexOfSelectedPath;
         const routeCoordinates = getRouteCoordinates(
           route.possibleRouteDTOList.at(indexOfSelectedPath)
@@ -361,17 +387,17 @@ export class HomePagePassengerComponent implements OnInit, OnDestroy {
   }
 
   chooseVehicleAndPassengers(): void {
-    this.selectedRoute = this.createRoute();
+    this.rideRequestForm.get('selectedRoute')?.setValue(this.createRoute());
     this.routeChoiceView = false;
     this.filterVehicleView = true;
   }
 
   formIsInvalid(): boolean {
     let formIsInvalid = false;
-    this.searchingRoutesForm.forEach(searchingRoute => {
+    (this.searchingForm).forEach(searchingRoute => {
       if (
-        searchingRoute.location === undefined ||
-        searchingRoute.location === null
+        searchingRoute.value.location === undefined ||
+        searchingRoute.value.location === null
       ) {
         formIsInvalid = true;
       }
@@ -381,27 +407,11 @@ export class HomePagePassengerComponent implements OnInit, OnDestroy {
   }
 
 
-  // getFromToLabel(index: number): string {
-  //   const location: Location = this.searchingRoutesForm.at(index).location;
-  //
-  //   return `${location.street} ${location.number}`;
-  // }
-
-  // private createListDrivingLocation(): DrivingLocation[] {
-  //   const drivingLocations: DrivingLocation[] = [];
-  //   this.searchingRoutesForm.forEach(searchingRoute => {
-  //     drivingLocations.push({
-  //       index: this.searchingRoutesForm.indexOf(searchingRoute) + 1,
-  //       location: searchingRoute.location,
-  //     });
-  //   });
-  //
-  //   return drivingLocations;
-  // }
+ 
 
 
   ngOnDestroy(): void {
-    removeAllMarkers(this.searchingRoutesForm);
+    removeAllMarkers(this.searchingForm);
 
     this.carMarkers.forEach(marker => removeMarker(marker));
     this.drawPolylineList = removeAllPolyline(this.drawPolylineList);
@@ -421,22 +431,19 @@ export class HomePagePassengerComponent implements OnInit, OnDestroy {
     this.deleteMarker(index);
     this.drawPolylineList = removeAllPolyline(this.drawPolylineList);
 
-    this.searchingRoutesForm.at(index).inputPlace = address.formatted_address;
-
+    (this.searchingForm).at(index).inputPlace = address.formatted_address;
     const lng: number = address.geometry.location.lng();
     const lat: number = address.geometry.location.lat();
 
-    this.searchingRoutesForm.at(index).marker = addMarker(this.map, {
+    this.rideRequestForm.get('searchingRoutesForm').value.at(index).marker = addMarker(this.map, {
       lat: lat,
       lng: lng,
     });
-    this.searchingRoutesForm.at(index).marker.setIcon(this.getIconUrl(index));
+    this.rideRequestForm.get('searchingRoutesForm').value.at(index).marker.setIcon(this.getIconUrl(index));
     this.createLocation(address, index);
   }
 
-  private addStartAndEndPointInRoutes() {
-    this.searchingRoutesForm.push(new SearchingRoutesForm(), new SearchingRoutesForm());
-  }
+ 
 
   private createLocation(address: Address, index: number): void {
     let houseNumber = '';
@@ -463,7 +470,7 @@ export class HomePagePassengerComponent implements OnInit, OnDestroy {
     }
     const lng: number = address.geometry.location.lng();
     const lat: number = address.geometry.location.lat();
-    this.searchingRoutesForm.at(index).location = {
+    this.rideRequestForm.get('searchingRoutesForm').value.at(index).location = {
       city: city,
       lon: lng,
       lat: lat,
@@ -475,7 +482,7 @@ export class HomePagePassengerComponent implements OnInit, OnDestroy {
 
   canAddMoreLocation() {
     return (
-      this.searchingRoutesForm.length < this.maxNumberOfLocations &&
+      this.searchingForm.length < this.maxNumberOfLocations &&
       this.currentUser !== null &&
       this.currentUser !== undefined
     );
@@ -483,23 +490,22 @@ export class HomePagePassengerComponent implements OnInit, OnDestroy {
 
   addOneMoreLocation() {
     this.possibleRoutesViaPoints = [];
-    this.searchingRoutesForm.splice(
-      this.searchingRoutesForm.length - 1,
-      0,
-      new SearchingRoutesForm()
-    );
+    
+    (this.rideRequestForm.get('searchingRoutesForm') as FormArray).insert(this.searchingForm.length - 1,
+    this.createEmptySearchForm())
+
   }
 
   deleteOneLocation(index: number) {
     this.deleteMarker(index);
     this.drawPolylineList = removeAllPolyline(this.drawPolylineList);
-    this.searchingRoutesForm.splice(index, 1);
+    (this.rideRequestForm.get('searchingRoutesForm') as FormArray).removeAt(index);
     if (this.checkIfDeletedLocationIsDestination(index)) {
       this.deleteMarker(index - 1);
       this.addMarkerWithLonAndLat(
         index - 1,
-        this.searchingRoutesForm.at(index - 1).location.lon,
-        this.searchingRoutesForm.at(index - 1).location.lat
+        this.searchingForm.at(index - 1).location.lon,
+        this.searchingForm.at(index - 1).location.lat
       );
     }
     this.possibleRoutesViaPoints = [];
@@ -512,17 +518,17 @@ export class HomePagePassengerComponent implements OnInit, OnDestroy {
 
   private addMarkerWithLonAndLat(index: number, lon: number, lat: number) {
     const markerCoordinates: google.maps.LatLngLiteral = { lat: lat, lng: lon };
-    this.searchingRoutesForm.at(index).marker = addMarker(
+    (this.searchingForm).at(index).marker = addMarker(
       this.map,
       markerCoordinates
     );
-    this.searchingRoutesForm.at(index).marker.setIcon(this.getIconUrl(index));
+    (this.searchingForm).at(index).marker.setIcon(this.getIconUrl(index));
   }
 
   fieldIsInvalid(index: number): boolean {
     return (
-      this.searchingRoutesForm.at(index).location === undefined ||
-      this.searchingRoutesForm.at(index).location === null
+      (this.searchingForm).at(index).location === undefined ||
+      (this.searchingForm).at(index).location === null
     );
   }
 
@@ -530,7 +536,7 @@ export class HomePagePassengerComponent implements OnInit, OnDestroy {
     switch (index) {
       case 0:
         return '../../../assets/images/startMarker.png';
-      case this.searchingRoutesForm.length - 1:
+      case this.searchingForm.length - 1:
         return '../../../assets/images/endMarker.png';
       default:
         return '../../../assets/images/viaMarker.png';
@@ -538,7 +544,7 @@ export class HomePagePassengerComponent implements OnInit, OnDestroy {
   }
 
   private checkIfDeletedLocationIsDestination(index: number) {
-    return this.searchingRoutesForm.length === index;
+    return this.searchingForm.length === index;
   }
 
   getIconName(index: number): string {
@@ -553,8 +559,8 @@ export class HomePagePassengerComponent implements OnInit, OnDestroy {
   }
 
   private deleteMarker(index: number) {
-    if (this.searchingRoutesForm.at(index).marker){
-      removeMarker(this.searchingRoutesForm.at(index).marker);
+    if (this.searchingForm.at(index).value.marker){
+      removeMarker(this.searchingForm.at(index).value.marker);
       this.drawPolylineList = removeAllPolyline(this.drawPolylineList);
     }
   }

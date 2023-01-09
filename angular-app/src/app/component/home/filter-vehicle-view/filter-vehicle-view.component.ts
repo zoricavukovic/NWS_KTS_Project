@@ -1,5 +1,5 @@
 import {Component, Input, OnInit, OnDestroy, Output, EventEmitter} from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { ControlContainer, FormControl, FormGroup } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 import { User } from 'src/app/model/user/user';
@@ -43,6 +43,7 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
   private vehicleTypesSubscription: Subscription;
   private vehicleSubscription: Subscription;
   private userSubscription: Subscription;
+  rideRequestForm: FormGroup;
 
   constructor(
     private userService: UserService,
@@ -51,12 +52,15 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
     private vehicleService: VehicleService,
     private drivingNotificationService: DrivingNotificationService,
     private vehicleTypeInfoService: VehicleTypeInfoService,
-    private toast: ToastrService
+    private toast: ToastrService,
+    private controlContainer: ControlContainer
   ) {
     console.log(this.route);
+    this.rideRequestForm = <FormGroup>this.controlContainer.control;
   }
 
   ngOnInit(): void {
+    console.log(this.rideRequestForm);
     console.log(this.route);
     this.authSubscription = this.authService
       .getSubjectCurrentUser()
@@ -136,23 +140,29 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
       .getPriceForVehicleAndRoute(this.vehicleType, 3800)
       .subscribe(response => {
         this.price = response;
+        this.rideRequestForm.get('price').setValue(this.price);
       });
   }
 
   findDriver() {
+    this.rideRequestForm.get('selectedPassengers').setValue(this.selectedPassengers);
+    this.rideRequestForm.get('senderEmail').setValue(this.currentUser.email);
+    console.log(this.rideRequestForm);
     this.waitingForAcceptDrive.emit(true);
+    console.log("blaaa"); 
     const drivingNotification = {
-      route: this.route,
-      price: this.price,
-      senderEmail: this.currentUser.email,
-      passengers: this.selectedPassengers,
+      route: this.rideRequestForm.get('selectedRoute').value,
+      price: this.rideRequestForm.get('price').value,
+      senderEmail: this.rideRequestForm.get('senderEmail').value,
+      passengers: this.rideRequestForm.get('selectedPassengers').value,
       duration: 5,
-      petFriendly: this.petFriendly,
-      babySeat: this.babySeat,
-      vehicleType: this.vehicleType,
+      petFriendly: this.rideRequestForm.get('petFriendly').value,
+      babySeat: this.rideRequestForm.get('babySeat').value,
+      vehicleType: this.rideRequestForm.get('vehicleType').value,
     };
 
     console.log("odogovr1");
+    console.log(drivingNotification);
     this.drivingNotificationSubscription = this.drivingNotificationService
       .create(drivingNotification)
       .subscribe(response => {

@@ -1,10 +1,9 @@
 import {
   Component,
-  EventEmitter,
   OnDestroy,
   OnInit,
-  Output,
 } from '@angular/core';
+import { ControlContainer, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { VehicleTypeInfo } from 'src/app/model/vehicle/vehicle-type-info';
 import { VehicleTypeInfoService } from 'src/app/service/vehicle-type-info.service';
@@ -16,30 +15,28 @@ import { VehicleService } from 'src/app/service/vehicle.service';
   styleUrls: ['./driver-vehicle.component.css'],
 })
 export class DriverVehicleComponent implements OnInit, OnDestroy {
-  @Output()
-  petFriendlyEvent = new EventEmitter<boolean>();
-
-  @Output()
-  babySeatEvent = new EventEmitter<boolean>();
-
-  @Output()
-  vehicleTypeEvent = new EventEmitter<string>();
 
   petFriendly = false;
   babySeat = false;
   selectedVehicleType: string;
   vehicleTypes: VehicleTypeInfo[];
   vehicleTypesSubscription: Subscription;
+  rideRequestForm: FormGroup;
   styleArray = [];
   responsiveOptions;
   index = 0;
 
   constructor(
     private vehicleService: VehicleService,
-    private vehicleTypeInfoService: VehicleTypeInfoService
-  ) {}
+    private vehicleTypeInfoService: VehicleTypeInfoService,
+    private controlContainer: ControlContainer
+  ) {
+    this.rideRequestForm = <FormGroup>this.controlContainer.control;
+  }
 
   ngOnInit(): void {
+    this.rideRequestForm = <FormGroup>this.controlContainer.control;
+    console.log(this.rideRequestForm);
     this.vehicleTypesSubscription = this.vehicleTypeInfoService
       .getAll()
       .subscribe(vehicleTypes => {
@@ -70,16 +67,6 @@ export class DriverVehicleComponent implements OnInit, OnDestroy {
     ];
   }
 
-  firePetFriendlyEvent() {
-    this.petFriendly = !this.petFriendly;
-    this.petFriendlyEvent.emit(this.petFriendly);
-  }
-
-  fireBabySeatEvent() {
-    this.babySeat = !this.babySeat;
-    this.babySeatEvent.emit(this.babySeat);
-  }
-
   setAdditionalData(
     vehicleType: VehicleTypeInfo,
     index: number
@@ -106,8 +93,7 @@ export class DriverVehicleComponent implements OnInit, OnDestroy {
       (value, index) =>
         (this.styleArray[index] = selectedVehicleType.index === index)
     );
-
-    this.vehicleTypeEvent.emit(this.selectedVehicleType);
+    this.rideRequestForm.get('vehicleType').setValue(this.selectedVehicleType);
   }
 
   ngOnDestroy(): void {

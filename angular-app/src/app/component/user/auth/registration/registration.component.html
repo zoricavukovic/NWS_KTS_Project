@@ -103,8 +103,7 @@
       </div>
 
       <div *ngIf="showDriverForm">
-          <driver-vehicle (petFriendlyEvent)="petFriendly = $event" (babySeatEvent)="babySeat = $event"
-          (vehicleTypeEvent)="vehicleType = $event"></driver-vehicle>
+          <driver-vehicle [formGroup]="registrationForm"></driver-vehicle>
       </div>
 
       <br/>

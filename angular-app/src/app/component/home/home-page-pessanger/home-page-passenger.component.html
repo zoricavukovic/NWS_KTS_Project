@@ -1,13 +1,14 @@
+<form [formGroup]="rideRequestForm">
 <div *ngIf="routeChoiceView && !hasActiveDriving()">
   <h1><strong>Request a ride now</strong></h1>
-  <div>
+  <div formArrayName="searchingRoutesForm">
     <div
-      *ngFor="let addedLocation of searchingRoutesForm; let i = index"
-      class="div">
+      *ngFor="let addedLocation of searchingForm; let i = index"
+      class="div" [formGroupName]="i">
       <mat-form-field appearance="fill">
         <mat-label *ngIf="i === 0" class="font-size-label">Enter pickup location</mat-label>
-        <mat-label *ngIf="i === searchingRoutesForm.length - 1" class="font-size-label">Enter destination</mat-label>
-        <mat-label *ngIf="i !== 0 && i !== searchingRoutesForm.length - 1" class="font-size-label">Via destination</mat-label>
+        <mat-label *ngIf="i ===  searchingForm.length - 1" class="font-size-label">Enter destination</mat-label>
+        <mat-label *ngIf="i !== 0 && i !==  searchingForm.length - 1" class="font-size-label">Via destination</mat-label>
 
         <input
           type="text"
@@ -15,26 +16,26 @@
           ngx-google-places-autocomplete
           [options]="options"
           aria-label="State"
-          [(ngModel)]="searchingRoutesForm.at(i).inputPlace"
+          formControlName="inputPlace"
           (onAddressChange)="addressChange($event, i)"
           placeholder="Enter location"
           class="font-size-input"
         />
         <mat-icon
-          *ngIf="i === 0 || i === searchingRoutesForm.length - 1"
+          *ngIf="i === 0 || i ===  searchingForm.length - 1"
           [style.color]="i === 0 ? '#abbbae' : '#b73e3e'"
           matSuffix>
           location_on
         </mat-icon>
         <mat-icon
-          *ngIf="i !== 0 && i !== searchingRoutesForm.length - 1"
+          *ngIf="i !== 0 && i !==  searchingForm.length - 1"
           matSuffix
         >{{ getIconName(i) }}</mat-icon
         >
       </mat-form-field>
 
       <button
-        *ngIf="searchingRoutesForm.length > 2"
+        *ngIf="searchingForm.length > 2"
         mat-icon-button
         class="delete-location-button"
         (click)="deleteOneLocation(i)">
@@ -150,9 +151,10 @@
 
 </div>
 <div *ngIf="filterVehicleView">
-  <app-filter-vehicle-view [route]="selectedRoute" (waitingForAcceptDrive)="loadingView($event)"></app-filter-vehicle-view>
+  <app-filter-vehicle-view [route]="rideRequestForm.get('selectedRoute')?.value" (waitingForAcceptDrive)="loadingView($event)"></app-filter-vehicle-view>
 </div>
 
 <app-waiting-for-accept-ride-container *ngIf="loadingViewVar"></app-waiting-for-accept-ride-container>
 
 <app-active-drive-container *ngIf="hasActiveDriving()" [activeRide]="activeRide"></app-active-drive-container>
+</form>

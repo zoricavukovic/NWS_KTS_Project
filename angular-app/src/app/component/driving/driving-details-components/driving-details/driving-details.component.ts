@@ -60,6 +60,7 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    console.log(document.getElementById("pera"));
     this.router.events.subscribe((event) => {
       this.ngOnDestroy();
     });

@@ -1,11 +1,11 @@
-<div class="form-container mat-elevation-z1">
+<div class="form-container mat-elevation-z1" *ngIf="rideRequestForm" [formGroup]="rideRequestForm">
     <h1 style="font-size: 1.4rem;">Vehicle info</h1>
     <div style="display: flex;">
-        <mat-checkbox [aria-label]="" (click)="firePetFriendlyEvent()">
+        <mat-checkbox [aria-label]=""  formControlName="petFriendly">
             Pet friendly
         </mat-checkbox>
 
-        <mat-checkbox [aria-label]="" (click)="fireBabySeatEvent()">
+        <mat-checkbox [aria-label]="" formControlName="babySeat">
             Baby seat
         </mat-checkbox>
     </div>
