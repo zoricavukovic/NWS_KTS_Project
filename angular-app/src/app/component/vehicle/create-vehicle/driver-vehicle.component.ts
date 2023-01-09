@@ -1,7 +1,9 @@
 import {
   Component,
+  EventEmitter,
   OnDestroy,
   OnInit,
+  Output,
 } from '@angular/core';
 import { ControlContainer, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -15,7 +17,7 @@ import { VehicleService } from 'src/app/service/vehicle.service';
   styleUrls: ['./driver-vehicle.component.css'],
 })
 export class DriverVehicleComponent implements OnInit, OnDestroy {
-
+  @Output() vehicleTypeEvent = new EventEmitter();
   petFriendly = false;
   babySeat = false;
   selectedVehicleType: string;
@@ -87,6 +89,7 @@ export class DriverVehicleComponent implements OnInit, OnDestroy {
     }
   }
 
+  
   changeSelectedVehicleType(selectedVehicleType) {
     this.selectedVehicleType = selectedVehicleType.vehicleType;
     this.styleArray.forEach(
@@ -94,6 +97,7 @@ export class DriverVehicleComponent implements OnInit, OnDestroy {
         (this.styleArray[index] = selectedVehicleType.index === index)
     );
     this.rideRequestForm.get('vehicleType').setValue(this.selectedVehicleType);
+    this.vehicleTypeEvent.emit();
   }
 
   ngOnDestroy(): void {

@@ -90,6 +90,10 @@ import {CustomInterceptor} from "./interceptor/custom.interceptor";
 import { ActiveDriveContainerComponent } from './component/home/active-drive-container/active-drive-container.component';
 import { WaitingForAcceptRideContainerComponent } from './component/home/waiting-for-accept-ride-container/waiting-for-accept-ride-container.component';
 import { NotificationsComponent } from './component/notifications/notifications.component';
+import { NgxsModule } from '@ngxs/store';
+import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
+import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
+import { DrivingNotificationState } from './state/driving-notification.state';
 
 @NgModule({
   declarations: [
@@ -182,6 +186,11 @@ import { NotificationsComponent } from './component/notifications/notifications.
     NgxPaginationModule,
     SplitButtonModule,
     MatProgressSpinnerModule,
+    NgxsModule.forRoot([
+      DrivingNotificationState
+  ]),
+  NgxsReduxDevtoolsPluginModule.forRoot(),
+  NgxsLoggerPluginModule.forRoot(),
   ],
   entryComponents: [EditProfileComponent],
   providers: [

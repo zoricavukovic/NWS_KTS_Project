@@ -1,7 +1,10 @@
 import {Component, Input, OnInit, OnDestroy, Output, EventEmitter} from '@angular/core';
 import { ControlContainer, FormControl, FormGroup } from '@angular/forms';
+import { Select, Store } from '@ngxs/store';
 import { ToastrService } from 'ngx-toastr';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
+import { AddDrivingNotification } from 'src/app/actions/driving-notification.action';
+import { DrivingNotification } from 'src/app/model/notification/driving-notification';
 import { User } from 'src/app/model/user/user';
 import { Vehicle } from 'src/app/model/vehicle/vehicle';
 import { AuthService } from 'src/app/service/auth.service';
@@ -10,6 +13,7 @@ import { RegularUserService } from 'src/app/service/regular-user.service';
 import { UserService } from 'src/app/service/user.service';
 import { VehicleTypeInfoService } from 'src/app/service/vehicle-type-info.service';
 import { VehicleService } from 'src/app/service/vehicle.service';
+import { DrivingNotificationState } from 'src/app/state/driving-notification.state';
 import { Route } from '../../../model/route/route';
 
 @Component({
@@ -18,6 +22,7 @@ import { Route } from '../../../model/route/route';
   styleUrls: ['./filter-vehicle-view.component.css'],
 })
 export class FilterVehicleViewComponent implements OnInit, OnDestroy {
+  @Select(DrivingNotificationState.getDrivingNotification)drivingNotification$: Observable<DrivingNotification>;
   @Input() route: Route;
   @Output() waitingForAcceptDrive = new  EventEmitter<boolean>();
   vehiclePassengersView = true;
@@ -53,10 +58,12 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
     private drivingNotificationService: DrivingNotificationService,
     private vehicleTypeInfoService: VehicleTypeInfoService,
     private toast: ToastrService,
-    private controlContainer: ControlContainer
+    private controlContainer: ControlContainer,
+    private store: Store
   ) {
     console.log(this.route);
     this.rideRequestForm = <FormGroup>this.controlContainer.control;
+    
   }
 
   ngOnInit(): void {
@@ -89,9 +96,9 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
   }
 
   addSelectedPassenger(email: string) {
-    if (this.vehicleType) {
+    if (this.rideRequestForm.get('vehicleType').value) {
       if (
-        this.vehicleTypesSeats[this.vehicleType] >
+        this.vehicleTypesSeats[this.rideRequestForm.get('vehicleType').value] >
         this.selectedPassengers.length + 1
       ) {
         this.selectedPassengers.push(email);
@@ -126,23 +133,23 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  setVehicleTypeAndShowPrice(vehicleType: string) {
-    this.vehicleType = vehicleType;
-    console.log(this.vehicleType);
+  showPrice(){
+      console.log(this.rideRequestForm.get('vehicleType').value);
     this.vehicleSubscription = this.vehicleService
-      .getVehicleByVehicleType(vehicleType)
+      .getVehicleByVehicleType(this.rideRequestForm.get('vehicleType').value)
       .subscribe(response => {
         this.vehicle = response;
         console.log(response);
       });
-    console.log(this.vehicleType);
     this.priceSubscription = this.vehicleService
-      .getPriceForVehicleAndRoute(this.vehicleType, 3800)
+      .getPriceForVehicleAndRoute(this.rideRequestForm.get('vehicleType').value, 3800)
       .subscribe(response => {
         this.price = response;
+        console.log(this.price);
         this.rideRequestForm.get('price').setValue(this.price);
       });
-  }
+    }
+  
 
   findDriver() {
     this.rideRequestForm.get('selectedPassengers').setValue(this.selectedPassengers);
@@ -163,14 +170,19 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
 
     console.log("odogovr1");
     console.log(drivingNotification);
-    this.drivingNotificationSubscription = this.drivingNotificationService
-      .create(drivingNotification)
-      .subscribe(response => {
-        console.log("odogovr2");
-        console.log(response);
-        console.log("odogovr3");
-        // this.waitingForAcceptDrive.emit(false);
-      });
+    this.drivingNotificationSubscription = this.store
+    .dispatch(new AddDrivingNotification(drivingNotification))
+    .subscribe((response) => {
+      console.log(response);
+    });
+    // this.drivingNotificationService
+    //   .create(drivingNotification)
+    //   .subscribe(response => {
+    //     console.log("odogovr2");
+    //     console.log(response);
+    //     console.log("odogovr3");
+    //     // this.waitingForAcceptDrive.emit(false);
+    //   });
   }
 
   private findPassengerObj(email: string): void {

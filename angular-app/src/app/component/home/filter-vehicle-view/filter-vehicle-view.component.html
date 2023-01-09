@@ -1,5 +1,5 @@
 <div *ngIf="vehiclePassengersView && rideRequestForm" [formGroup]="rideRequestForm">
-  <driver-vehicle
+  <driver-vehicle (vehicleTypeEvent)="showPrice()"
     [formGroup] = "rideRequestForm"></driver-vehicle>
   <br />
   <mat-expansion-panel>
@@ -44,7 +44,7 @@
   <button
     mat-stroked-button
     class="findDriverBtn"
-    *ngIf="vehicleType"
+    *ngIf="rideRequestForm.get('vehicleType').value !== ''"
     (click)="findDriver()">
     Find driver
   </button>
