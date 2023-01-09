@@ -1,0 +1,29 @@
+<div class="content" *ngIf="payingInfo">
+    <p><span>Price per token: {{payingInfo.tokenPrice}}€</span></p>
+    <p><span>Max number of tokens per transaction: {{payingInfo.maxNumOfTokensPerTransaction}}<mat-icon>payments</mat-icon></span></p>
+
+    <div class="input-fields">
+        <form color="primary" [formGroup]="payingInfoForm">
+            <mat-form-field class="token-input" appearance="fill">
+                <mat-label>Price per token(EUR)</mat-label>
+                <input formControlName="price" type="number" matInput>
+                <mat-error *ngIf="payingInfoForm.get('price').invalid">
+                    Price per token must be positive number
+                </mat-error>
+            </mat-form-field>
+            
+            <mat-form-field class="token-input" appearance="fill">
+                <mat-label>Max number of tokens per transaction</mat-label>
+                <input formControlName="maxNumOfTokensPerTransaction" type="number" matInput>
+                <mat-error *ngIf="payingInfoForm.get('maxNumOfTokensPerTransaction').invalid">
+                    Please enter a valid maximum number of transactions
+                </mat-error>
+            </mat-form-field>
+        </form>
+    </div>
+    <div>
+        <mat-card-actions>
+            <button mat-raised-button class="btn" [disabled]="payingInfoForm.invalid" (click)="updatePayingInfos()">Change</button>
+        </mat-card-actions>
+    </div>
+</div>

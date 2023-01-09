@@ -1,0 +1,21 @@
+<div class="buying-new-container">
+    <p>Calculate prices per quantity here.<br>Price per token is {{tokenBank.payingInfo.tokenPrice}}€.</p>
+    <div>
+        <form color="primary" [formGroup]="tokenForm">
+            <mat-form-field class="token-input" appearance="fill">
+                <mat-label>Tokens</mat-label>
+                <input formControlName="tokenFormControl" type="number" matInput>
+                <mat-error *ngIf="tokenForm.get('tokenFormControl').invalid">
+                    Number of tokens must be in range 1-{{tokenBank.payingInfo.maxNumOfTokensPerTransaction}}
+                </mat-error>
+            </mat-form-field>
+            <mat-icon>arrow_forward</mat-icon>
+            <p>{{calculateValue()}}</p>
+        </form>
+    </div>
+    <button class="paypal-button" (click)="createPayment()">
+        <span class="paypal-logo">
+          <i class="pay">Pay</i><i class="pal">Pal</i>
+        </span>
+    </button>
+</div>

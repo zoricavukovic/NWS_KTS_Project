@@ -1,7 +1,6 @@
 package com.example.serbUber.model.token;
 
 import com.example.serbUber.model.user.RegularUser;
-import com.example.serbUber.model.user.User;
 
 import javax.persistence.*;
 import java.util.LinkedList;
@@ -41,7 +40,7 @@ public class TokenBank {
 
     public TokenBank(
             final RegularUser user,
-            final int numOfTokens,
+            final double numOfTokens,
             final double totalTokenAmountSpent,
             final double totalMoneyAmountSpent,
             final List<TokenTransaction> transactions,
@@ -125,7 +124,7 @@ public class TokenBank {
         this.payingInfo = payingInfo;
     }
 
-    public void addTokens(final int numOfTokens) {
+    public void addTokens(final double numOfTokens) {
         this.numOfTokens += numOfTokens;
     }
 

@@ -144,13 +144,13 @@ insert into paying_info(currency, token_price, max_num_of_tokens_per_transaction
     ('EUR', 1, 20);
 
 insert into token_banks(user_id, num_of_tokens, total_token_amount_spent, total_money_amount_spent, paying_info_id) values
-    (2, 10, 0, 6, 1),
+    (2, 9, 2, 11, 1),
     (3, 8, 0, 8, 1),
     (4, 0, 0, 0, 1);
 
 insert into token_transactions(time_stamp, num_of_bought_tokens, total_price, token_bank_id) values
     ('2022-12-01 14:03', 4, 4, 1),
-    ('2022-12-03 14:00', 4, 4, 1),
+    ('2022-12-03 14:00', 7, 7, 1),
     ('2022-12-03 15:00', 8, 8, 2);
 
 

@@ -1,0 +1,106 @@
+
+.form-container {
+    min-width: 55rem;
+    padding: 3% 5%;
+    max-width: 65rem;
+    margin-top: 1rem;
+    background-color: white;
+}
+
+h1 {
+    font-weight: bold;
+    font-size: 1.7rem;
+}
+
+.credit-card {
+    height: 10rem;
+    width: 20rem;
+    background-color: #f1e8d5;
+    border-radius: 1rem;
+    margin-left: 2rem;
+}
+
+div.credit-card > h3 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-top: 3rem;
+    margin-left: 2rem;
+}
+
+div.credit-card > p {
+    margin-left: 12rem;
+    margin-top: -1.8rem;
+}
+
+.app-icon {
+    width: 3rem;
+    height: 3rem;
+    margin-left: 1.9rem;
+}
+
+.transparent-wallet {
+    background-color: rgba(76, 107, 175, 0.2);
+    backdrop-filter: blur(0.6px);
+    width: 24rem;
+    height: 6rem;
+    border-radius: 1rem;
+    margin-top: -4.2rem;
+    z-index: 1;
+}
+
+.non-transparent-wallet {
+    background-color: var(--brown);
+    /* background-color: #e9f3fb; */
+    width: 24rem;
+    height: 8rem;
+    border-bottom-left-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+    margin-top: -2.2rem;
+    z-index: 3;
+}
+
+.non-transparent-wallet > h1 {
+    margin-left: 2rem;
+    margin-top: 1.5rem;
+    font-size: 1.2rem;
+}
+
+.total-balance {
+    margin-left: 2rem;
+    display: flex;
+}
+
+.total-balance > label {
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.token-icon {
+    margin-left: 1rem;
+    scale: 1.5;
+}
+
+.credit-card-icon {
+    margin-left: 15rem;
+    scale: 1;
+}
+
+.buy-title {
+    margin-left: 5rem;
+}
+
+.transaction-title {
+    margin-top: 2.5rem;
+    font-size: 1.7rem;
+}
+
+.statistics-title {
+    margin-left: 5rem;
+    margin-top: 2.2rem;
+    font-size: 1.7rem;
+    margin-bottom: 1.7rem;
+}
+
+.statistics-content {
+    margin-left: 5rem;
+}

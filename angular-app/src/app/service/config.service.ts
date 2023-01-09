@@ -5,6 +5,7 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class ConfigService {
+
   public role_driver = 'ROLE_DRIVER';
   public role_regular_user = 'ROLE_REGULAR_USER';
 
@@ -30,11 +31,16 @@ export class ConfigService {
   private _unblock_driver_url = this.api_url + '/drivers/unblock/';
   private _send_verify_code_again = this.api_url + '/verify/send-code-again';
   private _vehicle_type_infos = this.api_url + '/vehicle-type-infos';
+  private _token_bank_url = this.api_url + '/token-banks';
+  private _in_app_spending_url = this._token_bank_url + '/in-app-spending';
+  private _paypal_url = this.api_url + '/paypal'
+  private _create_payment = this._paypal_url + '/create-payment';
+  private _complete_payment = this._paypal_url + '/complete-payment';
+  private _paying_info = this._paypal_url + '/paying-infos';
 
   private _drivings_pagination_url = this.api_url + '/drivings';
   private _drivings_details_url = this.api_url + '/drivings/details/';
   private _drivings_count_url = this.api_url + '/drivings/number/';
-
   private _driver_info_url = this.api_url + '/drivers/';
   private _vehicle_rate_url = this.api_url + '/vehicles/rating/';
   private _all_active_vehicles_url: string = this.api_url + '/vehicles/active';
@@ -251,6 +257,10 @@ export class ConfigService {
     return `${this._users_url}/${id}`;
   }
 
+  token_bank_by_user_id_url(id: string): string {
+    return `${this._token_bank_url}/${id}`;
+  }
+
   get_user_by_email(email: string): string {
     return `${this._users_url}/byEmail/${email}`;
   }
@@ -313,5 +323,17 @@ export class ConfigService {
 
   get block_user_url(): string {
     return this._block_user_url;
+  }
+
+  get create_payment_url(): string {
+    return this._create_payment;
+  }
+
+  get complete_payment_url(): string {
+    return this._complete_payment;
+  }
+
+  get in_app_spending(): string {
+    return this._in_app_spending_url;
   }
 }

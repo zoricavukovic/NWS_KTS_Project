@@ -15,7 +15,7 @@ public class TokenTransaction {
     private LocalDateTime timeStamp;
 
     @Column(name="num_of_bought_tokens", nullable = false)
-    private int numOfBoughtTokens;
+    private double numOfBoughtTokens;
 
     @Column(name="total_price", nullable = false)
     private double totalPrice;
@@ -25,7 +25,7 @@ public class TokenTransaction {
 
     public TokenTransaction(
             final LocalDateTime timeStamp,
-            final int numOfBoughtTokens,
+            final double numOfBoughtTokens,
             final double totalPrice
     ) {
         this.timeStamp = timeStamp;
@@ -49,11 +49,11 @@ public class TokenTransaction {
         this.timeStamp = timeStamp;
     }
 
-    public int getNumOfBoughtTokens() {
+    public double getNumOfBoughtTokens() {
         return numOfBoughtTokens;
     }
 
-    public void setNumOfBoughtTokens(int numOfBoughtTokens) {
+    public void setNumOfBoughtTokens(double numOfBoughtTokens) {
         this.numOfBoughtTokens = numOfBoughtTokens;
     }
 

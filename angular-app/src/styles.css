@@ -20,6 +20,7 @@ body {
 :root {
   --gray: #cdd1d3;
   --deep-blue: #283b50;
+  --brown: rgb(216, 180, 137);
   --red: #b73e3e;
   --white: #ffffff;
   --gray-transparent: rgba(231, 230, 230, 0.47);

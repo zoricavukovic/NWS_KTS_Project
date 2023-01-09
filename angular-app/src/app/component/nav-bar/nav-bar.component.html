@@ -17,12 +17,20 @@
         >Drivings</a
       >
       <a
-        *ngIf="isRegular"
-        [routerLink]="['/favourite-routes']"
+      *ngIf="isRegular"
+      [routerLink]="['/favourite-routes']"
+      routerLinkActive="active"
+      mat-button
+      color="primary"
+      >Favourite Routes</a
+      >
+      <a
+        *ngIf="!isAdmin && isRegular"
+        [routerLink]="['/payment/financial-card', loggedUser?.id]"
         routerLinkActive="active"
         mat-button
         color="primary"
-        >Favourite Routes</a
+        >Tokens</a
       >
       <a
         *ngIf="isRegular"
@@ -65,6 +73,15 @@
         mat-button
         color="primary">
         Driver registration
+      </a>
+
+      <a
+        *ngIf="isAdmin"
+        [routerLink]="['/payment/change-paying-info']"
+        routerLinkActive="active"
+        mat-button
+        color="primary">
+        Payment
       </a>
     </div>
   </div>

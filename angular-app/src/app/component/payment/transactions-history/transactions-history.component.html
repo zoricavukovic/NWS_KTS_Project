@@ -1,0 +1,13 @@
+<div class="transactions-content" *ngIf="transactions.length > 0; else noTransactionsBlock">
+    <div *ngFor="let transaction of transactions; let i=index">
+        <div class="transaction-row">
+            <p>{{i+1}}.</p>
+            <p>{{transaction.timeStamp | date: 'dd.MM.yyyy.'}}</p>
+            <p class="bought-tokens">+{{transaction.numOfBoughtTokens}}<mat-icon>payments</mat-icon></p>
+            <p>-{{transaction.totalPrice}}€</p>
+        </div>
+    </div>
+</div>
+<ng-template #noTransactionsBlock>
+    <p class="no-content">There are no transactions to show.</p>
+</ng-template>

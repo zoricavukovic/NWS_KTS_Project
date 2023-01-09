@@ -15,7 +15,10 @@ import { MapComponent } from './component/map/map.component';
 import { FavouriteRoutesComponent } from './component/favourite-route/favourite-routes/favourite-routes.component';
 import { SuccessfullVerificationComponent } from './component/user/auth/successfull-verification/successfull-verification.component';
 import { BasicUserProfileComponent } from './component/user/basic-user-profile/basic-user-profile.component';
-import { PaymentSuccessComponent } from './component/payment/payment-success/payment-success.component';
+import { FinancialCardComponent } from './component/payment/financial-card/financial-card.component';
+import { ProcessingPaymentComponent } from './component/payment/processing-payment/processing-payment.component';
+import { PaymentStatusComponent } from './component/payment/payment-status/payment-status.component';
+import { ChangePayingInfoComponent } from './component/payment/change-paying-info/change-paying-info.component';
 
 const routes: Routes = [
   { path: 'map-view/:id', component: MapComponent },
@@ -38,8 +41,10 @@ const routes: Routes = [
   { path: 'users', component: ShowUsersComponent },
   { path: 'favourite-routes', component: FavouriteRoutesComponent },
   { path: 'user-profile/:id', component: BasicUserProfileComponent },
-  { path: 'payment/success', component: PaymentSuccessComponent },
-  { path: '', redirectTo: 'map-view/-1', pathMatch: 'full' },
+  { path: 'payment/process-payment/:tokenBankId/:numOfTokens/process', component: ProcessingPaymentComponent },
+  { path: 'payment/financial-card/:id', component: FinancialCardComponent },
+  { path: 'payment/status/:status', component: PaymentStatusComponent },
+  { path: 'payment/change-paying-info', component: ChangePayingInfoComponent },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
 ];
 

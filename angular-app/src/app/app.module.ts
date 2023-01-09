@@ -81,7 +81,6 @@ import { DrivingDetailsDriverComponent } from './component/driving/driving-detai
 import { DrivingDetailsPassengersComponent } from './component/driving/driving-details-components/driving-details-passengers/driving-details-passengers.component';
 import { AcceptingDrivingViewComponent } from './component/home/accepting-driving-view/accepting-driving-view.component';
 import { SplitButtonModule } from 'primeng/splitbutton';
-import { PaymentSuccessComponent } from './component/payment/payment-success/payment-success.component';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { HomePagePassengerComponent } from './component/home/home-page-pessanger/home-page-passenger.component';
 import { RoutesOptionComponent } from './component/home/routes-option/routes-option.component';
@@ -94,6 +93,17 @@ import { NgxsModule } from '@ngxs/store';
 import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
 import { DrivingNotificationState } from './state/driving-notification.state';
+import { FinancialCardComponent } from './component/payment/financial-card/financial-card.component';
+import {KnobModule} from 'primeng/knob';
+import { BuyTokensComponent } from './component/payment/buy-tokens/buy-tokens.component';
+import { TransactionsHistoryComponent } from './component/payment/transactions-history/transactions-history.component';
+import { PaymentStatisticsComponent } from './component/payment/payment-statistics/payment-statistics.component';
+import { ProcessingPaymentComponent } from './component/payment/processing-payment/processing-payment.component';
+import {ProgressSpinnerModule} from 'primeng/progressspinner';
+import { ChangePayingInfoComponent } from './component/payment/change-paying-info/change-paying-info.component';
+import { PaymentStatusComponent } from './component/payment/payment-status/payment-status.component';
+import { PayingInfoBoxComponent } from './component/payment/paying-info-box/paying-info-box.component';
+
 
 @NgModule({
   declarations: [
@@ -144,13 +154,20 @@ import { DrivingNotificationState } from './state/driving-notification.state';
     DrivingDetailsDriverComponent,
     DrivingDetailsPassengersComponent,
     AcceptingDrivingViewComponent,
-    PaymentSuccessComponent,
     HomePagePassengerComponent,
     RoutesOptionComponent,
     SimpleDrivingDetailContainerComponent,
     ActiveDriveContainerComponent,
     WaitingForAcceptRideContainerComponent,
-    NotificationsComponent
+    NotificationsComponent,
+    FinancialCardComponent,
+    BuyTokensComponent,
+    TransactionsHistoryComponent,
+    PaymentStatisticsComponent,
+    ProcessingPaymentComponent,
+    ChangePayingInfoComponent,
+    PaymentStatusComponent,
+    PayingInfoBoxComponent,
   ],
   imports: [
     BrowserModule,
@@ -191,6 +208,8 @@ import { DrivingNotificationState } from './state/driving-notification.state';
   ]),
   NgxsReduxDevtoolsPluginModule.forRoot(),
   NgxsLoggerPluginModule.forRoot(),
+    KnobModule,
+    ProgressSpinnerModule,
   ],
   entryComponents: [EditProfileComponent],
   providers: [
