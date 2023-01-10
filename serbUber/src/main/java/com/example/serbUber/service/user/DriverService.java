@@ -155,7 +155,7 @@ public class DriverService implements IDriverService{
     }
 
 
-    public Driver getDriverForDriving( DrivingNotification drivingNotification) {
+    public Driver getDriverForDriving( DrivingNotification drivingNotification) throws EntityNotFoundException {
         LocalDateTime startDate = drivingNotification.getStarted();
         LocalDateTime endDate = drivingNotification.getStarted().plusMinutes(drivingNotification.getDuration());
         Vehicle vehicle = drivingNotification.getVehicle();
@@ -170,14 +170,18 @@ public class DriverService implements IDriverService{
                : null;
     }
 
-    private Driver findNearestDriver(List<Driver> activeAndFreeDrivers, double lonStart, double latStart){
-        Location locationFirstDriver = activeAndFreeDrivers.get(0).getCurrentLocation();
-        double latEnd = locationFirstDriver.getLat();
-        double lonEnd = locationFirstDriver.getLon();
+    private Driver findNearestDriver(List<Driver> activeAndFreeDrivers, double lonStart, double latStart) throws EntityNotFoundException {
+        double latEnd = vehicleService.getLatOfCurrentVehiclePosition(activeAndFreeDrivers.get(0).getVehicle());
+        double lonEnd = vehicleService.getLonOfCurrentVehiclePosition(activeAndFreeDrivers.get(0).getVehicle());;
         double minDistance = getDistance(lonStart, latStart, lonEnd, latEnd);
         Driver nearestDriver = activeAndFreeDrivers.get(0);
         for(Driver driver : activeAndFreeDrivers){
-            double newMinDistance = getDistance(lonStart, latStart, driver.getCurrentLocation().getLon(), driver.getCurrentLocation().getLat());
+            double newMinDistance = getDistance(
+                lonStart,
+                latStart,
+                vehicleService.getLonOfCurrentVehiclePosition(driver.getVehicle()),
+                vehicleService.getLatOfCurrentVehiclePosition(driver.getVehicle())
+            );
             if(newMinDistance < minDistance){
                 minDistance = newMinDistance;
                 nearestDriver = driver;

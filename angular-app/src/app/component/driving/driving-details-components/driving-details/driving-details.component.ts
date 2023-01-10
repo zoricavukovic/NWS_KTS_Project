@@ -11,12 +11,14 @@ import { DriverService } from 'src/app/service/driver.service';
 import { Vehicle } from 'src/app/model/vehicle/vehicle';
 import { User } from 'src/app/model/user/user';
 import {
+  drawActiveRide,
   drawAllMarkers,
-  drawPolylineWithLngLatArray,
-  removeAllMarkers, removeAllMarkersFromList,
+  drawPolylineWithLngLatArray, markCurrentPosition,
+  removeAllMarkersFromList,
   removeLine
 } from '../../../../util/map-functions';
 import {RouteService} from "../../../../service/route.service";
+import {VehicleService} from "../../../../service/vehicle.service";
 
 @Component({
   selector: 'app-driving-details',
@@ -29,7 +31,6 @@ import {RouteService} from "../../../../service/route.service";
 export class DrivingDetailsComponent implements OnInit, OnDestroy {
   @Input() map: google.maps.Map;
   id: number;
-  vehicleRating: number;
   driving: Driving;
   driver: Driver;
   vehicle: Vehicle;
@@ -41,12 +42,14 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
   markers: google.maps.Marker[];
   loggedUser: User = null;
   base64Prefix = this.configService.base64_show_photo_prefix;
+  activeRide: boolean;
 
   currentUserSubscription: Subscription;
   drivingsSubscription: Subscription;
   driverSubscription: Subscription;
   vehicleRatingSubscription: Subscription;
   favouriteRouteSubscription: Subscription;
+  vehicleSubscription: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -56,8 +59,11 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
     private drivingService: DrivingService,
     private driverService: DriverService,
     private routeService: RouteService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private vehicleService: VehicleService
+  ) {
+    this.activeRide = false;
+  }
 
   ngOnInit(): void {
     this.router.events.subscribe((event) => {
@@ -68,12 +74,21 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
     this.drivingsSubscription = this.drivingService
       .get(this.id)
       .subscribe((driving: Driving) => {
-        console.log(driving);
+        console.log(driving.active);
         this.driving = driving;
+        this.drivingsSubscription = this.drivingService.getVehicleDetails(driving?.id).subscribe(vehicleCurrentLocation => {
+          console.log("menja se vehicle pozicija");
+          markCurrentPosition(this.map, vehicleCurrentLocation);
+        });
+
         if (this.map){
           this.routeService.getRoutePath(driving?.route?.id).subscribe(path => {
+            this.routePolyline = drawPolylineWithLngLatArray(this.map, path);
+            if (driving.active){
+              drawActiveRide(this.map, path, driving);
+            }else{
               this.markers = drawAllMarkers(driving?.route?.locations, this.map);
-              this.routePolyline = drawPolylineWithLngLatArray(this.map, path);
+            }
             }
           )
         }

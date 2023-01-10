@@ -3,6 +3,7 @@ package com.example.serbUber.service.interfaces;
 import com.example.serbUber.dto.DrivingDTO;
 import com.example.serbUber.dto.DrivingPageDTO;
 import com.example.serbUber.dto.SimpleDrivingInfoDTO;
+import com.example.serbUber.dto.VehicleCurrentLocationDTO;
 import com.example.serbUber.exception.DriverAlreadyHasStartedDrivingException;
 import com.example.serbUber.exception.DrivingShouldNotStartYetException;
 import com.example.serbUber.exception.EntityNotFoundException;
@@ -27,7 +28,7 @@ public interface IDrivingService {
         final Set<RegularUser> users,
         final HashMap<Long, Boolean> usersPaid,
         final double price
-    );
+    ) throws EntityNotFoundException;
 
     List<DrivingDTO> getAll();
 
@@ -52,4 +53,5 @@ public interface IDrivingService {
     DrivingDTO removeDriver(final Long id) throws EntityNotFoundException;
 
     SimpleDrivingInfoDTO checkUserHasActiveDriving(final Long userId);
+    VehicleCurrentLocationDTO getVehicleCurrentLocation(final Long id) throws EntityNotFoundException;
 }

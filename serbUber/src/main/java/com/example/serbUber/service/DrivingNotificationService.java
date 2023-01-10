@@ -168,9 +168,13 @@ public class DrivingNotificationService implements IDrivingNotificationService {
 
     public double calculateMinutesForStartDriving(final Long driverId, final Route route) throws EntityNotFoundException {
         Driver driver = driverService.getDriverById(driverId);
-        Location currentLocationForDriver = driver.getCurrentLocation();
         Location userLocation = route.getLocations().first().getLocation();
-        GHRequest request = new GHRequest(currentLocationForDriver.getLat(), currentLocationForDriver.getLon(), userLocation.getLat(), userLocation.getLon());
+        GHRequest request = new GHRequest(
+            vehicleService.getLatOfCurrentVehiclePosition(driver.getVehicle()),
+            vehicleService.getLonOfCurrentVehiclePosition(driver.getVehicle()),
+            userLocation.getLat(),
+            userLocation.getLon()
+        );
         request.setProfile("car");
         GHResponse routeHopper = hopper.route(request);
         System.out.println("vreemeee" + TimeUnit.MILLISECONDS.toMinutes(routeHopper.getBest().getTime()));

@@ -5,17 +5,25 @@ import {VehicleCurrentLocation} from "../model/vehicle/vehicle-current-location"
 import {PossibleRoute} from "../model/route/possible-routes";
 import {SearchingRoutesForm} from "../model/route/searching-routes-form";
 import {DrivingLocation} from "../model/route/driving-location";
+import {getActiveVehiclePhotoNameBasedOnType, getVehiclePhotoNameBasedOnType} from "../model/vehicle/vehicle-type-info";
+import {Driving} from "../model/driving/driving";
 
 export function addMarker(map: google.maps.Map, markerCoordinates: google.maps.LatLng | google.maps.LatLngLiteral)
   :google.maps.Marker
 {
+  const customIcon = {
+    url: './assets/images/marker-icon.png',
+    anchor: new google.maps.Point(23,45),
+    scaledSize: new google.maps.Size(45, 45)
+  };
   map.setCenter(markerCoordinates);
   map.setZoom(16);
   return new google.maps.Marker(
     {
       position: markerCoordinates,
       map: map,
-      title: 'Location'
+      title: 'Location',
+      icon: customIcon
     });
 }
 
@@ -23,7 +31,39 @@ export function drawAllMarkers(locations: DrivingLocation[] | undefined, map: go
   const markers: google.maps.Marker[] = [];
   locations.forEach(location => {
     const markerCoordinates: google.maps.LatLngLiteral = { lat: location.location.lat, lng: location.location.lon };
-    markers.push(addMarker(map, markerCoordinates));
+    const marker: google.maps.Marker = addMarker(map, markerCoordinates);
+    if (location.index === 1 || location.index === locations.length){
+      const infowindow = new google.maps.InfoWindow({
+        content: `${location.location?.street} ${location.location?.number}`,
+        ariaLabel: "Uluru",
+      });
+      google.maps.event.addListener(marker, 'click', function() {
+        infowindow.open(map,marker);
+      });
+      infowindow.open(map,marker);
+    }
+    markers.push(marker);
+  })
+  return markers;
+}
+
+
+export function drawActiveRide(map: google.maps.Map, lngLatList: LngLat[] | undefined, driving: Driving): google.maps.Marker[] {
+  const markers: google.maps.Marker[] = [];
+  driving?.route?.locations.forEach(location => {
+    const markerCoordinates: google.maps.LatLngLiteral = { lat: location.location.lat, lng: location.location.lon };
+    const marker: google.maps.Marker = addMarker(map, markerCoordinates);
+    if (location.index === 1 || location.index === driving?.route?.locations.length){
+      // const infowindow = new google.maps.InfoWindow({
+      //   content: `${location.location?.street} ${location.location?.number}`,
+      //   ariaLabel: "Uluru",
+      // });
+      // google.maps.event.addListener(marker, 'click', function() {
+      //   infowindow.open(map,marker);
+      // });
+      // infowindow.open(map,marker);
+    }
+    markers.push(marker);
   })
   return markers;
 }
@@ -78,7 +118,7 @@ export function drawPolylineWithLngLatArray(map: google.maps.Map, lngLatList: Ln
   lngLatList.forEach(lngLat =>
     latLongs.push({lat:lngLat[0], lng:lngLat[1]})
   );
-  return drawPolylineOnMap(map, latLongs, "#283b50", 9);
+  return drawPolylineOnMap(map, latLongs, "#283b50", 6);
 }
 
 
@@ -114,36 +154,76 @@ export function getRouteCoordinates(route: PossibleRoute): google.maps.LatLngLit
   return routeCoordinates;
 }
 
-export function addCarMarker(map, location: Location, iconName: string): google.maps.Marker {
-  const customIcon = {
-    url: iconName,
-    scaledSize: new google.maps.Size(45, 45)
+export function addCarMarker(map, vehicleStatus: VehicleCurrentLocation, currentLoggedUserId: number): google.maps.Marker {
+  const customIcon: google.maps.Icon = vehicleStatus.inDrive?
+    {
+    url: getActiveVehiclePhotoNameBasedOnType(vehicleStatus.type)
+  } : {
+    url: getVehiclePhotoNameBasedOnType(vehicleStatus.type)
   };
 
-  return new google.maps.Marker(
+  if (currentLoggedUserId === vehicleStatus?.driverId) {
+    console.log("Ulogovani korisnik provera id");
+    console.log(currentLoggedUserId);
+    console.log(vehicleStatus.driverId);
+    console.log(vehicleStatus);
+    customIcon.anchor = new google.maps.Point(70, 70);
+    customIcon.scaledSize = new google.maps.Size(70, 70);
+  }
+  else {
+    customIcon.anchor = new google.maps.Point(50, 60);
+    customIcon.scaledSize = new google.maps.Size(50, 50);
+  }
+
+  const marker: google.maps.Marker = new google.maps.Marker(
     {
-      position: {lat:location?.lat, lng:location?.lon},
+      position: {lat:vehicleStatus?.currentLocation?.lat, lng:vehicleStatus?.currentLocation?.lon},
       map: map,
       title: 'Car',
       icon: customIcon
     });
+
+  // marker.addListener("click", () => {
+  //  let infoWindow = new google.maps.InfoWindow({
+  //    content: "hellow<b>World</b>"
+  //  });
+  //  infoWindow.open(map, marker);
+  // });
+
+  return marker;
 }
 
 export function addCarMarkers(
-  map: google.maps.Map, carMarkers: google.maps.Marker[], vehicles: Vehicle[], vehicleCurrentLocation: VehicleCurrentLocation[]
+  map: google.maps.Map,
+  carMarkers: google.maps.Marker[],
+  vehicleCurrentLocation: VehicleCurrentLocation[],
+  currentLoggedUserId: number
 ): google.maps.Marker[] {
   if (map !== undefined){
     carMarkers.forEach(marker => removeMarker(marker));
     let markers: google.maps.Marker[] = [];
     vehicleCurrentLocation.forEach(currentVehicle => {
-      markers.push(currentVehicle.inDrive === true ?
-        addCarMarker(map, currentVehicle?.currentLocation, '/assets/images/car.png'):
-        addCarMarker(map, currentVehicle?.currentLocation, '/assets/images/car-unactive.png')
-      );
+        markers.push(addCarMarker(map, currentVehicle, currentLoggedUserId));
     })
 
     return markers;
   }
 
   return carMarkers;
+}
+
+export function markCurrentPosition(map: google.maps.Map, vehicleCurrentLocation: VehicleCurrentLocation) {
+  const customIcon: google.maps.Icon = {
+      url: "./assets/images/pin_anim.svg",
+      anchor: new google.maps.Point(60, 60),
+      scaledSize: new google.maps.Size(60, 60)
+  }
+
+  const marker: google.maps.Marker = new google.maps.Marker(
+    {
+      position: {lat:vehicleCurrentLocation?.currentLocation?.lat, lng:vehicleCurrentLocation?.currentLocation?.lon},
+      map: map,
+      title: 'Car',
+      icon: customIcon
+    });
 }

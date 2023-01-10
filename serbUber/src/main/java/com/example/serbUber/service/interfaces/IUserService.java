@@ -3,6 +3,7 @@ package com.example.serbUber.service.interfaces;
 import com.example.serbUber.dto.user.RegistrationDTO;
 import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.*;
+import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.model.user.User;
 
 import java.util.List;
@@ -64,4 +65,6 @@ public interface IUserService {
         final String phoneNumber,
         final String city, final String profilePicture
     ) throws PasswordsDoNotMatchException, EntityAlreadyExistsException, MailCannotBeSentException, EntityNotFoundException;
+
+    Driver getDriverById(final long driverId) throws EntityNotFoundException;
 }

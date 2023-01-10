@@ -48,6 +48,7 @@ public class GraphHopperUtil {
         final double secondPointLat,
         final double secondPointLng
     ) {
+
         GHRequest req = new GHRequest().setProfile("car")
             .addPoint(new GHPoint(firstPointLat, firstPointLng))
             .addPoint(new GHPoint(secondPointLat, secondPointLng))

@@ -14,6 +14,7 @@ import { DrivingNotification } from '../model/notification/driving-notification'
 import { BlockNotification } from '../model/notification/block-notification';
 import { Router } from '@angular/router';
 import {ToastrService} from "ngx-toastr";
+import {DrivingService} from "./driving.service";
 
 @Injectable({
   providedIn: 'root',
@@ -30,7 +31,8 @@ export class WebSocketService {
     private drivingNotificationService: DrivingNotificationService,
     private driverService: DriverService,
     private router: Router,
-    private toast: ToastrService
+    private toast: ToastrService,
+    private drivingService: DrivingService
   ) {
     if (!this.stompClient) {
       this.initialized = false;
@@ -54,6 +56,7 @@ export class WebSocketService {
       const that = this;
 
       this.stompClient.connect({}, function (frame) {
+        that.vehicleUpdateCoordinate();
         that.stompClient.subscribe(
           environment.publisherUrl + localStorage.getItem('email') + '/connect',
           message => {
@@ -64,6 +67,24 @@ export class WebSocketService {
         );
       });
     }
+  }
+
+  vehicleUpdateCoordinate() {
+    this.stompClient.subscribe(environment.publisherUrl + localStorage.getItem('email') + '/update-driving', (message: { body: string }) => {
+      if (
+        (message !== null && message !== undefined) ||
+        message?.body !== null
+      ) {
+        const vehicleCurrentLocation: VehicleCurrentLocation = JSON.parse(message.body);
+        console.log("web socket");
+        console.log(message);
+          this.drivingService.updateRide(vehicleCurrentLocation);
+      }
+
+      //   this.toast.info('Driving is finished.Tap to see details!')
+      //     .onTap.subscribe(action => this.router.navigate(['map-view', drivingNotificationDetails.drivingId]));
+      // });
+    });
   }
 
   checkNotificationType(message: string) {

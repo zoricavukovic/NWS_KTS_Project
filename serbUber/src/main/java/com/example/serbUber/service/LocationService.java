@@ -31,12 +31,11 @@ public class LocationService implements ILocationService {
         return fromLocations(locations);
     }
 
-//    public LocationDTO getByCity(String city) throws EntityNotFoundException {
-//        Optional<Location> optionalLocation = locationRepository.findByCity(city);
-//
-//        return optionalLocation.map(LocationDTO::new)
-//            .orElseThrow(() ->  new EntityNotFoundException(city, EntityType.LOCATION));
-//    }
+    public Location get(Long id) throws EntityNotFoundException {
+
+        return locationRepository.findById(id)
+            .orElseThrow(() ->  new EntityNotFoundException(id, EntityType.LOCATION));
+    }
 
     public LocationDTO createDTO(
         final String city,
@@ -60,5 +59,10 @@ public class LocationService implements ILocationService {
     ) {
 
         return locationRepository.save(new Location(city, street, number, zipCode, lon, lat));
+    }
+
+    public Location tryToFindLocation(double lon, double lat) {
+
+        return locationRepository.findByLonAndLat(lon, lat).orElse(null);
     }
 }

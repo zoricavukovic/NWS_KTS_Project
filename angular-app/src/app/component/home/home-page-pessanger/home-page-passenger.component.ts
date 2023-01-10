@@ -1,7 +1,6 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {SearchingRoutesForm} from "../../../model/route/searching-routes-form";
-import {
-  addCarMarkers, addMarker,
+import {addMarker,
   drawPolylineOnMap,
   getRouteCoordinates, removeAllMarkers,
   removeAllPolyline, removeLine,
@@ -12,7 +11,6 @@ import {PossibleRoutesViaPoints} from "../../../model/route/possible-routes-via-
 import {PossibleRoute} from "../../../model/route/possible-routes";
 import {DrivingLocation} from "../../../model/route/driving-location";
 import {Route} from "../../../model/route/route";
-import {Vehicle} from "../../../model/vehicle/vehicle";
 import {Subscription} from "rxjs";
 import {RouteService} from "../../../service/route.service";
 import {AuthService} from "../../../service/auth.service";
@@ -26,7 +24,6 @@ import SockJS from "sockjs-client";
 import {Stomp} from "@stomp/stompjs";
 import {environment} from "../../../../environments/environment";
 import {Router} from "@angular/router";
-import {WebSocketService} from "../../../service/web-socket.service";
 import {SimpleDrivingInfo} from "../../../model/driving/simple-driving-info";
 
 @Component({
@@ -45,8 +42,6 @@ export class HomePagePassengerComponent implements OnInit, OnDestroy {
 
   possibleRoutesViaPoints: PossibleRoutesViaPoints[] = [];
   drawPolylineList: google.maps.Polyline[] = [];
-  vehicles: Vehicle[];
-  carMarkers: google.maps.Marker[] = [];
   selectedRoute: Route;
   routePathIndex: number[] = [];
   loadingViewVar = false;
@@ -81,8 +76,7 @@ export class HomePagePassengerComponent implements OnInit, OnDestroy {
     private vehicleService: VehicleService,
     private drivingService: DrivingService,
     private toast: ToastrService,
-    private router: Router,
-    private webSocketSerice: WebSocketService
+    private router: Router
   ) {
     this.routeChoiceView = true;
     this.filterVehicleView = false;
@@ -100,14 +94,6 @@ export class HomePagePassengerComponent implements OnInit, OnDestroy {
         console.log(res);
       }
     )
-    this.vehicleService.getAllVehicle().subscribe(vehicleCurrentLocation => {
-      this.carMarkers = addCarMarkers(
-        this.map,
-        this.carMarkers,
-        this.vehicles,
-        vehicleCurrentLocation
-      );
-    });
   }
 
   getPossibleRoutes() {
@@ -403,7 +389,6 @@ export class HomePagePassengerComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     removeAllMarkers(this.searchingRoutesForm);
 
-    this.carMarkers.forEach(marker => removeMarker(marker));
     this.drawPolylineList = removeAllPolyline(this.drawPolylineList);
     if (this.authSubscription) {
       this.authSubscription.unsubscribe();

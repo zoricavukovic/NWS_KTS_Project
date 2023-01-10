@@ -1,15 +1,18 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ConfigService } from './config.service';
-import { Observable } from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 import { Driving } from '../model/driving/driving';
 import { GenericService } from './generic.service';
 import {SimpleDrivingInfo} from "../model/driving/simple-driving-info";
+import {VehicleCurrentLocation} from "../model/vehicle/vehicle-current-location";
 
 @Injectable({
   providedIn: 'root',
 })
 export class DrivingService extends GenericService<Driving> {
+
+  ride$ = new BehaviorSubject<VehicleCurrentLocation>(null);
 
   constructor(
     private http: HttpClient,
@@ -66,5 +69,21 @@ export class DrivingService extends GenericService<Driving> {
   checkIfUserHasActiveDriving(id: number): Observable<SimpleDrivingInfo> {
 
     return this.http.get<SimpleDrivingInfo>(this.configService.check_user_has_active_driving_url(id));
+  }
+
+  getVehicleDetails(drivingId: number): BehaviorSubject<VehicleCurrentLocation> {
+    this.http
+      .get<VehicleCurrentLocation>(`${this.configService.vehicle_current_location_url}/${drivingId}`)
+      .subscribe(vehiclesCurrentLocation => {
+        console.log("cao ja sam");
+        console.log(vehiclesCurrentLocation);
+        this.ride$.next(vehiclesCurrentLocation);
+      });
+
+    return this.ride$;
+  }
+
+  updateRide(vehicleCurrentLocation: VehicleCurrentLocation) {
+    this.ride$.next(vehicleCurrentLocation);
   }
 }

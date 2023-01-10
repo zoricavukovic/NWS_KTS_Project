@@ -3,6 +3,7 @@ package com.example.serbUber.service.interfaces;
 import com.example.serbUber.dto.VehicleCurrentLocationDTO;
 import com.example.serbUber.dto.VehicleDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
+import com.example.serbUber.model.Location;
 import com.example.serbUber.model.Vehicle;
 import com.example.serbUber.model.VehicleType;
 import org.springframework.stereotype.Service;
@@ -17,14 +18,18 @@ public interface IVehicleService {
             final VehicleType vehicleType
     ) throws EntityNotFoundException;
     List<VehicleDTO> getAll();
-    Vehicle getVehicleById(Long id) throws EntityNotFoundException;
-    double getRatingForVehicle(Long id);
-    Vehicle updateRate(Long id, double rate) throws EntityNotFoundException;
-    void delete(Long id);
+    Vehicle getVehicleById(final Long id) throws EntityNotFoundException;
+    double getRatingForVehicle(final Long id);
+    Vehicle updateRate(final Long id, final double rate) throws EntityNotFoundException;
+    void delete(final Long id);
 
     List<VehicleCurrentLocationDTO> getAllVehiclesForActiveDriver() throws EntityNotFoundException;
 
     List<VehicleCurrentLocationDTO> updateCurrentVehiclesLocation() throws EntityNotFoundException;
 
     VehicleDTO getVehicleDTOByVehicleType(String vehicleType);
+
+    double getLatOfCurrentVehiclePosition(final Vehicle vehicle) throws EntityNotFoundException;
+
+    double getLonOfCurrentVehiclePosition(final Vehicle vehicle) throws EntityNotFoundException;
 }

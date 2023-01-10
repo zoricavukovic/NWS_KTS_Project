@@ -5,6 +5,7 @@ import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.*;
 import com.example.serbUber.model.VehicleType;
 import com.example.serbUber.model.Verify;
+import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.model.user.User;
 import com.example.serbUber.repository.user.UserRepository;
 import com.example.serbUber.service.DriverUpdateApprovalService;
@@ -59,10 +60,19 @@ public class UserService implements IUserService {
         return fromUsers(users);
     }
 
-    public User getUserByEmail(String email) throws EntityNotFoundException {
+    public User getUserByEmail(final String email) throws EntityNotFoundException {
 
         return userRepository.getUserByEmail(email)
             .orElseThrow(() -> new EntityNotFoundException(email, EntityType.USER));
+    }
+
+    public Driver getDriverById(final long id) throws EntityNotFoundException {
+
+        Object user = userRepository.getDriverById(id)
+            .orElseThrow(() -> new EntityNotFoundException(id, EntityType.USER));
+
+        return (Driver) user;
+
     }
 
     public UserDTO getUserDTOByEmail(String email) throws EntityNotFoundException {

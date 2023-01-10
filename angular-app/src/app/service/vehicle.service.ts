@@ -34,6 +34,7 @@ export class VehicleService extends GenericService<Vehicle> {
     this.http
       .get<VehicleCurrentLocation[]>(this.configService.all_active_vehicles_url)
       .subscribe(vehiclesCurrentLocation => {
+        console.log("cao ja sam");
         console.log(vehiclesCurrentLocation);
         this.vehicles$.next(vehiclesCurrentLocation);
       });
