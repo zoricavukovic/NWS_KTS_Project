@@ -1,0 +1,32 @@
+<div class="form-container mat-elevation-z1">
+    <div *ngIf="showSuccess; else failedTransactionBlock">
+        <div class="center">
+            <img class="center" src="../../../../assets/images/verified.png">
+        </div>
+        <div class="center">
+            <h1>Transaction successfull</h1>
+        </div>
+        <div class="content">
+            <p>Transaction is successfully completed.</p>
+            <p>You can go and spend tokens right now!</p>
+        </div>
+
+    </div>
+    <ng-template #failedTransactionBlock>
+        <div class="center">
+            <img class="center" src="../../../../assets/images/failed.png">
+        </div>
+        <div class="center">
+            <h1>Transaction failed</h1>
+        </div>
+        <div class="content">
+            <p>Transaction is is not completed.</p>
+            <p>Please check your balance on PayPal account.</p>
+        </div>
+
+    </ng-template>
+    <div class="center">
+        <button class="green-button" (click)="goToBalance()">Go back to balance</button>
+    </div>
+    <p>Thank you for using SerbUber.</p>
+</div>

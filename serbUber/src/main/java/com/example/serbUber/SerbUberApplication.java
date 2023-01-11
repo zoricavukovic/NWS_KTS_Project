@@ -18,11 +18,6 @@ public class SerbUberApplication {
 	public static GraphHopper hopper = createGraphHopperInstance("src/main/resources/core/files/serbia-latest.osm.pbf");
 	public static void main(String[] args) {
 		SpringApplication.run(SerbUberApplication.class, args);
-//		Locust locust = Locust.getInstance();
-//		locust.setMasterHost("127.0.0.1");
-//		locust.setMasterPort(5557);
-//		locust.dryRun(new UpdateCarPositionTask());
-//		locust.run(new UpdateCarPositionTask());
 	}
 
 }

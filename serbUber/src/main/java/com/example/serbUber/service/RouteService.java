@@ -1,6 +1,5 @@
 package com.example.serbUber.service;
 
-import com.example.serbUber.dto.LngLatLiteralDTO;
 import com.example.serbUber.dto.PossibleRouteDTO;
 import com.example.serbUber.dto.PossibleRoutesViaPointsDTO;
 import com.example.serbUber.dto.RouteDTO;
@@ -15,9 +14,11 @@ import com.example.serbUber.request.LocationsForRoutesRequest;
 import com.example.serbUber.request.LongLatRequest;
 import com.example.serbUber.service.interfaces.IRouteService;
 import com.graphhopper.ResponsePath;
+import okhttp3.*;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -96,7 +97,13 @@ public class RouteService implements IRouteService {
         IntStream.range(
             START_LIST_INDEX, getBeforeLastIndexOfList(locationsForRouteRequest.getLocationsForRouteRequest())
             )
-            .forEach(index -> addPossibleRoutesViaPoints(locationsForRouteRequest.getLocationsForRouteRequest(), possibleRoutesViaPointsDTOs, index));
+            .forEach(index -> {
+                try {
+                    addPossibleRoutesViaPoints(locationsForRouteRequest.getLocationsForRouteRequest(), possibleRoutesViaPointsDTOs, index);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
 
         return possibleRoutesViaPointsDTOs;
     }
@@ -113,12 +120,17 @@ public class RouteService implements IRouteService {
             {
                 DrivingLocationIndex firstLocation = locations.get(index);
                 DrivingLocationIndex secondLocation = locations.get(index + 1);
-                PossibleRouteDTO path = getPossibleRoutesDTO(
-                    firstLocation.getLocation().getLat(),
-                    firstLocation.getLocation().getLon(),
-                    secondLocation.getLocation().getLat(),
-                    secondLocation.getLocation().getLon()
-                ).get(firstLocation.getRouteIndex());
+                PossibleRouteDTO path = null;
+                try {
+                    path = getPossibleRoutesDTO(
+                        firstLocation.getLocation().getLat(),
+                        firstLocation.getLocation().getLon(),
+                        secondLocation.getLocation().getLat(),
+                        secondLocation.getLocation().getLon()
+                    ).get(firstLocation.getRouteIndex());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 points.addAll(path.getPointList());
             });
 
@@ -133,13 +145,16 @@ public class RouteService implements IRouteService {
     ){
         SortedSet<DrivingLocationIndex> drivingLocations = new TreeSet<>();
         locations.forEach(locationIndex -> {
-            Location location = locationService.create( locationIndex.getLocation().getCity(),
-                    locationIndex.getLocation().getStreet(),
-                    locationIndex.getLocation().getNumber(),
-                    locationIndex.getLocation().getZipCode(),
-                    locationIndex.getLocation().getLon(),
-                    locationIndex.getLocation().getLat()
-            );
+            Location location = locationService.tryToFindLocation(locationIndex.getLocation().getLon(), locationIndex.getLocation().getLat());
+            if (location == null){
+                location = locationService.create( locationIndex.getLocation().getCity(),
+                        locationIndex.getLocation().getStreet(),
+                        locationIndex.getLocation().getNumber(),
+                        locationIndex.getLocation().getZipCode(),
+                        locationIndex.getLocation().getLon(),
+                        locationIndex.getLocation().getLat()
+                );
+            }
             DrivingLocationIndex drivingLocationIndex = drivingLocationIndexService.create(
                 location,
                 locationIndex.getIndex(),
@@ -159,7 +174,7 @@ public class RouteService implements IRouteService {
         List<LongLatRequest> longLatRequestList,
         List<PossibleRoutesViaPointsDTO> possibleRoutesViaPointsDTOs,
         int index
-    ) {
+    ) throws IOException {
 
         possibleRoutesViaPointsDTOs.add(
             new PossibleRoutesViaPointsDTO(
@@ -174,8 +189,27 @@ public class RouteService implements IRouteService {
         final double firstPointLng,
         final double secondPointLat,
         final double secondPointLng
-    ) {
+    ) throws IOException {
         List<PossibleRouteDTO> possibleRouteDTOs = new LinkedList<>();
+
+//        OkHttpClient client = new OkHttpClient().newBuilder()
+//            .build();
+//        MediaType mediaType = MediaType.parse("text/plain");
+//        RequestBody body = RequestBody.create(mediaType, "");
+//        Request request = new Request.Builder()
+//            .url("https://maps.googleapis.com/maps/api/directions/json?origin=45.12,20.32&destination=45.17,20.45&key=AIzaSyDMqZ8APiUZLmLb5WyzogfK3l36Z4pG4H4")
+//            .method("GET", null)
+//            .build();
+//        Response response = client.newCall(request).execute();
+//        OkHttpClient client = new OkHttpClient().newBuilder()
+//            .build();
+//        MediaType mediaType = MediaType.parse("text/plain");
+//        RequestBody body = RequestBody.create("", mediaType);
+//        Request request = new Request.Builder()
+//            .url("https://maps.googleapis.com/maps/api/directions/json?origin=Toronto&destination=Montreal&key=AIzaSyDMqZ8APiUZLmLb5WyzogfK3l36Z4pG4H4")
+//            .method("GET", body)
+//            .build();
+//        Response response = client.newCall(request).execute()
 
         List<ResponsePath> responsePaths = routing(
             hopper,
@@ -194,7 +228,7 @@ public class RouteService implements IRouteService {
 
     private List<double[]> getPointsDTO(ResponsePath responsePath) {
         List<double[]> points = new LinkedList<>();
-
+//        for (int i=0; i< responsePath.getPoints().getLat())
         IntStream.range(START_LIST_INDEX, responsePath.getPoints().size())
             .forEach(index ->
                 points.add(new double[]{responsePath.getPoints().getLat(index), responsePath.getPoints().getLon(index)})

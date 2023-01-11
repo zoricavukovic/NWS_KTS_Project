@@ -18,4 +18,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("select u from User u left join fetch u.role r where u.role.name='ROLE_ADMIN' and u.online = true")
     Optional<User> findOnlineAdmin();
+
+    @Query("select u from User u left join fetch u.role r where u.role.name='ROLE_DRIVER' and u.id=?1")
+    Optional<Object> getDriverById(long id);
 }

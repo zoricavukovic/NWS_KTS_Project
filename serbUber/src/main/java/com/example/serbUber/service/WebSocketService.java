@@ -83,4 +83,13 @@ public class WebSocketService {
             });
         }
     }
+
+    public void sendVehicleCurrentLocation(VehicleCurrentLocationDTO vehicleCurrentLocationDTO, String driverEmail, Set<RegularUser> users) {
+        this.messagingTemplate.convertAndSendToUser(driverEmail, "/update-driving", vehicleCurrentLocationDTO);
+        if (users.size() > 0) {
+            users.forEach(user -> {
+                this.messagingTemplate.convertAndSendToUser(user.getEmail(), "/update-driving", vehicleCurrentLocationDTO);
+            });
+        }
+    }
 }

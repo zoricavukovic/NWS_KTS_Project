@@ -9,18 +9,25 @@ public class VehicleCurrentLocationDTO {
     private Long id;
     private Location currentLocation;
     private boolean inDrive;
+    private VehicleType type;
+    private long driverId;
 
-    public VehicleCurrentLocationDTO(final Vehicle vehicle, List<double[]> vehicleRoute) {
-        this.id = vehicle.getId();
-        this.inDrive = vehicle.isInDrive();
-        if (vehicle.hasRoute()) {
-            this.currentLocation = vehicle.getLocationForIndexInRoute(vehicleRoute.get(vehicle.getCurrentLocationIndex()));
+    public VehicleCurrentLocationDTO(final VehicleWithDriverId vehicleWithDriverId, List<double[]> vehicleRoute) {
+        this.id = vehicleWithDriverId.getVehicle().getId();
+        this.type = vehicleWithDriverId.getVehicle().getVehicleTypeInfo().getVehicleType();
+        this.driverId = vehicleWithDriverId.getDriverId();
+        if (vehicleWithDriverId.getVehicle().hasRoute()){
+            this.inDrive = true;
+            this.currentLocation = vehicleWithDriverId.getVehicle().getLocationForIndexInRoute(vehicleRoute.get(vehicleWithDriverId.getVehicle().getCurrentLocationIndex()));
+        }
+        else {
+            this.inDrive = false;
+            this.currentLocation = vehicleWithDriverId.getVehicle().getCurrentStop();
         }
     }
 
-
     public static List<VehicleCurrentLocationDTO> fromVehiclesToVehicleCurrentLocationDTO(
-        final List<Vehicle> vehicles,
+        final List<VehicleWithDriverId> vehicles,
         final List<List<double[]>> vehiclesRoutePath
     ) {
 
@@ -30,6 +37,22 @@ public class VehicleCurrentLocationDTO {
         );
 
         return vehicleDTOs;
+    }
+
+    public VehicleType getType() {
+        return type;
+    }
+
+    public void setType(VehicleType type) {
+        this.type = type;
+    }
+
+    public long getDriverId() {
+        return driverId;
+    }
+
+    public void setDriverId(long driverId) {
+        this.driverId = driverId;
     }
 
     public Long getId() {

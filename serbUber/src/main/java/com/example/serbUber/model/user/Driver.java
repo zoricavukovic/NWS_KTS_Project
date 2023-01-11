@@ -1,11 +1,8 @@
 package com.example.serbUber.model.user;
 
 import com.example.serbUber.model.Driving;
-import com.example.serbUber.model.Location;
 import com.example.serbUber.model.Vehicle;
 import com.example.serbUber.util.Constants;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -18,16 +15,12 @@ import static com.example.serbUber.util.Constants.ROLE_DRIVER;
 @Table(name="drivers")
 public class Driver extends User {
 
-    @OneToOne()
-    @JoinColumn(name = "location_id", referencedColumnName = "id")
-    private Location currentLocation;
-
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "driving_id", referencedColumnName = "id")
     private List<Driving> drivings = new LinkedList<>();
 
     @OneToOne()
-    @JoinColumn(name = "vehicle_id", referencedColumnName = "id")
+    @JoinColumn(name = "vehicle_id")
     private Vehicle vehicle;
 
     @Column(name="start_shift")
@@ -84,12 +77,7 @@ public class Driver extends User {
         this.vehicle = vehicle;
     }
 
-    public Location getCurrentLocation() {
-        return currentLocation;
-    }
-
-    public void setCurrentLocation(Location currentLocation) {
-        this.currentLocation = currentLocation;
+    public Driver(Object user) {
     }
 
     public List<Driving> getDrivings() {
@@ -163,5 +151,6 @@ public class Driver extends User {
     public void setDrive(boolean drive) {
         this.drive = drive;
     }
+
     public void incementWorkingMinutes() {this.workingMinutes += 1;}
 }

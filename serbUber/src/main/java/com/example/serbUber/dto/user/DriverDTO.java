@@ -14,7 +14,6 @@ public class DriverDTO extends UserDTO {
     private boolean blocked;
     private boolean active;
     private double rate;
-    private Location currentLocation;
     private List<Driving> drives = new LinkedList<>();
     private int workingMinutes;
     private Vehicle vehicle;
@@ -35,7 +34,6 @@ public class DriverDTO extends UserDTO {
         );
         this.blocked = driver.isBlocked();
         this.rate = driver.getRate();
-        this.currentLocation = driver.getCurrentLocation();
         this.drives = driver.getDrivings();
         this.active = driver.isActive();
         this.id = driver.getId();
@@ -55,10 +53,6 @@ public class DriverDTO extends UserDTO {
 
     public double getRate() {
         return rate;
-    }
-
-    public Location getCurrentLocation() {
-        return currentLocation;
     }
 
     public List<Driving> getDrives() {

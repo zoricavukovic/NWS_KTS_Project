@@ -1,12 +1,9 @@
 package com.example.serbUber.model;
 
-import com.example.serbUber.dto.LngLatLiteralDTO;
+import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.util.Constants;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
 @Entity
 @Table(name="vehicles")
@@ -28,15 +25,16 @@ public class Vehicle {
     @Column(name="rate", nullable = false)
     private double rate = Constants.START_RATE;
 
-    @Column(name="location_index")
+    @Column(name="current_location_index")
     private int currentLocationIndex = -1;
 
-    @OneToOne()
-    @JoinColumn(name = "active_route_id", referencedColumnName = "id")
-    private Route activeRoute = null;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="current_stop_location_id")
+    private Location currentStop = null;
 
-    @Column(name="in_drive")
-    private boolean inDrive = false;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="active_route_id")
+    private Route activeRoute;
 
     public Vehicle() {
     }
@@ -61,9 +59,7 @@ public class Vehicle {
         final boolean babySeat,
         final VehicleTypeInfo vehicleTypeInfo,
         final double rate,
-        final int currentLocationIndex,
-        final Route activeRoute,
-        final boolean inDrive
+        final int currentLocationIndex
     ) {
         this.id = id;
         this.petFriendly = petFriendly;
@@ -71,20 +67,21 @@ public class Vehicle {
         this.vehicleTypeInfo = vehicleTypeInfo;
         this.rate = rate;
         this.currentLocationIndex = currentLocationIndex;
-        this.activeRoute = activeRoute;
-        this.inDrive = inDrive;
     }
 
     public Vehicle(
         final boolean petFriendly,
         final boolean babySeat,
         final VehicleTypeInfo vehicleTypeInfo,
-        final double rate
+        final double rate,
+        final Location location
     ) {
         this.petFriendly = petFriendly;
         this.babySeat = babySeat;
         this.vehicleTypeInfo = vehicleTypeInfo;
         this.rate = rate;
+        this.currentLocationIndex = 0;
+        this.currentStop = location;
     }
 
     public boolean hasRoute(){
@@ -97,6 +94,22 @@ public class Vehicle {
             return new Location(lngLat[0], lngLat[1]);
         }
         return null;
+    }
+
+    public Route getActiveRoute() {
+        return activeRoute;
+    }
+
+    public void setActiveRoute(Route activeRoute) {
+        this.activeRoute = activeRoute;
+    }
+
+    public int getCurrentLocationIndex() {
+        return currentLocationIndex;
+    }
+
+    public void setCurrentLocationIndex(int currentLocationIndex) {
+        this.currentLocationIndex = currentLocationIndex;
     }
 
     public Long getId() {
@@ -135,27 +148,11 @@ public class Vehicle {
         this.rate = rate;
     }
 
-    public int getCurrentLocationIndex() {
-        return currentLocationIndex;
+    public Location getCurrentStop() {
+        return currentStop;
     }
 
-    public void setCurrentLocationIndex(int currentLocationIndex) {
-        this.currentLocationIndex = currentLocationIndex;
-    }
-
-    public Route getActiveRoute() {
-        return activeRoute;
-    }
-
-    public void setActiveRoute(Route activeRoute) {
-        this.activeRoute = activeRoute;
-    }
-
-    public boolean isInDrive() {
-        return inDrive;
-    }
-
-    public void setInDrive(boolean inDrive) {
-        this.inDrive = inDrive;
+    public void setCurrentStop(Location currentStop) {
+        this.currentStop = currentStop;
     }
 }

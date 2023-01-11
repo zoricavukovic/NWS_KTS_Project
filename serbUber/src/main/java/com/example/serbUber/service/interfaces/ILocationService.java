@@ -27,4 +27,5 @@ public interface ILocationService {
             final double lat
     );
 
+    Location tryToFindLocation(final double lon, final double lat);
 }

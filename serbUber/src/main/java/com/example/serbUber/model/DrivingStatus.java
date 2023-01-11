@@ -5,5 +5,6 @@ public enum DrivingStatus {
     PAYING,
     ACCEPTED,
     FINISHED,
-    REJECTED
+    REJECTED,
+    ON_WAY_TO_DEPARTURE,
 }

@@ -58,9 +58,9 @@ public class VehicleDTO {
 
     public static List<VehicleDTO> fromVehiclesWithAdditionalFields(List<Vehicle> vehicles) {
         List<VehicleDTO> vehicleDTOs = new LinkedList<>();
-        vehicles.forEach(vehicle ->
-            vehicleDTOs.add(new VehicleDTO(vehicle, vehicle.getCurrentLocationIndex(), vehicle.getActiveRoute()))
-        );
+//        vehicles.forEach(vehicle ->
+//            vehicleDTOs.add(new VehicleDTO(vehicle, vehicle.getCurrentLocationIndex(), vehicle.getActiveRoute()))
+//        );
 
         return vehicleDTOs;
     }

@@ -1,0 +1,13 @@
+<div *ngIf="!showChatPoupup" class="live-chat-button">
+    <div class="example-button-container" *ngIf="isLoggedInRegularOrDriver()">
+        <button (click)="showChatPoupup = !showChatPoupup" mat-mini-fab class="icon-live-chat-container" color="warn"
+         matTooltip="Live chat support"  matTooltipPosition="above">
+            <mat-icon class="icon-live-chat">{{showChatPoupup ? 'close' : 'question_answer'}}</mat-icon>
+        </button>
+        <div *ngIf="updateNotifications() > 0 && isLoggedInRegularOrDriver()" class="badge">
+            {{this.numOfNotifications}}
+        </div>
+    </div>
+</div>
+<app-poupup-live-chat *ngIf="showChatPoupup" (closeEvent)="showChatPoupup = $event" [loggedUser]="loggedUser"
+                        (messagesSeenEvent)="updateNotifications()"></app-poupup-live-chat>

@@ -3,6 +3,7 @@ package com.example.serbUber.controller;
 import com.example.serbUber.dto.DrivingDTO;
 import com.example.serbUber.dto.DrivingPageDTO;
 import com.example.serbUber.dto.SimpleDrivingInfoDTO;
+import com.example.serbUber.dto.VehicleCurrentLocationDTO;
 import com.example.serbUber.exception.DriverAlreadyHasStartedDrivingException;
 import com.example.serbUber.exception.DrivingShouldNotStartYetException;
 import com.example.serbUber.exception.EntityNotFoundException;
@@ -130,5 +131,12 @@ public class DrivingController {
     public SimpleDrivingInfoDTO checkUserHasActiveDriving(@Valid @NotNull(message = NOT_NULL_MESSAGE)@PathVariable final Long id){
 
         return drivingService.checkUserHasActiveDriving(id);
+    }
+
+    @GetMapping("/vehicle-current-location/{driverId}")
+    @ResponseStatus(HttpStatus.OK)
+    public VehicleCurrentLocationDTO getVehicleCurrentLocation(@Valid @NotNull(message = MISSING_ID) @PathVariable Long driverId) throws EntityNotFoundException {
+
+        return drivingService.getVehicleCurrentLocation(driverId);
     }
 }

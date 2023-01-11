@@ -12,7 +12,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
+
+import static com.example.serbUber.exception.ErrorMessagesConstants.MISSING_ID;
 
 @RestController
 @RequestMapping("/vehicles")
@@ -38,6 +41,7 @@ public class VehicleController {
         return vehicleService.getAllVehiclesForActiveDriver();
     }
 
+
     @PutMapping("/update-current-location")
     @ResponseStatus(HttpStatus.OK)
     public List<VehicleCurrentLocationDTO> updateCurrentVehiclesLocation() throws EntityNotFoundException {
@@ -55,7 +59,7 @@ public class VehicleController {
     @GetMapping("/rating/{id}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
-    public double getRatingForVehicle(@PathVariable  Long id) {
+    public double getRatingForVehicle(@Valid @NotNull(message = MISSING_ID) @PathVariable  Long id) {
         return vehicleService.getRatingForVehicle(id);
     }
 

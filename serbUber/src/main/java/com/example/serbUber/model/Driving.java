@@ -1,14 +1,12 @@
 package com.example.serbUber.model;
 
+import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.model.user.RegularUser;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.Fetch;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.*;
-
-import static org.hibernate.annotations.FetchMode.SELECT;
 
 @Entity
 @Table(name="drivings")
@@ -39,15 +37,12 @@ public class Driving {
     @Column(name="driving_status", nullable = false)
     private DrivingStatus drivingStatus;
 
-    @Column(name="driver_id", nullable = false)
-    private Long driverId;
+    @Column(name="driver_id")
+    private long driverId;
 
     @ManyToMany(mappedBy = "drivings")
     @JsonIgnore
     private Set<RegularUser> users;
-
-//    @ElementCollection
-//    private Map<Long,Boolean> usersPaid = new HashMap<>();
 
     @Column(name="price", nullable = false)
     private double price;
@@ -56,7 +51,16 @@ public class Driving {
     public Driving() {
     }
 
-    public Driving(int duration, LocalDateTime started, LocalDateTime end, LocalDateTime payingLimit, Route route, DrivingStatus drivingStatus, Long driverId, double price) {
+    public Driving(
+        final int duration,
+        final LocalDateTime started,
+        final LocalDateTime end,
+        final LocalDateTime payingLimit,
+        final Route route,
+        final DrivingStatus drivingStatus,
+        final long driverId,
+        final double price
+    ) {
         this.duration = duration;
         this.started = started;
         this.end = end;
@@ -123,11 +127,11 @@ public class Driving {
         this.id = id;
     }
 
-    public Long getDriverId() {
+    public long getDriverId() {
         return driverId;
     }
 
-    public void setDriverId(Long driverId) {
+    public void setDriverId(long driverId) {
         this.driverId = driverId;
     }
 
@@ -155,12 +159,4 @@ public class Driving {
     public void setEnd(LocalDateTime end) {
         this.end = end;
     }
-
-//    public Map<Long, Boolean> getUsersPaid() {
-//        return usersPaid;
-//    }
-//
-//    public void setUsersPaid(Map<Long, Boolean> usersPaid) {
-//        this.usersPaid = usersPaid;
-//    }
 }
