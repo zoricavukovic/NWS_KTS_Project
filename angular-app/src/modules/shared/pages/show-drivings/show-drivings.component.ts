@@ -84,7 +84,6 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
       .subscribe((response: Driving[]) => {
         this.drivings = response;
         this.totalPages = this.drivings.at(0).pageNumber;
-        console.log(this.drivings);
         this.reviewedDrivingsSubscription = this.reviewService
           .getReviewedDrivingsForUser(this.userId)
           .subscribe((response: number[]) => {
@@ -128,8 +127,6 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
   }
 
   onPaginate(pageEvent: PageEvent) {
-    //this.pageSize = +pageEvent.pageSize;
-    console.log(pageEvent.previousPageIndex);
     this.pageNumber = +pageEvent.pageIndex;
     this.pageIndex = +pageEvent.pageIndex;
     if (pageEvent.previousPageIndex < this.pageNumber) {
@@ -139,7 +136,6 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
     } else {
       this.pageSize = this.pageSizeDefault;
     }
-    console.log(this.pageNumber);
     this.drivingService
       .getDrivingsForUser(
         this.userId,
@@ -150,7 +146,6 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
       )
       .subscribe((response: Driving[]) => {
         this.drivings = response;
-        console.log(this.totalPages);
       });
   }
 

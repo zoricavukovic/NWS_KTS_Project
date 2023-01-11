@@ -27,10 +27,6 @@ export class DrivingRowComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.isRegularUser = this.user?.role.name === "ROLE_DRIVER";
-    console.log(this.driving.route.locations);
-    console.log(
-      this.driving.route.locations.at(this.driving.route.locations.length - 1)
-    );
   }
 
   goToDetailsPage(id: number) {

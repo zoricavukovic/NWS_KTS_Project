@@ -38,7 +38,6 @@ export class DriverVehicleComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.rideRequestForm = <FormGroup>this.controlContainer.control;
-    console.log(this.rideRequestForm);
     this.vehicleTypesSubscription = this.vehicleTypeInfoService
       .getAll()
       .subscribe(vehicleTypes => {

@@ -83,7 +83,6 @@ export class BasicUserProfileComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(blockNotification => {
       if (blockNotification) {
-        console.log(JSON.stringify(blockNotification));
         this.blockUserSubscription = this.userService
           .blockUser(blockNotification)
           .subscribe(

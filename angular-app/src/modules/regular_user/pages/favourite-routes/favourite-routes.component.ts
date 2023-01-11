@@ -25,9 +25,7 @@ export class FavouriteRoutesComponent implements OnInit, OnDestroy {
         this.favouriteRoutesSubscription = this.authService
         .getFavouriteRoutesForUser(user?.id)
         .subscribe(data => {
-          console.log(this.favouriteRoutes);
           this.favouriteRoutes = data;
-          console.log(this.favouriteRoutes);
       });
       }
     );
@@ -38,7 +36,6 @@ export class FavouriteRoutesComponent implements OnInit, OnDestroy {
       .getFavouriteRoutesForUser(this.currentUser.id)
       .subscribe(data => {
         this.favouriteRoutes = data;
-        console.log(this.favouriteRoutes);
       });
   }
 

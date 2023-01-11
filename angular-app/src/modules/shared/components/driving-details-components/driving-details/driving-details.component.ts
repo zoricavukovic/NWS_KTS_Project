@@ -66,7 +66,6 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    console.log(document.getElementById("pera"));
     this.router.events.subscribe((event) => {
       this.ngOnDestroy();
     });
@@ -75,10 +74,8 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
     this.drivingsSubscription = this.drivingService
       .get(this.id)
       .subscribe((driving: Driving) => {
-        console.log(driving.active);
         this.driving = driving;
         this.drivingsSubscription = this.drivingService.getVehicleDetails(driving?.id).subscribe(vehicleCurrentLocation => {
-          console.log("menja se vehicle pozicija");
           markCurrentPosition(this.map, vehicleCurrentLocation);
         });
 
@@ -93,9 +90,6 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
             }
           )
         }
-
-        console.log("DRIVER ID")
-        console.log(driving.driverId);
         this.driverSubscription = this.driverService
           .get(driving?.driverId)
           .subscribe((response: Driver) => {
@@ -121,7 +115,6 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
   }
 
   setFavouriteRoute(favourite: boolean) {
-    console.log(favourite);
     if (favourite) {
       this.userService
         .updateFavouriteRoutes(

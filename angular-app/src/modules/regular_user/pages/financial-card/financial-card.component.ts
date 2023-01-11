@@ -29,7 +29,6 @@ export class FinancialCardComponent implements OnInit, OnDestroy {
         response => {
           if (response) {
             this.tokenBank = response;
-            console.log(this.tokenBank);
           }
         },
         error => {

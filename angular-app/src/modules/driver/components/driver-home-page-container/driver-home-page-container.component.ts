@@ -34,7 +34,6 @@ export class DriverHomePageContainerComponent implements OnInit, OnDestroy {
     this.drivingSubscription = this.drivingService
       .getDrivingsForDriver(this.driverId)
       .subscribe((drivings: Driving[]) => {
-        console.log(drivings);
         this.nowAndFutureDrivings = drivings;
       });
   }

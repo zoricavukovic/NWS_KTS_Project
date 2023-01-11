@@ -119,7 +119,7 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
     this.drivingSubscription = this.drivingService.checkIfUserHasActiveDriving(this.currentUser.id).subscribe(
       res => {
         this.activeRide = res;
-        console.log(res);
+  
       }
     )
   }
@@ -569,8 +569,6 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
     });
 
     this.stompClient.subscribe(environment.publisherUrl + localStorage.getItem('email') + '/start-driving', (message: { body: string }) => {
-      console.log("START");
-      console.log(message.body);
       this.activeRide =  JSON.parse(message.body) as SimpleDrivingInfo;
       this.router.navigate(['/serb-uber/user/map-page-view', this.activeRide.drivingId]);
       this.toast.info('Ride started.Tap to follow ride!')

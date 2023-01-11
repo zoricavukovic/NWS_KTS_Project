@@ -36,7 +36,6 @@ export class PayingInfoBoxComponent implements OnDestroy {
 
   updatePayingInfos() {
     const payingInfoUpdated: PayingInfo = this._payingInfosService.createPayingInfoObj(+this.payingInfoForm.get('price').value, +this.payingInfoForm.get('maxNumOfTokensPerTransaction').value);
-    console.log(payingInfoUpdated)
     this.payingInfoSubscription = this._payingInfosService.update(payingInfoUpdated).subscribe(
       res => {
         this.payingInfo = res;

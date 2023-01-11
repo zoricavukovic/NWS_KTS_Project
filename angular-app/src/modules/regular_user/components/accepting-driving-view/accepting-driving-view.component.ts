@@ -15,7 +15,6 @@ export class AcceptingDrivingViewComponent implements OnInit {
   @Input() vehicle: Vehicle;
 
   ngOnInit(): void {
-    console.log(this.passengers);
     console.log("Doslo je ovde");
   }
 }

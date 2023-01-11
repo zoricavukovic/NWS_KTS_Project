@@ -71,8 +71,6 @@ export class DrivingService extends GenericService<Driving> {
     this.http
       .get<VehicleCurrentLocation>(this.configService.vehicleCurrentLocation(drivingId))
       .subscribe(vehiclesCurrentLocation => {
-        console.log("cao ja sam");
-        console.log(vehiclesCurrentLocation);
         this.ride$.next(vehiclesCurrentLocation);
       });
 

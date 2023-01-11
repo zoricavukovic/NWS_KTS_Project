@@ -87,7 +87,6 @@ export class PoupupLiveChatComponent implements OnInit, OnDestroy {
       .setMessagesAsSeen(new MessageSeenRequest(this.chatRoom.id, this.isAdmin))
       .subscribe(
         res => {
-          console.log(res);
           this.messagesSeenEvent.emit();
         },
         error => console.log(error)

@@ -76,9 +76,7 @@ export class WebSocketService {
         message?.body !== null
       ) {
         const vehicleCurrentLocation: VehicleCurrentLocation = JSON.parse(message.body);
-        console.log("web socket");
-        console.log(message);
-          this.drivingService.updateRide(vehicleCurrentLocation);
+        this.drivingService.updateRide(vehicleCurrentLocation);
       }
 
       //   this.toast.info('Driving is finished.Tap to see details!')
@@ -88,7 +86,6 @@ export class WebSocketService {
   }
 
   checkNotificationType(message: string) {
-    console.log(this.isDrivingNotification(message));
     if (this.isActivityResetNotification(message)) {
       this.driverService.showActivityStatusResetNotification(
         JSON.parse(message)
@@ -166,7 +163,6 @@ export class WebSocketService {
   }
 
   private isDrivingNotification(message: string): boolean {
-    console.log(message);
     try {
       const parsed: DrivingNotification = JSON.parse(message);
       return parsed.drivingNotificationType === 'LINKED_USER';
@@ -190,7 +186,6 @@ export class WebSocketService {
     }
 
     this.initialized = false;
-    console.log('Disconnected!');
   }
 
   sendMessage(chatRoom: ChatRoom, notifyAdmin: boolean) {

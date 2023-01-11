@@ -29,14 +29,12 @@ export class DrivingNotificationService extends GenericService<DrivingNotificati
         `User ${drivingNotificationResponse.senderEmail} add you as linked passenger.Tap to accept!`
       )
       .onTap.subscribe(action => {
-        console.log('blaaa');
         this._router.navigate(["driving", drivingNotificationResponse.id]);
       });
   }
 
   showDrivingStatus(drivingStatusNotification: DrivingStatusNotification) {
     if (drivingStatusNotification.drivingStatus === 'ACCEPTED') {
-      console.log(drivingStatusNotification);
       this._router.navigate([`/map-view/${drivingStatusNotification.id}`]);
       // document.getElementById('spinner-overlap-div').style.visibility = 'hidden';
       document.getElementById('minutes').innerText =

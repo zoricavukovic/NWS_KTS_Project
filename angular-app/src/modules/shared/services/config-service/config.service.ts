@@ -100,7 +100,7 @@ export class ConfigService {
   }
 
   nowAndFutureDrivingsUrl(userId: number): string{
-    return `${this.DRIVINGS_URL}/now-and-future/{id}`;
+    return `${this.DRIVINGS_URL}/now-and-future/${userId}`;
   }
 
   drivingByIdUrl(id: number): string{

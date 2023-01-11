@@ -18,7 +18,7 @@ public interface DrivingRepository extends JpaRepository<Driving, Long> {
     Page<Driving> findByUserId(Long id, Pageable pageable);
 
 //    @Query(value = "select d from Driving d left join fetch d.route r left join fetch r.locations dest left join fetch d.usersPaid up left join fetch d.users u where d.driverId = ?1 order by dest.id")
-    @Query(value="select * from drivings d, driving_locations dl, routes r, locations l, drivings_users du, regular_users ru where d.route_id = r.id and d.id = du.driving_id and dl.route_id=r.id and l.id=dl.location_id and ru.id = du.user_id and d.driver_id=?1",nativeQuery = true)
+    @Query(value="select * from drivings d where d.driver_id=?1",nativeQuery = true)
     Page<Driving> findByDriverId(Long id, Pageable pageable);
 
     @Query("select d from Driving d left join fetch d.route r left join fetch r.locations dest  left join fetch d.users u where d.id=?1 order by dest.id")

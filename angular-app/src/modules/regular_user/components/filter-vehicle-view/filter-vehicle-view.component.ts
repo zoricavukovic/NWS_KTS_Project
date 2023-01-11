@@ -63,14 +63,11 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
     private controlContainer: ControlContainer,
     private store: Store
   ) {
-    console.log(this.route);
     this.rideRequestForm = <FormGroup>this.controlContainer.control;
 
   }
 
   ngOnInit(): void {
-    console.log(this.rideRequestForm);
-    console.log(this.route);
     this.authSubscription = this.authService
       .getSubjectCurrentUser()
       .subscribe(user => {
@@ -105,7 +102,6 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
       ) {
         this.selectedPassengers.push(email);
         this.findPassengerObj(email);
-        console.log(this.passengers);
         this.passengerCtrl.setValue(null);
         const index = this.allRegularUsers.indexOf(email);
         this.allRegularUsers.splice(index, 1);
@@ -136,18 +132,15 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
   }
 
   showPrice(){
-      console.log(this.rideRequestForm.get('vehicleType').value);
     this.vehicleSubscription = this.vehicleService
       .getVehicleByVehicleType(this.rideRequestForm.get('vehicleType').value)
       .subscribe(response => {
         this.vehicle = response;
-        console.log(response);
       });
     this.priceSubscription = this.vehicleService
       .getPriceForVehicleAndRoute(this.rideRequestForm.get('vehicleType').value, 3800)
       .subscribe(response => {
         this.price = response;
-        console.log(this.price);
         this.rideRequestForm.get('price').setValue(this.price);
       });
     }
@@ -156,9 +149,7 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
   findDriver() {
     this.rideRequestForm.get('selectedPassengers').setValue(this.selectedPassengers);
     this.rideRequestForm.get('senderEmail').setValue(this.currentUser.email);
-    console.log(this.rideRequestForm);
     this.waitingForAcceptDrive.emit(true);
-    console.log("blaaa");
     const drivingNotification = {
       route: this.rideRequestForm.get('selectedRoute').value,
       price: this.rideRequestForm.get('price').value,
@@ -169,22 +160,11 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
       babySeat: this.rideRequestForm.get('babySeat').value,
       vehicleType: this.rideRequestForm.get('vehicleType').value,
     };
-
-    console.log("odogovr1");
-    console.log(drivingNotification);
     this.drivingNotificationSubscription = this.store
     .dispatch(new AddDrivingNotification(drivingNotification))
     .subscribe((response) => {
       console.log(response);
     });
-    // this.drivingNotificationService
-    //   .create(drivingNotification)
-    //   .subscribe(response => {
-    //     console.log("odogovr2");
-    //     console.log(response);
-    //     console.log("odogovr3");
-    //     // this.waitingForAcceptDrive.emit(false);
-    //   });
   }
 
   private findPassengerObj(email: string): void {

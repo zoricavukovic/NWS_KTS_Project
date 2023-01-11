@@ -133,7 +133,6 @@ export function drawPolylineOnMap(map: google.maps.Map, routeCoordinates: google
     strokeOpacity: 1.0,
     strokeWeight: weight,
   });
-  console.log(routeCoordinates);
   const bounds = new google.maps.LatLngBounds();
   for (let i = 0; i < routeCoordinates.length; i++) {
     bounds.extend(routeCoordinates[i]);
@@ -166,10 +165,6 @@ export function addCarMarker(map, vehicleStatus: VehicleCurrentLocation, current
   };
 
   if (currentLoggedUserId === vehicleStatus?.driverId) {
-    console.log("Ulogovani korisnik provera id");
-    console.log(currentLoggedUserId);
-    console.log(vehicleStatus.driverId);
-    console.log(vehicleStatus);
     customIcon.anchor = new google.maps.Point(70, 70);
     customIcon.scaledSize = new google.maps.Size(70, 70);
   }
