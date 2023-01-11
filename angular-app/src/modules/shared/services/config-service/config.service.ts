@@ -13,7 +13,7 @@ export class ConfigService {
 
   ///////////////////ADMIN///////////////////
   ADMINS_URL = `${this.API_URL}/admins`;
-  
+
   adminByIdUrl(adminId: number): string {
     return `${this.ADMINS_URL}/${adminId}`;
   }
@@ -77,17 +77,17 @@ export class ConfigService {
   BLOCK_USER_URL = `${this.USERS_URL}/block`;
   CREATE_DRIVER_URL = `${this.USERS_URL}/create/driver`;
   CREATE_REGULAR_USER_URL = `${this.USERS_URL}/create/regular-user`;
-  
+
   userByIdUrl(id: number){
     return `${this.USERS_URL}/${id}`;
   }
 
   userByEmailUrl(email: string): string{
-    return `${this.USERS_URL}/byEmail/{email}`;
+    return `${this.USERS_URL}/byEmail/${email}`;
   }
 
   sendResetPassword(email: string): string{
-    return `${this.USERS_URL}/reset-password/${email}`;
+    return `${this.USERS_URL}/send-reset-password-link/${email}`;
   }
 
 
@@ -109,16 +109,16 @@ export class ConfigService {
 
   finishDrivingUrl(id: number): string{
     return `${this.DRIVINGS_URL}/finish-driving/${id}`;
-  }  
+  }
 
   startDrivingUrl(id: number): string{
     return `${this.DRIVINGS_URL}/start/${id}`;
-  }  
+  }
 
   rejectDrivingUrl(id: number): string{
     return `${this.DRIVINGS_URL}/reject/${id}`;
-  } 
-  
+  }
+
   hasUserActiveDriving(userId: number): string{
     return `${this.DRIVINGS_URL}/has-active/user/${userId}`
   }
@@ -150,7 +150,7 @@ export class ConfigService {
   ///////////////////REVIEW///////////////////
 
   REVIEWS_URL = `${this.API_URL}/reviews`;
-  
+
   reviewsForDriverUrl(driverId: number): string{
     return `${this.REVIEWS_URL}/all-for-driver/${driverId}`;
   }
@@ -204,7 +204,7 @@ export class ConfigService {
   VERIFY_URL = `${this.API_URL}/verify`;
   SEND_CODE_AGAIN_URL = `${this.VERIFY_URL}/send-code-again`;
 
-  
+
   ///////////////////CHAT ROOM///////////////////
 
   CHAT_ROOMS_URL = `${this.API_URL}/chat-rooms`;

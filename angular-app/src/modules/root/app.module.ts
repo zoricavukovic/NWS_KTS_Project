@@ -11,7 +11,6 @@ import {SharedModule} from "../shared/shared.module";
 import {MaterialModule} from "../material/material.module";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {RootLayoutComponent} from "./pages/root-layout/root-layout.component";
-import {SocialLoginModule} from "@abacritt/angularx-social-login";
 
 @NgModule({
   declarations: [

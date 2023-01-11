@@ -82,7 +82,7 @@ insert into drivers (id, email, password, name, surname, phone_number, city, pro
 
 insert into drivings (active, driver_id, driving_status, duration, paying_limit, price, started, end_date, route_id, driving_id) values
    (true, 5, 2, 3, null, 4, to_timestamp('04.01.2023. 23:54', 'DD.MM.YYYY HH24:MI'), null, 1, 5),
-   (false, 5, 2, 2, null, 3, to_timestamp('10.01.2023. 10:7', 'DD.MM.YYYY HH24:MI'), null,2, 5),
+   (false, 5, 2, 2, null, 3, to_timestamp('11.01.2023. 18:01', 'DD.MM.YYYY HH24:MI'), null,2, 5),
    (false, 5, 0, 5, null, 6, to_timestamp('16.11.2023. 18:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('06.11.2022. 14:05', 'DD.MM.YYYY HH24:MI'),1, 5),
    (false, 6, 1, 10, null, 5.6,to_timestamp('24.08.2022 14:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('06.11.2022. 14:10', 'DD.MM.YYYY HH24:MI'),1,6),
    (false, 6, 1, 10, null, 5,to_timestamp('24.10.2022 14:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('06.11.2022. 14:10', 'DD.MM.YYYY HH24:MI'),3,6);

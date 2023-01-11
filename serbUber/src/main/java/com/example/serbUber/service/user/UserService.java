@@ -66,6 +66,12 @@ public class UserService implements IUserService {
             .orElseThrow(() -> new EntityNotFoundException(email, EntityType.USER));
     }
 
+    public User getVerifiedUser(final String email) throws EntityNotFoundException {
+
+        return userRepository.getVerifiedUser(email)
+            .orElseThrow(() -> new EntityNotFoundException(email, EntityType.USER));
+    }
+
     public Driver getDriverById(final long id) throws EntityNotFoundException {
 
         Object user = userRepository.getDriverById(id)

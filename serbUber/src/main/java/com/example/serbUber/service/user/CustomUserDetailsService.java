@@ -21,7 +21,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         UserDTO userDTO;
         try {
-            userDTO = new UserDTO(userService.getUserByEmail(email));
+            userDTO = new UserDTO(userService.getVerifiedUser(email));
         } catch (EntityNotFoundException e) {
 
             return null;

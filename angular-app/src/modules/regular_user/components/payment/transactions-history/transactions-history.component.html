@@ -2,7 +2,7 @@
     <div *ngFor="let transaction of transactions; let i=index">
         <div class="transaction-row">
             <p>{{i+1}}.</p>
-            <p>{{transaction.timeStamp | date: 'dd.MM.yyyy.'}}</p>
+            <p>{{transaction.timeStamp | dateFormat: 'DD.MM.yyyy.'}}</p>
             <p class="bought-tokens">+{{transaction.numOfBoughtTokens}}<mat-icon>payments</mat-icon></p>
             <p>-{{transaction.totalPrice}}€</p>
         </div>

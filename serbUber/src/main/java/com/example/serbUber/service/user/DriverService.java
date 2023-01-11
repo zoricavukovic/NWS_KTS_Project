@@ -289,6 +289,7 @@ public class DriverService implements IDriverService{
         driver.setOnline(false);
         driver.setActive(false);
         driver.setBlocked(true);
+        driver.setVerified(false);
         driverRepository.save(driver);
         emailService.sendBlockDriverMail(driver.getEmail(), reason);
         webSocketService.sendBlockedNotification(driver.getEmail(), reason);
@@ -308,6 +309,7 @@ public class DriverService implements IDriverService{
             throw new EntityUpdateException(UNBLOCK_UNBLOCKED_USER_MESSAGE);
         }
         driver.setBlocked(false);
+        driver.setVerified(true);
         driverRepository.save(driver);
 
         return true;

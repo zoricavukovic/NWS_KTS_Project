@@ -4,7 +4,6 @@ import {ResetPasswordComponent} from "./pages/reset-password/reset-password.comp
 import {RegistrationGuard} from "./guards/registration/registration.guard";
 import {ProfilePageComponent} from "./pages/profile-page/profile-page.component";
 import {EditProfileComponent} from "./pages/edit-profile/edit-profile.component";
-import {UnauthUserGuard} from "../auth/guards/login/login.guard";
 import {BasicUserProfileComponent} from "./pages/basic-user-profile/basic-user-profile.component";
 import {RoleGuard} from "../auth/guards/role/role.guard";
 import {MapPageComponent} from "./pages/map-page/map-page.component";
@@ -26,14 +25,14 @@ export const UserRoutes: Routes = [
   {
     path: 'driving/:id',
     pathMatch: "full",
-    component: MapPageComponent
+    component: MapPageComponent,
+    canActivate: [RoleGuard],
+    data: {expectedRoles: "ROLE_REGULAR_USER|ROLE_DRIVER"}
   },
   {
     path: "reset-password/:email",
     pathMatch: "full",
-    component: ResetPasswordComponent,
-    canActivate: [RoleGuard],
-    data: {expectedRoles: "ROLE_ADMIN|ROLE_REGULAR_USER|ROLE_DRIVER"}
+    component: ResetPasswordComponent
   },
   {
     path: 'profile-page',
@@ -53,6 +52,7 @@ export const UserRoutes: Routes = [
     path: "user-profile/:id",
     pathMatch: "full",
     component: BasicUserProfileComponent,
-    // canActivate: [UnauthUserGuard]
+    canActivate: [RoleGuard],
+    data: {expectedRoles: "ROLE_ADMIN|ROLE_REGULAR_USER|ROLE_DRIVER"}
   }
 ]

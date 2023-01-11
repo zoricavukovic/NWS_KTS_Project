@@ -153,6 +153,7 @@ public class RegularUserService implements IRegularUserService {
 
         regularUser.setOnline(false);
         regularUser.setBlocked(true);
+        regularUser.setVerified(false);
         regularUserRepository.save(regularUser);
         this.webSocketService.sendBlockedNotification(regularUser.getEmail(), reason);
 
@@ -171,6 +172,7 @@ public class RegularUserService implements IRegularUserService {
             throw new EntityUpdateException(UNBLOCK_UNBLOCKED_USER_MESSAGE);
         }
         regularUser.setBlocked(false);
+        regularUser.setVerified(true);
         regularUserRepository.save(regularUser);
 
         return true;

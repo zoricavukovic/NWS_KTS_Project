@@ -31,6 +31,7 @@ export class ButtonLiveChatComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.authSubscription = this.authService.getSubjectCurrentUser().subscribe(
       user => {
+        this.showChatPoupup= false;
         this.loggedUser = user;
         if (this.isLoggedInRegularOrDriver()) {
           this.loadChatRoom();

@@ -10,7 +10,7 @@
     <div [class]="selectedChatRoom.resolved ? 'messages resolved-position' : 'messages'">
         <div *ngFor="let mes of selectedChatRoom.messages; index as i">
             <div *ngIf="(i === 0)" class="date-data">
-                {{mes.timeStamp | date: 'dd.MM.YYYY HH:mm'}}
+                {{mes.timeStamp | dateFormat}}
             </div>
             <div [class]="mes.adminResponse ? 'message sender' : 'message'">
                 {{mes.message}}

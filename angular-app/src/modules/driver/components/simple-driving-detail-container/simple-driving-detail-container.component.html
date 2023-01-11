@@ -10,12 +10,12 @@
     </tr>
     <tr>
       <td nowrap="nowrap" style="padding: 0 1rem">
-        {{ driving.started | date : 'dd.MM.yyyy. hh:mm' }}
+        {{ driving.started | dateFormat }}
       </td>
       <td nowrap="nowrap" style="padding: 0 1rem">
         {{
         endDrivingDate(driving.started, driving.duration)
-          | date : 'dd.MM.yyyy. hh:mm'
+          | dateFormat
         }}
       </td>
     </tr>

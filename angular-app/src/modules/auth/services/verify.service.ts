@@ -15,7 +15,7 @@ export class VerifyService {
   ) {}
 
   verify(verifyRequest: VerifyRequest): Observable<User> {
-    return this.http.put<User>(this.configService.VERIFY_URL, verifyRequest);
+    return this.http.put<User>(this.configService.ACTIVATE_ACCOUNT_URL, verifyRequest);
   }
 
   sendCodeAgain(verifyId: number): Observable<User> {

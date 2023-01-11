@@ -88,7 +88,7 @@ export class UserService extends GenericService<User> {
 
   registerDriver(driverRequest: Driver): Observable<User> {
 
-    return this.http.post<User>(this.configService.CREATE_REGULAR_USER_URL, driverRequest);
+    return this.http.post<User>(this.configService.CREATE_DRIVER_URL, driverRequest);
   }
 
   addToFavouriteRoutes(favouriteRouteRequest: FavouriteRouteRequest) {
