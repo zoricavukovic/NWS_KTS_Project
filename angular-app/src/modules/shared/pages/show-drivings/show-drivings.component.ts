@@ -24,6 +24,7 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
   totalPages: number;
   selectedSortBy: string;
   selectedSortOrder: string;
+  currentPage = 0;
 
   sortOrder = [
     { name: 'Descending', checked: true },
@@ -126,26 +127,19 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
       });
   }
 
-  onPaginate(pageEvent: PageEvent) {
-    this.pageNumber = +pageEvent.pageIndex;
-    this.pageIndex = +pageEvent.pageIndex;
-    if (pageEvent.previousPageIndex < this.pageNumber) {
-      if ((this.pageNumber + 1) * this.pageSize > this.totalPages) {
-        this.pageSize = this.totalPages % this.pageSize;
-      }
-    } else {
-      this.pageSize = this.pageSizeDefault;
-    }
+  changePage(newPage: number) {
+    this.currentPage = newPage;
     this.drivingService
       .getDrivingsForUser(
         this.userId,
-        this.pageNumber,
+        this.currentPage,
         this.pageSize,
         this.selectedSortBy,
         this.selectedSortOrder
       )
       .subscribe((response: Driving[]) => {
         this.drivings = response;
+        console.log(this.totalPages);
       });
   }
 

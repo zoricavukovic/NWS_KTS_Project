@@ -10,4 +10,6 @@ export interface RegularUser {
   role?: Role;
   password: string;
   confirmPassword?: string;
+  pageNumber?: number;
+  pageSize?: number;
 }

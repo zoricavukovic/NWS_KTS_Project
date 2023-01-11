@@ -4,6 +4,7 @@ import com.example.serbUber.dto.DriverActivityResetNotificationDTO;
 import com.example.serbUber.dto.DrivingNotificationDTO;
 import com.example.serbUber.dto.DrivingStatusNotificationDTO;
 import com.example.serbUber.dto.user.DriverDTO;
+import com.example.serbUber.dto.user.DriverPageDTO;
 import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.*;
 import com.example.serbUber.model.*;
@@ -15,6 +16,9 @@ import com.example.serbUber.util.Constants;
 import com.graphhopper.GHRequest;
 import com.graphhopper.GHResponse;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +29,7 @@ import java.util.Optional;
 
 import static com.example.serbUber.SerbUberApplication.hopper;
 import static com.example.serbUber.dto.user.DriverDTO.fromDrivers;
+import static com.example.serbUber.dto.user.DriverPageDTO.fromDriversPage;
 import static com.example.serbUber.exception.ErrorMessagesConstants.ACTIVE_DRIVING_IN_PROGRESS_MESSAGE;
 import static com.example.serbUber.exception.ErrorMessagesConstants.UNBLOCK_UNBLOCKED_USER_MESSAGE;
 import static com.example.serbUber.util.Constants.*;
@@ -213,6 +218,16 @@ public class DriverService implements IDriverService{
 
     private List<Driver> getActiveAndFreeDrivers(LocalDateTime startDate, LocalDateTime endDate, VehicleType vehicleType) {
         return driverRepository.getActiveAndFreeDrivers(startDate, endDate, vehicleType);
+    }
+
+    public List<DriverPageDTO> getDriversWithPagination(int pageNumber, int pageSize) {
+        Pageable page = PageRequest.of(pageNumber, pageSize);
+        Page<Driver> results = getDriverPage(page);
+        return fromDriversPage(results.getContent(), results.getSize(), results.getTotalPages());
+    }
+
+    public Page<Driver> getDriverPage(Pageable page){
+        return driverRepository.findAll(page);
     }
 
     public DriverDTO updateActivityStatus(final Long id, boolean active)

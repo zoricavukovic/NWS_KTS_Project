@@ -45,6 +45,7 @@ import { NgxStarsModule } from 'ngx-stars';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { GooglePlaceModule } from 'ngx-google-places-autocomplete';
 import {CarouselModule} from "primeng/carousel";
+import { PaginationComponent } from './components/pagination/pagination.component';
 
 @NgModule({
   declarations: [
@@ -66,7 +67,8 @@ import {CarouselModule} from "primeng/carousel";
     UtilMessageComponent,
     DriverVehicleComponent,
     VehicleDetailsComponent,
-    ShowDrivingsComponent
+    ShowDrivingsComponent,
+    PaginationComponent
     // PaginationComponent,
   ],
   imports: [
@@ -103,7 +105,8 @@ import {CarouselModule} from "primeng/carousel";
     DrivingDetailsComponent,
     ReviewsHistoryComponent,
     BasicUserDataComponent,
-    UserAverageRateComponent
+    UserAverageRateComponent,
+    PaginationComponent
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: CustomInterceptor, multi: true },

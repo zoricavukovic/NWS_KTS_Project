@@ -19,31 +19,31 @@ import {CarouselModule} from "primeng/carousel";
 import {SharedModule} from "../shared/shared.module";
 
 @NgModule({
-  declarations: [
-    ChangePayingInfoComponent,
-    HistoryLiveChatComponent,
-    ShowDriversComponent,
-    ShowUsersComponent,
-    ChatRoomsListComponent,
-    DriverRowComponent,
-    MessagesBoxComponent,
-    PayingInfoBoxComponent,
-    ReportsHistoryComponent,
-    UserRowComponent
-  ],
-  imports: [
-    CommonModule,
-    MaterialModule,
-    NgxStarsModule,
-    FormsModule,
-    ReactiveFormsModule,
-    CarouselModule,
-    RouterModule.forChild(AdminRoutes),
-    SharedModule
-  ],
-  exports: [
-    ReportsHistoryComponent
-  ],
-  providers: []
+    declarations: [
+        ChangePayingInfoComponent,
+        HistoryLiveChatComponent,
+        ShowDriversComponent,
+        ShowUsersComponent,
+        ChatRoomsListComponent,
+        DriverRowComponent,
+        MessagesBoxComponent,
+        PayingInfoBoxComponent,
+        ReportsHistoryComponent,
+        UserRowComponent
+    ],
+    exports: [
+        ReportsHistoryComponent
+    ],
+    providers: [],
+    imports: [
+        CommonModule,
+        MaterialModule,
+        NgxStarsModule,
+        FormsModule,
+        ReactiveFormsModule,
+        CarouselModule,
+        RouterModule.forChild(AdminRoutes),
+        SharedModule,
+    ]
 })
 export class AdminModule { }

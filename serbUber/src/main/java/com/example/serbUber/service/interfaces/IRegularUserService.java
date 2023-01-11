@@ -3,6 +3,7 @@ package com.example.serbUber.service.interfaces;
 import com.example.serbUber.dto.RouteDTO;
 import com.example.serbUber.dto.user.RegistrationDTO;
 import com.example.serbUber.dto.user.RegularUserDTO;
+import com.example.serbUber.dto.user.RegularUserPageDTO;
 import com.example.serbUber.exception.*;
 import com.example.serbUber.model.user.RegularUser;
 import org.springframework.stereotype.Service;
@@ -30,4 +31,5 @@ public interface IRegularUserService {
     ) throws MailCannotBeSentException, EntityAlreadyExistsException, EntityNotFoundException;
     boolean getIsBlocked(final Long id);
     boolean unblock(final Long id) throws EntityNotFoundException, EntityUpdateException;
+    List<RegularUserPageDTO> getRegularUsersWithPagination(int pageNumber, int pageSize);
 }

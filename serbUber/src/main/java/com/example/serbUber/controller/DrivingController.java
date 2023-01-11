@@ -133,10 +133,10 @@ public class DrivingController {
         return drivingService.checkUserHasActiveDriving(id);
     }
 
-    @GetMapping("/vehicle-current-location/{driverId}")
+    @GetMapping("/vehicle-current-location/{drivingId}")
     @ResponseStatus(HttpStatus.OK)
-    public VehicleCurrentLocationDTO getVehicleCurrentLocation(@Valid @NotNull(message = MISSING_ID) @PathVariable Long driverId) throws EntityNotFoundException {
+    public VehicleCurrentLocationDTO getVehicleCurrentLocation(@Valid @NotNull(message = MISSING_ID) @PathVariable Long drivingId) throws EntityNotFoundException {
 
-        return drivingService.getVehicleCurrentLocation(driverId);
+        return drivingService.getVehicleCurrentLocation(drivingId);
     }
 }

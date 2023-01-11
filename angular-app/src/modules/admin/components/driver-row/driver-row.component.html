@@ -1,8 +1,8 @@
 <div style="background-color:var(--white); padding: 3rem 1rem 1rem;border-radius: 15px; margin-top: 3rem">
   <div>
-    <mat-card class="card" style="position: relative;">
+    <mat-card class="card" style="position: relative; height:11rem;">
       <img style="height:10rem; width:10rem; position: absolute; bottom:8.6rem; left:5rem"
-           src="./assets/images/{{driver?.vehicle?.vehicleTypeInfo.vehicleType.toLowerCase()}}.png"
+           src="../../../assets/images/{{driver?.vehicle?.vehicleTypeInfo.vehicleType.toLowerCase()}}.png"
       >
       <div style="display:flex; margin-top: 1.5rem">
         <img mat-card-avatar class="img-user" [src]="getBase64Prefix() + driver.profilePicture"
