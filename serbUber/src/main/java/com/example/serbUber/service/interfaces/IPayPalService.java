@@ -10,13 +10,13 @@ public interface IPayPalService {
 
     Map<String, String> createPayment(
             Long tokeBankId,
-            int numOfTokens
+            double numOfTokens
     ) throws EntityNotFoundException, PayPalPaymentException;
 
     boolean completePayment(
             final String paymentId,
             final String payerId,
-            final int numOfTokens,
+            final double numOfTokens,
             final Long tokenBankId
     ) throws PayPalPaymentException, EntityNotFoundException;
 }

@@ -82,7 +82,7 @@ insert into drivers (id, email, password, name, surname, phone_number, city, pro
 
 insert into drivings (active, driver_id, driving_status, duration, paying_limit, price, started, end_date, route_id) values
    (true, 5, 2, 3, null, 4, to_timestamp('04.01.2023. 23:54', 'DD.MM.YYYY HH24:MI'), null, 1),
-   (false, 5, 2, 2, null, 3, to_timestamp('10.01.2023. 00:21', 'DD.MM.YYYY HH24:MI'), null,2),
+   (false, 5, 2, 2, null, 3, to_timestamp('10.01.2023. 10:7', 'DD.MM.YYYY HH24:MI'), null,2),
    (false, 5, 0, 5, null, 6, to_timestamp('16.11.2023. 18:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('06.11.2022. 14:05', 'DD.MM.YYYY HH24:MI'),1),
    (false, 6, 1, 10, null, 5.6,to_timestamp('24.08.2022 14:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('06.11.2022. 14:10', 'DD.MM.YYYY HH24:MI'),3),
    (false, 6, 1, 10, null, 5,to_timestamp('24.10.2022 14:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('06.11.2022. 14:10', 'DD.MM.YYYY HH24:MI'),3);
@@ -144,14 +144,16 @@ insert into paying_info(currency, token_price, max_num_of_tokens_per_transaction
     ('EUR', 1, 20);
 
 insert into token_banks(user_id, num_of_tokens, total_token_amount_spent, total_money_amount_spent, paying_info_id) values
-    (2, 10, 0, 6, 1),
+    (2, 9, 2, 11, 1),
     (3, 8, 0, 8, 1),
     (4, 0, 0, 0, 1);
 
 insert into token_transactions(time_stamp, num_of_bought_tokens, total_price, token_bank_id) values
     ('2022-12-01 14:03', 4, 4, 1),
-    ('2022-12-03 14:00', 4, 4, 1),
+    ('2022-12-03 14:00', 7, 7, 1),
     ('2022-12-03 15:00', 8, 8, 2);
 
 
 
+insert into regular_users (id, email, password, name, surname, phone_number, city, profile_picture, role_id, blocked, verified, online) values
+    (nextval('users_id_gen'), 'anastasija@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Anastasija', 'Sam', '0651234567', 'Novi Sad', 'default-user.png',2, false, true, false);

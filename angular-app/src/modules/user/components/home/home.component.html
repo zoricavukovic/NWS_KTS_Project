@@ -1,0 +1,6 @@
+<div id="route-div" *ngIf="!isDriver" class="box mat-elevation-z1">
+  <app-home-passanger [map]="map" [currentUser]="currentUser"></app-home-passanger>
+</div>
+<div *ngIf="isDriver">
+  <app-driver-home-container [driverId]="currentUser.id"></app-driver-home-container>
+</div>

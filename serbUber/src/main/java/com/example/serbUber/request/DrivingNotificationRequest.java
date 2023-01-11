@@ -13,7 +13,7 @@ public class DrivingNotificationRequest {
 
     private RouteRequest route;
     @Valid
-    @Positive(message = POSITIVE_MESSAGE)
+//    @Positive(message = POSITIVE_MESSAGE)
     private double price;
     @Valid
     @Email(message = WRONG_EMAIL)
@@ -21,7 +21,7 @@ public class DrivingNotificationRequest {
     private List<String> passengers;
 
     private LocalDateTime started;
-    @Positive(message = "Duration of driving must be positive")
+//    @Positive(message = "Duration of driving must be positive")
     private int duration;
     private boolean babySeat;
     private boolean petFriendly;

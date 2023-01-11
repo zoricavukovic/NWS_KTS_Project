@@ -17,7 +17,7 @@ public class CompletePaymentRequest {
 
     @NotNull(message = MISSIN_NUM_OF_TOKENS)
     @Positive(message = MISSIN_NUM_OF_TOKENS)
-    private final int numOfTokens;
+    private final double numOfTokens;
 
     @NotNull(message = MISSING_ID)
     private final Long tokenBankId;
@@ -25,7 +25,7 @@ public class CompletePaymentRequest {
     public CompletePaymentRequest(
             final String paymentId,
             final String payerId,
-            final int numOfTokens,
+            final double numOfTokens,
             final Long tokenBankId
     ) {
         this.paymentId = paymentId;
@@ -42,7 +42,7 @@ public class CompletePaymentRequest {
         return payerId;
     }
 
-    public int getNumOfTokens() {
+    public double getNumOfTokens() {
         return numOfTokens;
     }
 

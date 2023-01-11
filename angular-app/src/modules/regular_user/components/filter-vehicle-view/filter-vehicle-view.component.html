@@ -1,0 +1,60 @@
+<div *ngIf="vehiclePassengersView && rideRequestForm" [formGroup]="rideRequestForm">
+  <driver-vehicle (vehicleTypeEvent)="showPrice()"
+    [formGroup] = "rideRequestForm"></driver-vehicle>
+  <br />
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title> Add other passengers </mat-panel-title>
+    </mat-expansion-panel-header>
+    <mat-chip-list aria-label="Passenger selection">
+      <mat-chip
+        *ngFor="let user of selectedPassengers"
+        (removed)="removePassengerFromSelected(user)">
+        {{ user }}
+        <button matChipRemove>
+          <mat-icon>cancel</mat-icon>
+        </button>
+      </mat-chip>
+    </mat-chip-list>
+    <br />
+    <mat-form-field appearance="fill">
+      <mat-label>Email</mat-label>
+      <input
+        type="text"
+        matInput
+        aria-label="State"
+        [formControl]="passengerCtrl"
+        [matAutocomplete]="auto"
+        placeholder="Enter passenger's email" />
+      <mat-autocomplete
+        #auto="matAutocomplete"
+        (optionSelected)="addSelectedPassenger($event.option.value)">
+        <mat-option *ngFor="let user of allRegularUsers" [value]="user">
+          <span>{{ user }}</span>
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </mat-expansion-panel>
+  <br />
+
+  <div style="text-align: right">
+    <h2>={{ price }}</h2>
+  </div>
+
+  <button
+    mat-stroked-button
+    class="findDriverBtn"
+    *ngIf="rideRequestForm.get('vehicleType').value !== ''"
+    (click)="findDriver()">
+    Find driver
+  </button>
+</div>
+
+<!-- <div id="acceptDriving">
+  <app-accepting-driving-view
+    [vehicle]="vehicle"
+    [locations]="route.locations"
+    [passengers]="passengers"
+    [price]="price"></app-accepting-driving-view>
+
+</div> -->

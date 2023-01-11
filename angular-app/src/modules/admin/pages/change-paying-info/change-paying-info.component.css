@@ -1,0 +1,12 @@
+.form-container {
+    min-width: 55rem;
+    padding: 5% 5%;
+    max-width: 65rem;
+    margin-top: 3rem;
+    background-color: white;
+}
+
+h1 {
+    font-weight: bold;
+    font-size: 1.7rem;
+}

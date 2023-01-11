@@ -18,7 +18,7 @@ public class TokenTransactionService implements ITokenTransactionService {
         this.tokenTransactionRepository = tokenTransactionRepository;
     }
 
-    public TokenTransaction createTransactionObject(final int numOfTokens, final double pricePerToken) {
+    public TokenTransaction createTransactionObject(final double numOfTokens, final double pricePerToken) {
 
         return new TokenTransaction(LocalDateTime.now(), numOfTokens, numOfTokens * pricePerToken);
     }
