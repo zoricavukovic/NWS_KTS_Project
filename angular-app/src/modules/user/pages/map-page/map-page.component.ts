@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import {
   DrivingDetailsComponent
-} from "../../../shared/components/driving-details-components/driving-details/driving-details.component";
+} from "../../../shared/pages/driving-details/driving-details.component";
 import {HomeComponent} from "../../components/home/home.component";
 
 @Component({

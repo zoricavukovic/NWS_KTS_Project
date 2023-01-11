@@ -35,17 +35,19 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.authSubscription = this.authService
       .getSubjectCurrentUser()
       .subscribe(user => {
-        this.currentUser = user;
-        this.isDriver = this.authService.userIsDriver();
-        this.isRegular = this.authService.userIsRegular();
-        this.vehicleService.getAllVehicle().subscribe(vehicleCurrentLocation => {
-          this.carMarkers = addCarMarkers(
-            this.map,
-            this.carMarkers,
-            vehicleCurrentLocation,
-            user.id
-          );
-        });
+        if(user){
+          this.currentUser = user;
+          this.isDriver = this.authService.userIsDriver();
+          this.isRegular = this.authService.userIsRegular();
+          this.vehicleService.getAllVehicle().subscribe(vehicleCurrentLocation => {
+            this.carMarkers = addCarMarkers(
+              this.map,
+              this.carMarkers,
+              vehicleCurrentLocation,
+              user.id
+            );
+          });
+      }
       });
   }
 

@@ -1,23 +1,23 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import {User} from "../../../models/user/user";
-import {UserService} from "../../../services/user-service/user.service";
-import {Driving} from "../../../models/driving/driving";
-import {DrivingService} from "../../../services/driving-service/driving.service";
-import {VehicleService} from "../../../services/vehicle-service/vehicle.service";
-import {Vehicle} from "../../../models/vehicle/vehicle";
-import {ConfigService} from "../../../services/config-service/config.service";
-import {AuthService} from "../../../../auth/services/auth-service/auth.service";
-import {RouteService} from "../../../services/route-service/route.service";
-import {DriverService} from "../../../services/driver-service/driver.service";
-import {Driver} from "../../../models/user/driver";
+import {User} from "../../models/user/user";
+import {UserService} from "../../services/user-service/user.service";
+import {Driving} from "../../models/driving/driving";
+import {DrivingService} from "../../services/driving-service/driving.service";
+import {VehicleService} from "../../services/vehicle-service/vehicle.service";
+import {Vehicle} from "../../models/vehicle/vehicle";
+import {ConfigService} from "../../services/config-service/config.service";
+import {AuthService} from "../../../auth/services/auth-service/auth.service";
+import {RouteService} from "../../services/route-service/route.service";
+import {DriverService} from "../../services/driver-service/driver.service";
+import {Driver} from "../../models/user/driver";
 import {
   drawActiveRide,
   drawAllMarkers,
   drawPolylineWithLngLatArray,
   markCurrentPosition, removeAllMarkersFromList, removeLine
-} from "../../../utils/map-functions";
+} from "../../utils/map-functions";
 
 @Component({
   selector: 'app-driving-details',

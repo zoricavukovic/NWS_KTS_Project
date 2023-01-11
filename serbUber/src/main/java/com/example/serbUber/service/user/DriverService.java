@@ -218,7 +218,7 @@ public class DriverService implements IDriverService{
     public DriverDTO updateActivityStatus(final Long id, boolean active)
             throws EntityNotFoundException, ActivityStatusCannotBeChangedException
     {
-        Driver driver = this.getDriverById(id);
+        Driver driver = getDriverById(id);
 
         if (canChangeStatus(active, driver.getWorkingMinutes(), driver.getEndShift(), driver.getDrivings())) {
             driver.setActive(active);

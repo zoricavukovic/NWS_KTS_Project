@@ -29,7 +29,7 @@ export class ChatRoomService {
 
   getUserChatRoom(email: string): BehaviorSubject<ChatRoom> {
     this.http
-      .get<ChatRoom>(this.configService.allChatRoomsForUserUrl(email))
+      .get<ChatRoom>(this.configService.activeChatRoomsForUserUrl(email))
       .subscribe(res => {
         this.chatRoomClient$.next(res);
       });

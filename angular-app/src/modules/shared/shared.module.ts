@@ -20,7 +20,7 @@ import {PoupupLiveChatComponent} from "./components/chat/poupup-live-chat/poupup
 import {ConfirmBlockingDialogComponent} from "./components/confirm-blocking-dialog/confirm-blocking-dialog.component";
 import {
   DrivingDetailsComponent
-} from "./components/driving-details-components/driving-details/driving-details.component";
+} from "./pages/driving-details/driving-details.component";
 import {
   DrivingDetailsActionsComponent
 } from "./components/driving-details-components/driving-details-actions/driving-details-actions.component";
