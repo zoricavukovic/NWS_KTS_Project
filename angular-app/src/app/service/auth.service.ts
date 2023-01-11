@@ -33,7 +33,7 @@ export class AuthService {
 
   login(loginRequest: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(
-      this.configService.login_url,
+      this.configService.LOGIN_URL,
       loginRequest
     );
   }
@@ -67,7 +67,7 @@ export class AuthService {
 
   setOfflineStatus(): Observable<User> {
     return this.http.post<User>(
-      this.configService.logout_url,
+      this.configService.LOGOUT_URL,
       this.currentUser$?.value?.email
     );
   }
