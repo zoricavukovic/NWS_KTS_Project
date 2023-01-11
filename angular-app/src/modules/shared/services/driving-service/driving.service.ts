@@ -6,7 +6,6 @@ import {ConfigService} from "../config-service/config.service";
 import {Driving} from "../../models/driving/driving";
 import {VehicleCurrentLocation} from "../../models/vehicle/vehicle-current-location";
 import {SimpleDrivingInfo} from "../../models/driving/simple-driving-info";
-import { identifierName } from '@angular/compiler';
 
 @Injectable({
   providedIn: 'root',

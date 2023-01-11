@@ -46,6 +46,7 @@ import { GoogleMapsModule } from '@angular/google-maps';
 import { GooglePlaceModule } from 'ngx-google-places-autocomplete';
 import {CarouselModule} from "primeng/carousel";
 import { PaginationComponent } from './components/pagination/pagination.component';
+import {DateFormatPipe} from "./pipes/date-format.pipe";
 
 @NgModule({
   declarations: [
@@ -68,8 +69,8 @@ import { PaginationComponent } from './components/pagination/pagination.componen
     DriverVehicleComponent,
     VehicleDetailsComponent,
     ShowDrivingsComponent,
-    PaginationComponent
-    // PaginationComponent,
+    PaginationComponent,
+    DateFormatPipe
   ],
   imports: [
     CommonModule,
@@ -106,7 +107,8 @@ import { PaginationComponent } from './components/pagination/pagination.componen
     ReviewsHistoryComponent,
     BasicUserDataComponent,
     UserAverageRateComponent,
-    PaginationComponent
+    PaginationComponent, 
+    DateFormatPipe
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: CustomInterceptor, multi: true },

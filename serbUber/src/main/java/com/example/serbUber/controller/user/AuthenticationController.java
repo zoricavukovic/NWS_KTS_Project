@@ -75,7 +75,7 @@ public class AuthenticationController {
         );
         GoogleIdToken.Payload payload = googleIdToken.getPayload();
 
-        UserDTO userDTO = new UserDTO(userService.getUserByEmail(payload.getEmail()));
+        UserDTO userDTO = new UserDTO(userService.getVerifiedUser(payload.getEmail()));
         LoginDTO loginDTO = tokenService.googleLogin(userDTO);
         userService.setOnlineStatus(loginDTO.getUserDTO().getEmail());
 
@@ -90,7 +90,7 @@ public class AuthenticationController {
         String [] data = {"email"};
         User user = facebook.fetchObject("me", User.class,data);
 
-        UserDTO userDTO = new UserDTO(userService.getUserByEmail(user.getEmail()));
+        UserDTO userDTO = new UserDTO(userService.getVerifiedUser(user.getEmail()));
         LoginDTO loginDTO = tokenService.googleLogin(userDTO);
         userService.setOnlineStatus(loginDTO.getUserDTO().getEmail());
 

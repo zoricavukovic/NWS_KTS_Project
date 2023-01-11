@@ -60,9 +60,9 @@ export class AuthService {
   }
 
   logOut() {
+    localStorage.clear();
     this.chatService.disconnect();
     this.currentUser$.next(null);
-    localStorage.clear();
   }
 
   setOfflineStatus(): Observable<User> {

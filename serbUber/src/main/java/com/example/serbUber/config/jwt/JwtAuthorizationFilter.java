@@ -80,7 +80,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter{
     private UsernamePasswordAuthenticationToken getSpringAuthToken(String email)
         throws EntityNotFoundException
     {
-        UserDTO userDTO = new UserDTO(userService.getUserByEmail(email));
+        UserDTO userDTO = new UserDTO(userService.getVerifiedUser(email));
         return getUsernamePasswordAuthenticationToken(userDTO);
     }
 

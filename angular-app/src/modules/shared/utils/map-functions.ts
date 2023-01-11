@@ -159,9 +159,9 @@ export function getRouteCoordinates(route: PossibleRoute): google.maps.LatLngLit
 export function addCarMarker(map, vehicleStatus: VehicleCurrentLocation, currentLoggedUserId: number): google.maps.Marker {
   const customIcon: google.maps.Icon = vehicleStatus.inDrive?
     {
-    url: getActiveVehiclePhotoNameBasedOnType(vehicleStatus.type)
-  } : {
     url: getVehiclePhotoNameBasedOnType(vehicleStatus.type)
+  } : {
+    url: getActiveVehiclePhotoNameBasedOnType(vehicleStatus.type)
   };
 
   if (currentLoggedUserId === vehicleStatus?.driverId) {
@@ -198,6 +198,7 @@ export function addCarMarkers(
   currentLoggedUserId: number
 ): google.maps.Marker[] {
   if (map !== undefined){
+    console.log(vehicleCurrentLocation);
     carMarkers.forEach(marker => removeMarker(marker));
     const markers: google.maps.Marker[] = [];
     vehicleCurrentLocation.forEach(currentVehicle => {

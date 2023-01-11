@@ -11,6 +11,7 @@ import java.util.List;
 public interface IUserService {
     List<UserDTO> getAll();
     User getUserByEmail(String email) throws EntityNotFoundException;
+    User getVerifiedUser(final String email) throws EntityNotFoundException;
     UserDTO getUserDTOByEmail(String email) throws EntityNotFoundException;
     User getUserById(Long id) throws EntityNotFoundException;
     UserDTO get(Long id) throws EntityNotFoundException;

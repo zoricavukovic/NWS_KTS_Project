@@ -81,6 +81,9 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     this.authSubscription = this.authService.getSubjectCurrentUser().subscribe(
       user => {
         this.showDriverForm = this.authService.userIsAdmin();
+        if (!user){
+          this.removeUnnecessaryValidators();
+        }
       }
     );
   }
@@ -183,6 +186,12 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     if (this.authSubscription) {
       this.authSubscription.unsubscribe();
     }
+  }
+
+  private removeUnnecessaryValidators() {
+    this.registrationForm.get("babySeat").setValidators(null);
+    this.registrationForm.get("vehicleType").setValidators(null);
+    this.registrationForm.get("petFriendly").setValidators(null);
   }
 }
 

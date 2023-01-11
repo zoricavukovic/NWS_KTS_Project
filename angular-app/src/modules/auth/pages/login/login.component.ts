@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -18,7 +18,7 @@ import {WebSocketService} from "../../../shared/services/web-socket-service/web-
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
-export class LoginComponent implements OnInit, OnDestroy {
+export class LoginComponent implements OnDestroy {
   loginForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [
@@ -39,9 +39,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     private chatService: WebSocketService
   ) {}
 
-  ngOnInit(): void {
-    this.signInWithGoogle();
-  }
+  // ngOnInit(): void {
+    // this.signInWithGoogle();
+  // }
 
   signInWithGoogle(): void {
     const router = this.router;

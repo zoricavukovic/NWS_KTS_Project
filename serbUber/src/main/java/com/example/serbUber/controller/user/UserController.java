@@ -100,7 +100,7 @@ public class UserController {
         );
     }
 
-    @GetMapping("/send-rest-password-link/{email}")
+    @GetMapping("/send-reset-password-link/{email}")
     @ResponseStatus(HttpStatus.OK)
     public boolean sendResetPasswordLink(@Valid @PathVariable("email") UserEmailRequest userEmailRequest)
         throws EntityNotFoundException {

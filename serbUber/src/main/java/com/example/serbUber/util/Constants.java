@@ -39,8 +39,8 @@ public class Constants {
     public static final String TRANSACTION_DESCRIPTION = "Buying tokens for SerbUber";
     public static final String PAYMENT_METHOD = "paypal";
     public static final String PAYMENT_INTENT = "sale";
-    public static final String REDIRECT_URL_CANCEL = "http://localhost:4200/payment/status/-1";
-    public static final String REDIRECT_URL_SUCCESS = "http://localhost:4200/payment/process-payment";
+    public static final String REDIRECT_URL_CANCEL = "http://localhost:4200/serb-uber/regular-user/payment/status/-1";
+    public static final String REDIRECT_URL_SUCCESS = "http://localhost:4200/serb-uber/regular-user/payment/process-payment";
     public static final String PAYPAL_APPROVAL_URL = "approval_url";
     public static final Long DEFAULT_PAYING_INFO_ID = 1L;
     public static final int MAX_MINUTES_BEFORE_DRIVING_CAN_START = 5;

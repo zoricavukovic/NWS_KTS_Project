@@ -13,6 +13,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("select u from User u left join fetch u.role r where u.email=?1")
     Optional<User> getUserByEmail(String email);
 
+    @Query("select u from User u left join fetch u.role r where u.email=?1 and u.verified=true")
+    Optional<User> getVerifiedUser(String email);
+
     @Query("select u from User u left join fetch u.role r where u.role.name='ROLE_ADMIN'")
     Optional<User> getFirstAdmin();
 
