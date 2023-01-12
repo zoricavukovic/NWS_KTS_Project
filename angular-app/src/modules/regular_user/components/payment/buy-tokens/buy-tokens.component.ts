@@ -65,7 +65,7 @@ export class BuyTokensComponent implements OnInit, OnDestroy {
 
   calculateValue(): string {
     const numOfTokens = +this.tokenForm.get('tokenFormControl').value;
-    if (numOfTokens > 0) {
+    if (numOfTokens > 0 && numOfTokens <= this.tokenBank.payingInfo.maxNumOfTokensPerTransaction) {
 
       return numOfTokens * this.tokenBank.payingInfo.tokenPrice + ' €';
     }

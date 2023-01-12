@@ -3,13 +3,14 @@
     <mat-panel-title> Passengers </mat-panel-title>
   </mat-expansion-panel-header>
 
-  <div *ngFor="let user of users">
-    <mat-card>
+  <div *ngFor="let user of users; let userIndex=index;">
+    <mat-card (click)="goToPassengerProfile(user?.id)" [matTooltip]="user.name + ' ' + user.surname" style="cursor:pointer;">
       <mat-card-header>
-        <img
-          mat-card-avatar
-          [src]="base64Prefix + user?.profilePicture"
-          (click)="goToPassengerProfile(user?.id)" />
+        <div [class]="userIndex < 7 ? 'avatar-icon-passenger random-color-' + userIndex : 'avatar-icon-passenger random-color-' + (userIndex-5)">
+          <div style="margin-top: 1.2rem; font-size: 1.4rem;">
+            {{user.name[0] + user.surname[0]}}
+        </div>
+        </div>
         <div style="display: block">
           <mat-card-title>{{ user?.name }} {{ user?.surname }}</mat-card-title>
           <div style="display: flex; margin-top: 0.4rem; font-size: 1.1rem">

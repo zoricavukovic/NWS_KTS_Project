@@ -113,8 +113,10 @@ public class UserService implements IUserService {
             final String city
     ) throws EntityUpdateException {
         driverUpdateApprovalService.save(email, name, surname, phoneNumber, city);
+        UserDTO userDTO = new UserDTO(user);
+        userDTO.setProfilePicture(userDTO.getProfilePicture());
 
-        return new UserDTO(user);
+        return userDTO;
     }
 
     public UserDTO updateRegularOrAdmin(
@@ -129,8 +131,10 @@ public class UserService implements IUserService {
         user.setPhoneNumber(phoneNumber);
         user.setCity(city);
         userRepository.save(user);
+        UserDTO userDTO = new UserDTO(user);
+        userDTO.setProfilePicture(userDTO.getProfilePicture());
 
-        return new UserDTO(user);
+        return userDTO;
     }
 
     public UserDTO update(
