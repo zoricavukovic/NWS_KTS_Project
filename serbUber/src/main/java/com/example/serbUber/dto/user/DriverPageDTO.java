@@ -17,9 +17,13 @@ public class DriverPageDTO extends DriverDTO{
 
     public static List<DriverPageDTO> fromDriversPage(final List<Driver> drivers, final int pageSize, final int pageNumber){
         List<DriverPageDTO> driverDTOs = new LinkedList<>();
-        drivers.forEach(driver ->
-                driverDTOs.add(new DriverPageDTO(driver, pageSize, pageNumber))
-        );
+        for (Driver driver : drivers) {
+            DriverPageDTO driverPageDTO = new DriverPageDTO(driver, pageSize, pageNumber);
+            driverPageDTO.setProfilePicture(driverPageDTO.getProfilePicture());
+
+            driverDTOs.add(driverPageDTO);
+        }
+
         return driverDTOs;
     }
 

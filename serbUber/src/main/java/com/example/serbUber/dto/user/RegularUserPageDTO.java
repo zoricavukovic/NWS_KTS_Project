@@ -17,9 +17,13 @@ public class RegularUserPageDTO extends RegularUserDTO{
 
     public static List<RegularUserPageDTO> fromRegularUsersPage(final List<RegularUser> regularUsers, final int pageSize, final int pageNumber){
         List<RegularUserPageDTO> regularUserDTOs = new LinkedList<>();
-        regularUsers.forEach(regularUser ->
-                regularUserDTOs.add(new RegularUserPageDTO(regularUser, pageSize, pageNumber))
-        );
+        for (RegularUser regularUser : regularUsers) {
+            RegularUserPageDTO regularUserPageDTO = new RegularUserPageDTO(regularUser, pageSize, pageNumber);
+            regularUserPageDTO.setProfilePicture(regularUserPageDTO.getProfilePicture());
+
+            regularUserDTOs.add(regularUserPageDTO);
+        }
+
         return regularUserDTOs;
     }
 
