@@ -47,6 +47,8 @@ import { GooglePlaceModule } from 'ngx-google-places-autocomplete';
 import {CarouselModule} from "primeng/carousel";
 import { PaginationComponent } from './components/pagination/pagination.component';
 import {DateFormatPipe} from "./pipes/date-format.pipe";
+import {AvatarModule} from "primeng/avatar";
+import {AvatarGroupModule} from "primeng/avatargroup";
 
 @NgModule({
   declarations: [
@@ -93,7 +95,9 @@ import {DateFormatPipe} from "./pipes/date-format.pipe";
     GoogleMapsModule,
     GooglePlaceModule,
     CarouselModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    AvatarModule,
+    AvatarGroupModule
   ],
   exports: [
     PaymentStatisticsComponent,

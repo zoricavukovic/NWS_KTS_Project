@@ -27,7 +27,7 @@
                     <div class="stars">
                         <span>
                             <mat-icon>person</mat-icon>
-                            <ngx-stars *ngIf="review && review.driverRate > 0; else noDriverReview" [readonly]="true" customSize="1rem" [initialStars]="review.driverRate" color="#283b50"></ngx-stars>
+                            <ngx-stars *ngIf="review && review.driverRate > 0; else noDriverReview" [readonly]="true" customSize="1rem" [initialStars]="review.driverRate" color="var(--stars-gold)"></ngx-stars>
                             <ng-template #noDriverReview class="not-rated">
                                 <div class="not-rated">Not yet rated</div>
                             </ng-template>
@@ -36,7 +36,7 @@
                     <div class="stars">
                         <span>
                             <mat-icon>directions_car</mat-icon>
-                            <ngx-stars *ngIf="review.vehicleRate && review.vehicleRate > 0; else noVehicleReview" [readonly]="true" customSize="1rem" [initialStars]="review.vehicleRate" color="#283b50"></ngx-stars>
+                            <ngx-stars *ngIf="review.vehicleRate && review.vehicleRate > 0; else noVehicleReview" [readonly]="true" customSize="1rem" [initialStars]="review.vehicleRate" color="var(--stars-gold)"></ngx-stars>
                             <ng-template #noVehicleReview>
                                 <div class="not-rated">Not yet rated</div>
                             </ng-template>

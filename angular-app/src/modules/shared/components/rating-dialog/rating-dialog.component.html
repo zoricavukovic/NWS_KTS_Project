@@ -1,9 +1,30 @@
 <h1 mat-dialog-title>Rate driver and vehicle</h1>
 <div mat-dialog-content class="content">
-  <!--zvezdice treba 2 para zvezdica i za driver-a i za vehicle, to ce ti biti promenljvie ratingVehicle i ratingDriver, sada su trenutno setovane na 5 i 0-->
+  <div class="stars-content">
+    <div>
+      <mat-icon>person</mat-icon>
+      <ngx-stars  
+        [readonly]="false" customSize="1.5rem" 
+        [initialStars]="ratingDriver"
+        (ratingOutput)="onRatingDriverSet($event)" 
+        color="var(--stars-gold)">
+      </ngx-stars>
+    </div>
+    <div>
+      <mat-icon>directions_car</mat-icon>
+      <ngx-stars
+        [readonly]="false" 
+        customSize="1.5rem" 
+        [initialStars]="ratingVehicle" 
+        (ratingOutput)="onRatingVehicleSet($event)"
+        color="var(--stars-gold)">
+      </ngx-stars>
+    </div>
+  </div>
   <textarea
     matInput
-    rows="4"
+    rows="5"
+    cols="30"
     placeholder="Enter a comment..."
     [(ngModel)]="message"></textarea>
 </div>

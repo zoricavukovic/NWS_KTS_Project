@@ -22,19 +22,20 @@
   </table>
   <div style="margin-left: 0.7rem">
     <p-avatarGroup>
-      <div *ngFor="let user of driving.users; let userIndex = index">
+      <div *ngFor="let user of driving.users; let userIndex = index" [class]="userIndex < 5 ? 'avatar-icon random-color-' + userIndex : 'avatar-icon random-color-' + (userIndex-5)">
         <p-avatar
           *ngIf="userIndex < maxNumberOfShowedUsers"
           shape="circle"
           size="large"
-          [image]="
-                configService.BASE64_PHOTO_PREFIX + user.profilePicture
-              "
-          (click)="goToUserProfile(user?.id)"></p-avatar>
+          [matTooltip]="user.name + ' ' + user.surname"
+          [label]="user.name[0] + user.surname[0]"
+          (click)="goToUserProfile(user?.id)">
+        </p-avatar>
         <p-avatar
           *ngIf="userIndex >= maxNumberOfShowedUsers"
           shape="circle"
           size="large"
+          [matTooltip]="getNumOfNotShowedUsers(driving) + ' more'"
           [label]="getNumOfNotShowedUsers(driving)"></p-avatar>
       </div>
     </p-avatarGroup>

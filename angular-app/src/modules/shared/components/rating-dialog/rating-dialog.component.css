@@ -1,3 +1,13 @@
 .content{
     text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+
+.stars-content {
+    margin-bottom: 1rem;
+}
+
+.stars-content > div {
+    display: flex;
 }

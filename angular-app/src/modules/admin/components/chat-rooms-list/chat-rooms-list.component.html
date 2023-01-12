@@ -7,7 +7,10 @@
                 </h2>
                 <div class="contact" *ngFor="let chatRoom of chatRooms; index as i" [class]="(chatRoom.id === selectedChatRoom.id) ? 'active' : ''">
                     <div (click)="changedSelected(i)">
-                        <div class="pic default-message"></div>
+                        <div [class]="i < 7 ? 'pic random-color-' + i : 'pic random-color-' + (i-5)"
+                        [matTooltip]="chatRoom.client.name + ' ' + chatRoom.client.surname">
+                            <div>{{chatRoom.client.name[0] + chatRoom.client.name[0]}}</div>
+                        </div>
 
                         <div class="badge" *ngIf="showNotificationBadge(chatRoom)">
                             {{getNumOfNotSeenMessages(chatRoom)}}
