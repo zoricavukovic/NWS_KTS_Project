@@ -16,7 +16,12 @@ import com.example.serbUber.service.interfaces.IRouteService;
 import com.graphhopper.ResponsePath;
 import okhttp3.*;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.util.*;
@@ -192,38 +197,90 @@ public class RouteService implements IRouteService {
     ) throws IOException {
         List<PossibleRouteDTO> possibleRouteDTOs = new LinkedList<>();
 
-//        OkHttpClient client = new OkHttpClient().newBuilder()
-//            .build();
-//        MediaType mediaType = MediaType.parse("text/plain");
-//        RequestBody body = RequestBody.create(mediaType, "");
-//        Request request = new Request.Builder()
-//            .url("https://maps.googleapis.com/maps/api/directions/json?origin=45.12,20.32&destination=45.17,20.45&key=AIzaSyDMqZ8APiUZLmLb5WyzogfK3l36Z4pG4H4")
-//            .method("GET", null)
-//            .build();
-//        Response response = client.newCall(request).execute();
-//        OkHttpClient client = new OkHttpClient().newBuilder()
-//            .build();
-//        MediaType mediaType = MediaType.parse("text/plain");
-//        RequestBody body = RequestBody.create("", mediaType);
-//        Request request = new Request.Builder()
-//            .url("https://maps.googleapis.com/maps/api/directions/json?origin=Toronto&destination=Montreal&key=AIzaSyDMqZ8APiUZLmLb5WyzogfK3l36Z4pG4H4")
-//            .method("GET", body)
-//            .build();
-//        Response response = client.newCall(request).execute()
+        RestTemplate restTemplate = new RestTemplate();
 
-        List<ResponsePath> responsePaths = routing(
-            hopper,
-            firstPointLat,
-            firstPointLng,
-            secondPointLat,
-            secondPointLng
-        );
+        HttpHeaders headers = new HttpHeaders();
+//        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
-        responsePaths.forEach( responsePath -> possibleRouteDTOs.add(
-            new PossibleRouteDTO(responsePath.getDistance(), responsePath.getTime(), getPointsDTO(responsePath))
-        ));
+        HttpEntity<String> entity = new HttpEntity("parameters", headers);
+        ResponseEntity<?> result =
+            restTemplate.exchange("https://routing.openstreetmap.de/routed-car/route/v1/driving/" + firstPointLng + "," + firstPointLat + ";" + secondPointLng+ "," + secondPointLat+ " ?geometries=geojson&overview=false&alternatives=true&steps=true",
+                HttpMethod.GET, entity, Object.class);
+        return fromOSMResponse(Objects.requireNonNull(result.getBody()).toString());
+
+//        List<ResponsePath> responsePaths = routing(
+//            hopper,
+//            firstPointLat,
+//            firstPointLng,
+//            secondPointLat,
+//            secondPointLng
+//        );
+//
+//        responsePaths.forEach( responsePath -> possibleRouteDTOs.add(
+//            new PossibleRouteDTO(responsePath.getDistance(), responsePath.getTime(), getPointsDTO(responsePath))
+//        ));
+
+//        return possibleRouteDTOs;
+    }
+
+    private List<PossibleRouteDTO> fromOSMResponse(String object) {
+
+        return fromLegs(object);
+    }
+
+    private List<PossibleRouteDTO> fromLegs(String object) {
+        List<PossibleRouteDTO> possibleRouteDTOs = new LinkedList<>();
+        List<String> legs = Arrays.stream(object.split("legs=")).toList();
+        fromLegs(possibleRouteDTOs, legs);
 
         return possibleRouteDTOs;
+    }
+
+    private void fromLegs(List<PossibleRouteDTO> possibleRouteDTOs, List<String> legs) {
+        for (String leg: legs.subList(1, legs.size())){
+            List<double[]> locations = new LinkedList<>();
+            List<String> steps = Arrays.stream(leg.split("steps=")).toList();
+            fromSteps(locations, steps);
+            possibleRouteDTOs.add(new PossibleRouteDTO(1000, 13000, locations));
+        }
+    }
+
+    private void fromSteps(List<double[]> locations, List<String> steps) {
+        for (String step: steps.subList(1, steps.size())){
+            List<String> geometries = Arrays.stream(step.split("geometry=")).toList();
+            fromGeometries(locations, geometries);
+        }
+    }
+
+    private void fromGeometries(List<double[]> locations, List<String> geometries) {
+        for (String geometry: geometries.subList(1, geometries.size())){
+            List<String> coordinates = Arrays.stream(geometry.split("coordinates=")).toList();
+            fromCoordinates(locations, coordinates);
+        }
+    }
+
+    private void fromCoordinates(List<double[]> locations, List<String> coordinates) {
+        for (String coordinate: coordinates.subList(1, coordinates.size())){
+            List<String> points = Arrays.stream(coordinate.split(",")).toList();
+            fromPoints(locations, points);
+        }
+    }
+
+    private void fromPoints(List<double[]> locations, List<String> points) {
+        for (int i = 0; i< points.size()-2; i+=2){
+            String firstPoint = points.get(i).trim();
+            String secondPoint = points.get(i + 1).trim();
+            if (firstPoint.toLowerCase().startsWith("type") || secondPoint.toLowerCase().startsWith("type")){
+                break;
+            }
+
+            String lng = firstPoint.replace("[","");
+            lng = lng.replace("]","");
+            String lat = secondPoint.replace("[","");
+            lat = lat.replace("]","");
+            locations.add(new double[]{Double.parseDouble(lat), Double.parseDouble(lng)});
+
+        }
     }
 
     private List<double[]> getPointsDTO(ResponsePath responsePath) {
