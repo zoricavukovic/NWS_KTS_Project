@@ -26,10 +26,10 @@
       <b>={{ driving.price }}</b>
     </h2>
   </div>
-  <p id="pera"></p>
-  <!-- <div class="spinner-div">
-    <mat-progress-spinner class="spinner" color='accent' [mode]="'determinate'" [value]="activeRide.minutes">
+  <div class="spinner-div">
+    <mat-progress-spinner class="spinner" color='accent' [mode]="'determinate'" [value]="storedDrivingNotification.minutes">
     </mat-progress-spinner>
-    <h1 style="margin-left:6rem; margin-top: 2rem;" id="minutes"></h1>
-  </div> -->
+    <h1 style="margin-left:6rem; margin-top: 2rem;" id="minutes">{{storedDrivingNotification.minutes}}</h1>
+  </div>
+
 </div>

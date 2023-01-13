@@ -11,7 +11,7 @@ import {NgxsModule} from "@ngxs/store";
 import {NgxsReduxDevtoolsPluginModule} from "@ngxs/devtools-plugin";
 import {NgxsLoggerPluginModule} from "@ngxs/logger-plugin";
 import {KnobModule} from "primeng/knob";
-import {DrivingNotificationState} from "./state/driving-notification.state";
+import {DrivingNotificationState, DrivingNotificationStateModel} from "./state/driving-notification.state";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {ChangeProfilePicComponent} from "./components/change-profile-pic/change-profile-pic.component";
 import {BasicUserDataComponent} from "./components/basic-user-data/basic-user-data.component";
@@ -83,11 +83,12 @@ import {DateFormatPipe} from "./pipes/date-format.pipe";
       preventDuplicates: true,
       closeButton: true,
     }),
-    NgxsModule.forRoot([
-      DrivingNotificationState
-    ]),
-    NgxsReduxDevtoolsPluginModule.forRoot(),
-    NgxsLoggerPluginModule.forRoot(),
+    // NgxsModule.forRoot([
+    //   DrivingNotificationState
+    // ]),
+    // NgxsReduxDevtoolsPluginModule.forRoot(),
+    // NgxsLoggerPluginModule.forRoot(),
+    // NgxsModule.forFeature([DrivingNotificationState]),
     KnobModule,
     NgxStarsModule,
     GoogleMapsModule,
@@ -111,7 +112,7 @@ import {DateFormatPipe} from "./pipes/date-format.pipe";
     DateFormatPipe
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: CustomInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: CustomInterceptor, multi: true }
   ],
 })
 export class SharedModule {}

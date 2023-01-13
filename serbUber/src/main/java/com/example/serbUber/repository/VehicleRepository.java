@@ -20,9 +20,9 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
     @Query("select v from Vehicle v left join fetch v.vehicleTypeInfo info where info.vehicleType=?1")
     Vehicle getVehicleByType(VehicleType vehicleType);
 
-    @Query("select driver.id from Vehicle v inner join Driver driver on driver.vehicle.id = v.id where v.id=?1")
+    @Query("select distinct driver.id from Vehicle v left join Driver driver on driver.vehicle.id = v.id where v.id=?1")
     Optional<Long> getDriverIdByVehicleId(Long vehicleId);
 
-    @Query("select v from Vehicle v inner join Driver driver on driver.vehicle.id = v.id where driver.id=?1")
+    @Query("select distinct v from Vehicle v inner join Driver driver on driver.vehicle.id = v.id where driver.id=?1")
     Optional<Vehicle> getVehicleByDriverId(Long driverId);
 }

@@ -42,13 +42,13 @@ public class DrivingService implements IDrivingService {
     private final DrivingWithVehicleService drivingWithVehicleService;
 
     public DrivingService(
-        final DrivingRepository drivingRepository,
-        final UserService userService,
-        final WebSocketService webSocketService,
-        final DrivingStatusNotificationService drivingStatusNotificationService,
-        final VehicleService vehicleService,
-        final RouteService routeService,
-        final DrivingWithVehicleService drivingWithVehicleService
+            final DrivingRepository drivingRepository,
+            final UserService userService,
+            final WebSocketService webSocketService,
+            final DrivingStatusNotificationService drivingStatusNotificationService,
+            final VehicleService vehicleService,
+            final RouteService routeService,
+            final DrivingWithVehicleService drivingWithVehicleService
     ) {
         this.drivingRepository = drivingRepository;
         this.userService = userService;
@@ -59,7 +59,7 @@ public class DrivingService implements IDrivingService {
         this.drivingWithVehicleService = drivingWithVehicleService;
     }
 
-    public DrivingDTO create(
+    public Driving create(
             final int duration,
             final LocalDateTime started,
             final LocalDateTime payingLimit,
@@ -82,7 +82,23 @@ public class DrivingService implements IDrivingService {
         });
 
 
-        return null;
+        return driving;
+    }
+
+    public DrivingDTO createDTO(final int duration,
+                                final LocalDateTime started,
+                                final LocalDateTime payingLimit,
+                                final Route route,
+                                final DrivingStatus drivingStatus,
+                                final Long driverId,
+                                final Set<RegularUser> users,
+                                final HashMap<Long, Boolean> usersPaid,
+                                final double price) throws EntityNotFoundException {
+        return new DrivingDTO(create(duration, started, payingLimit, route, drivingStatus, driverId, users, usersPaid, price));
+    }
+
+    public DrivingDTO save(Driving driving){
+        return new DrivingDTO(drivingRepository.save(driving));
     }
 
     public List<DrivingDTO> getAll() {
@@ -166,7 +182,7 @@ public class DrivingService implements IDrivingService {
     }
 
     public SimpleDrivingInfoDTO checkUserHasActiveDriving(final Long id) {
-        Optional<Driving> optionalDriving = drivingRepository.getActiveDrivingForUser(id);
+        Optional<Driving> optionalDriving = drivingRepository.getActiveDrivingForUser(id, LocalDateTime.now().plusMinutes(30));
 
         return optionalDriving.map(SimpleDrivingInfoDTO::new).orElse(null);
     }
@@ -187,19 +203,20 @@ public class DrivingService implements IDrivingService {
         drivingRepository.save(driving);
 
         DrivingStatusNotification drivingStatusNotification = drivingStatusNotificationService.create(
-            reason, DrivingStatus.REJECTED, driving);
+                reason, DrivingStatus.REJECTED, driving);
 
         DrivingStatusNotificationDTO drivingStatusNotificationDTO = new DrivingStatusNotificationDTO(
-            drivingStatusNotification.getDriving().getId(),
-            drivingStatusNotification.getDriving().getRoute().getTimeInMin(),
-            DrivingStatus.REJECTED,
-            reason,
-            driving.getId()
+                drivingStatusNotification.getDriving().getId(),
+                drivingStatusNotification.getDriving().getRoute().getTimeInMin(),
+                DrivingStatus.REJECTED,
+                reason,
+                driving.getId(),
+                drivingStatusNotification.getId()
         );
 
         webSocketService.sendRejectDriving(
-            drivingStatusNotificationDTO,
-            drivingStatusNotification.getDriving().getUsers()
+                drivingStatusNotificationDTO,
+                drivingStatusNotification.getDriving().getUsers()
         );
         this.vehicleService.updateCurrentVehiclesLocation();
 
@@ -211,16 +228,15 @@ public class DrivingService implements IDrivingService {
         Driver driver = userService.getDriverById(driving.getDriverId());
         Vehicle vehicle = driver.getVehicle();
         List<double[]> listOfVehiclesRoutes;
-        if (vehicle.hasRoute()){
+        if (vehicle.hasRoute()) {
             listOfVehiclesRoutes = routeService.getRoutePath(vehicle.getActiveRoute().getId());
-        }
-        else {
+        } else {
             listOfVehiclesRoutes = List.of(new double[]{vehicle.getCurrentStop().getLon(), vehicle.getCurrentStop().getLat()});
         }
 
         VehicleWithDriverId withDriverIds = new VehicleWithDriverId(vehicle, driving.getDriverId());
 
-        VehicleCurrentLocationDTO vehicleCurrentLocationDTO =  new VehicleCurrentLocationDTO(withDriverIds, listOfVehiclesRoutes);
+        VehicleCurrentLocationDTO vehicleCurrentLocationDTO = new VehicleCurrentLocationDTO(withDriverIds, listOfVehiclesRoutes);
         webSocketService.sendVehicleCurrentLocation(vehicleCurrentLocationDTO, driver.getEmail(), driving.getUsers());
 
         return vehicleCurrentLocationDTO;
@@ -228,11 +244,11 @@ public class DrivingService implements IDrivingService {
 
     public DrivingDTO startDriving(final Long id) throws EntityNotFoundException, DriverAlreadyHasStartedDrivingException, DrivingShouldNotStartYetException {
         Driving driving = getDriving(id);
-        if (driverHasActiveDriving(driving.getDriverId())){
+        if (driverHasActiveDriving(driving.getDriverId())) {
             throw new DriverAlreadyHasStartedDrivingException();
         }
 
-        if (drivingShouldNotStartYet(driving)){
+        if (drivingShouldNotStartYet(driving)) {
             throw new DrivingShouldNotStartYetException();
         }
         Driver driver = userService.getDriverById(driving.getDriverId());
@@ -244,7 +260,7 @@ public class DrivingService implements IDrivingService {
         driving.setDrivingStatus(DrivingStatus.ACCEPTED);
         drivingRepository.save(driving);
 
-        webSocketService.startDrivingNotification(new SimpleDrivingInfoDTO(driving),driving.getUsers());
+        webSocketService.startDrivingNotification(new SimpleDrivingInfoDTO(driving), driving.getUsers());
         this.vehicleService.updateCurrentVehiclesLocation();
 
         return new DrivingDTO(driving);
@@ -260,7 +276,7 @@ public class DrivingService implements IDrivingService {
         driver.getVehicle().setActiveRoute(null);
 
         drivingRepository.save(driving);
-        webSocketService.finishDrivingNotification(new SimpleDrivingInfoDTO(driving),driving.getUsers());
+        webSocketService.finishDrivingNotification(new SimpleDrivingInfoDTO(driving), driving.getUsers());
         this.vehicleService.updateCurrentVehiclesLocation();
         Driving nextDriving = driverHasFutureDriving(driving.getDriverId());
         if (nextDriving != null) {
@@ -272,20 +288,20 @@ public class DrivingService implements IDrivingService {
     private Driving driverHasFutureDriving(final Long id) {
 
         List<Driving> drivings = drivingRepository.driverHasFutureDriving(id);
-        return drivings.size() > 0?
-            drivings.get(0): null;
+        return drivings.size() > 0 ?
+                drivings.get(0) : null;
     }
 
     private DrivingDTO createDrivingToDeparture(Driver driver, Location currentStop, Route nextRoute) {
 
         List<DrivingLocationIndexRequest> drivingLocationIndexRequestList = new LinkedList<>();
         DrivingLocationIndexRequest firstLocation = new DrivingLocationIndexRequest(
-            new LocationRequest(currentStop.getCity(), currentStop.getStreet(), currentStop.getNumber(), currentStop.getZipCode(), currentStop.getLon(), currentStop.getLat()), 1
+                new LocationRequest(currentStop.getCity(), currentStop.getStreet(), currentStop.getNumber(), currentStop.getZipCode(), currentStop.getLon(), currentStop.getLat()), 1
         );
 
         Location nextLocation = nextRoute.getLocations().first().getLocation();
         DrivingLocationIndexRequest secondLocation = new DrivingLocationIndexRequest(
-            new LocationRequest(nextLocation.getCity(), nextLocation.getStreet(), nextLocation.getNumber(), nextLocation.getZipCode(), nextLocation.getLon(), nextLocation.getLat()), 2
+                new LocationRequest(nextLocation.getCity(), nextLocation.getStreet(), nextLocation.getNumber(), nextLocation.getZipCode(), nextLocation.getLon(), nextLocation.getLat()), 2
         );
 
         drivingLocationIndexRequestList.add(firstLocation);

@@ -1,3 +1,4 @@
+import { SimpleDrivingInfo } from "../models/driving/simple-driving-info";
 import {DrivingNotification} from "../models/notification/driving-notification";
 
 export class AddDrivingNotification {
@@ -10,8 +11,20 @@ export class AddDrivingNotification {
     static readonly type = "[DrivingNotification] Get";
   }
 
-  export class UpdateDrivingNotification {
-    static readonly type = "[DrivingNotification] Update";
+  export class UpdateMinutesStatusDrivingNotification {
+    static readonly type = "[DrivingNotification] UpdateMinutesStatus";
 
-    constructor(public payload: DrivingNotification) {}
+    constructor(public payload: {minutes: number, drivingStatus: string}) {}
+  }
+
+  export class UpdateDrivingNotification {
+    static readonly type = "[DrivingNotification] UpdateDriving";
+
+    constructor(public payload: SimpleDrivingInfo) {}
+  }
+
+  export class UpdateStatusDrivingNotification {
+    static readonly type = "[DrivingNotification] UpdateStatus";
+
+    constructor(public payload: {active: boolean, drivingStatus: string}) {}
   }

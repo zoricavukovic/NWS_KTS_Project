@@ -1,5 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from "@angular/router";
+import { Subscription } from 'rxjs';
+import { DrivingService } from 'src/modules/shared/services/driving-service/driving.service';
 import {SimpleDrivingInfo} from "../../../shared/models/driving/simple-driving-info";
 
 @Component({
@@ -7,12 +9,18 @@ import {SimpleDrivingInfo} from "../../../shared/models/driving/simple-driving-i
   templateUrl: './active-drive-container.component.html',
   styleUrls: ['./active-drive-container.component.css']
 })
-export class ActiveDriveContainerComponent {
+export class ActiveDriveContainerComponent implements OnInit {
 
   @Input() activeRide: SimpleDrivingInfo;
-  constructor(private _router: Router) { }
+  // @Input() currentUserId: number;
+  // activeRide: SimpleDrivingInfo;
+  drivingSubscription: Subscription;
+  constructor(private _router: Router, private _drivingService: DrivingService) { }
 
   goToDrivingDetails() {
     this._router.navigate(['/serb-uber/user/map-page-view', this.activeRide.drivingId]);
+  }
+
+  ngOnInit(){
   }
 }

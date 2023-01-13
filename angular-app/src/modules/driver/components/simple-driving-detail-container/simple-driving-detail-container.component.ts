@@ -41,7 +41,7 @@ export class SimpleDrivingDetailContainerComponent {
   }
 
   showDrivingDetails(drivingId: number): void {
-    this.router.navigate([`/map-view/${drivingId}`]);
+    this.router.navigate([`/serb-uber/user/map-page-view/${drivingId}`]);
   }
 
   goToUserProfile(id: number): void {

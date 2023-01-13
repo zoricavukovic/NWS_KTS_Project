@@ -1,5 +1,6 @@
-<form [formGroup]="rideRequestForm">
-<div *ngIf="routeChoiceView && !hasActiveDriving()">
+
+<form [formGroup]="rideRequestForm" *ngIf="storedDrivingNotification.drivingStatus!=='PAYING' && !hasActiveDriving()">
+<div *ngIf="routeChoiceView">
   <h1><strong>Request a ride now</strong></h1>
   <div formArrayName="searchingRoutesForm">
     <div
@@ -69,13 +70,13 @@
   </div>
 
   <div class="mat-elevation-z3" *ngIf="possibleRoutesViaPoints.length > 0">
-    <!-- <button
+    <button
       mat-button
       [matMenuTriggerFor]="menu"
       aria-label="Options"
       class="options-button">
       Options
-    </button> -->
+    </button> 
     <mat-menu #menu="matMenu">
       <button
         mat-menu-item
@@ -145,16 +146,17 @@
     class="continue-button"
     *ngIf="currentUser && possibleRoutesViaPoints.length > 0">
     <button mat-raised-button (click)="chooseVehicleAndPassengers()">
-      <strong>Chose vehicle type</strong>
+      <strong>Choose vehicle type and add passengers</strong>
     </button>
   </div>
 
 </div>
+
 <div *ngIf="filterVehicleView">
   <app-filter-vehicle-view [route]="rideRequestForm.get('selectedRoute')?.value" (waitingForAcceptDrive)="loadingView($event)"></app-filter-vehicle-view>
 </div>
+</form>
 
-<app-waiting-for-accept-ride-container *ngIf="loadingViewVar"></app-waiting-for-accept-ride-container>
+<app-waiting-for-accept-ride-container *ngIf="storedDrivingNotification.drivingStatus==='PAYING' && !hasActiveDriving()"></app-waiting-for-accept-ride-container>
 
 <app-active-drive-container *ngIf="hasActiveDriving()" [activeRide]="activeRide"></app-active-drive-container>
-</form>

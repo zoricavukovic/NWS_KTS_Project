@@ -7,4 +7,5 @@ export interface SimpleDrivingInfo {
   endLocation: Location;
   active: boolean;
   cost: number;
+  drivingStatus: string;
 }

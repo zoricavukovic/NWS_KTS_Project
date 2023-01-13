@@ -29,6 +29,7 @@
     "@ngxs/devtools-plugin": "^3.7.6",
     "@ngxs/logger-plugin": "^3.7.6",
     "@ngxs/schematics": "^0.0.1-alpha.5",
+    "@ngxs/storage-plugin": "^3.7.6",
     "@ngxs/store": "^3.7.6",
     "@stomp/stompjs": "^6.1.2",
     "@types/sockjs-client": "^1.5.1",

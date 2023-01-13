@@ -1,4 +1,4 @@
-<div id="content">
+<div id="content" *ngIf="activeRide">
 
   <mat-icon (click)="goToDrivingDetails()" color=primary id="icon-details"
             matTooltip="Follow ride"
@@ -6,7 +6,8 @@
             matTooltipHideDelay="1000"
   >chevron_right_outline</mat-icon>
   <br/>
-  <div class="text-container"><b>Your active ride</b></div>
+  <div class="text-container" *ngIf="activeRide.active"><b>Your active ride</b></div>
+  <div class="text-container" *ngIf="!activeRide.active"><b>Your future ride</b></div>
   <div class="spinner-div">
     <mat-progress-spinner class="spinner" color='accent' [mode]="'determinate'" [value]="activeRide.minutes">
     </mat-progress-spinner>
