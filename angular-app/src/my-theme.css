@@ -2290,7 +2290,7 @@ td.mat-footer-cell {
   background-color: rgba(0, 0, 0, 0.6);
 }
 .mat-slide-toggle.mat-checked .mat-slide-toggle-thumb {
-  background-color: var(--deep-blue);
+  background-color: green;
 }
 .mat-slide-toggle.mat-checked .mat-slide-toggle-bar {
   background-color: rgba(255, 64, 129, 0.54);
@@ -2302,7 +2302,7 @@ td.mat-footer-cell {
   background-color: var(--white);
 }
 .mat-slide-toggle.mat-primary.mat-checked .mat-slide-toggle-bar {
-  background-color: rgba(63, 81, 181, 0.54);
+  background-color: green;
 }
 .mat-slide-toggle.mat-primary.mat-checked .mat-ripple-element {
   background-color: var(--white);
@@ -2325,7 +2325,7 @@ td.mat-footer-cell {
   background-color: #fafafa;
 }
 .mat-slide-toggle-bar {
-  background-color: rgba(0, 0, 0, 0.38);
+  background-color: orange;
 }
 .mat-slider-track-background {
   background-color: rgba(0, 0, 0, 0.26);
@@ -3194,5 +3194,53 @@ h1 {
 .pac-item:hover {
   background-color: var(--gray-transparent);
 }
+
+.avatar-icon {
+  cursor: pointer !important;
+  margin-left: 0.2rem;
+  font-weight: 550;
+  border-radius: 50%;
+}
+
+.avatar-icon-passenger {
+  cursor: pointer !important;
+  font-weight: 550;
+  border-radius: 50%;
+  height: 3.5rem !important; 
+  width:3.5rem !important;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin-right: 1rem;
+}
+
+.random-color-2 {
+  background-color: burlywood;
+}
+
+.random-color-1 {
+  background-color: darkkhaki;
+}
+
+.random-color-0 {
+  background-color: lightblue;
+}
+
+.random-color-3 {
+  background-color: gray;
+}
+
+.random-color-4 {
+  background-color: chocolate;
+}
+
+.random-color-5 {
+  background-color: seagreen;
+}
+
+.random-color-6 {
+  background-color: lemonchiffon;
+}
+
 
 

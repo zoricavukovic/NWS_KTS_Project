@@ -1,10 +1,9 @@
 <mat-card>
-  <mat-card-header>
+  <mat-card-header (click)="goToDriverProfile()" [matTooltip]="driver?.name + ' ' + driver?.surname" style="cursor:pointer;">
     <img
       mat-card-avatar
       style="height: 5rem; width: 5rem"
-      [src]="base64Prefix + driver?.profilePicture"
-      (click)="goToDriverProfile()" />
+      [src]="base64Prefix + driver?.profilePicture"/>
 
     <mat-card-title>{{ driver?.name }} {{ driver?.surname }}</mat-card-title>
     <mat-card-subtitle>
@@ -16,7 +15,7 @@
             [readonly]="true"
             customSize="1.5rem"
             [initialStars]="driver?.rate"
-            color="#283b50"></ngx-stars>
+            color="var(--stars-gold)"></ngx-stars>
           <ng-template #noRatingBlock
             ><span class="no-rating-block">No ratings yet</span></ng-template
           >

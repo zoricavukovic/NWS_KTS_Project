@@ -26,4 +26,5 @@ body {
   --gray-transparent: rgba(231, 230, 230, 0.47);
   /*ne brisi cream*/
   --cream: rgb(245, 233, 222);
+  --stars-gold:#daa520;
 }
