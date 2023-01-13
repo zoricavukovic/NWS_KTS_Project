@@ -123,8 +123,8 @@ export class ConfigService {
     return `${this.DRIVINGS_URL}/has-active/user/${userId}`
   }
 
-  vehicleCurrentLocation(driverId: number): string{
-    return `${this.DRIVINGS_URL}/vehicle-current-location/${driverId}`;
+  vehicleCurrentLocation(drivingId: number): string{
+    return `${this.DRIVINGS_URL}/vehicle-current-location/${drivingId}`;
   }
 
   ///////////////////DRIVING-NOTIFICATION///////////////////
@@ -283,7 +283,7 @@ export class ConfigService {
   // private _have_driving_rate_url = this.api_url + '/reviews/haveDrivingRate/';
   // private _reviewed_drivings_url = this.api_url + '/reviews/reviewedDrivings/';
   // private _base64_show_photo_prefix = 'data:image/png;base64,';
-  // private _users_url = this.api_url + '/users';
+  private _users_url = this.API_URL + '/users';
   // private _all_messages = this.api_url + '/messages';
   // private _all_chat_rooms = this.api_url + '/chat-rooms';
 
@@ -487,9 +487,9 @@ export class ConfigService {
   //   return this._all_users_url;
   // }
 
-  // user_by_id_url(id: string): string {
-  //   return `${this._users_url}/${id}`;
-  // }
+  user_by_id_url(id: string): string {
+    return `${this._users_url}/${id}`;
+  }
 
   // token_bank_by_user_id_url(id: string): string {
   //   return `${this._token_bank_url}/${id}`;

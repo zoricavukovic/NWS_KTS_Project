@@ -1,6 +1,7 @@
 package com.example.serbUber.controller.user;
 
 import com.example.serbUber.dto.user.DriverDTO;
+import com.example.serbUber.dto.user.DriverPageDTO;
 import com.example.serbUber.exception.*;
 import com.example.serbUber.request.user.DriverActivityStatusRequest;
 import com.example.serbUber.service.user.DriverService;
@@ -11,9 +12,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
-import static com.example.serbUber.exception.ErrorMessagesConstants.NOT_NULL_MESSAGE;
+import static com.example.serbUber.exception.ErrorMessagesConstants.*;
 
 @RestController
 @RequestMapping("/drivers")
@@ -79,6 +82,14 @@ public class DriverController {
     ) throws EntityNotFoundException, EntityUpdateException {
 
         return driverService.unblock(id);
+    }
+
+    @GetMapping("/{pageNumber}/{pageSize}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
+    public List<DriverPageDTO> getDriversWithPagination(@Valid @NotNull(message = NOT_NULL_MESSAGE) @PositiveOrZero(message = POSITIVE_OR_ZERO_MESSAGE) @PathVariable int pageNumber,
+                                                        @Valid @NotNull(message = NOT_NULL_MESSAGE) @Positive(message = POSITIVE_MESSAGE) @PathVariable int pageSize){
+        return driverService.getDriversWithPagination(pageNumber, pageSize);
     }
 }
 

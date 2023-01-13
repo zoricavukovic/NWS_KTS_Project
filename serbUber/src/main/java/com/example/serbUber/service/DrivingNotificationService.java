@@ -136,11 +136,11 @@ public class DrivingNotificationService implements IDrivingNotificationService {
             receiversReviewed.put(drivingNotification.getSender(), 0);
             if (driver == null) {
                 System.out.println("nema vozacaaa");
-                DrivingStatusNotificationDTO drivingStatusNotificationDTO = new DrivingStatusNotificationDTO(0L, 0, DrivingStatus.PENDING, "Not found driver", drivingNotification.getId());
+                DrivingStatusNotificationDTO drivingStatusNotificationDTO = new DrivingStatusNotificationDTO(0L, 0, DrivingStatus.PENDING, "Not found driver", null, drivingNotification.getId());
                 webSocketService.sendDrivingStatus(drivingStatusNotificationDTO, receiversReviewed);
             } else {
                 System.out.println("vozaaacccc" + driver.getEmail());
-                DrivingDTO drivingDTO = drivingService.create(
+                Driving driving = drivingService.create(
                         drivingNotification.getDuration(),
                         drivingNotification.getStarted(),
                         drivingNotification.getStarted().plusMinutes(2),
@@ -150,16 +150,18 @@ public class DrivingNotificationService implements IDrivingNotificationService {
                         getListOfUsers(drivingNotification.getReceiversReviewed()),
                         new HashMap<>(),
                         drivingNotification.getPrice());
-                System.out.println("voznjaaa" + drivingDTO.getId());
                 if (isPaidDriving(drivingNotification.getReceiversReviewed(), drivingNotification.getPrice())) {
-                    drivingService.paidDriving(drivingDTO.getId());
-                    System.out.println( "dsds" +drivingDTO.getId());
-                    DrivingStatusNotificationDTO drivingStatusNotificationDTO = new DrivingStatusNotificationDTO(driver.getId(), calculateMinutesForStartDriving(driver.getId(), drivingNotification.getRoute()), DrivingStatus.ACCEPTED, "", drivingDTO.getId());
+                    drivingService.paidDriving(driving.getId());
+                    int minutesToStartDrive = calculateMinutesForStartDriving(driver.getId(), drivingNotification.getRoute());
+                    driving.setStarted(LocalDateTime.now().plusMinutes(minutesToStartDrive));
+                    DrivingDTO drivingDTO = drivingService.save(driving);
+                    DrivingStatusNotificationDTO drivingStatusNotificationDTO = new DrivingStatusNotificationDTO(driver.getId(), minutesToStartDrive, DrivingStatus.ACCEPTED, "", drivingDTO.getId(), drivingNotification.getId());
                     webSocketService.sendDrivingStatus(drivingStatusNotificationDTO, receiversReviewed);
                     System.out.println("placenoooo" + drivingStatusNotificationDTO.getMinutes());
+
                 } else {
-                    drivingService.removeDriver(drivingDTO.getId());
-                    DrivingStatusNotificationDTO drivingStatusNotificationDTO = new DrivingStatusNotificationDTO(driver.getId(), 0, DrivingStatus.PAYING, "Payment was not successful. Please, check your tokens!", drivingDTO.getId());
+                    drivingService.removeDriver(driving.getId());
+                    DrivingStatusNotificationDTO drivingStatusNotificationDTO = new DrivingStatusNotificationDTO(driver.getId(), 0, DrivingStatus.REJECTED, "Payment was not successful. Please, check your tokens!", driving.getId(), drivingNotification.getId());
                     webSocketService.sendDrivingStatus(drivingStatusNotificationDTO, receiversReviewed);
                 }
 
@@ -167,7 +169,7 @@ public class DrivingNotificationService implements IDrivingNotificationService {
         }
     }
 
-    public double calculateMinutesForStartDriving(final Long driverId, final Route route) throws EntityNotFoundException {
+    public int calculateMinutesForStartDriving(final Long driverId, final Route route) throws EntityNotFoundException {
         Driver driver = driverService.getDriverById(driverId);
         Location userLocation = route.getLocations().first().getLocation();
         GHRequest request = new GHRequest(
@@ -177,10 +179,11 @@ public class DrivingNotificationService implements IDrivingNotificationService {
             userLocation.getLon()
         );
         request.setProfile("car");
-        GHResponse routeHopper = hopper.route(request);
-        System.out.println("vreemeee" + TimeUnit.MILLISECONDS.toMinutes(routeHopper.getBest().getTime()));
-        System.out.println((routeHopper.getBest().getTime()/1000)/60);
-        return TimeUnit.MILLISECONDS.toMinutes(routeHopper.getBest().getTime()) + 1;
+//        GHResponse routeHopper = hopper.route(request);
+//        System.out.println("vreemeee" + TimeUnit.MILLISECONDS.toMinutes(routeHopper.getBest().getTime()));
+//        System.out.println((routeHopper.getBest().getTime()/1000)/60);
+//        return TimeUnit.MILLISECONDS.toMinutes(routeHopper.getBest().getTime()) + 1;
+        return 5;
     }
 
     public boolean isPaidDriving(final  Map<RegularUser, Integer> receiversReviewed, final double price){

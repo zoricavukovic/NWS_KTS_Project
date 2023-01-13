@@ -9,7 +9,7 @@ import {ReviewService} from "../../services/review-service/review.service";
   styleUrls: ['./rating-dialog.component.css'],
 })
 export class RatingDialogComponent implements OnDestroy {
-  ratingVehicle = 5;
+  ratingVehicle = 0;
   ratingDriver = 0;
   drivingId: number;
   userId: number;
@@ -24,6 +24,14 @@ export class RatingDialogComponent implements OnDestroy {
   ) {
     this.drivingId = data.drivingId;
     this.userId = data.userId;
+  }
+
+  onRatingDriverSet(value: number): void {
+    this.ratingDriver = value;
+  }
+
+  onRatingVehicleSet(value: number): void {
+    this.ratingVehicle = value;
   }
 
   confirm(): void {

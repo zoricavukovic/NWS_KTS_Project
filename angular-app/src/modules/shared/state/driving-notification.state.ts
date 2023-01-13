@@ -3,7 +3,8 @@ import {tap} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import {DrivingNotification} from "../models/notification/driving-notification";
 import {DrivingNotificationService} from "../services/driving-notification-service/driving-notification.service";
-import {AddDrivingNotification} from "../actions/driving-notification.action";
+import {AddDrivingNotification, UpdateDrivingNotification, UpdateMinutesStatusDrivingNotification, UpdateStatusDrivingNotification} from "../actions/driving-notification.action";
+import { SimpleDrivingInfo } from '../models/driving/simple-driving-info';
 
 export class DrivingNotificationStateModel {
     currentDrivingNotification: DrivingNotification
@@ -26,37 +27,73 @@ export class DrivingNotificationState {
         return state.currentDrivingNotification;
     }
 
+
     // @Action(AddDrivingNotification)
-    // addDrivingNotification({patchState}: StateContext<DrivingNotificationStateModel>, {payload}: AddDrivingNotification){
-    //     patchState({
-    //         currentDrivingNotification: null
-    //     })
-    // }
-
-
-    @Action(AddDrivingNotification)
-    addDrivingNotification({getState, setState}: StateContext<DrivingNotificationStateModel>, {payload}: AddDrivingNotification) {
-        return this.drivingNotificationService.create(payload).pipe(tap((result) => {
-            const state = getState();
-            setState({
-                currentDrivingNotification: result
-            });
-        }));
-    }
-
-    // @Action(UpdateTodo)
-    // updateTodo({getState, setState}: StateContext<TodoStateModel>, {payload, id}: UpdateTodo) {
-    //     return this.todoService.updateTodo(payload, id).pipe(tap((result) => {
-    //         const state = getState();
-    //         const todoList = [...state.todos];
-    //         const todoIndex = todoList.findIndex(item => item.id === id);
-    //         todoList[todoIndex] = result;
+    // addDrivingNotification({setState}: StateContext<DrivingNotificationStateModel>, {payload}: AddDrivingNotification) {
+    //     console.log(payload);
+    //     return this.drivingNotificationService.create(payload).pipe(tap((result) => {
+        
     //         setState({
-    //             ...state,
-    //             todos: todoList,
+    //             currentDrivingNotification: result
     //         });
     //     }));
     // }
 
+    @Action(AddDrivingNotification)
+    addDrivingNotification({getState, setState}: StateContext<DrivingNotificationStateModel>, {payload}: AddDrivingNotification) {
+        console.log("fdfafs");
+        const state = getState();
+        setState({
+            ...state,
+            currentDrivingNotification: payload
+        });
+        // const state = getState();
+        console.log(state);
+    }
+
+
+    @Action(UpdateMinutesStatusDrivingNotification)
+    updateMinutesDrivingNotification({getState, setState}: StateContext<DrivingNotificationStateModel>, {payload}: UpdateMinutesStatusDrivingNotification) {
+        console.log(payload);
+        const state = getState();
+        console.log("blafd");
+        console.log(state);
+        state.currentDrivingNotification.minutes = payload.minutes;
+        state.currentDrivingNotification.drivingStatus = payload.drivingStatus;
+        setState({
+            ...state,
+            currentDrivingNotification: state.currentDrivingNotification
+        });
+    }
+
+    @Action(UpdateStatusDrivingNotification)
+    updateStatusDrivingNotification({getState, setState}: StateContext<DrivingNotificationStateModel>, {payload}: UpdateStatusDrivingNotification) {
+        console.log(payload);
+        const state = getState();
+        console.log("blafd");
+        console.log(state);
+        state.currentDrivingNotification.active = payload.active;
+        state.currentDrivingNotification.drivingStatus = payload.drivingStatus;
+        setState({
+            ...state,
+            currentDrivingNotification: state.currentDrivingNotification
+        });
+    }
+
+    @Action(UpdateDrivingNotification)
+    updateDrivingNotification({getState, setState}: StateContext<DrivingNotificationStateModel>, {payload}: UpdateDrivingNotification) {
+        console.log(payload);
+        const state = getState();
+        state.currentDrivingNotification.drivingId = payload.drivingId;
+        state.currentDrivingNotification.minutes = payload.minutes;
+        state.currentDrivingNotification.drivingStatus = payload.drivingStatus;
+        state.currentDrivingNotification.price = payload.cost;
+        state.currentDrivingNotification.active = payload.active;
+        setState({
+            ...state,
+            currentDrivingNotification: state.currentDrivingNotification
+        });
+    }
 }
+
 

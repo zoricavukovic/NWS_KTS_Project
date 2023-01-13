@@ -1,6 +1,6 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Location} from "../../../shared/models/route/location";
-import {Subscription} from "rxjs";
+import {Observable, Subscription} from "rxjs";
 import {ToastrService} from "ngx-toastr";
 import {Address} from "ngx-google-places-autocomplete/objects/address";
 import {Options} from "ngx-google-places-autocomplete/objects/options/options";
@@ -27,6 +27,10 @@ import {
   removeAllPolyline, removeLine,
   removeMarker
 } from "../../../shared/utils/map-functions";
+import { DrivingNotificationState } from 'src/modules/shared/state/driving-notification.state';
+import { Select, Store } from '@ngxs/store';
+import { DrivingNotification } from 'src/modules/shared/models/notification/driving-notification';
+import { UpdateDrivingNotification, UpdateStatusDrivingNotification } from 'src/modules/shared/actions/driving-notification.action';
 
 @Component({
   selector: 'app-home-passanger',
@@ -36,6 +40,8 @@ import {
 export class HomePassangerComponent implements OnInit, OnDestroy {
   @Input() map: google.maps.Map;
   @Input() currentUser: User;
+  @Select(DrivingNotificationState.getDrivingNotification) currentDrivingNotification: Observable<DrivingNotification>;
+  storedDrivingNotification: DrivingNotification;
 
   routeChoiceView: boolean;
   filterVehicleView: boolean;
@@ -95,8 +101,9 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
     private drivingService: DrivingService,
     private toast: ToastrService,
     private router: Router,
-    private formBuilder: FormBuilder
-  ) {
+    private formBuilder: FormBuilder,
+    private store: Store
+  ){
     this.routeChoiceView = true;
     this.filterVehicleView = false;
     this.rideIsRequested = false;
@@ -115,13 +122,22 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.initializeWebSocketConnection();
+    this.currentDrivingNotification.subscribe(response => {
+      this.storedDrivingNotification = response;
+      console.log(response);
+    })
     this.drivingSubscription = this.drivingService.checkIfUserHasActiveDriving(this.currentUser.id).subscribe(
       res => {
         this.activeRide = res;
-  
+        console.log(res);
+        if(res){
+        this.store.dispatch(new UpdateDrivingNotification(res)).subscribe(response => {
+          this.storedDrivingNotification = response;
+        })
+        }
       }
     )
+    this.initializeWebSocketConnection();
   }
 
   getPossibleRoutes() {
@@ -151,6 +167,9 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
             );
           }
         });
+    }
+    else{
+      this.toast.error('Please, enter locations.', 'Invalid form');
     }
   }
 
@@ -414,24 +433,45 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
 
 
   public addressChange(address: Address, index: number) {
+    // console.log(index);
+    // console.log(this.rideRequestForm.get('searchingRoutesForm').value);
     this.deleteMarker(index);
     this.drawPolylineList = removeAllPolyline(this.drawPolylineList);
+    if(address.formatted_address){
 
-    (this.searchingForm).at(index).inputPlace = address.formatted_address;
-    const lng: number = address.geometry.location.lng();
-    const lat: number = address.geometry.location.lat();
+      (this.searchingForm).at(index).inputPlace = address.formatted_address;
+      const lng: number = address.geometry.location.lng();
+      const lat: number = address.geometry.location.lat();
 
-    this.rideRequestForm.get('searchingRoutesForm').value.at(index).marker = addMarker(this.map, {
-      lat: lat,
-      lng: lng,
-    });
-    this.rideRequestForm.get('searchingRoutesForm').value.at(index).marker.setIcon(this.getIconUrl(index));
-    this.createLocation(address, index);
+      console.log(this.searchingForm);
+      let marker: google.maps.Marker = addMarker(this.map, {
+        lat: lat,
+        lng: lng,
+      });
+      marker.setIcon(this.getIconUrl(index));
+      // (this.searchingForm).at(index).value["marker"].setValue();
+      // this.rideRequestForm.get('searchingRoutesForm').value.at(index).marker = addMarker(this.map, {
+      //   lat: lat,
+      //   lng: lng,
+      // });
+      // (this.searchingForm).at(index).value.marker.setIcon(this.getIconUrl(index));
+      console.log(this.rideRequestForm.get('searchingRoutesForm').value);
+      const location = this.createLocation(address, index);
+      this.searchingForm.at(index).setValue({
+        inputPlace: address.formatted_address,
+        "marker": marker,
+        location: location
+      });
+    }
+    else{
+      this.toast.error('Please, choose suggested locations.', 'Invalid form');
+      this.rideRequestForm.get('searchingRoutesForm').value.at(index).location = null;
+    }
   }
 
 
 
-  private createLocation(address: Address, index: number): void {
+  private createLocation(address: Address, index: number): Location {
     let houseNumber = '';
     let city = '';
     let street = '';
@@ -456,7 +496,7 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
     }
     const lng: number = address.geometry.location.lng();
     const lat: number = address.geometry.location.lat();
-    this.rideRequestForm.get('searchingRoutesForm').value.at(index).location = {
+    const location: Location = {
       city: city,
       lon: lng,
       lat: lat,
@@ -464,6 +504,9 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
       number: houseNumber,
       zipCode: zipCode,
     };
+    this.rideRequestForm.get('searchingRoutesForm').value.at(index).location = location;
+
+    return location;
   }
 
   canAddMoreLocation() {
@@ -546,7 +589,9 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
 
   private deleteMarker(index: number) {
     if (this.searchingForm.at(index).value.marker){
+
       removeMarker(this.searchingForm.at(index).value.marker);
+      // this.searchingForm.at(index).value.marker = null;
       this.drawPolylineList = removeAllPolyline(this.drawPolylineList);
     }
   }
@@ -565,14 +610,25 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
       const drivingNotificationDetails: SimpleDrivingInfo =  JSON.parse(message.body);
       this.activeRide = null;
       this.toast.info('Driving is finished.Tap to see details!')
-        .onTap.subscribe(action => this.router.navigate(['/serb-uber/user/map-page-view', drivingNotificationDetails.drivingId]));
+        .onTap.subscribe(action => {
+          this.router.navigate(['/serb-uber/user/map-page-view', drivingNotificationDetails.drivingId]);
+          this.store.dispatch(new UpdateStatusDrivingNotification({active: false, drivingStatus: "FINISHED"})).subscribe(response => {
+            this.storedDrivingNotification = response;
+          })
+        });
+
     });
 
     this.stompClient.subscribe(environment.publisherUrl + localStorage.getItem('email') + '/start-driving', (message: { body: string }) => {
       this.activeRide =  JSON.parse(message.body) as SimpleDrivingInfo;
       this.router.navigate(['/serb-uber/user/map-page-view', this.activeRide.drivingId]);
       this.toast.info('Ride started.Tap to follow ride!')
-        .onTap.subscribe(action => this.router.navigate(['/serb-uber/user/map-page-view', this.activeRide.drivingId]));
+        .onTap.subscribe(action => {
+          this.router.navigate(['/serb-uber/user/map-page-view', this.activeRide.drivingId])
+          this.store.dispatch(new UpdateStatusDrivingNotification({active: true, drivingStatus: "ACCEPTED"})).subscribe(response => {
+            this.storedDrivingNotification = response;
+          })
+        });
     });
 
   }

@@ -1,6 +1,7 @@
 package com.example.serbUber.dto;
 
 import com.example.serbUber.model.Driving;
+import com.example.serbUber.model.DrivingStatus;
 import com.example.serbUber.model.Location;
 
 import java.time.temporal.ChronoUnit;
@@ -13,7 +14,10 @@ public class SimpleDrivingInfoDTO {
     private boolean active;
     private double cost;
 
+    private String drivingStatus;
+
     public SimpleDrivingInfoDTO(Driving driving) {
+        this.drivingStatus = driving.getDrivingStatus().toString();
         this.drivingId = driving.getId();
         this.active = driving.isActive();
         if (driving.isActive()){
@@ -72,5 +76,13 @@ public class SimpleDrivingInfoDTO {
 
     public void setCost(double cost) {
         this.cost = cost;
+    }
+
+    public String getDrivingStatus() {
+        return drivingStatus;
+    }
+
+    public void setDrivingStatus(String drivingStatus) {
+        this.drivingStatus = drivingStatus;
     }
 }

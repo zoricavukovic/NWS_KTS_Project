@@ -6,7 +6,7 @@ import { Observable, Subscription } from 'rxjs';
 import {Vehicle} from "../../../shared/models/vehicle/vehicle";
 import {DrivingNotificationState} from "../../../shared/state/driving-notification.state";
 import {User} from "../../../shared/models/user/user";
-import {AddDrivingNotification} from "../../../shared/actions/driving-notification.action";
+import {AddDrivingNotification, UpdateStatusDrivingNotification} from "../../../shared/actions/driving-notification.action";
 import {UserService} from "../../../shared/services/user-service/user.service";
 import {RegularUserService} from "../../../shared/services/regular-user-service/regular-user.service";
 import {AuthService} from "../../../auth/services/auth-service/auth.service";
@@ -159,12 +159,26 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
       petFriendly: this.rideRequestForm.get('petFriendly').value,
       babySeat: this.rideRequestForm.get('babySeat').value,
       vehicleType: this.rideRequestForm.get('vehicleType').value,
+      minutes: -1,
+      drivingStatus: "PAYING",
+      active: false
     };
-    this.drivingNotificationSubscription = this.store
-    .dispatch(new AddDrivingNotification(drivingNotification))
-    .subscribe((response) => {
+    console.log(drivingNotification);
+    this.store.dispatch(new AddDrivingNotification(drivingNotification)).subscribe((response) => {
       console.log(response);
-    });
+      this.drivingNotificationSubscription = this.drivingNotificationService.create(drivingNotification).subscribe((result) => {
+        this.store.dispatch(new UpdateStatusDrivingNotification({active: false, drivingStatus: "ACCEPTED"})).subscribe(response => {
+          console.log(response);
+        })
+      });
+    })
+    
+    // this.drivingNotificationSubscription = this.store
+    // .dispatch(new AddDrivingNotification(drivingNotification))
+    // .subscribe((response) => {
+    //   console.log(response);
+    //   console.log("lfddsf");
+    // });
   }
 
   private findPassengerObj(email: string): void {

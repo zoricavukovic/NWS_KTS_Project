@@ -1,7 +1,6 @@
 package com.example.serbUber.dto;
 
 import com.example.serbUber.model.DrivingStatus;
-import com.example.serbUber.model.DrivingStatusNotification;
 
 public class DrivingStatusNotificationDTO {
 
@@ -9,14 +8,17 @@ public class DrivingStatusNotificationDTO {
     private double minutes;
     private DrivingStatus drivingStatus;
     private String reason;
-    private Long id;
+    private Long drivingId;
 
-    public DrivingStatusNotificationDTO(Long driverId, double minutes, DrivingStatus drivingStatus, String reason, Long id) {
+    private Long notificationId;
+
+    public DrivingStatusNotificationDTO(Long driverId, double minutes, DrivingStatus drivingStatus, String reason, Long drivingId, Long notificationId) {
         this.driverId = driverId;
         this.minutes = minutes;
         this.drivingStatus = drivingStatus;
         this.reason = reason;
-        this.id = id;
+        this.drivingId = drivingId;
+        this.notificationId = notificationId;
     }
 
     public Long getDriverId() {
@@ -51,11 +53,23 @@ public class DrivingStatusNotificationDTO {
         this.reason = reason;
     }
 
-    public Long getId() {
-        return id;
+    public Long getDrivingId() {
+        return drivingId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setDrivingId(Long drivingId) {
+        this.drivingId = drivingId;
+    }
+
+    public void setMinutes(double minutes) {
+        this.minutes = minutes;
+    }
+
+    public Long getNotificationId() {
+        return notificationId;
+    }
+
+    public void setNotificationId(Long notificationId) {
+        this.notificationId = notificationId;
     }
 }

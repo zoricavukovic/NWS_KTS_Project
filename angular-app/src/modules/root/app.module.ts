@@ -11,6 +11,11 @@ import {SharedModule} from "../shared/shared.module";
 import {MaterialModule} from "../material/material.module";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {RootLayoutComponent} from "./pages/root-layout/root-layout.component";
+import { NgxsModule } from "@ngxs/store";
+import { NgxsReduxDevtoolsPluginModule } from "@ngxs/devtools-plugin";
+import { NgxsLoggerPluginModule } from "@ngxs/logger-plugin";
+import { DrivingNotificationState } from "../shared/state/driving-notification.state";
+import { NgxsStoragePluginModule } from "@ngxs/storage-plugin";
 
 @NgModule({
   declarations: [
@@ -28,7 +33,13 @@ import {RootLayoutComponent} from "./pages/root-layout/root-layout.component";
     SharedModule,
     AuthModule,
     AppRoutingModule,
-    MaterialModule
+    MaterialModule,
+    NgxsModule.forRoot([
+      DrivingNotificationState
+    ]),
+    NgxsReduxDevtoolsPluginModule.forRoot(),
+    NgxsLoggerPluginModule.forRoot(),
+    NgxsStoragePluginModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent],

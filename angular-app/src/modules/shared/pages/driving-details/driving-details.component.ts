@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import {User} from "../../models/user/user";
 import {UserService} from "../../services/user-service/user.service";
 import {Driving} from "../../models/driving/driving";
@@ -18,6 +18,9 @@ import {
   drawPolylineWithLngLatArray,
   markCurrentPosition, removeAllMarkersFromList, removeLine
 } from "../../utils/map-functions";
+import { DrivingNotificationState } from '../../state/driving-notification.state';
+import { DrivingNotification } from '../../models/notification/driving-notification';
+import { Select } from '@ngxs/store';
 
 @Component({
   selector: 'app-driving-details',
@@ -28,6 +31,8 @@ import {
   ],
 })
 export class DrivingDetailsComponent implements OnInit, OnDestroy {
+  @Select(DrivingNotificationState.getDrivingNotification) currentDrivingNotification: Observable<DrivingNotification>;
+  storedDrivingNotification: DrivingNotification;
   @Input() map: google.maps.Map;
   id: number;
   driving: Driving;
@@ -66,6 +71,9 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.currentDrivingNotification.subscribe(response => {
+      this.storedDrivingNotification = response;
+    })
     this.router.events.subscribe((event) => {
       this.ngOnDestroy();
     });

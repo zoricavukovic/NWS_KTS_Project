@@ -27,3 +27,10 @@ h1 {
   display: flex;
   margin-left: auto;
 }
+
+.paginator {
+  bottom: 5rem;
+  position: absolute;
+  width: 100%;
+  color: var(--white);
+}

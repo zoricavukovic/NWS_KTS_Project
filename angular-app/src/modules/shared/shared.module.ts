@@ -11,7 +11,7 @@ import {NgxsModule} from "@ngxs/store";
 import {NgxsReduxDevtoolsPluginModule} from "@ngxs/devtools-plugin";
 import {NgxsLoggerPluginModule} from "@ngxs/logger-plugin";
 import {KnobModule} from "primeng/knob";
-import {DrivingNotificationState} from "./state/driving-notification.state";
+import {DrivingNotificationState, DrivingNotificationStateModel} from "./state/driving-notification.state";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {ChangeProfilePicComponent} from "./components/change-profile-pic/change-profile-pic.component";
 import {BasicUserDataComponent} from "./components/basic-user-data/basic-user-data.component";
@@ -45,7 +45,10 @@ import { NgxStarsModule } from 'ngx-stars';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { GooglePlaceModule } from 'ngx-google-places-autocomplete';
 import {CarouselModule} from "primeng/carousel";
+import { PaginationComponent } from './components/pagination/pagination.component';
 import {DateFormatPipe} from "./pipes/date-format.pipe";
+import {AvatarModule} from "primeng/avatar";
+import {AvatarGroupModule} from "primeng/avatargroup";
 
 @NgModule({
   declarations: [
@@ -68,8 +71,8 @@ import {DateFormatPipe} from "./pipes/date-format.pipe";
     DriverVehicleComponent,
     VehicleDetailsComponent,
     ShowDrivingsComponent,
+    PaginationComponent,
     DateFormatPipe
-    // PaginationComponent,
   ],
   imports: [
     CommonModule,
@@ -82,17 +85,20 @@ import {DateFormatPipe} from "./pipes/date-format.pipe";
       preventDuplicates: true,
       closeButton: true,
     }),
-    NgxsModule.forRoot([
-      DrivingNotificationState
-    ]),
-    NgxsReduxDevtoolsPluginModule.forRoot(),
-    NgxsLoggerPluginModule.forRoot(),
+    // NgxsModule.forRoot([
+    //   DrivingNotificationState
+    // ]),
+    // NgxsReduxDevtoolsPluginModule.forRoot(),
+    // NgxsLoggerPluginModule.forRoot(),
+    // NgxsModule.forFeature([DrivingNotificationState]),
     KnobModule,
     NgxStarsModule,
     GoogleMapsModule,
     GooglePlaceModule,
     CarouselModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    AvatarModule,
+    AvatarGroupModule
   ],
   exports: [
     PaymentStatisticsComponent,
@@ -106,10 +112,11 @@ import {DateFormatPipe} from "./pipes/date-format.pipe";
     ReviewsHistoryComponent,
     BasicUserDataComponent,
     UserAverageRateComponent,
+    PaginationComponent, 
     DateFormatPipe
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: CustomInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: CustomInterceptor, multi: true }
   ],
 })
 export class SharedModule {}

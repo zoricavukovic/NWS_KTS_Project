@@ -16,6 +16,14 @@ body{
     background-size: cover;
     background-position: center;
     border-radius: 50%;
+    font-size: 1.4rem;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+
+    div {
+        margin-top: 1.1rem;
+    }
 }
 
 .contact {
@@ -105,8 +113,4 @@ body{
         width: 18rem;
         border-radius: 2rem;
     }
-}
-
-.default-message {
-    background-image: url(../../../../assets/images/message.png);
 }

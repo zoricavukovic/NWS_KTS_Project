@@ -1,10 +1,14 @@
 <div>
-  <div *ngFor="let driver of drivers; let i=index" style="margin-left: 19%">
-    <div *ngIf="i%2 === 0" style="display:flex">
+  <div *ngFor="let driver of drivers; let i=index" style="margin-left: 9%; margin-top:2rem;">
+    <div *ngIf="i%3 === 0" style="display:flex">
       <driver-row [driver]="driver" [index]="i" ></driver-row>
       <driver-row style="margin-left: 2rem" *ngIf="i < drivers.length-1" [driver]="drivers.at(i + 1)" [index]="i + 1" ></driver-row>
+      <driver-row style="margin-left: 2rem" *ngIf="i < drivers.length-2" [driver]="drivers.at(i + 2)" [index]="i + 2" ></driver-row>
     </div>
   </div>
+  <app-pagination class="paginator" [totalPages]="totalPages" [currentPage]="currentPage"
+			(onPageSelected)="changePage($event)">
+		</app-pagination>
 </div>
 
 

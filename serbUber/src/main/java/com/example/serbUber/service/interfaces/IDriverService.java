@@ -1,6 +1,7 @@
 package com.example.serbUber.service.interfaces;
 
 import com.example.serbUber.dto.user.DriverDTO;
+import com.example.serbUber.dto.user.DriverPageDTO;
 import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.*;
 import com.example.serbUber.model.VehicleType;
@@ -34,4 +35,5 @@ public interface IDriverService {
     boolean blockDriver(final Long id, final String reason)
             throws EntityNotFoundException, EntityUpdateException;
     boolean getIsBlocked(Long id);
+    List<DriverPageDTO> getDriversWithPagination(int pageNumber, int pageSize);
 }

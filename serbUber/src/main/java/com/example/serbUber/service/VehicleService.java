@@ -110,7 +110,7 @@ public class VehicleService implements IVehicleService {
         return fromVehiclesToVehicleCurrentLocationDTO(withDriverIds, listOfVehiclesRoutes);
     }
 
-    private long getDriverIdByVehicleId(final Long vehicleId) throws EntityNotFoundException {
+    private Long getDriverIdByVehicleId(final Long vehicleId) throws EntityNotFoundException {
 
         return vehicleRepository.getDriverIdByVehicleId(vehicleId)
             .orElseThrow(() -> new EntityNotFoundException(vehicleId, EntityType.VEHICLE));

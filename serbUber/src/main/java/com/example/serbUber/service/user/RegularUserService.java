@@ -4,6 +4,7 @@ import com.example.serbUber.dto.RouteDTO;
 import com.example.serbUber.dto.VerifyDTO;
 import com.example.serbUber.dto.user.RegistrationDTO;
 import com.example.serbUber.dto.user.RegularUserDTO;
+import com.example.serbUber.dto.user.RegularUserPageDTO;
 import com.example.serbUber.exception.*;
 import com.example.serbUber.model.Driving;
 import com.example.serbUber.model.Route;
@@ -15,6 +16,9 @@ import com.example.serbUber.service.WebSocketService;
 import com.example.serbUber.service.interfaces.IRegularUserService;
 import com.example.serbUber.service.payment.TokenBankService;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -22,6 +26,7 @@ import java.util.Optional;
 
 import static com.example.serbUber.dto.RouteDTO.fromRoutes;
 import static com.example.serbUber.dto.user.RegularUserDTO.fromRegularUsers;
+import static com.example.serbUber.dto.user.RegularUserPageDTO.fromRegularUsersPage;
 import static com.example.serbUber.exception.ErrorMessagesConstants.UNBLOCK_UNBLOCKED_USER_MESSAGE;
 import static com.example.serbUber.util.Constants.ROLE_REGULAR_USER;
 import static com.example.serbUber.util.Constants.getProfilePicture;
@@ -186,6 +191,15 @@ public class RegularUserService implements IRegularUserService {
         }
 
         return false;
+    }
+
+    public Page<RegularUser> getRegularUserPage(Pageable page){
+        return regularUserRepository.findAll(page);
+    }
+    public List<RegularUserPageDTO> getRegularUsersWithPagination(int pageNumber, int pageSize) {
+        Pageable page = PageRequest.of(pageNumber, pageSize);
+        Page<RegularUser> results = getRegularUserPage(page);
+        return fromRegularUsersPage(results.getContent(), results.getSize(), results.getTotalPages());
     }
 
 }

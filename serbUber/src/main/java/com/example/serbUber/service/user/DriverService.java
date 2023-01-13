@@ -4,6 +4,7 @@ import com.example.serbUber.dto.DriverActivityResetNotificationDTO;
 import com.example.serbUber.dto.DrivingNotificationDTO;
 import com.example.serbUber.dto.DrivingStatusNotificationDTO;
 import com.example.serbUber.dto.user.DriverDTO;
+import com.example.serbUber.dto.user.DriverPageDTO;
 import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.*;
 import com.example.serbUber.model.*;
@@ -14,17 +15,21 @@ import com.example.serbUber.service.interfaces.IDriverService;
 import com.example.serbUber.util.Constants;
 import com.graphhopper.GHRequest;
 import com.graphhopper.GHResponse;
+import com.graphhopper.util.Parameters;
+import com.graphhopper.util.shapes.GHPoint;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static com.example.serbUber.SerbUberApplication.hopper;
 import static com.example.serbUber.dto.user.DriverDTO.fromDrivers;
+import static com.example.serbUber.dto.user.DriverPageDTO.fromDriversPage;
 import static com.example.serbUber.exception.ErrorMessagesConstants.ACTIVE_DRIVING_IN_PROGRESS_MESSAGE;
 import static com.example.serbUber.exception.ErrorMessagesConstants.UNBLOCK_UNBLOCKED_USER_MESSAGE;
 import static com.example.serbUber.util.Constants.*;
@@ -191,10 +196,20 @@ public class DriverService implements IDriverService{
     }
 
     private double getDistance(double lonStart, double latStart, double lonEnd, double latEnd){
-        GHRequest request = new GHRequest(latStart, lonStart, latEnd, lonEnd);
-        request.setProfile("car");
-        GHResponse route = hopper.route(request);
-        return route.getBest().getDistance();
+//        GHRequest request = new GHRequest(latStart, lonStart, latEnd, lonEnd);
+//        request.setProfile("car");
+//        GHResponse route = hopper.route(request);
+//        return route.getBest().getDistance();
+//        GHRequest req = new GHRequest().setProfile("car")
+//                .addPoint(new GHPoint(latStart, lonStart))
+//                .addPoint(new GHPoint(latEnd, lonEnd))
+//                .setHeadings(Arrays.asList(180d, 90d))
+//                .putHint(Parameters.CH.DISABLE, true);
+//
+//        GHResponse res = hopper.route(req);
+//        return res.getBest().getDistance();
+        Random random = new Random();
+        return random.nextDouble(2.0,20.0);
     }
 
 
@@ -212,7 +227,17 @@ public class DriverService implements IDriverService{
     }
 
     private List<Driver> getActiveAndFreeDrivers(LocalDateTime startDate, LocalDateTime endDate, VehicleType vehicleType) {
-        return driverRepository.getActiveAndFreeDrivers(startDate, endDate, vehicleType);
+        return driverRepository.getActiveAndFreeDrivers(startDate,endDate,vehicleType);
+    }
+
+    public List<DriverPageDTO> getDriversWithPagination(int pageNumber, int pageSize) {
+        Pageable page = PageRequest.of(pageNumber, pageSize);
+        Page<Driver> results = getDriverPage(page);
+        return fromDriversPage(results.getContent(), results.getSize(), results.getTotalPages());
+    }
+
+    public Page<Driver> getDriverPage(Pageable page){
+        return driverRepository.findAll(page);
     }
 
     public DriverDTO updateActivityStatus(final Long id, boolean active)

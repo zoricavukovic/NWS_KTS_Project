@@ -14,5 +14,9 @@ export interface DrivingNotification {
   babySeat?: boolean;
   vehicleType?: string;
   reason?: string;
-  id?: number;
+  drivingId?: number;
+  notificationId?: number;
+  minutes?: number;
+  drivingStatus?: string;
+  active?: boolean;
 }

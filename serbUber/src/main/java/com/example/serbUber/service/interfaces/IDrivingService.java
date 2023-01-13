@@ -11,6 +11,7 @@ import com.example.serbUber.model.Driving;
 import com.example.serbUber.model.DrivingStatus;
 import com.example.serbUber.model.Route;
 import com.example.serbUber.model.user.RegularUser;
+import com.example.serbUber.service.DrivingService;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -18,7 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 public interface IDrivingService {
-    DrivingDTO create(
+    DrivingDTO createDTO(
         final int duration,
         final LocalDateTime started,
         final LocalDateTime payingLimit,
@@ -29,6 +30,20 @@ public interface IDrivingService {
         final HashMap<Long, Boolean> usersPaid,
         final double price
     ) throws EntityNotFoundException;
+
+    Driving create(
+            final int duration,
+            final LocalDateTime started,
+            final LocalDateTime payingLimit,
+            final Route route,
+            final DrivingStatus drivingStatus,
+            final Long driverId,
+            final Set<RegularUser> users,
+            final HashMap<Long, Boolean> usersPaid,
+            final double price
+    ) throws EntityNotFoundException;
+
+    public DrivingDTO save(Driving driving);
 
     List<DrivingDTO> getAll();
 

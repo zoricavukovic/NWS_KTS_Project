@@ -2,9 +2,9 @@ package com.example.serbUber.model;
 
 public class VehicleWithDriverId {
     private Vehicle vehicle;
-    private long driverId;
+    private Long driverId;
 
-    public VehicleWithDriverId(Vehicle vehicle, long driverId) {
+    public VehicleWithDriverId(Vehicle vehicle, Long driverId) {
         this.vehicle = vehicle;
         this.driverId = driverId;
     }
@@ -13,7 +13,7 @@ public class VehicleWithDriverId {
         return vehicle;
     }
 
-    public long getDriverId() {
+    public Long getDriverId() {
         return driverId;
     }
 }

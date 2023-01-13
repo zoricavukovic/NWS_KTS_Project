@@ -61,7 +61,8 @@ public class RouteService implements IRouteService {
     }
 
     public Route get(Long id) throws EntityNotFoundException {
-        Optional<Route> route = routeRepository.findById(id);
+        Optional<Route> route = routeRepository.findById(id)
+                ;
         if(route.isPresent()){
             return route.get();
         }
@@ -100,53 +101,54 @@ public class RouteService implements IRouteService {
         List<PossibleRoutesViaPointsDTO> possibleRoutesViaPointsDTOs = new LinkedList<>();
 
         IntStream.range(
-            START_LIST_INDEX, getBeforeLastIndexOfList(locationsForRouteRequest.getLocationsForRouteRequest())
-            )
-            .forEach(index -> {
-                try {
-                    addPossibleRoutesViaPoints(locationsForRouteRequest.getLocationsForRouteRequest(), possibleRoutesViaPointsDTOs, index);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
+                        START_LIST_INDEX, getBeforeLastIndexOfList(locationsForRouteRequest.getLocationsForRouteRequest())
+                )
+                .forEach(index -> {
+                    try {
+                        addPossibleRoutesViaPoints(locationsForRouteRequest.getLocationsForRouteRequest(), possibleRoutesViaPointsDTOs, index);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
 
         return possibleRoutesViaPointsDTOs;
     }
 
     public List<double[]> getRoutePath(final Long id) throws EntityNotFoundException {
         Route route = this.routeRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException(id, EntityType.ROUTE));
+
+                .orElseThrow(() -> new EntityNotFoundException(id, EntityType.ROUTE));
         List<DrivingLocationIndex> locations = route.getLocations().stream().toList();
 
         List<double[]> points = new LinkedList<>();
 
         IntStream.range(START_LIST_INDEX, locations.size()-1)
-            .forEach(index ->
-            {
-                DrivingLocationIndex firstLocation = locations.get(index);
-                DrivingLocationIndex secondLocation = locations.get(index + 1);
-                PossibleRouteDTO path = null;
-                try {
-                    path = getPossibleRoutesDTO(
-                        firstLocation.getLocation().getLat(),
-                        firstLocation.getLocation().getLon(),
-                        secondLocation.getLocation().getLat(),
-                        secondLocation.getLocation().getLon()
-                    ).get(firstLocation.getRouteIndex());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                points.addAll(path.getPointList());
-            });
+                .forEach(index ->
+                {
+                    DrivingLocationIndex firstLocation = locations.get(index);
+                    DrivingLocationIndex secondLocation = locations.get(index + 1);
+                    PossibleRouteDTO path = null;
+                    try {
+                        path = getPossibleRoutesDTO(
+                                firstLocation.getLocation().getLat(),
+                                firstLocation.getLocation().getLon(),
+                                secondLocation.getLocation().getLat(),
+                                secondLocation.getLocation().getLon()
+                        ).get(firstLocation.getRouteIndex());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    points.addAll(path.getPointList());
+                });
 
         return points;
     }
 
     public Route createRoute(
-        final List<DrivingLocationIndexRequest> locations,
-        final double time,
-        final double distance,
-        final List<Integer> routePathIndex
+            final List<DrivingLocationIndexRequest> locations,
+            final double time,
+            final double distance,
+            final List<Integer> routePathIndex
     ){
         SortedSet<DrivingLocationIndex> drivingLocations = new TreeSet<>();
         locations.forEach(locationIndex -> {
@@ -161,10 +163,10 @@ public class RouteService implements IRouteService {
                 );
             }
             DrivingLocationIndex drivingLocationIndex = drivingLocationIndexService.create(
-                location,
-                locationIndex.getIndex(),
-                isDestination(locations.indexOf(locationIndex), locations.size()) ?
-                    -1 : routePathIndex.get(locations.indexOf(locationIndex))
+                    location,
+                    locationIndex.getIndex(),
+                    isDestination(locations.indexOf(locationIndex), locations.size()) ?
+                            -1 : routePathIndex.get(locations.indexOf(locationIndex))
             );
             drivingLocations.add(drivingLocationIndex);
         });
@@ -176,24 +178,24 @@ public class RouteService implements IRouteService {
         return indexOfLocation == numOfLocations - 1;
     }
     private void addPossibleRoutesViaPoints(
-        List<LongLatRequest> longLatRequestList,
-        List<PossibleRoutesViaPointsDTO> possibleRoutesViaPointsDTOs,
-        int index
+            List<LongLatRequest> longLatRequestList,
+            List<PossibleRoutesViaPointsDTO> possibleRoutesViaPointsDTOs,
+            int index
     ) throws IOException {
 
         possibleRoutesViaPointsDTOs.add(
-            new PossibleRoutesViaPointsDTO(
-                getPossibleRoutesDTO(longLatRequestList.get(index).getLat(), longLatRequestList.get(index).getLon(),
-                longLatRequestList.get(index + 1).getLat(), longLatRequestList.get(index + 1).getLon())
-            )
+                new PossibleRoutesViaPointsDTO(
+                        getPossibleRoutesDTO(longLatRequestList.get(index).getLat(), longLatRequestList.get(index).getLon(),
+                                longLatRequestList.get(index + 1).getLat(), longLatRequestList.get(index + 1).getLon())
+                )
         );
     }
 
     private List<PossibleRouteDTO> getPossibleRoutesDTO(
-        final double firstPointLat,
-        final double firstPointLng,
-        final double secondPointLat,
-        final double secondPointLng
+            final double firstPointLat,
+            final double firstPointLng,
+            final double secondPointLat,
+            final double secondPointLng
     ) throws IOException {
         List<PossibleRouteDTO> possibleRouteDTOs = new LinkedList<>();
 
@@ -287,9 +289,9 @@ public class RouteService implements IRouteService {
         List<double[]> points = new LinkedList<>();
 //        for (int i=0; i< responsePath.getPoints().getLat())
         IntStream.range(START_LIST_INDEX, responsePath.getPoints().size())
-            .forEach(index ->
-                points.add(new double[]{responsePath.getPoints().getLat(index), responsePath.getPoints().getLon(index)})
-            );
+                .forEach(index ->
+                        points.add(new double[]{responsePath.getPoints().getLat(index), responsePath.getPoints().getLon(index)})
+                );
 
         return points;
     }

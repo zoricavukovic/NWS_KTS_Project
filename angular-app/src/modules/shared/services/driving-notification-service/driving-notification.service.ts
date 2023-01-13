@@ -7,6 +7,8 @@ import {ConfigService} from "../config-service/config.service";
 import {GenericService} from "../generic-service/generic.service";
 import {DrivingNotification} from "../../models/notification/driving-notification";
 import {DrivingStatusNotification} from "../../models/notification/driving-status-notification";
+import { Store } from '@ngxs/store';
+import { UpdateMinutesStatusDrivingNotification } from '../../actions/driving-notification.action';
 
 @Injectable({
   providedIn: 'root',
@@ -18,39 +20,34 @@ export class DrivingNotificationService extends GenericService<DrivingNotificati
     private http: HttpClient,
     private configService: ConfigService,
     private toast: ToastrService,
-    private _router: Router
+    private _router: Router,
+    private store: Store
   ) {
     super(http, configService.DRIVING_NOTIFICATIONS_URL);
   }
 
   showNotification(drivingNotificationResponse: DrivingNotification) {
-    this.toast
-      .info(
-        `User ${drivingNotificationResponse.senderEmail} add you as linked passenger.Tap to accept!`
-      )
-      .onTap.subscribe(action => {
-        this._router.navigate(["driving", drivingNotificationResponse.id]);
-      });
+    //NECE MOCI DA IDE NA DETAILS, JER JOS TAD VOZNJA NIJE KREIRANA
+    // this.toast
+    //   .info(
+    //     `User ${drivingNotificationResponse.senderEmail} add you as linked passenger.Tap to accept!`
+    //   )
+    //   .onTap.subscribe(action => {
+    //     this._router.navigate(["driving", drivingNotificationResponse.drivingId]);
+    //   });
   }
 
   showDrivingStatus(drivingStatusNotification: DrivingStatusNotification) {
     if (drivingStatusNotification.drivingStatus === 'ACCEPTED') {
-      this._router.navigate([`/map-view/${drivingStatusNotification.id}`]);
-      // document.getElementById('spinner-overlap-div').style.visibility = 'hidden';
-      document.getElementById('minutes').innerText =
-        drivingStatusNotification.minutes.toString() + "min";
-        setTimeout(() =>
-        {
-          document.getElementById('minutes').innerText =
-          drivingStatusNotification.minutes.toString() + "min";
-        },
-        5000);
-      //document.getElementById('acceptDriving').style.visibility = 'visible';
-      document.getElementById('acceptDriving').style.display = 'inline';
+      let updatedDriving = {
+        minutes: drivingStatusNotification.minutes,
+        drivingStatus: drivingStatusNotification.drivingStatus
+      }
+      this.store.dispatch(new UpdateMinutesStatusDrivingNotification(updatedDriving));
+      this._router.navigate([`/serb-uber/user/map-page-view/${drivingStatusNotification.drivingId}`]);
     } else if (drivingStatusNotification.drivingStatus === 'PENDING') {
-      document.getElementById('minutes').innerText =
-        'Nije pronadjen slobodan vozac';
-      //document.getElementById('acceptDriving').style.visibility = 'visible';
+      document.getElementById('acceptDriving').innerText =
+        'Sorry! Not found free driver. Please, try later.';
       document.getElementById('acceptDriving').style.display = 'inline';
     } else if (drivingStatusNotification.drivingStatus === 'REJECTED') {
       this.toast.info(

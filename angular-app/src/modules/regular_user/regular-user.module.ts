@@ -24,6 +24,10 @@ import {GooglePlaceModule} from "ngx-google-places-autocomplete";
 import {ProgressSpinnerModule} from "primeng/progressspinner";
 import {FilterVehicleViewComponent} from "./components/filter-vehicle-view/filter-vehicle-view.component";
 import {RouteRowComponent} from "./components/route-row/route-row.component";
+import { NgxsModule } from "@ngxs/store";
+import { DrivingNotificationState } from "../shared/state/driving-notification.state";
+import { NgxsReduxDevtoolsPluginModule } from "@ngxs/devtools-plugin";
+import { NgxsLoggerPluginModule } from "@ngxs/logger-plugin";
 
 @NgModule({
   declarations: [
@@ -50,7 +54,8 @@ import {RouteRowComponent} from "./components/route-row/route-row.component";
     ReactiveFormsModule,
     GoogleMapsModule,
     GooglePlaceModule,
-    ProgressSpinnerModule
+    ProgressSpinnerModule,
+    // NgxsModule.forFeature([DrivingNotificationState]),
   ],
   exports: [HomePassangerComponent],
   providers: []

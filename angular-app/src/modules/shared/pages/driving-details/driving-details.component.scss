@@ -14,3 +14,21 @@ h1 {
 .no-rating-block {
   font-size: 1rem;
 }
+
+.spinner {
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  top: 0;
+  left: 3rem;
+}
+
+.spinner-div {
+  position: relative;
+  width: 100px;
+  margin-top:1.8rem;
+  height: 5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
