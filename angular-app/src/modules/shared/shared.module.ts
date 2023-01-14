@@ -36,7 +36,6 @@ import {
 import {DrivingRowComponent} from "./components/driving-row/driving-row.component";
 import {RatingDialogComponent} from "./components/rating-dialog/rating-dialog.component";
 import {ReviewsHistoryComponent} from "./components/reviews-history/reviews-history.component";
-import {UserAverageRateComponent} from "./components/user-average-rate/user-average-rate.component";
 import {UtilMessageComponent} from "./components/util-message/util-message.component";
 import {DriverVehicleComponent} from "./components/vehicle/create-vehicle/driver-vehicle.component";
 import {VehicleDetailsComponent} from "./components/vehicle/vehicle-details/vehicle-details.component";
@@ -49,6 +48,9 @@ import { PaginationComponent } from './components/pagination/pagination.componen
 import {DateFormatPipe} from "./pipes/date-format.pipe";
 import {AvatarModule} from "primeng/avatar";
 import {AvatarGroupModule} from "primeng/avatargroup";
+import { VehicleRateDataComponent } from './components/vehicle/vehicle-rate-data/vehicle-rate-data.component';
+import { ReviewRowComponent } from './components/review-row/review-row.component';
+import { UserProfileInfoComponent } from "./components/user-profile-info/user-profile-info.component";
 
 @NgModule({
   declarations: [
@@ -66,13 +68,15 @@ import {AvatarGroupModule} from "primeng/avatargroup";
     DrivingRowComponent,
     RatingDialogComponent,
     ReviewsHistoryComponent,
-    UserAverageRateComponent,
     UtilMessageComponent,
     DriverVehicleComponent,
     VehicleDetailsComponent,
     ShowDrivingsComponent,
     PaginationComponent,
-    DateFormatPipe
+    DateFormatPipe,
+    VehicleRateDataComponent,
+    ReviewRowComponent,
+    UserProfileInfoComponent
   ],
   imports: [
     CommonModule,
@@ -110,9 +114,9 @@ import {AvatarGroupModule} from "primeng/avatargroup";
     DrivingDetailsComponent,
     ReviewsHistoryComponent,
     BasicUserDataComponent,
-    UserAverageRateComponent,
     PaginationComponent, 
-    DateFormatPipe
+    DateFormatPipe,
+    UserProfileInfoComponent
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: CustomInterceptor, multi: true },

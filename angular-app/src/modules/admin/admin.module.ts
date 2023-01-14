@@ -17,6 +17,7 @@ import {NgxStarsModule} from "ngx-stars";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {CarouselModule} from "primeng/carousel";
 import {SharedModule} from "../shared/shared.module";
+import { ReportRowComponent } from './components/report-row/report-row.component';
 
 @NgModule({
     declarations: [
@@ -29,7 +30,8 @@ import {SharedModule} from "../shared/shared.module";
         MessagesBoxComponent,
         PayingInfoBoxComponent,
         ReportsHistoryComponent,
-        UserRowComponent
+        UserRowComponent,
+        ReportRowComponent
     ],
     exports: [
         ReportsHistoryComponent

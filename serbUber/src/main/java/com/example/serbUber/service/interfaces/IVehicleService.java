@@ -32,4 +32,6 @@ public interface IVehicleService {
     double getLatOfCurrentVehiclePosition(final Vehicle vehicle) throws EntityNotFoundException;
 
     double getLonOfCurrentVehiclePosition(final Vehicle vehicle) throws EntityNotFoundException;
+
+    VehicleDTO getVehicleOfDriver(final Long driverId) throws EntityNotFoundException;
 }

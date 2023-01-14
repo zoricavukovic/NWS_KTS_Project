@@ -101,11 +101,15 @@ export class NavBarComponent implements OnInit, OnDestroy {
   }
 
   redirectToProfilePage() {
-    this.router.navigate(['/serb-uber/user/profile-page']);
+    this.router.navigate([`/serb-uber/user/user-profile/${this.loggedUser.id}`]);
   }
 
   redirectToMessagesPage() {
     this.router.navigate(['/serb-uber/admin/messages']);
+  }
+
+  redirectToRessetPassword() {
+    this.router.navigate([`/serb-uber/user/reset-password/${this.loggedUser.email}`]);
   }
 
   logOut() {

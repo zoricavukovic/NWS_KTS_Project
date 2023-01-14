@@ -24,6 +24,7 @@ import {GooglePlaceModule} from "ngx-google-places-autocomplete";
 import {ProgressSpinnerModule} from "primeng/progressspinner";
 import {FilterVehicleViewComponent} from "./components/filter-vehicle-view/filter-vehicle-view.component";
 import {RouteRowComponent} from "./components/route-row/route-row.component";
+import { FavoriteRoutesDataComponent } from "./components/favorite-routes-data/favorite-routes-data.component";
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import {RouteRowComponent} from "./components/route-row/route-row.component";
     ProcessingPaymentComponent,
     TransactionsHistoryComponent,
     FilterVehicleViewComponent,
-    RouteRowComponent
+    RouteRowComponent,
+    FavoriteRoutesDataComponent
   ],
   imports: [
     CommonModule,
@@ -52,7 +54,7 @@ import {RouteRowComponent} from "./components/route-row/route-row.component";
     GooglePlaceModule,
     ProgressSpinnerModule
   ],
-  exports: [HomePassangerComponent],
+  exports: [HomePassangerComponent, FavoriteRoutesDataComponent],
   providers: []
 })
 export class RegularUserModule { }

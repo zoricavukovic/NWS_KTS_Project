@@ -36,6 +36,12 @@ export class DriverService extends GenericService<Driver> {
     );
   }
 
+  getDriverRate(id: number): Observable<number> {
+    return this.http.get<number>(
+      this.configService.driverRatingByIdUrl(id)
+    );
+  }
+
   showActivityStatusResetNotification(
     notification: DriverActivityStatusRequest
   ): void {

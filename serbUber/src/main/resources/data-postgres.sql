@@ -157,3 +157,6 @@ insert into token_transactions(time_stamp, num_of_bought_tokens, total_price, to
 
 insert into regular_users (id, email, password, name, surname, phone_number, city, profile_picture, role_id, blocked, verified, online) values
     (nextval('users_id_gen'), 'anastasija@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Anastasija', 'Sam', '0651234567', 'Novi Sad', 'default-user.png',2, false, true, false);
+
+insert into favourite_routes (user_id, route_id) values
+    (2,1);

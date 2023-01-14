@@ -1,0 +1,25 @@
+<div [class]="!isRegular ? 'form-container' : 'form-container regular-form'">
+    <div class="row">
+        <div [class]="!isRegular ? 'picture-column picture-admin-flex center-content' : 'picture-column center-content'">
+            <div class="center image-wrap">
+                <img class="profile-img" (click)="showChangePhotoDialog()" [src]="getBase64Prefix() + user.profilePicture" alt="User's photo">
+            </div>
+            <p class="role-badge center"><b>{{getRole()}}</b></p>
+        </div>
+        <div [class]="!isRegular ? 'data-column data-admin-flex' : 'data-column'">
+            <app-user-profile-info [user]="user" [profilePage]="true"></app-user-profile-info>
+            <div>
+                <button 
+                class="edit-btn"
+                mat-raised-button 
+                (click)="showEditProfile()">
+                Edit <mat-icon class="edit-icon">edit</mat-icon>
+                </button>
+            </div>
+        </div>
+        <div *ngIf="isRegular" class="routes-column">
+            <h3>Favourite routes</h3>
+            <app-favorite-routes-data [userId]="user.id"></app-favorite-routes-data>
+        </div>
+    </div>
+</div>

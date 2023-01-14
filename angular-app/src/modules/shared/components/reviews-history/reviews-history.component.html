@@ -1,57 +1,17 @@
 <div class="reviews-content">
     <p-carousel *ngIf="reviews?.length > 0; else noReviewsBlock" [value]="reviews" [numVisible]="2" [numScroll]="2" >
-        <ng-template let-review pTemplate="item">
-            <div class="review-item-content">
-                <div>
-                    <div class="row">
-                        <div class="column" style="position: relative;">
-                            <img [src]="getBase64Prefix() + review.sender.profilePicture" (click)="goToUserProfile(review.sender.id)">
-                            <span [class]="!review.sender.online ? 'status bottom-right-comments status-offline' : 'status bottom-right-comments status-active'"></span>
-                        </div>
-                        <div [class]="reviews.length > 1 ? 'column name-column' : 'column one-card'">
-                            <h3 class="">{{review.sender.name + " " + review.sender.surname}}</h3>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="column">
-                            <span class="review-id">
-                                {{"Driving #" + review.driving.id}}
-                            </span>
-                        </div>
-                        <div [class]="reviews.length > 1 ? 'column' : 'column one-card-impression'">
-                            <span class="general-impression">
-                                <b>{{getGeneralImpression(review)}}</b>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="stars">
-                        <span>
-                            <mat-icon>person</mat-icon>
-                            <ngx-stars *ngIf="review && review.driverRate > 0; else noDriverReview" [readonly]="true" customSize="1rem" [initialStars]="review.driverRate" color="var(--stars-gold)"></ngx-stars>
-                            <ng-template #noDriverReview class="not-rated">
-                                <div class="not-rated">Not yet rated</div>
-                            </ng-template>
-                        </span>
-                    </div>
-                    <div class="stars">
-                        <span>
-                            <mat-icon>directions_car</mat-icon>
-                            <ngx-stars *ngIf="review.vehicleRate && review.vehicleRate > 0; else noVehicleReview" [readonly]="true" customSize="1rem" [initialStars]="review.vehicleRate" color="var(--stars-gold)"></ngx-stars>
-                            <ng-template #noVehicleReview>
-                                <div class="not-rated">Not yet rated</div>
-                            </ng-template>
-                        </span>
-                    </div>
-                    <div>
-                        {{review.message}}
-                    </div>
-                </div>
+        <ng-template let-review (onPage)="setIndex($event)" pTemplate="item">
+            <div style="margin-top: 3rem;">
+                <app-review-row [review]="review" [numOfReviews]="reviews.length"></app-review-row>
             </div>
         </ng-template>
     </p-carousel>
     <ng-template #noReviewsBlock>
-        <div id="no-reports">
-            There are no reviews for this user.
+        <div id="no-reports" class="center-content">
+            <div>
+                <mat-icon>error_outline</mat-icon>
+            </div>
+            <p>There are no reviews for this user.</p>
         </div>
     </ng-template>
 </div>

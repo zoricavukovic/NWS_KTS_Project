@@ -12,4 +12,5 @@ export interface RegularUser {
   confirmPassword?: string;
   pageNumber?: number;
   pageSize?: number;
+  online?: boolean;
 }

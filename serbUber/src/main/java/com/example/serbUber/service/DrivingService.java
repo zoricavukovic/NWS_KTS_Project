@@ -226,6 +226,12 @@ public class DrivingService implements IDrivingService {
         return vehicleCurrentLocationDTO;
     }
 
+    public Long getDrivingByFavouriteRoute(final Long routeId) throws EntityNotFoundException {
+
+        return drivingRepository.findDrivingByFavouriteRoute(routeId)
+                .orElseThrow(() -> new EntityNotFoundException(routeId, EntityType.DRIVING));
+    }
+
     public DrivingDTO startDriving(final Long id) throws EntityNotFoundException, DriverAlreadyHasStartedDrivingException, DrivingShouldNotStartYetException {
         Driving driving = getDriving(id);
         if (driverHasActiveDriving(driving.getDriverId())){

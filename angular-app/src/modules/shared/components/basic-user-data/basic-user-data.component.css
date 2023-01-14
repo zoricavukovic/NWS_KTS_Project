@@ -5,7 +5,50 @@ img.profile-img {
     width: 120px;
     max-height: 120px;
     height: auto;
+    background-color: gray;
     border: 2px solid var(--deep-blue);
+}
+
+.img-hover:hover {
+    border: 4px solid var(--deep-blue);
+}
+
+.image-wrap {
+    width: 140px;
+    height: 140px;
+}
+
+.picture-column {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 25% !important;
+    flex: 1;
+}
+
+.not-rated {
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.basic-data-column {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.driver-flex {
+    flex-basis: 40% !important;
+}
+
+.no-driver-flex {
+    flex-basis: 75% !important;
+}
+
+.vehicle-column {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 35% !important;
+    flex: 1;
 }
 
 .role-badge {
@@ -13,31 +56,6 @@ img.profile-img {
     padding: 4px 8px;
     display: flex;
     border-radius: 20px;
-}
-
-h1 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-    font-weight: bold;
-}
-
-.user-data {
-    min-width: 15rem;
-    margin: 0.5rem;
-}
-
-.user-data label {
-    display: block;
-    margin-top: 1rem;
-}
-
-.user-data b {
-    font-size: 1.2rem;
-    margin-left: 0.5rem;
-}
-
-span {
-    display: flex;
 }
 
 .status {

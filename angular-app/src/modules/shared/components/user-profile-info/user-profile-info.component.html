@@ -1,0 +1,49 @@
+<div class="user-data" *ngIf="user">
+    <h1 style="position: relative;">
+        {{user.name + " " + user.surname}}
+        <span
+        [class]="user.online ? 'online-status' : 'offline-status'">
+            <span class="status"></span>&nbsp;&nbsp;{{user.online ? 'Online' : 'Offline'}}
+        </span>
+    </h1>
+    <div class="driver-rating-container" *ngIf="user.role.name === configService.ROLE_DRIVER" matTooltip="Driver's rate">
+        <ngx-stars *ngIf="driverRate > 0; else noDriverRate" [readonly]="true" customSize="1.8rem" [initialStars]="driverRate" color="var(--stars-gold)"></ngx-stars>
+        <ng-template #noDriverRate>
+            <span class="not-rated">Not yet rated</span>
+        </ng-template>
+    </div>
+    <div style="display: flex;" *ngIf="!profilePage">
+        <label>
+            <span>
+                <mat-icon class="icon-size ">mail_outline</mat-icon>
+                <b>{{user.email}}</b>
+            </span>
+        </label>
+        <label style="margin-left: 1rem;">
+            <span>
+                <mat-icon class="icon-size ">location_on</mat-icon>
+                <b>{{user.city}}</b>
+            </span>
+        </label>
+    </div>
+    <div *ngIf="profilePage" class="profile-page">
+        <label>
+            <span>
+                <mat-icon class="icon-size ">mail_outline</mat-icon>
+                <b>{{user.email}}</b>
+            </span>
+        </label>
+        <label>
+            <span>
+                <mat-icon class="icon-size ">location_on</mat-icon>
+                <b>{{user.city}}</b>
+            </span>
+        </label>
+        <label>
+            <span>
+                <mat-icon class="icon-size ">phone</mat-icon>
+                <b>{{user.phoneNumber}}</b>
+            </span>
+        </label>
+    </div>
+</div>
