@@ -19,5 +19,4 @@ public interface RegularUserRepository extends JpaRepository<RegularUser, Long> 
 
     @Query("select r.blocked from RegularUser r where r.id = ?1")
     boolean getIsBlocked(Long id);
-
 }

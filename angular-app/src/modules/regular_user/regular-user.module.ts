@@ -27,6 +27,8 @@ import {RouteRowComponent} from "./components/route-row/route-row.component";
 import { TimepickerModule } from 'ngx-bootstrap/timepicker';
 import { RequestLaterTimeComponent } from './components/request-later-time/request-later-time.component';
 import { DrivingNotificationDetailsComponent } from './components/driving-notification-details/driving-notification-details.component';
+import { FavoriteRoutesDataComponent } from "./components/favorite-routes-data/favorite-routes-data.component";
+
 
 @NgModule({
   declarations: [
@@ -44,7 +46,8 @@ import { DrivingNotificationDetailsComponent } from './components/driving-notifi
     FilterVehicleViewComponent,
     RouteRowComponent,
     RequestLaterTimeComponent,
-    DrivingNotificationDetailsComponent
+    DrivingNotificationDetailsComponent,
+    FavoriteRoutesDataComponent
   ],
   imports: [
     CommonModule,
@@ -59,7 +62,7 @@ import { DrivingNotificationDetailsComponent } from './components/driving-notifi
     ProgressSpinnerModule,
     TimepickerModule.forRoot()
   ],
-  exports: [HomePassangerComponent, DrivingNotificationDetailsComponent],
+  exports: [HomePassangerComponent, DrivingNotificationDetailsComponent, FavoriteRoutesDataComponent],
   providers: []
 })
 export class RegularUserModule { }

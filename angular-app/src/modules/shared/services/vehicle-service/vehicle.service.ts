@@ -18,9 +18,14 @@ export class VehicleService extends GenericService<Vehicle> {
     super(http, configService.VEHICLES_URL);
   }
 
-  getPriceForVehicleAndRoute(type: string, kilometers: number) {
+  getPriceForVehicleAndRoute(type: string, kilometers: number): Observable<number> {
 
     return this.http.get<number>(this.configService.priceForRouteAndVehicleUrl(type, kilometers));
+  }
+
+  getVehicleByDriver(driverId: string): Observable<Vehicle> {
+
+    return this.http.get<Vehicle>(this.configService.vehicleByDriverId(driverId));
   }
 
   getAllActiveVehicles(): Observable<VehicleCurrentLocation[]> {

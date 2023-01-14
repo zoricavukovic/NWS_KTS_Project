@@ -34,6 +34,12 @@ export class DrivingService extends GenericService<Driving> {
     );
   }
 
+  getDrivingByFavouriteRoute(routeId: number): Observable<number> {
+    return this.http.get<number>(
+      this.configService.drivingByFavouriteRoute(routeId)
+    );
+  }
+
   getDrivingsForDriver(driverId: number): Observable<Driving[]> {
 
     return this.http.get<Driving[]>(this.configService.nowAndFutureDrivingsUrl(driverId));

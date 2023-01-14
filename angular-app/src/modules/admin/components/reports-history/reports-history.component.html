@@ -1,31 +1,17 @@
-<div class="reports-content">
-    <p-carousel *ngIf="reports?.length > 0; else noReports" [value]="reports" [numVisible]="2" [numScroll]="2">
-        <ng-template let-report pTemplate="item">
-            <div class="report-item-content">
-                <div>
-                    <div class="row">
-                        <div class="column" style="position: relative;">
-                            <img [src]="getBase64Prefix() + report.sender.profilePicture"
-                            (click)="goToUserProfile(report.sender.id)">
-                            <span [class]="!report.sender.online ? 'status bottom-right-comments status-offline' : 'status bottom-right-comments status-active'"></span>
-                        </div>
-                        <div [class]="reports.length > 1 ? 'column name-column' : 'column one-card'">
-                            <h3 class="">{{report.sender.name + " " + report.sender.surname}}</h3>
-                        </div>
-                    </div>
-                    <div class="date">
-                        {{report.timeStamp | dateFormat}}
-                    </div>
-                    <div>
-                        {{report.message}}
-                    </div>
-                </div>
+<div class="reviews-content">
+    <p-carousel *ngIf="reports?.length > 0; else noReviewsBlock" [value]="reports" [numVisible]="2" [numScroll]="2" >
+        <ng-template let-report (onPage)="setIndex($event)" pTemplate="item">
+            <div style="margin-top: 3rem;">
+                <app-report-row [report]="report" [numOfReports]="reports.length"></app-report-row>
             </div>
         </ng-template>
     </p-carousel>
-    <ng-template #noReports>
-        <div id="no-reports">
-            There are no reports for this user.
+    <ng-template #noReviewsBlock>
+        <div id="no-reports" class="center-content">
+            <div>
+                <mat-icon>error_outline</mat-icon>
+            </div>
+            <p>There are no reports for this user.</p>
         </div>
     </ng-template>
 </div>

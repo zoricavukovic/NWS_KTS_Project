@@ -17,8 +17,6 @@ import {matchPasswordsValidator} from "../registration/confirm-password.validato
   styleUrls: ['./reset-password.component.css'],
 })
 export class ResetPasswordComponent implements OnInit, OnDestroy {
-  @Input() public user: User;
-
   email: string;
   hidePassword = true;
   hideConfirmPassword = true;
@@ -27,6 +25,10 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
 
   resetSubscription: Subscription;
   changePassSubscription: Subscription;
+  authSubscription: Subscription;
+
+  user: User;
+  userIsLogged: boolean;
 
   oldPasswordForm: FormControl = new FormControl('', [
     Validators.required,
@@ -53,18 +55,19 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     private toast: ToastrService,
     private router: Router
   ) {
+    this.userIsLogged = false;
     this.user = null;
   }
 
   ngOnInit(): void {
     this.email = this.route.snapshot.paramMap.get('email');
-    if (!this.email && this.userIsLogged()) {
-      this.email = this.user.email;
-    }
-  }
-
-  userIsLogged(): boolean {
-    return this.user !== null && this.user !== undefined;
+    this.authSubscription = this.authService.getSubjectCurrentUser().subscribe(
+      res => {
+        if (res) {
+          this.userIsLogged = true;
+          this.user = this.user;
+        }
+      });
   }
 
   resetPasswordEmail() {

@@ -43,7 +43,7 @@ export class ConfigService {
   }
 
   unblockDriverByIdUrl(driverId: number): string{
-    return `${this.DRIVERS_URL}//unblock/${driverId}`;
+    return `${this.DRIVERS_URL}/unblock/${driverId}`;
   }
 
 
@@ -56,7 +56,7 @@ export class ConfigService {
   }
 
   unblockUserByIdUrl(userId: number): string{
-    return `${this.REGULAR_USERS_URL}//unblock/${userId}`;
+    return `${this.REGULAR_USERS_URL}/unblock/${userId}`;
   }
 
   isFavouriteRouteUrl(routeId: number, userId: number): string{
@@ -97,6 +97,10 @@ export class ConfigService {
 
   drivingsSortPaginationUrl(userId: number, pageNumber: number, pageSize: number, parameter: string, sortOrder: string): string{
     return `${this.DRIVINGS_URL}/${userId}/${pageNumber}/${pageSize}/${parameter}/${sortOrder}`;
+  }
+
+  drivingByFavouriteRoute(routeId: number) {
+    return `${this.DRIVINGS_URL}/driving-by-favourite-route/${routeId}`;
   }
 
   nowAndFutureDrivingsUrl(userId: number): string{
@@ -190,6 +194,10 @@ export class ConfigService {
 
   vehicleByVehicleTypeUrl(vehicleType: string): string{
     return `${this.VEHICLES_URL}/${vehicleType}`;
+  }
+
+  vehicleByDriverId(driverId: string): string{
+    return `${this.VEHICLES_URL}/vehicle-by-driver/${driverId}`;
   }
 
   ///////////////////VEHICLE TYPE INFOS///////////////////

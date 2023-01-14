@@ -1,0 +1,20 @@
+<div *ngIf="user">
+    <mat-tab-group *ngIf="isDriver && loggedAdmin" mat-align-tabs="center" animationDuration="0ms">
+        <mat-tab label="Reviews">
+            <app-reviews-history [userId]="user.id"></app-reviews-history>
+        </mat-tab>
+        <mat-tab label="Reports">
+            <app-reports-history [userId]="user.id"></app-reports-history>
+        </mat-tab>
+    </mat-tab-group>
+    <mat-tab-group *ngIf="isDriver && !loggedAdmin" mat-align-tabs="center" animationDuration="0ms">
+        <mat-tab label="Reviews">
+            <app-reviews-history [userId]="user.id"></app-reviews-history>
+        </mat-tab>
+    </mat-tab-group>
+    <mat-tab-group *ngIf="!isDriver && loggedAdmin" mat-align-tabs="center" animationDuration="0ms">
+        <mat-tab label="Reports">
+            <app-reports-history [userId]="user.id"></app-reports-history>
+        </mat-tab>
+    </mat-tab-group>
+</div>

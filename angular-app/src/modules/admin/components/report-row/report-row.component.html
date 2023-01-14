@@ -1,0 +1,28 @@
+<div *ngIf="report" [class]="numOfReports > 1 ? 'review-item-content' : 'review-item-content one-review-card'">
+    <div style="display: flex;">
+        <div [class]="(report.id-1) < 7 ? 'pic random-color-' + (report.id-1) : 'pic random-color-' + (report.id%2)"
+            [matTooltip]="report.sender.name + ' ' + report.sender.surname"
+            (click)="goToUserProfile(report.sender.id)">
+                <div>{{report.sender.name[0] + report.sender.surname[0]}}</div>
+        </div>
+        <div>
+            <p class="name">
+                {{report.sender.name + ' ' +report.sender.surname}}
+                <span
+                [class]="report.sender.online ? 'online-status' : 'offline-status'">
+                    <span class="status"></span>&nbsp;&nbsp;{{report.sender.online ? 'Online' : 'Offline'}}
+                </span>
+            </p>
+        </div>
+    </div>
+    <div>
+        <p class="badge">
+            Reported on {{report.timeStamp | dateFormat}}
+        </p>
+    </div>
+    <div class="message">
+        <p>
+            {{report.message}}
+        </p>
+    </div>
+</div>

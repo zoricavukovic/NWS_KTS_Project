@@ -7,7 +7,6 @@ import {UserRoutes} from "./user.routes";
 import {MaterialModule} from "../material/material.module";
 import {RegistrationComponent} from "./pages/registration/registration.component";
 import {ResetPasswordComponent} from "./pages/reset-password/reset-password.component";
-import {ProfilePageComponent} from "./pages/profile-page/profile-page.component";
 import {EditProfileComponent} from "./pages/edit-profile/edit-profile.component";
 import {BasicUserProfileComponent} from "./pages/basic-user-profile/basic-user-profile.component";
 import {SharedModule} from "../shared/shared.module";
@@ -16,16 +15,20 @@ import {HomeComponent} from "./components/home/home.component";
 import {RegularUserModule} from "../regular_user/regular-user.module";
 import {DriverModule} from "../driver/driver.module";
 import {AdminModule} from "../admin/admin.module";
+import { ReviewAndReportTabsComponent } from './components/review-and-report-tabs/review-and-report-tabs.component';
+import { AdminAndRegularProfileComponent } from './components/admin-and-regular-profile/admin-and-regular-profile.component';
+
 
 @NgModule({
   declarations: [
     RegistrationComponent,
     ResetPasswordComponent,
-    ProfilePageComponent,
     EditProfileComponent,
     MapPageComponent,
     BasicUserProfileComponent,
-    HomeComponent
+    HomeComponent,
+    ReviewAndReportTabsComponent,
+    AdminAndRegularProfileComponent,
   ],
   imports: [
     CommonModule,

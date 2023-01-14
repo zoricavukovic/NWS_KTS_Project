@@ -1,12 +1,13 @@
-<div>
+<div style="padding: 3%;">
     <h1 mat-dialog-title style="display: flex;" class="center"><b>Blocking user</b></h1>
     <mat-dialog-content>
         <br>
-        <h2 class="center"><b>Please enter a reason for blocking {{user.name}} {{user.surname}}.</b></h2>
+        <h2 class="center-content"><b>Are you sure that you want to block {{user.name}} {{user.surname}}?</b></h2>
+        <h4 class="center-content"><b>If so, please provide a reason.</b></h4>
         <textarea
         matInput
         rows="5"
-        placeholder="Enter a reason..."
+        placeholder="Enter a reason(at least 5 characters)..."
         [(ngModel)]="reason"></textarea>
     </mat-dialog-content>
 

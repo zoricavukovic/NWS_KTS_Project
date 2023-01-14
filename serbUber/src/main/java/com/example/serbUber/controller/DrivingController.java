@@ -139,4 +139,14 @@ public class DrivingController {
 
         return drivingService.getVehicleCurrentLocation(drivingId);
     }
+
+    @GetMapping("/driving-by-favourite-route/{routeId}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_REGULAR_USER')")
+    public Long getDrivingByFavouriteRoute(@Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable Long routeId)
+            throws EntityNotFoundException
+    {
+
+        return drivingService.getDrivingByFavouriteRoute(routeId);
+    }
 }

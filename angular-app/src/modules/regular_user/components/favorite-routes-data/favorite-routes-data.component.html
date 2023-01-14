@@ -1,0 +1,48 @@
+<div *ngIf="userId" class="content">
+    <div *ngFor="let route of favoriteRoutes; let i=index" (click)="goToDetails(route.id)">
+        <div class="route-row">
+            <table>
+                <colgroup>
+                    <col span="1" style="width: 5%;">
+                    <col span="1" style="width: 40%;">
+                    <col span="1" style="width: 5%;">
+                    <col span="1" style="width: 40%;">
+                    <col span="1" style="width: 5%;">
+                    <col span="1" style="width: 5%;">
+                </colgroup>
+                <th>
+                    {{i+1}}.
+                </th>
+                <th>
+                    {{route.locations.at(0).location.street}}, {{route.locations.at(0).location.number}}
+                </th>
+                <th class="aligner">
+                    <mat-icon>arrow_right_alt</mat-icon>
+                </th>
+                <th>
+                    {{route.locations.at(route.locations.length - 1).location.street}}, {{route.locations.at(route.locations.length - 1).location.number}}
+                </th>
+                <th>
+                    {{route.distance}}km
+                </th>
+                <th>
+                    <button
+                        mat-icon-button
+                        color="warn"
+                        (click)="removeFromFavouriteRoutes(route.id)"
+                        class="btn">
+                            <mat-icon
+                            matTooltip="Remove from favourite routes"
+                            matTooltipClass="tooltip"
+                            matTooltipHideDelay="500"
+                            >favorite
+                            </mat-icon>
+                    </button>
+                </th>
+            </table>
+        </div>
+    </div>
+    <div *ngIf="favoriteRoutes?.length < 1" class="no-content">
+        <span>You don't have any favourite route.</span>
+    </div>
+</div>

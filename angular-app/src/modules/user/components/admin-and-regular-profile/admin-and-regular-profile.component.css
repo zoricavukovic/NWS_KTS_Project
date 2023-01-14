@@ -1,0 +1,89 @@
+
+.form-container {
+    margin-top: 3rem;
+    padding: 3% 3% 2% 3%;
+    min-width: 45rem;
+    height: 20rem;
+    background-color: white;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+.regular-form {
+    min-width: 85rem;
+}
+
+.image-wrap {
+    width: 150px;
+    height: 150px;
+}
+
+img.profile-img {
+    margin-top: 20%;
+    display: block;
+    border-radius: 50%;
+    width: 120px;
+    max-height: 120px;
+    height: auto;
+    border: 2px solid var(--deep-blue);
+    background-color: gray;
+}
+
+img.profile-img:hover {
+    border: 5px solid var(--deep-blue);
+}
+
+.role-badge {
+    margin-top: 10%;
+    font-size: 1.2rem;
+    padding: 4px 8px;
+    text-align: center;
+    border-radius: 25px;
+}
+
+.picture-column {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 15%;
+    flex: 1;
+    max-width: 20rem;
+}
+
+.picture-admin-flex {
+    flex-basis: 40% !important;
+}
+
+.data-column {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 45%;
+    flex: 1;
+}
+
+.data-admin-flex {
+    flex-basis: 60% !important;
+}
+
+.routes-column {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 30%;
+    flex: 1;
+}
+
+.edit-icon {
+    transform: scale(0.9);
+    margin: 0;
+    padding: 0;
+}
+
+.edit-btn {
+    margin-top: 1.5rem;
+    font-size: 1.3rem !important;
+}
+
+h3 {
+    margin-top: 3.5rem;
+    font-size: 1.6rem;
+}
+
