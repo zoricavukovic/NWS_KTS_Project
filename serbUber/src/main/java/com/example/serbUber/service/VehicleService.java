@@ -1,6 +1,7 @@
 package com.example.serbUber.service;
 
 import com.example.serbUber.dto.VehicleCurrentLocationDTO;
+import com.example.serbUber.dto.VehicleCurrentLocationForLocustDTO;
 import com.example.serbUber.dto.VehicleDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.EntityType;
@@ -18,6 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static com.example.serbUber.dto.VehicleCurrentLocationDTO.fromVehiclesToVehicleCurrentLocationDTO;
+import static com.example.serbUber.dto.VehicleCurrentLocationForLocustDTO.fromVehiclesToVehicleCurrentLocationForLocustDTO;
 import static com.example.serbUber.dto.VehicleDTO.fromVehicles;
 import static com.example.serbUber.util.Constants.TAXI_START_LOCATION_ID;
 
@@ -177,5 +179,18 @@ public class VehicleService implements IVehicleService {
             coordinatesList.get(vehicle.getCurrentLocationIndex())[0]:
             -1;
 
+    }
+
+    public List<VehicleCurrentLocationForLocustDTO> getAllVehicleCurrentLocationForLocustDTOForActiveDriver()
+        throws EntityNotFoundException
+    {
+        List<Vehicle> vehicles = vehicleRepository.getAllVehiclesForActiveDriver();
+        List<VehicleWithDriverId> withDriverIds = new LinkedList<>();
+
+        for (Vehicle vehicle : vehicles) {
+            withDriverIds.add(new VehicleWithDriverId(vehicle, getDriverIdByVehicleId(vehicle.getId())));
+        }
+
+        return fromVehiclesToVehicleCurrentLocationForLocustDTO(withDriverIds);
     }
 }

@@ -204,7 +204,7 @@ public class RouteService implements IRouteService {
         HttpHeaders headers = new HttpHeaders();
 //        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
-        HttpEntity<String> entity = new HttpEntity("parameters", headers);
+        HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
         ResponseEntity<?> result =
             restTemplate.exchange("https://routing.openstreetmap.de/routed-car/route/v1/driving/" + firstPointLng + "," + firstPointLat + ";" + secondPointLng+ "," + secondPointLat+ " ?geometries=geojson&overview=false&alternatives=true&steps=true",
                 HttpMethod.GET, entity, Object.class);
@@ -243,8 +243,22 @@ public class RouteService implements IRouteService {
             List<double[]> locations = new LinkedList<>();
             List<String> steps = Arrays.stream(leg.split("steps=")).toList();
             fromSteps(locations, steps);
-            possibleRouteDTOs.add(new PossibleRouteDTO(1000, 13000, locations));
+            double distance = getDistance(Arrays.stream(leg.split("distance=")).toList());
+            possibleRouteDTOs.add(new PossibleRouteDTO(distance, locations));
         }
+    }
+
+    private double getDistance(List<String> distances) {
+        double maxDistance = Double.parseDouble(distances.get(1).split(",")[0].replace("}", "").replace("{", "").replace(" ", "").replace("]", "").replace("[", ""));
+        for (String distance: distances.subList(2, distances.size())) {
+            double distanceValue = Double.parseDouble(distance.split(",")[0].replace("}", "").replace("{", "").replace(" ", "").replace("]", "").replace("[", ""));
+
+            if (maxDistance< distanceValue){
+                maxDistance = distanceValue;
+            }
+        }
+
+        return maxDistance;
     }
 
     private void fromSteps(List<double[]> locations, List<String> steps) {
