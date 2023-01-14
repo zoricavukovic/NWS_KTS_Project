@@ -25,7 +25,7 @@ import {Route} from "../../../shared/models/route/route";
 })
 export class FilterVehicleViewComponent implements OnInit, OnDestroy {
   @Select(DrivingNotificationState.getDrivingNotification)drivingNotification$: Observable<DrivingNotification>;
-  @Input() route: Route;
+  @Input() requestLater: boolean;
   @Output() waitingForAcceptDrive = new  EventEmitter<boolean>();
   vehiclePassengersView = true;
   vehicle: Vehicle;
@@ -144,34 +144,50 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
         this.rideRequestForm.get('price').setValue(this.price);
       });
     }
+  
+  checkChosenDateTime(): boolean{
+    if(this.rideRequestForm.get('chosenDateTime').value > new Date(Date.now() + (5*60*60*1000))){
+      this.toast.error('You can only schedule your ride 5 hours in advance!', 'Invalid chosen time');
+      return false;
+    }
+    return true;
+  }
 
-
-  findDriver() {
+  requestRide() {
     this.rideRequestForm.get('selectedPassengers').setValue(this.selectedPassengers);
     this.rideRequestForm.get('senderEmail').setValue(this.currentUser.email);
-    this.waitingForAcceptDrive.emit(true);
-    const drivingNotification = {
-      route: this.rideRequestForm.get('selectedRoute').value,
-      price: this.rideRequestForm.get('price').value,
-      senderEmail: this.rideRequestForm.get('senderEmail').value,
-      passengers: this.rideRequestForm.get('selectedPassengers').value,
-      duration: 5,
-      petFriendly: this.rideRequestForm.get('petFriendly').value,
-      babySeat: this.rideRequestForm.get('babySeat').value,
-      vehicleType: this.rideRequestForm.get('vehicleType').value,
-      minutes: -1,
-      drivingStatus: "PAYING",
-      active: false
-    };
-    console.log(drivingNotification);
-    this.store.dispatch(new AddDrivingNotification(drivingNotification)).subscribe((response) => {
-      console.log(response);
+    if(this.checkChosenDateTime()){
+      this.waitingForAcceptDrive.emit(true);
+      const drivingNotification = {
+        route: this.rideRequestForm.get('selectedRoute').value,
+        price: this.rideRequestForm.get('price').value,
+        senderEmail: this.rideRequestForm.get('senderEmail').value,
+        passengers: this.rideRequestForm.get('selectedPassengers').value,
+        duration: 5,
+        petFriendly: this.rideRequestForm.get('petFriendly').value,
+        babySeat: this.rideRequestForm.get('babySeat').value,
+        vehicleType: this.rideRequestForm.get('vehicleType').value,
+        minutes: -1,
+        drivingStatus: "PAYING",
+        active: false,
+        chosenDateTime: this.rideRequestForm.get('chosenDateTime').value
+      };
+      console.log(drivingNotification);
+      this.store.dispatch(new AddDrivingNotification(drivingNotification)).subscribe((response) => {
+        console.log(response);
+      });
+
       this.drivingNotificationSubscription = this.drivingNotificationService.create(drivingNotification).subscribe((result) => {
         this.store.dispatch(new UpdateStatusDrivingNotification({active: false, drivingStatus: "ACCEPTED"})).subscribe(response => {
           console.log(response);
         })
+      },
+
+      (error) => {
+        console.log(error);
+        this.toast.error(error.error, 'Create ride failed.');
       });
-    })
+  }
     
     // this.drivingNotificationSubscription = this.store
     // .dispatch(new AddDrivingNotification(drivingNotification))

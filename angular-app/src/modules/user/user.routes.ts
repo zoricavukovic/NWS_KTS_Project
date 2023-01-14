@@ -30,6 +30,13 @@ export const UserRoutes: Routes = [
     data: {expectedRoles: "ROLE_REGULAR_USER|ROLE_DRIVER"}
   },
   {
+    path: 'driving-notification/:id',
+    pathMatch: "full",
+    component: MapPageComponent,
+    canActivate: [RoleGuard],
+    data: {expectedRoles: "ROLE_REGULAR_USER"}
+  },
+  {
     path: "reset-password/:email",
     pathMatch: "full",
     component: ResetPasswordComponent

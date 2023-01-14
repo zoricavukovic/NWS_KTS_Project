@@ -64,38 +64,37 @@
   </div>
 
   <div class="margin-top">
-    <button mat-raised-button (click)="getPossibleRoutes()">
-      Request now
+    <button mat-raised-button (click)="getPossibleRoutes()" style="float: left">
+      <strong>View possible routes</strong>
     </button>
-  </div>
-
-  <div class="mat-elevation-z3" *ngIf="possibleRoutesViaPoints.length > 0">
-    <button
+    <div class="mat-elevation-z3" *ngIf="possibleRoutesViaPoints.length > 0" style="float: right">
+      <button
       mat-button
       [matMenuTriggerFor]="menu"
       aria-label="Options"
       class="options-button">
       Options
     </button>
-    <mat-menu #menu="matMenu">
-      <button
-        mat-menu-item
-        (click)="chooseFastestRoute()"
-        style="background-color:var(--gray); !important;color: var(--deep-blue)">
-        <mat-icon>access_time</mat-icon>
-        <span>Fastest route</span>
-      </button>
-      <button
-        mat-menu-item
-        (click)="chooseShortestRoute()"
-        style="background-color:var(--gray); !important; color: var(--deep-blue)">
-        <mat-icon>map</mat-icon>
-        <span>Shortest route</span>
-      </button>
-    </mat-menu>
+      <mat-menu #menu="matMenu">
+        <button
+          mat-menu-item
+          (click)="chooseFastestRoute()"
+          style="background-color:var(--gray); !important;color: var(--deep-blue)">
+          <mat-icon>access_time</mat-icon>
+          <span>Fastest route</span>
+        </button>
+        <button
+          mat-menu-item
+          (click)="chooseShortestRoute()"
+          style="background-color:var(--gray); !important; color: var(--deep-blue)">
+          <mat-icon>map</mat-icon>
+          <span>Shortest route</span>
+        </button>
+      </mat-menu>
+    </div>
   </div>
 
-  <div *ngIf="possibleRoutesViaPoints.length > 0" class="devider-container">
+  <div *ngIf="possibleRoutesViaPoints.length > 0" class="devider-container" style="margin-top: 4rem;">
     <div class="devider-line"><mat-divider></mat-divider></div>
     <div class="devider-text mat-typography"><b>Possible routes</b></div>
     <div class="devider-line"><mat-divider></mat-divider></div>
@@ -143,17 +142,20 @@
 
   <br />
   <div
-    class="continue-button"
+    class="continue-buttons"
     *ngIf="currentUser && possibleRoutesViaPoints.length > 0">
     <button mat-raised-button (click)="chooseVehicleAndPassengers()">
-      <strong>Choose vehicle type and add passengers</strong>
+      <strong>Request now</strong>
+    </button>
+    <button mat-raised-button style="background-color: var(--white);color: var(--deep-blue);margin-left:0.7rem;" (click)="chooseVehicleAndPassengersLater()">
+      <strong>Schedule for later</strong>
     </button>
   </div>
 
 </div>
 
 <div *ngIf="filterVehicleView">
-  <app-filter-vehicle-view [route]="rideRequestForm.get('selectedRoute')?.value" (waitingForAcceptDrive)="loadingView($event)"></app-filter-vehicle-view>
+  <app-filter-vehicle-view [requestLater]="requestLater" (waitingForAcceptDrive)="loadingView($event)"></app-filter-vehicle-view>
 </div>
 </form>
 

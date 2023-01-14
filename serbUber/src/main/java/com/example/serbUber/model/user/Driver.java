@@ -15,8 +15,7 @@ import static com.example.serbUber.util.Constants.ROLE_DRIVER;
 @Table(name="drivers")
 public class Driver extends User {
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "driving_id", referencedColumnName = "id")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "driver")
     private List<Driving> drivings = new LinkedList<>();
 
     @OneToOne()

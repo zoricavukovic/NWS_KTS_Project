@@ -14,7 +14,7 @@ export class AddDrivingNotification {
   export class UpdateMinutesStatusDrivingNotification {
     static readonly type = "[DrivingNotification] UpdateMinutesStatus";
 
-    constructor(public payload: {minutes: number, drivingStatus: string}) {}
+    constructor(public payload: {minutes: number, drivingStatus: string, drivingId: number}) {}
   }
 
   export class UpdateDrivingNotification {

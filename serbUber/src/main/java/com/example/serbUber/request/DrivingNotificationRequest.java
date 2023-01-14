@@ -26,11 +26,12 @@ public class DrivingNotificationRequest {
     private boolean babySeat;
     private boolean petFriendly;
     private String vehicleType;
+    private LocalDateTime chosenDateTime;
 
     public DrivingNotificationRequest() {
     }
 
-    public DrivingNotificationRequest(RouteRequest routeRequest, double price, String senderEmail, List<String> passengers, LocalDateTime started, int duration, boolean babySeat, boolean petFriendly, String vehicleType, double time, double distance) {
+    public DrivingNotificationRequest(RouteRequest routeRequest, double price, String senderEmail, List<String> passengers, LocalDateTime started, int duration, boolean babySeat, boolean petFriendly, String vehicleType, double time, double distance, LocalDateTime chosenDateTime) {
         this.route = routeRequest;
         this.price = price;
         this.senderEmail = senderEmail;
@@ -40,6 +41,7 @@ public class DrivingNotificationRequest {
         this.babySeat = babySeat;
         this.petFriendly = petFriendly;
         this.vehicleType = vehicleType;
+        this.chosenDateTime = chosenDateTime;
     }
 
     public double getPrice() {
@@ -112,5 +114,13 @@ public class DrivingNotificationRequest {
 
     public void setRoute(RouteRequest route) {
         this.route = route;
+    }
+
+    public LocalDateTime getChosenDateTime() {
+        return chosenDateTime;
+    }
+
+    public void setChosenDateTime(LocalDateTime chosenDateTime) {
+        this.chosenDateTime = chosenDateTime;
     }
 }

@@ -52,7 +52,7 @@ const MaterialConstants = [
   MatStepperModule,
   MatTooltipModule,
   MatSlideToggleModule,
-  MatProgressSpinnerModule,
+  MatProgressSpinnerModule
 ]
 
 @NgModule({

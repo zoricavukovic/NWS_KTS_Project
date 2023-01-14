@@ -37,8 +37,10 @@ public class Driving {
     @Column(name="driving_status", nullable = false)
     private DrivingStatus drivingStatus;
 
-    @Column(name="driver_id")
-    private long driverId;
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="driver_id")
+    @JsonIgnore
+    private Driver driver;
 
     @ManyToMany(mappedBy = "drivings")
     @JsonIgnore
@@ -58,7 +60,7 @@ public class Driving {
         final LocalDateTime payingLimit,
         final Route route,
         final DrivingStatus drivingStatus,
-        final long driverId,
+        final Driver driver,
         final double price
     ) {
         this.duration = duration;
@@ -67,7 +69,7 @@ public class Driving {
         this.payingLimit = payingLimit;
         this.route = route;
         this.drivingStatus = drivingStatus;
-        this.driverId = driverId;
+        this.driver = driver;
         this.price = price;
     }
 
@@ -127,12 +129,13 @@ public class Driving {
         this.id = id;
     }
 
-    public long getDriverId() {
-        return driverId;
+    @JsonIgnore
+    public Driver getDriver() {
+        return driver;
     }
 
-    public void setDriverId(long driverId) {
-        this.driverId = driverId;
+    public void setDriver(Driver driver) {
+        this.driver = driver;
     }
 
     @JsonIgnore

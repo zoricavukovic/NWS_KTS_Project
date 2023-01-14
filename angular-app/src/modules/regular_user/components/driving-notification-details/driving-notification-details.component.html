@@ -1,0 +1,13 @@
+<div *ngIf="drivingNotification" id="route-div" class="box mat-elevation-z1">
+    <h1><b>Accept ride</b></h1>
+    <app-driving-details-route
+      [locations]="drivingNotification.route.locations"></app-driving-details-route>
+    <app-driving-details-passengers
+      [users]="users"
+      [base64Prefix]="base64Prefix"></app-driving-details-passengers>
+    <div style="text-align: right">
+      <h2>
+        <b>={{ drivingNotification.price }}</b>
+      </h2>
+    </div>
+</div>

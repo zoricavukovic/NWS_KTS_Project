@@ -45,6 +45,7 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
 
   routeChoiceView: boolean;
   filterVehicleView: boolean;
+  requestLater: boolean;
   rideRequestForm: FormGroup;
 
   get searchingForm(){
@@ -106,6 +107,7 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
   ){
     this.routeChoiceView = true;
     this.filterVehicleView = false;
+    this.requestLater = false;
     this.rideIsRequested = false;
     this.activeRide = null;
     this.rideRequestForm = new FormGroup({
@@ -117,7 +119,8 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
       vehicleType: new FormControl(''),
       price: new FormControl(0),
       senderEmail: new FormControl(''),
-      selectedPassengers: new FormControl([])
+      selectedPassengers: new FormControl([]),
+      chosenDateTime: new FormControl(null)
     })
   }
 
@@ -396,6 +399,13 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
     this.rideRequestForm.get('selectedRoute')?.setValue(this.createRoute());
     this.routeChoiceView = false;
     this.filterVehicleView = true;
+  }
+
+  chooseVehicleAndPassengersLater(): void {
+    this.rideRequestForm.get('selectedRoute')?.setValue(this.createRoute());
+    this.routeChoiceView = false;
+    this.filterVehicleView = true;
+    this.requestLater = true;
   }
 
   formIsInvalid(): boolean {

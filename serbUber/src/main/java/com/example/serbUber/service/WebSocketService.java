@@ -44,6 +44,21 @@ public class WebSocketService {
         });
     }
 
+    public void passengerNotAcceptDrivingNotification(Set<RegularUser> regularUsers, String userEmail, String senderEmail) {
+        String messageForPassengers =  String.format("Passenger %s not accept ride. Ride is rejected.", userEmail);
+        if (regularUsers.size() > 0) {
+            regularUsers.forEach(user -> {
+                if(!user.getEmail().equals(userEmail)) {
+                    this.messagingTemplate.convertAndSendToUser(user.getEmail(), "/passenger-not-accept-driving", messageForPassengers);
+                }
+            });
+        }
+        String messageForSender = String.format("Your ride is rejected. Passenger %s is not accept ride.", userEmail);
+        this.messagingTemplate.convertAndSendToUser(senderEmail, "/passenger-not-accept-driving", messageForSender);
+    }
+
+
+
     public void sendActivityResetNotification(DriverActivityResetNotificationDTO dto) {
         this.messagingTemplate.convertAndSendToUser(dto.getEmail(), "/connect", dto);
     }

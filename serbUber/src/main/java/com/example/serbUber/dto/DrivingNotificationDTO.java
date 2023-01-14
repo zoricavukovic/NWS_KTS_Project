@@ -1,11 +1,11 @@
 package com.example.serbUber.dto;
 
-import com.example.serbUber.model.*;
+import com.example.serbUber.model.DrivingNotification;
+import com.example.serbUber.model.DrivingNotificationType;
+import com.example.serbUber.model.Route;
+import com.example.serbUber.model.Vehicle;
 import com.example.serbUber.model.user.RegularUser;
-import com.example.serbUber.model.user.User;
-import com.graphhopper.storage.index.LocationIndex;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,6 +24,8 @@ public class DrivingNotificationDTO {
     private Set<RegularUser> receivers;
     private double price;
 
+    private LocalDateTime chosenDateTime;
+
     public DrivingNotificationDTO(final DrivingNotification drivingNotification) {
         this.route = drivingNotification.getRoute();
         this.price = drivingNotification.getPrice();
@@ -38,7 +40,6 @@ public class DrivingNotificationDTO {
                 notificationDTOs.add(new DrivingNotificationDTO(notification)));
         return notificationDTOs;
     }
-
 
 
     public double getPrice() {
@@ -105,4 +106,11 @@ public class DrivingNotificationDTO {
         this.route = route;
     }
 
+    public LocalDateTime getChosenDateTime() {
+        return chosenDateTime;
+    }
+
+    public void setChosenDateTime(LocalDateTime chosenDateTime) {
+        this.chosenDateTime = chosenDateTime;
+    }
 }

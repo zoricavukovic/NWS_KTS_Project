@@ -9,6 +9,7 @@ import {DrivingNotification} from "../../models/notification/driving-notificatio
 import {DrivingStatusNotification} from "../../models/notification/driving-status-notification";
 import { Store } from '@ngxs/store';
 import { UpdateMinutesStatusDrivingNotification } from '../../actions/driving-notification.action';
+import { CreateDrivingNotification } from '../../models/notification/create-driving-notification';
 
 @Injectable({
   providedIn: 'root',
@@ -26,22 +27,23 @@ export class DrivingNotificationService extends GenericService<DrivingNotificati
     super(http, configService.DRIVING_NOTIFICATIONS_URL);
   }
 
-  showNotification(drivingNotificationResponse: DrivingNotification) {
+  showNotification(drivingNotificationResponse:CreateDrivingNotification) {
     //NECE MOCI DA IDE NA DETAILS, JER JOS TAD VOZNJA NIJE KREIRANA
-    // this.toast
-    //   .info(
-    //     `User ${drivingNotificationResponse.senderEmail} add you as linked passenger.Tap to accept!`
-    //   )
-    //   .onTap.subscribe(action => {
-    //     this._router.navigate(["driving", drivingNotificationResponse.drivingId]);
-    //   });
+    this.toast
+      .info(
+        `User ${drivingNotificationResponse.senderEmail} add you as linked passenger.Tap to accept!`
+      )
+      .onTap.subscribe(action => {
+        this._router.navigate(["driving-notification", drivingNotificationResponse.id]);
+      });
   }
 
   showDrivingStatus(drivingStatusNotification: DrivingStatusNotification) {
     if (drivingStatusNotification.drivingStatus === 'ACCEPTED') {
       let updatedDriving = {
         minutes: drivingStatusNotification.minutes,
-        drivingStatus: drivingStatusNotification.drivingStatus
+        drivingStatus: drivingStatusNotification.drivingStatus,
+        drivingId: drivingStatusNotification.drivingId
       }
       this.store.dispatch(new UpdateMinutesStatusDrivingNotification(updatedDriving));
       this._router.navigate([`/serb-uber/user/map-page-view/${drivingStatusNotification.drivingId}`]);

@@ -60,6 +60,7 @@ export class DrivingNotificationState {
         console.log(state);
         state.currentDrivingNotification.minutes = payload.minutes;
         state.currentDrivingNotification.drivingStatus = payload.drivingStatus;
+        state.currentDrivingNotification.drivingId = payload.drivingId;
         setState({
             ...state,
             currentDrivingNotification: state.currentDrivingNotification

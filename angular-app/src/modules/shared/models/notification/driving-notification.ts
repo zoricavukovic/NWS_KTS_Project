@@ -19,4 +19,5 @@ export interface DrivingNotification {
   minutes?: number;
   drivingStatus?: string;
   active?: boolean;
+  chosenDateTime?: Date;
 }

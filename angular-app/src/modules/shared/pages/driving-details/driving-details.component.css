@@ -46,4 +46,5 @@
 #route-div{
   overflow: auto;
   max-height: 40rem;
+  min-width: 25rem;
 }

@@ -32,7 +32,7 @@ public interface DriverRepository extends JpaRepository<Driver, Long> {
     List<Driver> getActiveAndFreeDrivers(LocalDateTime start, LocalDateTime end, VehicleType vehicleType);
 
     //2. vozac trenutno vozi, bice slobodan nakon te voznje i brzo ce zavrsiti voznju
-    @Query("select d from Driver d left join fetch d.drivings dr left join fetch d.vehicle vehicle left join fetch vehicle.vehicleTypeInfo info where d.active=true and dr.driverId = d.id " +
+    @Query("select d from Driver d left join fetch d.drivings dr left join fetch d.vehicle vehicle left join fetch vehicle.vehicleTypeInfo info where d.active=true and dr.driver.id = d.id " +
             "and d.drive = true and dr.active = false and dr.started < ?1")
     List<Driver> getBusyDriversNow(LocalDateTime start, VehicleType vehicleType);
 

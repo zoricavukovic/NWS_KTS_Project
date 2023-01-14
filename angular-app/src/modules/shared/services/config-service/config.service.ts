@@ -196,7 +196,7 @@ export class ConfigService {
   VEHICLE_TYPE_INFOS_URL = `${this.API_URL}/vehicle-type-infos`;
 
   priceForRouteAndVehicleUrl(vehicleType: string, kilometers: number): string{
-    return `${this.VEHICLE_TYPE_INFOS_URL}/price/${vehicleType}/${kilometers}`
+    return `${this.VEHICLE_TYPE_INFOS_URL}/price/${vehicleType}/${kilometers}`;
   }
 
   ///////////////////VERIFY///////////////////

@@ -3,6 +3,7 @@ package com.example.serbUber.dto;
 import com.example.serbUber.model.Driving;
 import com.example.serbUber.model.DrivingStatus;
 import com.example.serbUber.model.Route;
+import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.model.user.RegularUser;
 
 import java.time.LocalDateTime;
@@ -32,7 +33,7 @@ public class DrivingDTO {
         this.payingLimit = driving.getPayingLimit();
         this.route = driving.getRoute();
         this.drivingStatus = driving.getDrivingStatus();
-        this.driverId = driving.getDriverId();
+        this.driverId = driving.getDriver().getId();
         this.users = setPictureForUsers(driving.getUsers());
         this.price = driving.getPrice();
         this.hasReviewForUser = false;

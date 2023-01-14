@@ -4,7 +4,7 @@
   <br />
   <mat-expansion-panel>
     <mat-expansion-panel-header>
-      <mat-panel-title> Add other passengers </mat-panel-title>
+      <mat-panel-title style="font-size:1.1rem;"> Add other passengers </mat-panel-title>
     </mat-expansion-panel-header>
     <mat-chip-list aria-label="Passenger selection">
       <mat-chip
@@ -35,18 +35,21 @@
       </mat-autocomplete>
     </mat-form-field>
   </mat-expansion-panel>
-  <br />
+  <br/>
 
-  <div style="text-align: right">
-    <h2>={{ price }}</h2>
+  <app-request-later-time *ngIf="requestLater" [formGroup] = "rideRequestForm"></app-request-later-time>
+
+  <div style="float:left;  font-size: 1.7rem;display: flex;flex-direction: row;margin-top:0.2rem;">
+    <b>= {{price}}</b>
+    <mat-icon class="token-icon">payments</mat-icon>
   </div>
 
   <button
-    mat-stroked-button
+    mat-raised-button
     class="findDriverBtn"
     *ngIf="rideRequestForm.get('vehicleType').value !== ''"
-    (click)="findDriver()">
-    Find driver
+    (click)="requestRide()">
+    Request ride
   </button>
 </div>
 

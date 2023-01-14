@@ -3,7 +3,7 @@ import * as SockJS from 'sockjs-client';
 import { Stomp } from '@stomp/stompjs';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
-import {ToastrService} from "ngx-toastr";
+import {Toast, ToastrService} from "ngx-toastr";
 import {ChatRoomService} from "../chat-room-service/chat-room.service";
 import {VehicleService} from "../vehicle-service/vehicle.service";
 import {DriverActivityResetNotification} from "../../models/notification/driver-activity-reset-notification";
@@ -15,6 +15,7 @@ import {DrivingNotification} from "../../models/notification/driving-notificatio
 import {DrivingNotificationService} from "../driving-notification-service/driving-notification.service";
 import {BlockNotification} from "../../models/notification/block-notification";
 import {DriverService} from "../driver-service/driver.service";
+import { CreateDrivingNotification } from '../../models/notification/create-driving-notification';
 
 @Injectable({
   providedIn: 'root',
@@ -63,6 +64,13 @@ export class WebSocketService {
             if (message !== null && message !== undefined) {
               that.checkNotificationType(message.body);
             }
+          }
+        );
+
+        that.stompClient.subscribe(
+          environment.publisherUrl + localStorage.getItem('email') + '/passenger-not-accept-driving',
+          message => {
+            that.toast.info(message.body, 'Requesting ride failed');
           }
         );
       });
@@ -164,7 +172,7 @@ export class WebSocketService {
 
   private isDrivingNotification(message: string): boolean {
     try {
-      const parsed: DrivingNotification = JSON.parse(message);
+      const parsed: CreateDrivingNotification = JSON.parse(message);
       return parsed.drivingNotificationType === 'LINKED_USER';
     } catch (e) {
       return false;

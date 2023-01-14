@@ -33,5 +33,5 @@ export const RegularUserRoutes: Routes = [
     component: PaymentStatusComponent,
     canActivate: [RoleGuard],
     data: {expectedRoles: "ROLE_REGULAR_USER"}
-  },
+  }
   ]
