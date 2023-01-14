@@ -69,4 +69,6 @@ public interface IDrivingService {
 
     SimpleDrivingInfoDTO checkUserHasActiveDriving(final Long userId);
     VehicleCurrentLocationDTO getVehicleCurrentLocation(final Long id) throws EntityNotFoundException;
+
+    Long getDrivingByFavouriteRoute(final Long routeId) throws EntityNotFoundException;
 }

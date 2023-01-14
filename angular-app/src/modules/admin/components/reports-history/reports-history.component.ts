@@ -1,8 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import {ReportService} from "../../services/report-service/report.service";
-import {ConfigService} from "../../../shared/services/config-service/config.service";
 import {Report} from "../../../shared/models/report/report";
 
 @Component({
@@ -18,9 +16,7 @@ export class ReportsHistoryComponent implements OnInit, OnDestroy {
   reports: Report[];
 
   constructor(
-    private reportService: ReportService,
-    private configService: ConfigService,
-    private router: Router
+    private reportService: ReportService
   ) { }
 
   ngOnInit(): void {
@@ -37,16 +33,6 @@ export class ReportsHistoryComponent implements OnInit, OnDestroy {
         }
       }
     );
-  }
-
-  goToUserProfile(id: number): void {
-    this.router.navigateByUrl('/', {skipLocationChange: true}).then(()=>
-    this.router.navigate([`/serb-uber/user/user-profile/${id}`]));
-  }
-
-  getBase64Prefix(): string {
-
-    return this.configService.BASE64_PHOTO_PREFIX;
   }
 
   ngOnDestroy(): void {

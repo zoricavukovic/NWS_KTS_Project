@@ -1,29 +1,47 @@
-<div class="form-container">
-    <div *ngIf="userId && user; else noDataBlock">
-        <app-basic-user-data [user]="user"></app-basic-user-data>
-        <div *ngIf="userIsDriver()" class="rating">
-            <app-user-average-rate *ngIf="userIsDriver()" [driverId]="user.id"></app-user-average-rate>
-        </div>
-        <mat-tab-group *ngIf="loggedUserIsAdmin() && userIsDriver()" mat-align-tabs="center" animationDuration="0ms">
-            <mat-tab label="Reviews">
-                <app-reviews-history [userId]="user.id"></app-reviews-history>
-            </mat-tab>
-            <mat-tab label="Reports">
-                <app-reports-history [userId]="user.id"></app-reports-history>
-            </mat-tab>
-        </mat-tab-group>
-        <app-reviews-history *ngIf="userIsDriver() && !loggedUserIsAdmin() && user" [userId]="user.id"></app-reviews-history>
-        <app-reports-history *ngIf="!userIsDriver() && loggedUserIsAdmin() && user" [userId]="user.id"></app-reports-history>
-        <div *ngIf="loggedUserIsAdmin() && !userBlocked" style="position: relative;">
-            <button mat-raised-button class="green-button block-button"
-            (click)="blockUser()">Block</button>
-        </div>
-        <div *ngIf="loggedUserIsAdmin() && userBlocked" style="position: relative;">
-            <button mat-raised-button class="green-button unblock-button"
-            (click)="unblockUser()">Unblock</button>
+<div *ngIf="currentUserIsLogged && !isDriver; else notAdminAndRegularBlock" style="min-height: 70%;">
+    <app-admin-and-regular-profile [user]="user" [isRegular]="isRegular"></app-admin-and-regular-profile>
+</div>
+<ng-template #notAdminAndRegularBlock>
+    <div style="min-height: 70%;">
+        <div [class]="(!loggedAdmin && isRegular) ? 'form-container form-container-for-regular' : 'form-container' " *ngIf="isDriver || isRegular">
+            <div *ngIf="userId && user; else noDataBlock">
+                <app-basic-user-data [user]="user" [isDriver]="isDriver" [currentUserIsLogged]="currentUserIsLogged"></app-basic-user-data>
+                <div *ngIf="loggedAdmin && !userBlocked" style="position: relative;">
+                    <button
+                        mat-raised-button 
+                        [class]="isDriver ? 'green-button block-button-driver' : 'green-button block-button-regular'"
+                        (click)="blockUser()">
+                        Block
+                    </button>
+                </div>
+                <div *ngIf="loggedAdmin && userBlocked" style="position: relative;">
+                    <button 
+                    mat-raised-button
+                    style="background-color: var(--deep-blue) !important;" 
+                    [class]="isDriver ? 'green-button block-button-driver' : 'green-button block-button-regular'"
+                    (click)="unblockUser()">
+                    Unblock
+                    </button>
+                </div>
+                <div *ngIf="currentUserIsLogged" style="position: relative; display: flex;">
+                    <button 
+                    mat-raised-button 
+                    [class]="isDriver ? 'green-button button-driver' : 'green-button button-regular'"
+                    (click)="showEditProfile()">
+                    Edit <mat-icon class="edit-icon">edit</mat-icon>
+                    </button>
+                    <button 
+                    mat-raised-button 
+                    [class]="driverStatus ? 'activity-btn' : 'activity-btn not-active'"
+                    (click)="changeDriverStatus()">
+                    <mat-icon class="edit-icon">{{driverStatus ? 'done' : 'close'}}</mat-icon>{{driverStatus ? 'Active' : 'Not active'}}
+                    </button>
+                </div>
+                <app-review-and-report-tabs [user]="user" [isDriver]="isDriver" [loggedAdmin]="loggedAdmin"></app-review-and-report-tabs>
+            </div>
+            <ng-template #noDataBlock>
+                <h2 class="center">There is nothing to show.</h2>
+            </ng-template>
         </div>
     </div>
-    <ng-template #noDataBlock>
-        <h2 class="center">There is nothing to show.</h2>
-    </ng-template>
-</div>
+</ng-template>

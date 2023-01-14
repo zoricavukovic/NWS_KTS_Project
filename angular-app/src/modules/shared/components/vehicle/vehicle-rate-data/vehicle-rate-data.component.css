@@ -1,0 +1,38 @@
+
+.content {
+    border: 4px solid var(--gray-transparent);
+    min-height: 10rem;
+    width: 20rem;
+}
+
+.car-img {
+    height:11rem; 
+    width:11rem; 
+    position: absolute; 
+    top:-5.5rem; 
+    right:5rem;
+}
+
+.vehicle-data {
+    margin-top: 4rem;
+    margin-left: 2rem;
+}
+
+p {
+    font-weight: bold;
+    color: var(--deep-blue) !important;
+}
+
+.no-rate {
+    font-weight: bold;
+}
+
+.stars {
+    float: right;
+    margin-right: 1rem;
+}
+
+::ng-deep.mat-checkbox-checked.mat-accent.mat-checkbox-disabled .mat-checkbox-background, .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background {
+    background-color: var(--deep-blue) !important;
+    color: var(--deep-blue);
+  }

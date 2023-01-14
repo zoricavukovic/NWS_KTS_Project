@@ -178,3 +178,7 @@ insert into regular_users (id, email, password, name, surname, phone_number, cit
 --
 -- insert into drivers (id, email, password, name, surname, phone_number, city, profile_picture, role_id, active, blocked, start_shift, end_shift, rate, working_minutes, verified, online, drive, vehicle_id) values
 --     (nextval('users_id_gen'), 'uros@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Uros', 'Pejicc', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, null, null, 0, 0, true, false, false, 1);
+--     (nextval('users_id_gen'), 'anastasija@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Anastasija', 'Sam', '0651234567', 'Novi Sad', 'default-user.png',2, false, true, false);
+
+insert into favourite_routes (user_id, route_id) values
+    (2,1);

@@ -69,4 +69,14 @@ public class VehicleController {
     public VehicleDTO getVehicleByVehicleType(@PathVariable String vehicleType){
         return vehicleService.getVehicleDTOByVehicleType(vehicleType);
     }
+
+    @GetMapping("/vehicle-by-driver/{driverId}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
+    public VehicleDTO getVehicleByDriverId(
+            @PathVariable @Valid @NotNull(message = MISSING_ID) Long driverId
+    ) throws EntityNotFoundException {
+
+        return vehicleService.getVehicleOfDriver(driverId);
+    }
 }

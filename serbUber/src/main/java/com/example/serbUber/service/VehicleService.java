@@ -178,4 +178,10 @@ public class VehicleService implements IVehicleService {
             -1;
 
     }
+
+    public VehicleDTO getVehicleOfDriver(Long driverId) throws EntityNotFoundException {
+
+        return new VehicleDTO(vehicleRepository.getVehicleByDriverId(driverId)
+                .orElseThrow(() -> new EntityNotFoundException(driverId, EntityType.VEHICLE)));
+    }
 }

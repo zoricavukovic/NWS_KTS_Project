@@ -201,5 +201,4 @@ public class RegularUserService implements IRegularUserService {
         Page<RegularUser> results = getRegularUserPage(page);
         return fromRegularUsersPage(results.getContent(), results.getSize(), results.getTotalPages());
     }
-
 }

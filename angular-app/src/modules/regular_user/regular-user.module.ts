@@ -28,6 +28,7 @@ import { NgxsModule } from "@ngxs/store";
 import { DrivingNotificationState } from "../shared/state/driving-notification.state";
 import { NgxsReduxDevtoolsPluginModule } from "@ngxs/devtools-plugin";
 import { NgxsLoggerPluginModule } from "@ngxs/logger-plugin";
+import { FavoriteRoutesDataComponent } from "./components/favorite-routes-data/favorite-routes-data.component";
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { NgxsLoggerPluginModule } from "@ngxs/logger-plugin";
     ProcessingPaymentComponent,
     TransactionsHistoryComponent,
     FilterVehicleViewComponent,
-    RouteRowComponent
+    RouteRowComponent,
+    FavoriteRoutesDataComponent
   ],
   imports: [
     CommonModule,
@@ -57,7 +59,7 @@ import { NgxsLoggerPluginModule } from "@ngxs/logger-plugin";
     ProgressSpinnerModule,
     // NgxsModule.forFeature([DrivingNotificationState]),
   ],
-  exports: [HomePassangerComponent],
+  exports: [HomePassangerComponent, FavoriteRoutesDataComponent],
   providers: []
 })
 export class RegularUserModule { }

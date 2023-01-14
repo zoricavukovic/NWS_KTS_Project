@@ -1,0 +1,38 @@
+<div *ngIf="review" [class]="numOfReviews > 1 ? 'review-item-content' : 'review-item-content one-review-card'">
+    <div style="display: flex;">
+        <div [class]="(review.id-1) < 7 ? 'pic random-color-' + (review.id-1) : 'pic random-color-' + (review.id%2)"
+            [matTooltip]="review.sender.name + ' ' + review.sender.surname"
+            (click)="goToUserProfile(review.sender.id)">
+                <div>{{review.sender.name[0] + review.sender.surname[0]}}</div>
+        </div>
+        <div>
+            <p class="name">
+                {{review.sender.name + ' ' +review.sender.surname}}
+                <span
+                [class]="review.sender.online ? 'online-status' : 'offline-status'">
+                    <span class="status"></span>&nbsp;&nbsp;{{review.sender.online ? 'Online' : 'Offline'}}
+                </span>
+            </p>
+        </div>
+    </div>
+    <div>
+        <p class="badge">
+            {{getGeneralImpression(review)}}
+        </p>
+    </div>
+    <div style="margin-top: 1rem; max-width: fit-content;">
+        <span style="display: flex;" matTooltip="Driver's rate">
+            <mat-icon>person</mat-icon>
+            <ngx-stars [readonly]="true" customSize="1.3rem" [initialStars]="review.driverRate" color="var(--stars-gold)"></ngx-stars>
+        </span>
+        <span style="display: flex;" matTooltip="Vehicle's rate">
+            <mat-icon>directions_car</mat-icon>
+            <ngx-stars [readonly]="true" customSize="1.3rem" [initialStars]="review.vehicleRate" color="var(--stars-gold)"></ngx-stars>
+        </span>
+    </div>
+    <div class="message">
+        <p>
+            {{(review.message !== '') ? review.message : "User didn't left any message."}}
+        </p>
+    </div>
+</div>
