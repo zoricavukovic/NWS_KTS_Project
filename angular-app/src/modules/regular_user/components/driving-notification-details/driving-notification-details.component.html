@@ -8,17 +8,16 @@
     <app-driving-details-passengers
       [users]="drivingNotification.receivers"
       [base64Prefix]="base64Prefix"></app-driving-details-passengers>
-    <div style="text-align: right">
-      <h2>
-        <b>={{ drivingNotification.price }}</b>
-      </h2>
+    <div style="float:left;  font-size: 1.7rem;display: flex;flex-direction: row;margin-top:0.2rem;">
+      <b>= {{drivingNotification.price}}</b>
+      <mat-icon class="token-icon">payments</mat-icon>
     </div>
-  <div class="continue-buttons" *ngIf="!answered">
-    <button mat-raised-button style="background-color: var(--white);color: var(--deep-blue);" (click)="rejectRide()">
-      <strong>Reject</strong>
-    </button>
-    <button mat-raised-button style="margin-left:0.7rem;" (click)="acceptRide()">
-      <strong>Accept</strong>
-    </button>
-  </div>
+    <div class="continue-buttons" *ngIf="!answered">
+      <button mat-raised-button style="background-color: var(--white);color: var(--deep-blue);" (click)="rejectRide()">
+        <strong>Reject</strong>
+      </button>
+      <button mat-raised-button style="margin-left:0.7rem;" (click)="acceptRide()">
+        <strong>Accept</strong>
+      </button>
+    </div>
 </div>

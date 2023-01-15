@@ -23,10 +23,15 @@ h1 {
   left: 3rem;
 }
 
+mat-progress-spinner{
+  box-shadow: 0 0 0 10px #283b503a inset;
+  border-radius:50%;
+}
+
 .spinner-div {
   position: relative;
   width: 100px;
-  margin-top:1.8rem;
+  margin-top:0.2rem;
   height: 5rem;
   display: flex;
   align-items: center;

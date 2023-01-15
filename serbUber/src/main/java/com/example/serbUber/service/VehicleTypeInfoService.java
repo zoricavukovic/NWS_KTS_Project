@@ -68,6 +68,11 @@ public class VehicleTypeInfoService implements IVehicleTypeInfoService {
 
     }
 
+    public VehicleTypeInfoDTO getDTO(VehicleType vehicleType) throws EntityNotFoundException {
+
+        return new VehicleTypeInfoDTO(get(vehicleType));
+    }
+
     public boolean isCorrectNumberOfSeats(String vehicleType, int numberOfPassengers) throws EntityNotFoundException {
         VehicleTypeInfo vehicleTypeInfo = get(VehicleType.getVehicleType(vehicleType));
         return vehicleTypeInfo.getNumOfSeats() >= numberOfPassengers;

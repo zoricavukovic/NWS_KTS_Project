@@ -1,5 +1,6 @@
 package com.example.serbUber.controller;
 
+import com.example.serbUber.dto.VehicleDTO;
 import com.example.serbUber.dto.VehicleTypeInfoDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.model.VehicleType;
@@ -37,6 +38,14 @@ public class VehicleTypeInfoController {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
     public double getPriceForSelectedRouteAndVehicle(@PathVariable VehicleType vehicleType, @PathVariable double kilometers) throws EntityNotFoundException {
         return vehicleTypeInfoService.getPriceForVehicleAndChosenRoute(kilometers, vehicleType);
+    }
+
+
+    @GetMapping("/{vehicleType}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
+    public VehicleTypeInfoDTO getVehicleByVehicleType(@PathVariable VehicleType vehicleType) throws EntityNotFoundException {
+        return vehicleTypeInfoService.getDTO(vehicleType);
     }
 
     @PostMapping()

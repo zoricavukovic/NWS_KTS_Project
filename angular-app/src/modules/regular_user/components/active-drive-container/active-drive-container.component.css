@@ -29,6 +29,11 @@
   justify-content: center;
 }
 
+mat-progress-spinner{
+  box-shadow: 0 0 0 10px #283b503a inset;
+  border-radius:50%;
+}
+
 
 .text-container {
   margin-right: 2rem;
