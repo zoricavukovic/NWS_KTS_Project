@@ -3,11 +3,15 @@
     margin-bottom: 1rem;
   }
   
-  .button-container .mat-button-base {
-    margin-left: 30px;
-  }
-  
-  .button-container .mat-button-base .mat-icon {
-    transform: scale(1.4);
-  }
+.button-container .mat-button-base {
+  margin-left: 30px;
+}
+
+.button-container .mat-button-base .mat-icon {
+  transform: scale(1.5);
+}
+
+.icon{
+  transform: scale(1.7);
+}
   

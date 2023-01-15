@@ -1,7 +1,10 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
-import {Subscription} from "rxjs";
+import { Select } from '@ngxs/store';
+import {Observable, Subscription} from "rxjs";
+import { DrivingNotification } from 'src/modules/shared/models/notification/driving-notification';
 import { User } from 'src/modules/shared/models/user/user';
+import { DrivingNotificationState } from 'src/modules/shared/state/driving-notification.state';
 import {AuthService} from "../../../../auth/services/auth-service/auth.service";
 import {DrivingNotificationService} from "../../../services/driving-notification-service/driving-notification.service";
 
@@ -11,11 +14,12 @@ import {DrivingNotificationService} from "../../../services/driving-notification
   styleUrls: ['./driving-details-actions.component.css'],
 })
 export class DrivingDetailsActionsComponent implements OnInit, OnDestroy {
+  @Select(DrivingNotificationState.getDrivingNotification) currentDrivingNotification: Observable<DrivingNotification>;
+  storedDrivingNotification: DrivingNotification;
   @Input() favouriteRoute: boolean;
   @Output() setFavouriteRouteEvent = new EventEmitter<boolean>();
 
   currentUser: User;
-
   authSubscription: Subscription;
   drivingId: number;
 
@@ -29,6 +33,9 @@ export class DrivingDetailsActionsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.currentDrivingNotification.subscribe(response => {
+      this.storedDrivingNotification = response;
+    })
     this.drivingId = +this._activeRoute.snapshot.paramMap.get('id');
     this.authSubscription = this._authService
       .getSubjectCurrentUser()

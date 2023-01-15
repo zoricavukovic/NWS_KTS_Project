@@ -124,6 +124,9 @@
     <button mat-menu-item (click)="redirectToEditPage()">
       <mat-icon color="primary">edit</mat-icon><span>Edit profile</span>
     </button>
+    <button mat-menu-item (click)="redirectToRessetPassword()">
+      <mat-icon color="primary">lock</mat-icon><span>Password</span>
+    </button>
     <div mat-menu-item (click) = "$event.stopPropagation()" *ngIf="isDriver">
       <mat-slide-toggle class="toggle"
       [(ngModel)] = "this.driverActivityStatus"

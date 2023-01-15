@@ -114,4 +114,18 @@ public class GlobalExceptionHandler {
         return ex.getMessage();
     }
 
+    @ExceptionHandler(value = ExcessiveNumOfPassengersException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String excessiveNumOfPassengersException(ExcessiveNumOfPassengersException excessiveNumOfPassengersException) {
+
+        return excessiveNumOfPassengersException.getMessage();
+    }
+
+    @ExceptionHandler(value = InvalidStartedDateTimeException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String invalidStartedDateTimeException(InvalidStartedDateTimeException invalidStartedDateTimeException) {
+
+        return invalidStartedDateTimeException.getMessage();
+    }
+
 }

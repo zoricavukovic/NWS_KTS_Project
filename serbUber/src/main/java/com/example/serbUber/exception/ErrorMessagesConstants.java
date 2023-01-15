@@ -37,5 +37,6 @@ public class ErrorMessagesConstants {
     public static final String MAX_NUM_OF_TOKENS = "Max num of tokens must be greater than 0.";
     public static final String PAYPAL_PAYMENT_EXCEPTION = "Payment cannot be realized, something went wrong.";
     public static final String DRIVER_ALREADY_HAS_STARTED_DRIVING_EXCEPTION = "Driver already has started driving.";
+    public static final String INVALID_STARTED_DATE_TIME_EXCEPTION = "You can only schedule your ride 5 hours in advance.";
     public static final String DRIVING_SHOULD_NOT_START_YET = String.format("The max number of minutes before driving can start is %d.", MAX_MINUTES_BEFORE_DRIVING_CAN_START);
 }

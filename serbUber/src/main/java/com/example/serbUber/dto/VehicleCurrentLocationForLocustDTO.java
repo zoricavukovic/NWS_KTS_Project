@@ -19,10 +19,11 @@ public class VehicleCurrentLocationForLocustDTO {
         this.vehicleId = vehicleWithDriverId.getVehicle().getId();
         this.driverId = vehicleWithDriverId.getDriverId();
         vehicleWithDriverId.getVehicle().getActiveRoute().getLocations().forEach(drivingLocationIndex -> {
-                this.waypoints.add(new LngLatLiteralDTO(drivingLocationIndex.getLocation().getLat(), drivingLocationIndex.getLocation().getLat()));
+                this.waypoints.add(new LngLatLiteralDTO(drivingLocationIndex.getLocation().getLat(), drivingLocationIndex.getLocation().getLon()));
                 this.chosenRouteIdx.add(drivingLocationIndex.getRouteIndex());
             }
         );
+        this.inDrive = vehicleWithDriverId.getVehicle().hasRoute();
        this.currentIndexOfLocation = vehicleWithDriverId.getVehicle().getCurrentLocationIndex();
     }
 

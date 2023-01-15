@@ -1,0 +1,33 @@
+<div *ngIf="vehicle" class="content">
+    <div style="position:relative">
+        <img class="car-img"
+               src="../../../assets/images/{{vehicle.vehicleTypeInfo.vehicleType.toLowerCase()}}.png"
+          >
+    </div>
+    <div class="vehicle-data">
+        <p style="display: flex;">
+            <mat-checkbox [checked]="vehicle.petFriendly" disabled>
+                <span style="color: var(--deep-blue);">Pet friendly
+                </span>
+            </mat-checkbox>
+        </p>
+        <p style="margin-bottom: 0.2rem; display: flex;">
+            <mat-checkbox [checked]="vehicle.babySeat" disabled>
+                <span style="color: var(--deep-blue);">Baby seat
+                </span>
+            </mat-checkbox></p>
+        <ngx-stars 
+            class="stars" 
+            *ngIf="vehicle.rate > 0; else noRatingBlock" 
+            [readonly]="true" 
+            customSize="1.4rem" 
+            [initialStars]="vehicle.rate" 
+            color="var(--stars-gold)"
+            matTooltip="Vehicle's rate">
+        </ngx-stars>
+        <ng-template #noRatingBlock>
+            <span class="no-rate stars">Not yet rated</span>
+        </ng-template>
+    </div>
+
+</div>

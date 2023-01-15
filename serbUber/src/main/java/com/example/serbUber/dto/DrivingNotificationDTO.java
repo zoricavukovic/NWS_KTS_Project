@@ -2,10 +2,7 @@ package com.example.serbUber.dto;
 
 import com.example.serbUber.model.*;
 import com.example.serbUber.model.user.RegularUser;
-import com.example.serbUber.model.user.User;
-import com.graphhopper.storage.index.LocationIndex;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,15 +17,17 @@ public class DrivingNotificationDTO {
     private DrivingNotificationType drivingNotificationType;
     private LocalDateTime started;
     private int duration;
-    private Vehicle vehicle;
+    private VehicleTypeInfo vehicleTypeInfo;
     private Set<RegularUser> receivers;
     private double price;
+
+    private LocalDateTime chosenDateTime;
 
     public DrivingNotificationDTO(final DrivingNotification drivingNotification) {
         this.route = drivingNotification.getRoute();
         this.price = drivingNotification.getPrice();
         this.senderEmail = drivingNotification.getSender().getEmail();
-        this.vehicle = drivingNotification.getVehicle();
+        this.vehicleTypeInfo = drivingNotification.getVehicleTypeInfo();
         this.receivers = getListOfUsers(drivingNotification.getReceiversReviewed());
     }
 
@@ -38,7 +37,6 @@ public class DrivingNotificationDTO {
                 notificationDTOs.add(new DrivingNotificationDTO(notification)));
         return notificationDTOs;
     }
-
 
 
     public double getPrice() {
@@ -81,12 +79,12 @@ public class DrivingNotificationDTO {
         this.duration = duration;
     }
 
-    public Vehicle getVehicle() {
-        return vehicle;
+    public VehicleTypeInfo getVehicleTypeInfo() {
+        return vehicleTypeInfo;
     }
 
-    public void setVehicle(Vehicle vehicle) {
-        this.vehicle = vehicle;
+    public void setVehicleTypeInfo(VehicleTypeInfo vehicleTypeInfo) {
+        this.vehicleTypeInfo = vehicleTypeInfo;
     }
 
     public Set<RegularUser> getReceivers() {
@@ -105,4 +103,11 @@ public class DrivingNotificationDTO {
         this.route = route;
     }
 
+    public LocalDateTime getChosenDateTime() {
+        return chosenDateTime;
+    }
+
+    public void setChosenDateTime(LocalDateTime chosenDateTime) {
+        this.chosenDateTime = chosenDateTime;
+    }
 }

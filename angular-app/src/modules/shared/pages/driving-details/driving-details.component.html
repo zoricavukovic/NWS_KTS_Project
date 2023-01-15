@@ -26,7 +26,7 @@
       <b>={{ driving.price }}</b>
     </h2>
   </div>
-  <div class="spinner-div">
+  <div class="spinner-div" *ngIf="storedDrivingNotification && storedDrivingNotification.drivingId===id">
     <mat-progress-spinner class="spinner" color='accent' [mode]="'determinate'" [value]="storedDrivingNotification.minutes">
     </mat-progress-spinner>
     <h1 style="margin-left:6rem; margin-top: 2rem;" id="minutes">{{storedDrivingNotification.minutes}}</h1>

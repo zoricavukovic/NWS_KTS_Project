@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
@@ -10,6 +10,8 @@ import {ConfigService} from "../../../shared/services/config-service/config.serv
 import {
   ConfirmBlockingDialogComponent
 } from "../../../shared/components/confirm-blocking-dialog/confirm-blocking-dialog.component";
+import { DriverService } from 'src/modules/shared/services/driver-service/driver.service';
+import { Driver } from 'src/modules/shared/models/user/driver';
 
 @Component({
   selector: 'app-basic-user-profile',
@@ -26,15 +28,31 @@ export class BasicUserProfileComponent implements OnInit, OnDestroy {
   blockUserSubscription: Subscription;
   unblockUserSubscription: Subscription;
 
+  isDriver: boolean;
+  isRegular: boolean;
+  loggedAdmin: boolean;
+  currentUserIsLogged: boolean;
+  authSubscription: Subscription;
+  driverSubscription: Subscription;
+
+  driverStatus: boolean;
+
   constructor(
+    public configService: ConfigService,
     private route: ActivatedRoute,
     private userService: UserService,
     private authService: AuthService,
     private dialogBlockReason: MatDialog,
     private toast: ToastrService,
-    private configService: ConfigService
+    private router: Router,
+    private driverService: DriverService
   ) {
     this.userBlocked = false;
+    this.isDriver = false;
+    this.loggedAdmin = false;
+    this.currentUserIsLogged = false;
+    this.user = null;
+    this.driverStatus = false;
   }
 
   ngOnInit(): void {
@@ -42,8 +60,15 @@ export class BasicUserProfileComponent implements OnInit, OnDestroy {
     this.userSubscription = this.userService.get(this.userId).subscribe(
       (user: User) => {
         this.user = user;
-        if (user && this.loggedUserIsAdmin()) {
+        if (user) {
+          this.isDriver = this.userIsDriver();
+          this.isRegular = this.userIsRegular();
+          this.loggedAdmin = this.loggedUserIsAdmin();
+          this.checkIfUserIsCurrent();
           this.loadBlocked();
+          if (this.isDriver && this.currentUserIsLogged) {
+            this.loadDriver();
+          }
         }
       },
       error => {
@@ -55,18 +80,62 @@ export class BasicUserProfileComponent implements OnInit, OnDestroy {
     );
   }
 
-  loadBlocked(): void {
-    this.blockedUserSubscription = this.userService
-      .getBlockedData(this.user.id, this.userIsDriver())
-      .subscribe(response => {
-        if (response) {
-          this.userBlocked = response;
+  loadDriver(): void {
+    this.driverSubscription = this.driverService.get(this.user.id).subscribe((response: Driver) => {
+      this.driverStatus = response.active;
+    });
+  }
+
+  changeDriverStatus() {
+    this.driverSubscription = this.driverService
+      .updateActivityStatus(
+        this.driverService.createDriverUpdateActivityRequest(
+          this.user.id,
+          !this.driverStatus
+        )
+      )
+      .subscribe(
+        (response: Driver) => {
+          this.driverStatus = response.active;
+          this.driverService.setGlobalDriver(response);
+        },
+        error => {
+          this.driverStatus = !this.driverStatus;
+          this.toast.error(error.error, 'Changing activity status failed');
         }
-      });
+      );
+  }
+
+  checkIfUserIsCurrent(): void {
+    this.authSubscription = this.authService.getSubjectCurrentUser().subscribe(
+      user => {
+        this.currentUserIsLogged = user.email === this.user.email
+      }
+    );
+  }
+
+  loadBlocked(): void {
+    if (this.loggedAdmin && !this.currentUserIsLogged) {
+      this.blockedUserSubscription = this.userService
+        .getBlockedData(this.user.id, this.userIsDriver())
+        .subscribe(response => {
+          if (response) {
+            this.userBlocked = response;
+          }
+        });
+    }
+  }
+
+  showEditProfile(): void {
+    this.router.navigate(['/serb-uber/user/edit-profile-data']);
   }
 
   userIsDriver(): boolean {
     return this.user?.role.name === this.configService.ROLE_DRIVER;
+  }
+
+  userIsRegular(): boolean {
+    return this.user?.role.name === this.configService.ROLE_REGULAR_USER;
   }
 
   loggedUserIsAdmin(): boolean {
@@ -102,20 +171,22 @@ export class BasicUserProfileComponent implements OnInit, OnDestroy {
   }
 
   unblockUser(): void {
-    this.unblockUserSubscription = this.userService
-      .unblockUser(this.user.id, this.userIsDriver())
-      .subscribe(
-        res => {
-          this.toast.success(
-            `User with id ${this.userId} is successfully unblocked.`,
-            'User unblocked!'
-          );
-          this.userBlocked = false;
-        },
-        error => {
-          this.toast.error(error.error, 'User cannot be unblocked!');
-        }
-      );
+    if (this.loggedAdmin) {
+      this.unblockUserSubscription = this.userService
+        .unblockUser(this.user.id, this.userIsDriver())
+        .subscribe(
+          res => {
+            this.toast.success(
+              `User with id ${this.userId} is successfully unblocked.`,
+              'User unblocked!'
+            );
+            this.userBlocked = false;
+          },
+          error => {
+            this.toast.error(error.error, 'User cannot be unblocked!');
+          }
+        );
+    }
   }
 
   ngOnDestroy(): void {
@@ -136,6 +207,14 @@ export class BasicUserProfileComponent implements OnInit, OnDestroy {
 
     if (this.unblockUserSubscription) {
       this.unblockUserSubscription.unsubscribe();
+    }
+
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
+    }
+
+    if (this.driverSubscription) {
+      this.driverSubscription.unsubscribe();
     }
   }
 }

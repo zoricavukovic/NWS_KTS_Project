@@ -1,0 +1,41 @@
+.content {
+    border: 4px solid var(--gray-transparent);
+    height: 12rem;
+    min-width: 39rem;
+    overflow-y: auto;
+}
+
+.route-row {
+    display: flex;
+    background-color: var(--gray-transparent);
+    border-radius: 1rem;
+    margin: 3%;
+    padding: 1%;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+table {
+    table-layout: inherit;
+    width: 100%;
+}
+
+.btn {
+    margin-left: auto;
+    margin-right: 1rem;
+}
+
+th.aligner {
+    height: 100%;
+    vertical-align: middle;
+    text-align: center;
+    overflow: hidden;
+}
+
+.no-content {
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 2rem;
+}

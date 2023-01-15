@@ -83,7 +83,7 @@ export class EditProfileComponent implements OnInit, OnDestroy {
         res => {
           const parsedUser = res as User;
           this.authService.setUserInLocalStorage(parsedUser);
-          this.router.navigate(['/serb-uber/user/profile-page']);
+          this.router.navigate([`/serb-uber/user/user-profile/${this.user.id}`]);
           this.authService.userIsDriver()
             ? this.toast.success(
                 'Update request is sent to admin!',
@@ -99,7 +99,7 @@ export class EditProfileComponent implements OnInit, OnDestroy {
   }
 
   cancel() {
-    this.router.navigate(['/serb-uber/user/profile-page']);
+    this.router.navigate([`/serb-uber/user/user-profile/${this.user.id}`]);
   }
 
   checkValidForm():boolean {

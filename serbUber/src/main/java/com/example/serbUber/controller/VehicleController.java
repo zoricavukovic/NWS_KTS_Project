@@ -5,6 +5,8 @@ import com.example.serbUber.dto.VehicleCurrentLocationDTO;
 import com.example.serbUber.dto.VehicleCurrentLocationForLocustDTO;
 import com.example.serbUber.dto.VehicleDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
+import com.example.serbUber.request.LocationsForRoutesRequest;
+import com.example.serbUber.request.LongLatRequest;
 import com.example.serbUber.request.VehicleRequest;
 import com.example.serbUber.service.VehicleService;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -57,9 +59,19 @@ public class VehicleController {
         return vehicleService.updateCurrentVehiclesLocation();
     }
 
+    @PutMapping(value = "/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public VehicleCurrentLocationForLocustDTO updateCurrentPosition(
+        @Valid @NotNull(message = MISSING_ID) @PathVariable final Long id,
+        @Valid @RequestBody LongLatRequest longLatRequest
+        ) throws EntityNotFoundException {
+
+        return this.vehicleService.updateCurrentPosition(id, longLatRequest.getLon(), longLatRequest.getLat());
+    }
+
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
+    public void delete(@Valid @NotNull(message = MISSING_ID) @PathVariable final Long id) {
 
         this.vehicleService.delete(id);
     }
@@ -76,5 +88,15 @@ public class VehicleController {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
     public VehicleDTO getVehicleByVehicleType(@PathVariable String vehicleType){
         return vehicleService.getVehicleDTOByVehicleType(vehicleType);
+    }
+
+    @GetMapping("/vehicle-by-driver/{driverId}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
+    public VehicleDTO getVehicleByDriverId(
+            @PathVariable @Valid @NotNull(message = MISSING_ID) Long driverId
+    ) throws EntityNotFoundException {
+
+        return vehicleService.getVehicleOfDriver(driverId);
     }
 }

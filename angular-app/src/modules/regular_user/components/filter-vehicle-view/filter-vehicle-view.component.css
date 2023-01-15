@@ -18,3 +18,8 @@
 #acceptDriving {
   display: none;
 }
+
+.token-icon {
+  margin-left: 1rem;
+  scale: 1.5;
+}

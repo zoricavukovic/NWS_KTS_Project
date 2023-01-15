@@ -54,6 +54,7 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
   vehicleRatingSubscription: Subscription;
   favouriteRouteSubscription: Subscription;
   vehicleSubscription: Subscription;
+  routeSubscription: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -88,7 +89,7 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
         });
 
         if (this.map){
-          this.routeService.getRoutePath(driving?.route?.id).subscribe(path => {
+          this.routeSubscription = this.routeService.getRoutePath(driving?.route?.id).subscribe(path => {
             this.routePolyline = drawPolylineWithLngLatArray(this.map, path);
             if (driving.active){
               drawActiveRide(this.map, path, driving);
@@ -174,6 +175,10 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
 
     if (this.vehicleRatingSubscription) {
       this.vehicleRatingSubscription.unsubscribe();
+    }
+
+    if(this.routeSubscription){
+      this.routeSubscription.unsubscribe();
     }
   }
 }

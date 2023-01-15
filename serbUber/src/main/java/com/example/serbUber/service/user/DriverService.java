@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import static com.example.serbUber.SerbUberApplication.hopper;
@@ -160,32 +161,103 @@ public class DriverService implements IDriverService{
     }
 
 
-    public Driver getDriverForDriving( DrivingNotification drivingNotification) throws EntityNotFoundException {
+    public Driver getDriverForDriving(final DrivingNotification drivingNotification) throws EntityNotFoundException {
         LocalDateTime startDate = drivingNotification.getStarted();
         LocalDateTime endDate = drivingNotification.getStarted().plusMinutes(drivingNotification.getDuration());
-        Vehicle vehicle = drivingNotification.getVehicle();
         Location startLocation = drivingNotification.getRoute().getLocations().first().getLocation();
-        List<Driver> activeAndFreeDrivers = getActiveAndFreeDrivers(startDate, endDate, vehicle.getVehicleTypeInfo().getVehicleType());
-        if(activeAndFreeDrivers.size() == 0) { // nema trenutno slobodnih aktivnih vozaca
-            activeAndFreeDrivers = getFutureFreeDrivers(startDate, endDate, vehicle.getVehicleTypeInfo().getVehicleType());
+//        List<Driver> activeAndFreeDrivers = getActiveAndFreeDrivers(
+//            startDate,
+//            endDate,
+//            vehicle.getVehicleTypeInfo().getVehicleType(),
+//            vehicle.isBabySeat(),
+//            vehicle.isPetFriendly()
+//        );
+
+        List<Driver> drivers = driverRepository.getActiveDriversWhichVehicleMatchParams(drivingNotification.getVehicleTypeInfo().getVehicleType());
+
+        return drivers.size() > 0 ?
+            findMatchesDriver(
+                drivers,
+                startLocation.getLon(),
+                startLocation.getLat(),
+                drivingNotification.isBabySeat(),
+                drivingNotification.isPetFriendly(),
+                startDate,
+                endDate
+            )
+            : null;
+    }
+
+    private Driver findMatchesDriver(
+        final List<Driver> drivers,
+        final double lonStart,
+        final double latStart,
+        final boolean babySeat,
+        final boolean petFriendly,
+        final LocalDateTime start,
+        final LocalDateTime end
+    ) throws EntityNotFoundException {
+        List<Driver> matchedDrivers = new LinkedList<>();
+        for (Driver driver: drivers){
+            if (checkDriverVehicleAttributes(driver, babySeat, petFriendly)){
+                if (checkIfDriverNotHaveNowOrFutureDriving(driver, start, end)){
+                    matchedDrivers.add(driver);
+                };
+            }
+
+        }
+        return matchedDrivers.size() > 0? findNearestDriver(matchedDrivers, lonStart, latStart): null;
+    }
+
+    private boolean checkDriverVehicleAttributes(Driver driver, boolean babySeat, boolean petFriendly) {
+        if (babySeat && petFriendly && driver.getVehicle().isBabySeat() && driver.getVehicle().isPetFriendly()){
+
+            return true;
+        }
+        else if (babySeat && !petFriendly && driver.getVehicle().isBabySeat()){
+            return true;
+        }
+        else if (!babySeat && petFriendly && driver.getVehicle().isPetFriendly()){
+
+            return true;
+        }
+        else return !babySeat && !petFriendly;
+    }
+
+    private boolean checkIfDriverNotHaveNowOrFutureDriving(Driver driver, final LocalDateTime start, final LocalDateTime end) {
+        boolean matches = true;
+        for (Driving driving: driver.getDrivings()){
+            if (driving.getDrivingStatus().equals(DrivingStatus.ACCEPTED) && driving.isActive()){
+                long minutesDifference = Math.abs(ChronoUnit.MINUTES.between(driving.getStarted().plusMinutes(driving.getDuration()), start));
+                if (minutesDifference > 5){
+                    matches = false;
+                    break;
+                }
+            }
+            if (driving.getDrivingStatus().equals(DrivingStatus.ACCEPTED) && !driving.isActive()){
+                if (!(start.isAfter(driving.getEnd()) || end.isBefore(driving.getStarted()))){
+                    matches = false;
+                    break;
+                }
+            }
         }
 
-       return activeAndFreeDrivers.size() > 0 ?
-               findNearestDriver(activeAndFreeDrivers, startLocation.getLon(), startLocation.getLat())
-               : null;
+        return matches;
     }
 
     private Driver findNearestDriver(List<Driver> activeAndFreeDrivers, double lonStart, double latStart) throws EntityNotFoundException {
-        double latEnd = vehicleService.getLatOfCurrentVehiclePosition(activeAndFreeDrivers.get(0).getVehicle());
-        double lonEnd = vehicleService.getLonOfCurrentVehiclePosition(activeAndFreeDrivers.get(0).getVehicle());;
-        double minDistance = getDistance(lonStart, latStart, lonEnd, latEnd);
+//        double latEnd = vehicleService.getLatOfCurrentVehiclePosition(activeAndFreeDrivers.get(0).getVehicle());
+//        double lonEnd = vehicleService.getLonOfCurrentVehiclePosition(activeAndFreeDrivers.get(0).getVehicle());
+        double lon = activeAndFreeDrivers.get(0).getVehicle().getCurrentStop().getLon();
+        double lat = activeAndFreeDrivers.get(0).getVehicle().getCurrentStop().getLat();
+        double minDistance = getDistance(lonStart, latStart, lon, lat);
         Driver nearestDriver = activeAndFreeDrivers.get(0);
         for(Driver driver : activeAndFreeDrivers){
             double newMinDistance = getDistance(
                 lonStart,
                 latStart,
-                vehicleService.getLonOfCurrentVehiclePosition(driver.getVehicle()),
-                vehicleService.getLatOfCurrentVehiclePosition(driver.getVehicle())
+                driver.getVehicle().getCurrentStop().getLon(),
+                driver.getVehicle().getCurrentStop().getLat()
             );
             if(newMinDistance < minDistance){
                 minDistance = newMinDistance;
@@ -196,20 +268,11 @@ public class DriverService implements IDriverService{
     }
 
     private double getDistance(double lonStart, double latStart, double lonEnd, double latEnd){
-//        GHRequest request = new GHRequest(latStart, lonStart, latEnd, lonEnd);
-//        request.setProfile("car");
-//        GHResponse route = hopper.route(request);
-//        return route.getBest().getDistance();
-//        GHRequest req = new GHRequest().setProfile("car")
-//                .addPoint(new GHPoint(latStart, lonStart))
-//                .addPoint(new GHPoint(latEnd, lonEnd))
-//                .setHeadings(Arrays.asList(180d, 90d))
-//                .putHint(Parameters.CH.DISABLE, true);
-//
-//        GHResponse res = hopper.route(req);
-//        return res.getBest().getDistance();
-        Random random = new Random();
-        return random.nextDouble(2.0,20.0);
+        GHRequest request = new GHRequest(latStart, lonStart, latEnd, lonEnd);
+        request.setProfile("car");
+        GHResponse route = hopper.route(request);
+
+        return route.getBest().getDistance();
     }
 
 
@@ -226,8 +289,14 @@ public class DriverService implements IDriverService{
        return futureFreeDrivers;
     }
 
-    private List<Driver> getActiveAndFreeDrivers(LocalDateTime startDate, LocalDateTime endDate, VehicleType vehicleType) {
-        return driverRepository.getActiveAndFreeDrivers(startDate,endDate,vehicleType);
+    private List<Driver> getActiveAndFreeDrivers(
+        final LocalDateTime startDate,
+        final LocalDateTime endDate,
+        final VehicleType vehicleType,
+        final boolean babySeat,
+        final boolean petFriendly
+    ) {
+        return driverRepository.getActiveAndFreeDrivers(startDate,endDate,vehicleType, babySeat, petFriendly);
     }
 
     public List<DriverPageDTO> getDriversWithPagination(int pageNumber, int pageSize) {

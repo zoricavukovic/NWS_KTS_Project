@@ -46,13 +46,12 @@ const MaterialConstants = [
   MatExpansionModule,
   MatIconModule,
   MatToolbarModule,
-  MatIconModule,
   MatTabsModule,
   MatDialogModule,
   MatStepperModule,
   MatTooltipModule,
   MatSlideToggleModule,
-  MatProgressSpinnerModule,
+  MatProgressSpinnerModule
 ]
 
 @NgModule({

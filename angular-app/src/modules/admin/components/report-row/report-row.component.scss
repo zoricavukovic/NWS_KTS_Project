@@ -1,0 +1,85 @@
+
+.pic {
+    width: 3.5rem;
+    height: 3.5rem;
+    background-size: cover;
+    background-position: center;
+    border-radius: 50%;
+    font-size: 1.4rem;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+}
+
+.pic>div {
+    margin-top: 1.1rem;
+}
+
+
+.review-item-content {
+    border-radius: 15px;
+    margin-left: 2%;
+    margin-right: 2%;
+    min-height: 12rem;
+    padding: 0.5rem;
+    border: 3px solid var(--gray);
+}
+
+.one-review-card {
+    margin-left: 20% !important;
+    margin-right: 20% !important;
+}
+
+.name {
+    margin-left: 1.1rem;
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin-top: 1.2rem;
+}
+
+.name>span {
+    margin-left: 1rem;
+    font-size: 1rem;
+    font-weight: normal;
+}
+
+.online-status {
+    color: green;
+
+    .status {
+        height: 0.4rem;
+        width: 0.4rem;
+        background-color: green;
+        margin-top: 0.5rem;
+    }
+}
+
+.offline-status {
+    color: red;
+    
+    .status {
+        height: 0.4rem;
+        width: 0.4rem;
+        background-color: red;
+        margin-top: 0.5rem;
+    }
+}
+
+.badge {
+    margin-top: 0.4rem;
+    font-size: 1rem;
+    border-radius: 0.7rem;
+    padding: 1.5%;
+    max-width: fit-content;
+    margin-bottom: 1rem;
+}
+
+.message {
+    margin-left: 0.2rem;
+    max-width: 24rem;
+    height: auto;
+    margin-top: 1rem;
+    font-size: 1.3rem;
+    font-weight: bold;
+    overflow-wrap: break-word;
+}

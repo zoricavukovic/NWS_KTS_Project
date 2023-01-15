@@ -33,16 +33,32 @@ public class WebSocketService {
         this.messagingTemplate.convertAndSend("/user/global/connect", vehicleDTOs);
     }
 
-    public void sendDrivingNotification(DrivingNotification drivingNotification) {
-        DrivingNotificationWebSocketDTO dto = new DrivingNotificationWebSocketDTO(
-                drivingNotification.getId(),
-                drivingNotification.getSender().getEmail(),
-                DrivingNotificationType.LINKED_USER
-        );
-        drivingNotification.getReceiversReviewed().forEach((key, value) -> {
-            this.messagingTemplate.convertAndSendToUser(key.getEmail(), "/connect", dto);
+    public void sendDrivingNotification(
+        final DrivingNotificationWebSocketDTO drivingNotificationDTO,
+        final Map<RegularUser, Integer> users
+    ) {
+        users.forEach((key, value) -> {
+            this.messagingTemplate.convertAndSendToUser(key.getEmail(), "/connect", drivingNotificationDTO);
         });
+        if (drivingNotificationDTO.getDrivingNotificationType().equals(DrivingNotificationType.DELETED)){
+            this.messagingTemplate.convertAndSendToUser(drivingNotificationDTO.getSenderEmail(), "/connect", drivingNotificationDTO);
+        }
     }
+
+    public void passengerNotAcceptDrivingNotification(Set<RegularUser> regularUsers, String userEmail, String senderEmail) {
+        String messageForPassengers =  String.format("Passenger %s not accept ride. Ride is rejected.", userEmail);
+        if (regularUsers.size() > 0) {
+            regularUsers.forEach(user -> {
+                if(!user.getEmail().equals(userEmail)) {
+                    this.messagingTemplate.convertAndSendToUser(user.getEmail(), "/passenger-not-accept-driving", messageForPassengers);
+                }
+            });
+        }
+        String messageForSender = String.format("Your ride is rejected. Passenger %s is not accept ride.", userEmail);
+        this.messagingTemplate.convertAndSendToUser(senderEmail, "/passenger-not-accept-driving", messageForSender);
+    }
+
+
 
     public void sendActivityResetNotification(DriverActivityResetNotificationDTO dto) {
         this.messagingTemplate.convertAndSendToUser(dto.getEmail(), "/connect", dto);

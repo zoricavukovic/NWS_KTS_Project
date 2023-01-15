@@ -56,11 +56,21 @@ public class VehicleTypeInfoService implements IVehicleTypeInfoService {
         return findBy(vehicleType).getStartPrice();
     }
 
+    public double getPriceForVehicleAndChosenRoute(double kilometers, VehicleType vehicleType) throws EntityNotFoundException {
+        double priceForType = getPriceForVehicle(vehicleType);
+        return priceForType + (kilometers/1000)*1; // *1 token -> 1token=1e
+    }
+
     public VehicleTypeInfo get(VehicleType vehicleType) throws EntityNotFoundException {
 
         return vehicleTypeInfoRepository.getVehicleTypeInfoByName(vehicleType)
                 .orElseThrow(() -> new EntityNotFoundException(vehicleType.toString(), EntityType.VEHICLE_TYPE_INFO));
 
+    }
+
+    public boolean isCorrectNumberOfSeats(String vehicleType, int numberOfPassengers) throws EntityNotFoundException {
+        VehicleTypeInfo vehicleTypeInfo = get(VehicleType.getVehicleType(vehicleType));
+        return vehicleTypeInfo.getNumOfSeats() >= numberOfPassengers;
     }
 
 }

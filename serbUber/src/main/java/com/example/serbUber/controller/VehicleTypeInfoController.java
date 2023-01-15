@@ -32,12 +32,11 @@ public class VehicleTypeInfoController {
         return this.vehicleTypeInfoService.getAll();
     }
 
-    @GetMapping("/price/{type}/{kilometers}")
+    @GetMapping("/price/{vehicleType}/{kilometers}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
-    public double getPriceForSelectedRouteAndVehicle(@PathVariable VehicleType type, @PathVariable double kilometers) throws EntityNotFoundException {
-        double priceForType = this.vehicleTypeInfoService.getPriceForVehicle(type);
-        return priceForType + (kilometers/1000)*1; // *1 token -> 1token=1e
+    public double getPriceForSelectedRouteAndVehicle(@PathVariable VehicleType vehicleType, @PathVariable double kilometers) throws EntityNotFoundException {
+        return vehicleTypeInfoService.getPriceForVehicleAndChosenRoute(kilometers, vehicleType);
     }
 
     @PostMapping()

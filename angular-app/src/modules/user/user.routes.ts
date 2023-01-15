@@ -2,7 +2,6 @@ import {Routes} from "@angular/router";
 import {RegistrationComponent} from "./pages/registration/registration.component";
 import {ResetPasswordComponent} from "./pages/reset-password/reset-password.component";
 import {RegistrationGuard} from "./guards/registration/registration.guard";
-import {ProfilePageComponent} from "./pages/profile-page/profile-page.component";
 import {EditProfileComponent} from "./pages/edit-profile/edit-profile.component";
 import {BasicUserProfileComponent} from "./pages/basic-user-profile/basic-user-profile.component";
 import {RoleGuard} from "../auth/guards/role/role.guard";
@@ -30,16 +29,16 @@ export const UserRoutes: Routes = [
     data: {expectedRoles: "ROLE_REGULAR_USER|ROLE_DRIVER"}
   },
   {
+    path: 'driving-notification/:id',
+    pathMatch: "full",
+    component: MapPageComponent,
+    canActivate: [RoleGuard],
+    data: {expectedRoles: "ROLE_REGULAR_USER"}
+  },
+  {
     path: "reset-password/:email",
     pathMatch: "full",
     component: ResetPasswordComponent
-  },
-  {
-    path: 'profile-page',
-    pathMatch: "full",
-    component: ProfilePageComponent,
-    canActivate: [RoleGuard],
-    data: {expectedRoles: "ROLE_ADMIN|ROLE_REGULAR_USER|ROLE_DRIVER"}
   },
   {
     path: 'edit-profile-data',

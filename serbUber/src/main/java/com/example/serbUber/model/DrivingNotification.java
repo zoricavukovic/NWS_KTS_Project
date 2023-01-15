@@ -41,8 +41,8 @@ public class DrivingNotification {
     private boolean petFriendly;
 
     @OneToOne
-    @JoinColumn(name = "vehicle_id", referencedColumnName = "id")
-    private Vehicle vehicle;
+    @JoinColumn(name = "vehicle_type_info", referencedColumnName = "id")
+    private VehicleTypeInfo vehicleTypeInfo;
 
     @ElementCollection
     private Map<RegularUser, Integer> receiversReviewed;
@@ -55,7 +55,7 @@ public class DrivingNotification {
             final int duration,
             final boolean babySeat,
             final boolean petFriendly,
-            final Vehicle vehicle,
+            final VehicleTypeInfo vehicleTypeInfo,
             final Map<RegularUser, Integer> receiversReviewed
     ) {
         this.route = route;
@@ -65,7 +65,7 @@ public class DrivingNotification {
         this.duration = duration;
         this.petFriendly = petFriendly;
         this.babySeat = babySeat;
-        this.vehicle = vehicle;
+        this.vehicleTypeInfo = vehicleTypeInfo;
         this.receiversReviewed = receiversReviewed;
     }
 
@@ -135,12 +135,12 @@ public class DrivingNotification {
         this.petFriendly = petFriendly;
     }
 
-    public Vehicle getVehicle() {
-        return vehicle;
+    public VehicleTypeInfo getVehicleTypeInfo() {
+        return vehicleTypeInfo;
     }
 
-    public void setVehicle(Vehicle vehicle) {
-        this.vehicle = vehicle;
+    public void setVehicleTypeInfo(VehicleTypeInfo vehicleTypeInfo) {
+        this.vehicleTypeInfo = vehicleTypeInfo;
     }
 
     public Map<RegularUser, Integer> getReceiversReviewed() {

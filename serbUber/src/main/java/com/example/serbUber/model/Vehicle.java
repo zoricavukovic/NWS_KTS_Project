@@ -18,7 +18,7 @@ public class Vehicle {
     @Column(name="baby_seat", nullable = false)
     private boolean babySeat;
 
-    @OneToOne()
+    @ManyToOne()
     @JoinColumn(name = "vehicle_type_id", referencedColumnName = "id")
     private VehicleTypeInfo vehicleTypeInfo;
 

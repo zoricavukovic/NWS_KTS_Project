@@ -5,7 +5,6 @@ import com.example.serbUber.model.DrivingNotificationType;
 public class DrivingNotificationWebSocketDTO {
     private Long id;
     private String senderEmail;
-
     private DrivingNotificationType drivingNotificationType;
 
     public DrivingNotificationWebSocketDTO(Long id, String senderEmail, DrivingNotificationType drivingNotificationType) {

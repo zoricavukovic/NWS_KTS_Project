@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
-    @Query("select r from Review r left join fetch r.driving d where d.driverId = ?1")
+    @Query("select r from Review r left join fetch r.driving d where d.driver.id = ?1")
     List<Review> findAllByDriverId(Long id);
 
     @Query("select r from Review r left join fetch r.driving d where d.id=?1")

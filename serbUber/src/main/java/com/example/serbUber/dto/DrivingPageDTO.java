@@ -1,17 +1,28 @@
 package com.example.serbUber.dto;
 
 import com.example.serbUber.model.Driving;
+import com.example.serbUber.model.DrivingStatus;
+import com.example.serbUber.model.Route;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
 
-public class DrivingPageDTO extends DrivingDTO{
+public class DrivingPageDTO{
 
+    private Long id;
+    private int duration;
+    private LocalDateTime started;
+    private Route route;
+    private DrivingStatus drivingStatus;
     private int pageSize;
     private int pageNumber;
 
     public DrivingPageDTO(Driving driving, int pageSize, int pageNumber) {
-        super(driving);
+        this.id = driving.getId();
+        this.duration = driving.getDuration();
+        this.started = driving.getStarted();
+        this.route = driving.getRoute();
+        this.drivingStatus = driving.getDrivingStatus();
         this.pageSize = pageSize;
         this.pageNumber = pageNumber;
     }
@@ -38,5 +49,45 @@ public class DrivingPageDTO extends DrivingDTO{
 
     public void setPageNumber(int pageNumber) {
         this.pageNumber = pageNumber;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public LocalDateTime getStarted() {
+        return started;
+    }
+
+    public void setStarted(LocalDateTime started) {
+        this.started = started;
+    }
+
+    public Route getRoute() {
+        return route;
+    }
+
+    public void setRoute(Route route) {
+        this.route = route;
+    }
+
+    public DrivingStatus getDrivingStatus() {
+        return drivingStatus;
+    }
+
+    public void setDrivingStatus(DrivingStatus drivingStatus) {
+        this.drivingStatus = drivingStatus;
     }
 }

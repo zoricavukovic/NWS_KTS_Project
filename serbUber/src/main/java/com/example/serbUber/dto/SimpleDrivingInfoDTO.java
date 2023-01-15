@@ -20,7 +20,7 @@ public class SimpleDrivingInfoDTO {
         this.drivingStatus = driving.getDrivingStatus().toString();
         this.drivingId = driving.getId();
         this.active = driving.isActive();
-        if (driving.isActive()){
+        if (driving.isActive() || driving.getEnd() == null){
             this.minutes = driving.getRoute().getTimeInMin();
         }else {
             this.minutes = ChronoUnit.MINUTES.between(driving.getEnd(), driving.getStarted());

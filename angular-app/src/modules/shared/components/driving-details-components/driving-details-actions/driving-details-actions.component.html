@@ -1,12 +1,15 @@
-<div *ngIf="!canAcceptOrDeclineRide()" class="button-container">
-  <button mat-raised-button>Request now</button>
-  <button mat-raised-button>Request later</button>
-  <button mat-icon-button color="warn" (click)="setFavouriteRouteEmitter()">
+<div *ngIf="!canAcceptOrDeclineRide() && currentUser.role.name==='ROLE_REGULAR_USER'" style="min-height:2rem;">
+  <div style="float: left;" *ngIf="storedDrivingNotification && (storedDrivingNotification.active || storedDrivingNotification.drivingStatus==='PAYING')">
+    <button mat-raised-button>Request now</button>
+    <button mat-raised-button>Request later</button>
+  </div>
+  <button mat-icon-button color="warn" (click)="setFavouriteRouteEmitter()" style="float:right;">
     <mat-icon
       *ngIf="!favouriteRoute"
       matTooltip="Add to favourite routes"
       matTooltipClass="tooltip"
       matTooltipHideDelay="1000"
+      class="icon"
       >favorite_border</mat-icon
     >
     <mat-icon
@@ -14,6 +17,7 @@
       matTooltip="Remove from favourite routes"
       matTooltipClass="tooltip"
       matTooltipHideDelay="1000"
+      class="icon"
       >favorite</mat-icon
     >
   </button>

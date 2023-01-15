@@ -14,6 +14,7 @@ def on_locust_init(environment, **_kwargs):
 
 
 class WebsiteUser(HttpUser):
+    vehicles_dict_with_coordinates = {}
     host = "http://localhost:8080"
     wait_time = between(0.5, 2)
 
@@ -33,15 +34,11 @@ class WebsiteUser(HttpUser):
         for vehicle in self.vehicles:
             print(vehicle)
             vehicleId = vehicle["vehicleId"]
-            if vehicle["inDrive"]:
-                if vehicleId in self.vehicles_dict:
-                    self.update_coordinate(vehicle)
-                else:
-                    self.vehicles_dict[vehicleId] = self.get_coordinates(vehicle)
 
+            if vehicleId in self.vehicles_dict:
+                self.update_coordinate(vehicle)
             else:
-                if vehicleId in self.vehicles_dict:
-                    del self.vehicles_dict[vehicleId]
+                self.vehicles_dict[vehicleId] = self.get_coordinates(vehicle)
 
         res = self.client.put("/vehicles/update-current-location")
         print(self.vehicles)
@@ -51,13 +48,42 @@ class WebsiteUser(HttpUser):
 
 
     def get_coordinates(self, vehicle):
+        print("waypoint")
         if vehicle["crossedWaypoints"] == -1:
             return
         crossedNum = 0
-        for index in range(0, len(vehicle["chosenRouteIdx"]), 2):
-            print(index)
-            print(vehicle["crossedWaypoints"][index])
-            print(crossedNum)
+        print("chosed")
+        print(vehicle["chosenRouteIdx"])
+        first_point = vehicle["waypoints"][vehicle["crossedWaypoints"]] #izabere lokaciju iz waypoints
+        second_point = vehicle["waypoints"][vehicle["crossedWaypoints"] + 1]  # izabere lokaciju iz waypoints + 1
+        print(first_point)
+        print("\n")
+        print(second_point)
+        response = requests.get(
+                f'https://routing.openstreetmap.de/routed-car/route/v1/driving/{first_point["lng"]},{first_point["lat"]};{second_point["lng"]},{second_point["lat"]}?geometries=geojson&overview=false&alternatives=true&steps=true')
+        print("\n============ISPIST=========\n\n")
+
+        routeGeoJSON = response.json()
+        print(routeGeoJSON)
+        print("\n============ISPIS KRAJ=========\n\n")
+
+        chosenRouteIdx = vehicle["chosenRouteIdx"][vehicle["crossedWaypoints"]]
+        print("\n============ISPISA IZABRANOG INDEKSA RUTE=========\n\n")
+        print(chosenRouteIdx)
+        print(routeGeoJSON['routes'][0]['legs'])
+        print("\n============KRAJ ISPISA IZABRANOG INDEKSA RUTE=========\n\n")
+        coordinates = []
+        for step in routeGeoJSON['routes'][0]['legs'][chosenRouteIdx]['steps']:
+            coordinates += [*step['geometry']['coordinates']]
+        self.vehicles_dict_with_coordinates[vehicle["vehicleId"]] = coordinates
+            # self.coordinates = [*self.coordinates, *step['geometry']['coordinates']]
+
+
+
+        # for index in range(0, len(vehicle["chosenRouteIdx"]), 2):
+        #     print(index)
+        #     print(vehicle["crossedWaypoints"][index])
+        #     print(crossedNum)
             # if crossedNum == vehicle["crossedWaypoints"]:
             #     chosenRouteIndex = vehicle["chosenRouteIdx"][index]
             #     response = requests.get(
@@ -77,27 +103,33 @@ class WebsiteUser(HttpUser):
             #         }
             #     }).json()
 
-            crossedNum+=1
+            # crossedNum+=1
 
 
 
 
     def update_coordinate(self, vehicle):
-        response = requests.get(f'https://routing.openstreetmap.de/routed-car/route/v1/driving/{self.departure[1]},{self.departure[0]};{self.destination[1]},{self.destination[0]}?geometries=geojson&overview=false&alternatives=true&steps=true')
-        self.routeGeoJSON = response.json()
-        self.coordinates = []
-        for step in self.routeGeoJSON['routes'][0]['legs'][0]['steps']:
-            self.coordinates = [*self.coordinates, *step['geometry']['coordinates']]
-        self.ride = self.client.post('/api/ride', json={
-            'routeJSON': json.dumps(self.routeGeoJSON),
-            'rideStatus': 0,
-            'vehicle': {
-                'id': self.vehicle['id'],
-                'licensePlateNumber': self.vehicle['licensePlateNumber'],
-                'latitude': self.coordinates[0][0],
-                'longitude': self.coordinates[0][1]
-            }
-        }).json()
+        if len(self.vehicles_dict_with_coordinates[vehicle["vehicleId"]]) > 0: #ima jos koordinata na tom waypointu
+            new_coordinate = self.vehicles_dict_with_coordinates[vehicle["vehicleId"]].pop(0)
+            self.client.put(f"/vehicles/{vehicle['vehicleId']}", json={
+                'lat': new_coordinate[0],
+                'lon': new_coordinate[1]
+            })
+        elif len(self.vehicles_dict_with_coordinates[vehicle["vehicleId"]]) == 0: #nema koordinata na tom waypointu
+            print("UPDATE COORDINATE KAD IH NEMA VISE U DATOM WAYPOINTU\n")
+            print(self.vehicles_dict[vehicle["vehicleId"]])
+            vehicle["crossedWaypoints"] += 1
+            self.vehicles_dict[vehicle["vehicleId"]] = vehicle
+            print(self.vehicles_dict[vehicle["vehicleId"]])
+            print("UPDATE COORDINATE ZAVRSEN KAD IH NEMA VISE U DATOM WAYPOINTU\n")
+            self.get_coordinates(vehicle)
+            new_coordinate = self.vehicles_dict_with_coordinates[vehicle["vehicleId"]].pop(0)
+            self.client.put(f"/vehicles/{vehicle['vehicleId']}", json={
+                'lat': new_coordinate[0],
+                'lon': new_coordinate[1]
+        })
+
+
 
 
 import requests

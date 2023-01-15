@@ -18,16 +18,16 @@ import {PaymentStatusComponent} from "./pages/payment-status/payment-status.comp
 import {ProcessingPaymentComponent} from "./pages/processing-payment/processing-payment.component";
 import {TransactionsHistoryComponent} from "./components/payment/transactions-history/transactions-history.component";
 import {CarouselModule} from "primeng/carousel";
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {GoogleMapsModule} from "@angular/google-maps";
 import {GooglePlaceModule} from "ngx-google-places-autocomplete";
 import {ProgressSpinnerModule} from "primeng/progressspinner";
 import {FilterVehicleViewComponent} from "./components/filter-vehicle-view/filter-vehicle-view.component";
 import {RouteRowComponent} from "./components/route-row/route-row.component";
-import { NgxsModule } from "@ngxs/store";
-import { DrivingNotificationState } from "../shared/state/driving-notification.state";
-import { NgxsReduxDevtoolsPluginModule } from "@ngxs/devtools-plugin";
-import { NgxsLoggerPluginModule } from "@ngxs/logger-plugin";
+import { RequestLaterTimeComponent } from './components/request-later-time/request-later-time.component';
+import { DrivingNotificationDetailsComponent } from './components/driving-notification-details/driving-notification-details.component';
+import { FavoriteRoutesDataComponent } from "./components/favorite-routes-data/favorite-routes-data.component";
+
 
 @NgModule({
   declarations: [
@@ -43,7 +43,10 @@ import { NgxsLoggerPluginModule } from "@ngxs/logger-plugin";
     ProcessingPaymentComponent,
     TransactionsHistoryComponent,
     FilterVehicleViewComponent,
-    RouteRowComponent
+    RouteRowComponent,
+    RequestLaterTimeComponent,
+    DrivingNotificationDetailsComponent,
+    FavoriteRoutesDataComponent
   ],
   imports: [
     CommonModule,
@@ -52,12 +55,13 @@ import { NgxsLoggerPluginModule } from "@ngxs/logger-plugin";
     SharedModule,
     CarouselModule,
     ReactiveFormsModule,
+    FormsModule,
     GoogleMapsModule,
     GooglePlaceModule,
     ProgressSpinnerModule,
-    // NgxsModule.forFeature([DrivingNotificationState]),
+    // TimepickerModule.forRoot()
   ],
-  exports: [HomePassangerComponent],
+  exports: [HomePassangerComponent, DrivingNotificationDetailsComponent, FavoriteRoutesDataComponent],
   providers: []
 })
 export class RegularUserModule { }

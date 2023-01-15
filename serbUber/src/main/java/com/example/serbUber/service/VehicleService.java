@@ -154,8 +154,6 @@ public class VehicleService implements IVehicleService {
         vehicleRepository.save(vehicle);
     }
 
-
-
     public Vehicle getVehicleByType(String vehicleType){
         VehicleType type = VehicleType.getVehicleType(vehicleType.toLowerCase());
         return vehicleRepository.getVehicleByType(type);
@@ -192,5 +190,22 @@ public class VehicleService implements IVehicleService {
         }
 
         return fromVehiclesToVehicleCurrentLocationForLocustDTO(withDriverIds);
+    }
+
+    public VehicleDTO getVehicleOfDriver(final Long driverId) throws EntityNotFoundException {
+
+        return new VehicleDTO(vehicleRepository.getVehicleByDriverId(driverId)
+                .orElseThrow(() -> new EntityNotFoundException(driverId, EntityType.VEHICLE)));
+    }
+
+    public VehicleCurrentLocationForLocustDTO updateCurrentPosition(
+        final Long id,
+        final double lng,
+        final double lat
+    ) throws EntityNotFoundException {
+        Vehicle vehicle = getVehicleById(id);
+        vehicle.setCurrentLocationIndex(vehicle.getCurrentLocationIndex() + 1);
+        vehicle.setCurrentStop(new Location(lat, lng));
+        return null;
     }
 }

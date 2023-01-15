@@ -1,8 +1,11 @@
 <div id="wrapper">
   <div id="map"></div>
   <div id="float-div">
-    <app-home *ngIf="actRoute.snapshot.paramMap.get('id') === '-1'" [map]="map"></app-home>
-    <app-driving-details *ngIf="actRoute.snapshot.paramMap.get('id') !== '-1'" [map]="map"></app-driving-details>
+    <div *ngIf="!router.url.includes('driving-notification')">
+      <app-home *ngIf="actRoute.snapshot.paramMap.get('id') === '-1'" [map]="map"></app-home>
+      <app-driving-details *ngIf="actRoute.snapshot.paramMap.get('id') !== '-1'" [map]="map"></app-driving-details>
+    </div>
+    <app-driving-notification-details *ngIf="router.url.includes('driving-notification')" [map]="map"></app-driving-notification-details>
   </div>
 <!--  <div *ngIf="actRoute.snapshot.paramMap.get('id') !== '-1'" class="map-pill">-->
 <!--    <div class="youps-pill-logo"></div>-->
