@@ -80,10 +80,8 @@ export class WebSocketService {
 
   vehicleUpdateCoordinate() {
     this.stompClient.subscribe(environment.publisherUrl + localStorage.getItem('email') + '/update-driving', (message: { body: string }) => {
-      if (
-        (message !== null && message !== undefined) ||
-        message?.body !== null
-      ) {
+      if ((message !== null && message !== undefined) || message?.body !== null) {
+        console.log(message.body);
         const vehicleCurrentLocation: VehicleCurrentLocation = JSON.parse(message.body);
         this.drivingService.updateRide(vehicleCurrentLocation);
       }

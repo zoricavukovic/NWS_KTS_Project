@@ -12,28 +12,27 @@ public class VehicleCurrentLocationDTO {
     private VehicleType type;
     private long driverId;
 
-    public VehicleCurrentLocationDTO(final VehicleWithDriverId vehicleWithDriverId, List<double[]> vehicleRoute) {
+    public VehicleCurrentLocationDTO(final VehicleWithDriverId vehicleWithDriverId) {
         this.id = vehicleWithDriverId.getVehicle().getId();
         this.type = vehicleWithDriverId.getVehicle().getVehicleTypeInfo().getVehicleType();
         this.driverId = vehicleWithDriverId.getDriverId();
         if (vehicleWithDriverId.getVehicle().hasRoute()){
             this.inDrive = true;
-            this.currentLocation = vehicleWithDriverId.getVehicle().getLocationForIndexInRoute(vehicleRoute.get(vehicleWithDriverId.getVehicle().getCurrentLocationIndex()));
+            this.currentLocation = vehicleWithDriverId.getVehicle().getCurrentStop();
         }
         else {
             this.inDrive = false;
-            this.currentLocation = vehicleWithDriverId.getVehicle().getCurrentStop();
         }
+        this.currentLocation = vehicleWithDriverId.getVehicle().getCurrentStop();
     }
 
     public static List<VehicleCurrentLocationDTO> fromVehiclesToVehicleCurrentLocationDTO(
-        final List<VehicleWithDriverId> vehicles,
-        final List<List<double[]>> vehiclesRoutePath
+        final List<VehicleWithDriverId> vehicles
     ) {
 
         List<VehicleCurrentLocationDTO> vehicleDTOs = new LinkedList<>();
         vehicles.forEach(vehicle ->
-            vehicleDTOs.add(new VehicleCurrentLocationDTO(vehicle, vehiclesRoutePath.get(vehicles.indexOf(vehicle))))
+            vehicleDTOs.add(new VehicleCurrentLocationDTO(vehicle))
         );
 
         return vehicleDTOs;

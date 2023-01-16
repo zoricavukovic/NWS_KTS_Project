@@ -29,8 +29,8 @@ public class WebSocketService {
         this.emailService = emailService;
     }
 
-    public void sendVehicleCurrentLocation(List<VehicleCurrentLocationDTO> vehicleDTOs) {
-        this.messagingTemplate.convertAndSend("/user/global/connect", vehicleDTOs);
+    public void sendVehicleCurrentLocation(VehicleCurrentLocationDTO vehicleDTO) {
+        this.messagingTemplate.convertAndSend("/user/global/connect", vehicleDTO);
     }
 
     public void sendDrivingNotification(

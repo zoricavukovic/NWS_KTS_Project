@@ -217,7 +217,7 @@ public class DrivingService implements IDrivingService {
                 drivingStatusNotificationDTO,
                 drivingStatusNotification.getDriving().getUsers()
         );
-        this.vehicleService.updateCurrentVehiclesLocation();
+//        this.vehicleService.updateCurrentVehiclesLocation();
 
         return new DrivingDTO(driving);
     }
@@ -226,16 +226,10 @@ public class DrivingService implements IDrivingService {
         Driving driving = getDriving(id);
         Driver driver = driving.getDriver();
         Vehicle vehicle = driver.getVehicle();
-        List<double[]> listOfVehiclesRoutes;
-        if (vehicle.hasRoute()) {
-            listOfVehiclesRoutes = routeService.getRoutePath(vehicle.getActiveRoute().getId());
-        } else {
-            listOfVehiclesRoutes = List.of(new double[]{vehicle.getCurrentStop().getLon(), vehicle.getCurrentStop().getLat()});
-        }
 
         VehicleWithDriverId withDriverIds = new VehicleWithDriverId(vehicle, driving.getDriver().getId());
 
-        VehicleCurrentLocationDTO vehicleCurrentLocationDTO = new VehicleCurrentLocationDTO(withDriverIds, listOfVehiclesRoutes);
+        VehicleCurrentLocationDTO vehicleCurrentLocationDTO = new VehicleCurrentLocationDTO(withDriverIds);
         webSocketService.sendVehicleCurrentLocation(vehicleCurrentLocationDTO, driver.getEmail(), driving.getUsers());
 
         return vehicleCurrentLocationDTO;
@@ -266,7 +260,7 @@ public class DrivingService implements IDrivingService {
         drivingRepository.save(driving);
 
         webSocketService.startDrivingNotification(new SimpleDrivingInfoDTO(driving), driving.getUsers());
-        this.vehicleService.updateCurrentVehiclesLocation();
+//        this.vehicleService.updateCurrentVehiclesLocation();
 
         return new DrivingDTO(driving);
     }
@@ -282,7 +276,7 @@ public class DrivingService implements IDrivingService {
         drivingRepository.save(driving);
 
         webSocketService.finishDrivingNotification(new SimpleDrivingInfoDTO(driving), driving.getUsers());
-        this.vehicleService.updateCurrentVehiclesLocation();
+//        this.vehicleService.updateCurrentVehiclesLocation();
         Driving nextDriving = driverHasFutureDriving(driving.getDriver().getId());
         if (nextDriving != null) {
             createDrivingToDeparture(driving.getDriver(), driving.getRoute().getLocations().last().getLocation(), nextDriving.getRoute());

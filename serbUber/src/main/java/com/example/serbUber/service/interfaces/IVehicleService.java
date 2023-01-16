@@ -26,15 +26,11 @@ public interface IVehicleService {
 
     List<VehicleCurrentLocationDTO> getAllVehiclesForActiveDriver() throws EntityNotFoundException;
 
-    List<VehicleCurrentLocationDTO> updateCurrentVehiclesLocation() throws EntityNotFoundException;
-
-    VehicleDTO getVehicleDTOByVehicleType(String vehicleType);
+    List<VehicleCurrentLocationForLocustDTO> getAllVehicleCurrentLocationForLocustDTOForActiveDriver() throws EntityNotFoundException;
 
     double getLatOfCurrentVehiclePosition(final Vehicle vehicle) throws EntityNotFoundException;
 
     double getLonOfCurrentVehiclePosition(final Vehicle vehicle) throws EntityNotFoundException;
-
-    List<VehicleCurrentLocationForLocustDTO> getAllVehicleCurrentLocationForLocustDTOForActiveDriver() throws EntityNotFoundException;
 
     VehicleDTO getVehicleOfDriver(final Long driverId) throws EntityNotFoundException;
 
