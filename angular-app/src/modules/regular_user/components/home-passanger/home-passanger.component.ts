@@ -31,6 +31,8 @@ import { DrivingNotificationState } from 'src/modules/shared/state/driving-notif
 import { Select, Store } from '@ngxs/store';
 import { DrivingNotification } from 'src/modules/shared/models/notification/driving-notification';
 import { UpdateDrivingNotification, UpdateStatusDrivingNotification } from 'src/modules/shared/actions/driving-notification.action';
+import { DrivingNotificationService } from 'src/modules/shared/services/driving-notification-service/driving-notification.service';
+import { ThisReceiver } from '@angular/compiler';
 
 @Component({
   selector: 'app-home-passanger',
@@ -103,7 +105,8 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
     private toast: ToastrService,
     private router: Router,
     private formBuilder: FormBuilder,
-    private store: Store
+    private store: Store,
+    private drivingNotificationService: DrivingNotificationService
   ){
     this.routeChoiceView = true;
     this.filterVehicleView = false;
@@ -124,10 +127,41 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
     })
   }
 
+  eventEmit(){
+    this.drivingNotificationService.aClickedEvent
+    .subscribe((data:string) => {
+      console.log("alooo");
+      this.ngOnInit();
+      this.routeChoiceView = true;
+      this.possibleRoutesViaPoints = [];
+        })
+  }
+
   ngOnInit(): void {
+      this.eventEmit();
+      console.log("trlalra");
+  
+      // this.ngOnInit();
+      // this.currentDrivingNotification.subscribe(response => {
+      //   this.storedDrivingNotification = response;
+      //   console.log(this.storedDrivingNotification.drivingStatus);
+      // })
+      // this.drivingSubscription = this.drivingService.checkIfUserHasActiveDriving(this.currentUser.id).subscribe(
+      //   res => {
+      //     this.activeRide = res;
+      //     console.log(res);
+      //     if(res){
+      //       this.store.dispatch(new UpdateDrivingNotification(res)).subscribe(response => {
+      //         this.storedDrivingNotification = response;
+      //       })
+      //     }
+      //   }
+      // )
+    // });
     this.currentDrivingNotification.subscribe(response => {
       this.storedDrivingNotification = response;
-      console.log(this.storedDrivingNotification.drivingStatus);
+      console.log(this.storedDrivingNotification);
+      // console.log(this.storedDrivingNotification.drivingStatus);
     })
     this.drivingSubscription = this.drivingService.checkIfUserHasActiveDriving(this.currentUser.id).subscribe(
       res => {
@@ -551,6 +585,7 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
   }
 
   hasActiveDriving():boolean {
+    // console.log(this.activeRide !== null && this.activeRide !== undefined);
 
     return this.activeRide !== null && this.activeRide !== undefined;
   }

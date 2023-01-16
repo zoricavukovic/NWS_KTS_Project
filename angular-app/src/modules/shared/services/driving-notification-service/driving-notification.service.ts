@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable, Output } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import {Router} from "@angular/router";
@@ -18,6 +18,9 @@ import { HomePassangerComponent } from 'src/modules/regular_user/components/home
 })
 export class DrivingNotificationService extends GenericService<DrivingNotification> {
   private notificationTypeLinkedUser = 'LINKED_USER';
+  @Output() aClickedEvent = new EventEmitter<string>();
+
+ 
 
   constructor(
     private http: HttpClient,
@@ -73,6 +76,7 @@ export class DrivingNotificationService extends GenericService<DrivingNotificati
     else if(drivingStatusNotification.drivingStatus === 'PAYING'){
       this.toast.info(`Ride is rejected. Reason is: ${drivingStatusNotification.reason}`, "Ride request failed");
       this.store.dispatch(new ClearStore());
+      this.aClickedEvent.emit("blabla");
     }
   }
 

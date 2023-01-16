@@ -203,17 +203,8 @@ public class DrivingService implements IDrivingService {
         DrivingStatusNotification drivingStatusNotification = drivingStatusNotificationService.create(
                 reason, DrivingStatus.REJECTED, driving);
 
-        DrivingStatusNotificationDTO drivingStatusNotificationDTO = new DrivingStatusNotificationDTO(
-                drivingStatusNotification.getDriving().getId(),
-                drivingStatusNotification.getDriving().getRoute().getTimeInMin(),
-                DrivingStatus.REJECTED,
-                reason,
-                driving.getId(),
-                drivingStatusNotification.getId()
-        );
-
         webSocketService.sendRejectDriving(
-                drivingStatusNotificationDTO,
+                driving.getDriver().getEmail(), reason,
                 drivingStatusNotification.getDriving().getUsers()
         );
 //        this.vehicleService.updateCurrentVehiclesLocation();
