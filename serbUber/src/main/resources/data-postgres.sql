@@ -140,6 +140,7 @@ insert into token_banks(user_id, num_of_tokens, total_token_amount_spent, total_
     (2, 9, 2, 11, 1),
     (3, 8, 0, 8, 1),
     (4, 0, 0, 0, 1);
+--     (4, 0, 0, 0, 1);
 
 insert into token_transactions(time_stamp, num_of_bought_tokens, total_price, token_bank_id) values
     ('2022-12-01 14:03', 4, 4, 1),

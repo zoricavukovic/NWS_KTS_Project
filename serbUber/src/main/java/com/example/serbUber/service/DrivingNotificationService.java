@@ -213,7 +213,8 @@ public class DrivingNotificationService implements IDrivingNotificationService {
                 DrivingStatusNotificationDTO drivingStatusNotificationDTO = new DrivingStatusNotificationDTO(0L, 0, DrivingStatus.PENDING, "Not found driver", null, drivingNotification.getId());
                 webSocketService.sendDrivingStatus(drivingStatusNotificationDTO, receiversReviewed);
             } else {
-                System.out.println("vozaaacccc" + driver.getEmail());
+                Set<RegularUser> passengers = getListOfUsers(drivingNotification.getReceiversReviewed());
+//                passengers.add(drivingNotification.getSender());
                 Driving driving = drivingService.create(
                         drivingNotification.getDuration(),
                         drivingNotification.getStarted(),
@@ -221,10 +222,10 @@ public class DrivingNotificationService implements IDrivingNotificationService {
                         drivingNotification.getRoute(),
                         DrivingStatus.PAYING,
                         driver.getId(),
-                        getListOfUsers(drivingNotification.getReceiversReviewed()),
+                        passengers,
                         new HashMap<>(),
                         drivingNotification.getPrice());
-                if (isPaidDriving(drivingNotification.getReceiversReviewed(), drivingNotification.getPrice())) {
+                if (isPaidDriving(passengers, drivingNotification.getPrice())) {
                     drivingService.paidDriving(driving.getId());
                     int minutesToStartDrive = calculateMinutesForStartDriving(driver.getId(), drivingNotification.getRoute());
                     driving.setStarted(LocalDateTime.now().plusMinutes(minutesToStartDrive));
@@ -235,7 +236,7 @@ public class DrivingNotificationService implements IDrivingNotificationService {
 
                 } else {
                     drivingService.removeDriver(driving.getId());
-                    DrivingStatusNotificationDTO drivingStatusNotificationDTO = new DrivingStatusNotificationDTO(driver.getId(), 0, DrivingStatus.REJECTED, "Payment was not successful. Please, check your tokens!", driving.getId(), drivingNotification.getId());
+                    DrivingStatusNotificationDTO drivingStatusNotificationDTO = new DrivingStatusNotificationDTO(driver.getId(), 0, DrivingStatus.PAYING, "Payment was not successful. Please, check your tokens!", driving.getId(), drivingNotification.getId());
                     webSocketService.sendDrivingStatus(drivingStatusNotificationDTO, receiversReviewed);
                 }
 
@@ -260,37 +261,66 @@ public class DrivingNotificationService implements IDrivingNotificationService {
         return 5;
     }
 
-    public boolean isPaidDriving(final  Map<RegularUser, Integer> receiversReviewed, final double price){
-        double priceForOnePassenger = Math.round(price/receiversReviewed.size()*100.0)/100.0;
-        Map<Long, Boolean> usersEnoughTokens = haveUsersEnoughTokens(receiversReviewed, priceForOnePassenger);
-        if(!usersEnoughTokens.containsValue(false)){
-            receiversReviewed.forEach((passenger, value) -> {
+    public boolean isPaidDriving(final  Set<RegularUser> passengers, final double price){
+        double priceForOnePassenger = Math.round(price/passengers.size()*100.0)/100.0;
+        boolean isPaid = true;
+        Map<Long, Double> usersEnoughTokens = haveUsersEnoughTokens(passengers, priceForOnePassenger);
+        if(usersEnoughTokens.size()>0 && !usersEnoughTokens.containsValue(0)){
+            usersEnoughTokens.forEach((passengerId, priceForRide) -> {
                 try {
-                    tokenBankService.updateNumOfTokens(passenger.getId(), priceForOnePassenger);
+                    tokenBankService.updateNumOfTokens(passengerId, priceForRide);
                 } catch (EntityNotFoundException e) {
                     System.out.println("Token bank not found");
                 }
             });
         }
-        return true;
+        else{
+            isPaid = false;
+        }
+       return isPaid;
     }
 
-    private Map<Long, Boolean> haveUsersEnoughTokens(
-        final  Map<RegularUser, Integer> receiversReviewed,
+    private Map<Long, Double> haveUsersEnoughTokens(
+        final  Set<RegularUser> passengers,
         final double priceForOnePassenger
     ) {
-        Map<Long, Boolean> usersEnoughTokens = new HashMap<>();
-        receiversReviewed.forEach((passenger, value) -> {
+        Map<Long, Double> usersHaveEnoughTokens = new HashMap<>();
+        Set<Long> usersNotHaveEnoughTokens = new HashSet<>();
+        passengers.forEach((passenger) -> {
             double passengerTokens = 0;
             try {
                 passengerTokens = tokenBankService.getTokensForUser(passenger.getId());
             } catch (EntityNotFoundException e) {
                 //BLALLLA
             }
-            usersEnoughTokens.put(passenger.getId(), passengerTokens > priceForOnePassenger);
+            if(passengerTokens > priceForOnePassenger){
+                usersHaveEnoughTokens.put(passenger.getId(), passengerTokens);
+            }
+            else{
+                usersNotHaveEnoughTokens.add(passenger.getId());
+            }
         });
 
-        return usersEnoughTokens;
+        if(usersNotHaveEnoughTokens.size() > 0){
+            double priceForUsersNotHaveEnoughTokens = usersNotHaveEnoughTokens.size() * priceForOnePassenger;
+            double addedPrice = priceForUsersNotHaveEnoughTokens / usersHaveEnoughTokens.size();
+            for(Map.Entry<Long, Double> passengerTokens : usersHaveEnoughTokens.entrySet()){
+                if(passengerTokens.getValue() - addedPrice > 0){
+                    passengerTokens.setValue(priceForOnePassenger + addedPrice);
+                }
+                else{
+                    passengerTokens.setValue(0.0);
+                }
+            }
+        }
+        else{
+            for(Map.Entry<Long, Double> passengerTokens : usersHaveEnoughTokens.entrySet()) {
+                passengerTokens.setValue(priceForOnePassenger);
+            }
+        }
+
+
+        return usersHaveEnoughTokens;
     }
 
 

@@ -70,10 +70,9 @@ public class DrivingService implements IDrivingService {
             final HashMap<Long, Boolean> usersPaid,
             final double price
     ) throws EntityNotFoundException {
-        LocalDateTime end = started.plusMinutes(duration);
         Driver driver = userService.getDriverById(driverId);
 
-        Driving driving = drivingRepository.save(new Driving(duration, started, end, payingLimit, route, drivingStatus, driver, price));
+        Driving driving = drivingRepository.save(new Driving(duration, started, null, payingLimit, route, drivingStatus, driver, price));
         users.forEach(user -> {
             List<Driving> drivingsOfUser = user.getDrivings();
             drivingsOfUser.add(driving);
