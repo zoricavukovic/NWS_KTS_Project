@@ -1,1 +1,15 @@
-<p>reports-page works!</p>
+<div style="height: 70%;">
+    <div class="report-tabs-container">
+        <mat-tab-group  mat-align-tabs="center" animationDuration="0ms">
+            <mat-tab label="Spending">
+                <app-report-tab [selectedReport]="configService.SELECTED_SPENDING_REPORT"></app-report-tab>
+            </mat-tab>
+            <mat-tab label="Number of rides">
+                <app-report-tab [selectedReport]="configService.SELECTED_RIDES_REPORT"></app-report-tab>
+            </mat-tab>
+            <mat-tab label="Distance">
+                <app-report-tab [selectedReport]="configService.SELECTED_DISTANCE_REPORT"></app-report-tab>
+            </mat-tab>
+          </mat-tab-group>
+    </div>
+</div>

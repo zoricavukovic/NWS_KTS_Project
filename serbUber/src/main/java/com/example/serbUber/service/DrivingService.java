@@ -1,10 +1,10 @@
 package com.example.serbUber.service;
 
 import com.example.serbUber.dto.*;
-import com.example.serbUber.exception.DriverAlreadyHasStartedDrivingException;
-import com.example.serbUber.exception.DrivingShouldNotStartYetException;
-import com.example.serbUber.exception.EntityNotFoundException;
-import com.example.serbUber.exception.EntityType;
+import com.example.serbUber.dto.chart.ChartDataDTO;
+import com.example.serbUber.dto.chart.ChartItemDTO;
+import com.example.serbUber.dto.chart.ChartSumDataDTO;
+import com.example.serbUber.exception.*;
 import com.example.serbUber.model.*;
 import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.model.user.RegularUser;
@@ -21,13 +21,19 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
+import java.text.DecimalFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import static com.example.serbUber.dto.DrivingDTO.fromDrivings;
 import static com.example.serbUber.dto.DrivingPageDTO.fromDrivingsPage;
-import static com.example.serbUber.util.Constants.MAX_MINUTES_BEFORE_DRIVING_CAN_START;
+import static com.example.serbUber.model.ChartType.DISTANCE;
+import static com.example.serbUber.model.ChartType.SPENDING;
+import static com.example.serbUber.model.DrivingStatus.FINISHED;
+import static com.example.serbUber.util.Constants.*;
 
 @Component
 @Qualifier("drivingServiceConfiguration")
@@ -274,7 +280,7 @@ public class DrivingService implements IDrivingService {
     public DrivingDTO finishDriving(final Long id) throws EntityNotFoundException {
         Driving driving = getDriving(id);
         driving.setActive(false);
-        driving.setDrivingStatus(DrivingStatus.FINISHED);
+        driving.setDrivingStatus(FINISHED);
         driving.setEnd(LocalDateTime.now());
         driving.getDriver().getVehicle().setCurrentLocationIndex(-1);
         driving.getDriver().getVehicle().setActiveRoute(null);
@@ -288,6 +294,75 @@ public class DrivingService implements IDrivingService {
             createDrivingToDeparture(driving.getDriver(), driving.getRoute().getLocations().last().getLocation(), nextDriving.getRoute());
         }
         return new DrivingDTO(driving);
+    }
+
+    public ChartDataDTO getChartData(
+            final Long id,
+            final ChartType chartType,
+            final LocalDate startDate,
+            final LocalDate endDate
+    ) throws EntityNotFoundException {
+        User user = this.userService.getUserById(id);
+
+        return user.getRole().isDriver()
+                ? this.calculateChartData(this.drivingRepository.getDrivingsForDriver(id), chartType, startDate, endDate)
+                : this.calculateChartData(this.drivingRepository.getDrivingsForRegular(id), chartType, startDate, endDate);
+    }
+
+    private ChartDataDTO calculateChartData(
+            final List<Driving> drivings,
+            final ChartType chartType,
+            final LocalDate startDate,
+            final LocalDate endDate
+    ) {
+        List<LocalDate> datesBetween = getDatesBetween(startDate, endDate);
+        List<ChartItemDTO> chartItemDTOS = new ArrayList<>();
+        double totalSum = 0;
+        int numOfAcceptedDrivings = 0;
+
+        for (LocalDate date : datesBetween) {
+            double totalPerDay = 0;
+            for (Driving driving : drivings) {
+                if (checkIfDateInRange(date, driving.getStarted())) {
+                    totalPerDay += getTotalPerDay(driving, chartType);
+                    totalSum += getTotalPerDay(driving, chartType);
+                    numOfAcceptedDrivings++;
+                }
+            }
+
+            chartItemDTOS.add(new ChartItemDTO(date.toString(), totalPerDay));
+        }
+
+        return new ChartDataDTO(chartItemDTOS, new ChartSumDataDTO(totalSum, getChartAverage(numOfAcceptedDrivings, totalSum)));
+    }
+
+    private double getTotalPerDay(final Driving driving, final ChartType chartType) {
+
+        switch (chartType) {
+            case SPENDING -> {
+                return driving.getPrice();
+            }
+            case DISTANCE -> {
+                return driving.getRoute().getDistance();
+            }
+            default -> {
+                return ONE_DRIVING;    //kao jedan driving za broj drivinga
+            }
+        }
+    }
+
+    private double getChartAverage(final int numOfDrivigns, final double totalSum) {
+        DecimalFormat df = new DecimalFormat("#.##");
+
+        return  Double.parseDouble(df.format(numOfDrivigns > 0 ? totalSum / numOfDrivigns : 0));
+    }
+
+    private boolean checkIfDateInRange(
+            final LocalDate date,
+            final LocalDateTime started
+    ) {
+
+        return date.equals(started.toLocalDate());
     }
 
     private Driving driverHasFutureDriving(final Long id) {

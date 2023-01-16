@@ -52,6 +52,9 @@ import { VehicleRateDataComponent } from './components/vehicle/vehicle-rate-data
 import { ReviewRowComponent } from './components/review-row/review-row.component';
 import { UserProfileInfoComponent } from "./components/user-profile-info/user-profile-info.component";
 import { ReportsPageComponent } from './pages/reports-page/reports-page.component';
+import { ReportStatisticsComponent } from './components/reports/report-statistics/report-statistics.component';
+import { ReportGraphComponent } from './components/reports/report-graph/report-graph.component';
+import { ReportTabComponent } from './components/reports/report-tab/report-tab.component';
 
 @NgModule({
   declarations: [
@@ -78,7 +81,10 @@ import { ReportsPageComponent } from './pages/reports-page/reports-page.componen
     VehicleRateDataComponent,
     ReviewRowComponent,
     UserProfileInfoComponent,
-    ReportsPageComponent
+    ReportsPageComponent,
+    ReportStatisticsComponent,
+    ReportGraphComponent,
+    ReportTabComponent
   ],
   imports: [
     CommonModule,

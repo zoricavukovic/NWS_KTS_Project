@@ -24,6 +24,7 @@ public class ErrorMessagesConstants {
     public static final String NO_AVAILABLE_ADMIN_EXC = "Chat cannot be created right now, all out admins are busy.";
     public static final String ADDING_MESSAGE_TO_RESOLVED_CHAT_ROOM = "You cannot add message to resolved chat room.";
     public static final String NOT_NULL_MESSAGE = "Field must not be null.";
+    public static final String CHART_TYPE_MESSAGE = "Chart type must be valid.";
     public static final String POSITIVE_OR_ZERO_MESSAGE = "Value must be positive or zero.";
     public static final String POSITIVE_MESSAGE = "Value must be positive.";
     public static final String SEEN_NOT_EXIST = "Seen must exist in message.";

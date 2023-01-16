@@ -11,6 +11,14 @@ export class ConfigService {
   ROLE_DRIVER = 'ROLE_DRIVER';
   ROLE_REGULAR_USER = 'ROLE_REGULAR_USER';
 
+  TODAY = new Date();
+  MONTH = this.TODAY.getMonth();
+  YEAR = this.TODAY.getFullYear();
+
+  SELECTED_SPENDING_REPORT = 'SPENDING';
+  SELECTED_RIDES_REPORT = 'RIDES';
+  SELECTED_DISTANCE_REPORT = 'DISTANCE';
+
   ///////////////////ADMIN///////////////////
   ADMINS_URL = `${this.API_URL}/admins`;
 

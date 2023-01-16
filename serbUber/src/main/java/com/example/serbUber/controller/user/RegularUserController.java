@@ -1,6 +1,7 @@
 package com.example.serbUber.controller.user;
 
 import com.example.serbUber.dto.RouteDTO;
+import com.example.serbUber.dto.chart.ChartItemDTO;
 import com.example.serbUber.dto.user.RegularUserDTO;
 import com.example.serbUber.dto.user.RegularUserPageDTO;
 import com.example.serbUber.exception.*;
@@ -84,4 +85,5 @@ public class RegularUserController {
                                                              @Valid @NotNull(message = NOT_NULL_MESSAGE) @Positive(message = POSITIVE_MESSAGE) @PathVariable int pageSize){
         return regularUserService.getRegularUsersWithPagination(pageNumber, pageSize);
     }
+
 }
