@@ -24,7 +24,6 @@ import {GooglePlaceModule} from "ngx-google-places-autocomplete";
 import {ProgressSpinnerModule} from "primeng/progressspinner";
 import {FilterVehicleViewComponent} from "./components/filter-vehicle-view/filter-vehicle-view.component";
 import {RouteRowComponent} from "./components/route-row/route-row.component";
-import { TimepickerModule } from 'ngx-bootstrap/timepicker';
 import { RequestLaterTimeComponent } from './components/request-later-time/request-later-time.component';
 import { DrivingNotificationDetailsComponent } from './components/driving-notification-details/driving-notification-details.component';
 import { FavoriteRoutesDataComponent } from "./components/favorite-routes-data/favorite-routes-data.component";
@@ -60,7 +59,6 @@ import { FavoriteRoutesDataComponent } from "./components/favorite-routes-data/f
     GoogleMapsModule,
     GooglePlaceModule,
     ProgressSpinnerModule,
-    TimepickerModule.forRoot()
   ],
   exports: [HomePassangerComponent, DrivingNotificationDetailsComponent, FavoriteRoutesDataComponent],
   providers: []

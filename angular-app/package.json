@@ -40,7 +40,6 @@
     "eslint": "^8.27.0",
     "moment": "^2.29.4",
     "ng-angular-popup": "^0.2.0",
-    "ngx-bootstrap": "^9.0.0",
     "ngx-google-places-autocomplete": "^2.0.5",
     "ngx-pagination": "^6.0.3",
     "ngx-stars": "^1.6.3",

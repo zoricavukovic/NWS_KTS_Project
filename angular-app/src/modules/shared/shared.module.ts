@@ -51,6 +51,7 @@ import {AvatarGroupModule} from "primeng/avatargroup";
 import { VehicleRateDataComponent } from './components/vehicle/vehicle-rate-data/vehicle-rate-data.component';
 import { ReviewRowComponent } from './components/review-row/review-row.component';
 import { UserProfileInfoComponent } from "./components/user-profile-info/user-profile-info.component";
+import { ReportsPageComponent } from './pages/reports-page/reports-page.component';
 
 @NgModule({
   declarations: [
@@ -76,7 +77,8 @@ import { UserProfileInfoComponent } from "./components/user-profile-info/user-pr
     DateFormatPipe,
     VehicleRateDataComponent,
     ReviewRowComponent,
-    UserProfileInfoComponent
+    UserProfileInfoComponent,
+    ReportsPageComponent
   ],
   imports: [
     CommonModule,
