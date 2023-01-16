@@ -84,6 +84,25 @@ insert into drivings (active, driver_id, driving_status, duration, paying_limit,
 insert into admins (id, email, password, name, surname, phone_number, city, profile_picture, role_id, verified, online) values
     (nextval('users_id_gen'), 'admin@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Admin', 'Admin', '012345578', 'Novi Sad', 'default-user.png', 1, true, false);
 
+insert into regular_users (id, email, password, name, surname, phone_number, city, profile_picture, role_id, blocked, verified, online) values
+    (nextval('users_id_gen'), 'anastasija@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Anastasija', 'Sam', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false);
+
+insert into regular_users (id, email, password, name, surname, phone_number, city, profile_picture, role_id, blocked, verified, online) values
+    (nextval('users_id_gen'), 'srki@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Srdjan', 'Djuric', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false);
+
+insert into regular_users (id, email, password, name, surname, phone_number, city, profile_picture, role_id, blocked, verified, online) values
+    (nextval('users_id_gen'), 'jovan@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Jovan', 'Jovic', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false);
+
+insert into regular_users (id, email, password, name, surname, phone_number, city, profile_picture, role_id, blocked, verified, online) values
+    (nextval('users_id_gen'), 'milos@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Milos', 'Milosevic', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false);
+
+insert into regular_users (id, email, password, name, surname, phone_number, city, profile_picture, role_id, blocked, verified, online) values
+    (nextval('users_id_gen'), 'zokili@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Zorica', 'Zoric', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false);
+
+insert into regular_users (id, email, password, name, surname, phone_number, city, profile_picture, role_id, blocked, verified, online) values
+    (nextval('users_id_gen'), 'jana@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Jana', 'Janic', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false);
+
+
 insert into drivings_users(driving_id, user_id) values
     (1, 2),
     (1, 3),
@@ -133,40 +152,6 @@ insert into reports(id, admin_email, answered, sender_id, receiver_id, message, 
     (nextval('notifications_id_gen'), null, false, 3, 5, 'Vozac je skrenuo sa zadate putanje!', '2022-12-01 13:00'),
     (nextval('notifications_id_gen'), null, false, 5, 2,'Ana je prosula sok po sedistu!', '2022-12-01 13:25');
 
-insert into paying_info(currency, token_price, max_num_of_tokens_per_transaction) values
-    ('EUR', 1, 20);
-
-insert into token_banks(user_id, num_of_tokens, total_token_amount_spent, total_money_amount_spent, paying_info_id) values
-    (2, 9, 2, 11, 1),
-    (3, 8, 0, 8, 1),
-    (4, 0, 0, 0, 1);
---     (4, 0, 0, 0, 1);
-
-insert into token_transactions(time_stamp, num_of_bought_tokens, total_price, token_bank_id) values
-    ('2022-12-01 14:03', 4, 4, 1),
-    ('2022-12-03 14:00', 7, 7, 1),
-    ('2022-12-03 15:00', 8, 8, 2);
-
-
-
-insert into regular_users (id, email, password, name, surname, phone_number, city, profile_picture, role_id, blocked, verified, online) values
-    (nextval('users_id_gen'), 'anastasija@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Anastasija', 'Sam', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false);
-
-insert into regular_users (id, email, password, name, surname, phone_number, city, profile_picture, role_id, blocked, verified, online) values
-    (nextval('users_id_gen'), 'srki@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Srdjan', 'Djuric', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false);
-
-insert into regular_users (id, email, password, name, surname, phone_number, city, profile_picture, role_id, blocked, verified, online) values
-    (nextval('users_id_gen'), 'jovan@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Jovan', 'Jovic', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false);
-
-insert into regular_users (id, email, password, name, surname, phone_number, city, profile_picture, role_id, blocked, verified, online) values
-    (nextval('users_id_gen'), 'milos@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Milos', 'Milosevic', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false);
-
-insert into regular_users (id, email, password, name, surname, phone_number, city, profile_picture, role_id, blocked, verified, online) values
-    (nextval('users_id_gen'), 'zokili@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Zorica', 'Zoric', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false);
-
-insert into regular_users (id, email, password, name, surname, phone_number, city, profile_picture, role_id, blocked, verified, online) values
-    (nextval('users_id_gen'), 'jana@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Jana', 'Janic', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false);
-
 -- insert into drivers (id, email, password, name, surname, phone_number, city, profile_picture, role_id, active, blocked, start_shift, end_shift, rate, working_minutes, verified, online, drive, vehicle_id) values
 --     (nextval('users_id_gen'), 'bole@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Bole', 'Sam', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, null, null, 0, 0, true, false, false, 1);
 --
@@ -176,3 +161,23 @@ insert into regular_users (id, email, password, name, surname, phone_number, cit
 
 insert into favourite_routes (user_id, route_id) values
     (2,1);
+
+insert into paying_info(currency, token_price, max_num_of_tokens_per_transaction) values
+    ('EUR', 1, 20);
+
+insert into token_banks(user_id, num_of_tokens, total_token_amount_spent, total_money_amount_spent, paying_info_id) values
+                                                                                                                        (2, 9, 2, 11, 1),
+                                                                                                                        (3, 8, 0, 8, 1),
+                                                                                                                        (4, 0, 0, 0, 1),
+                                                                                                                        (9, 0, 0, 0, 1),
+                                                                                                                        (10, 0, 0, 0, 1),
+                                                                                                                        (11, 0, 0, 0, 1),
+                                                                                                                        (12, 0, 0, 0, 1),
+                                                                                                                        (13, 0, 0, 0, 1),
+                                                                                                                        (14, 0, 0, 0, 1);
+
+insert into token_transactions(time_stamp, num_of_bought_tokens, total_price, token_bank_id) values
+                                                                                                 ('2022-12-01 14:03', 4, 4, 1),
+                                                                                                 ('2022-12-03 14:00', 7, 7, 1),
+                                                                                                 ('2022-12-03 15:00', 8, 8, 2);
+

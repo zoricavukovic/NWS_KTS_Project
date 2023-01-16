@@ -27,6 +27,7 @@ import {RouteRowComponent} from "./components/route-row/route-row.component";
 import { RequestLaterTimeComponent } from './components/request-later-time/request-later-time.component';
 import { DrivingNotificationDetailsComponent } from './components/driving-notification-details/driving-notification-details.component';
 import { FavoriteRoutesDataComponent } from "./components/favorite-routes-data/favorite-routes-data.component";
+import { EnterLocationsComponent } from './components/enter-locations/enter-locations.component';
 
 
 @NgModule({
@@ -46,7 +47,8 @@ import { FavoriteRoutesDataComponent } from "./components/favorite-routes-data/f
     RouteRowComponent,
     RequestLaterTimeComponent,
     DrivingNotificationDetailsComponent,
-    FavoriteRoutesDataComponent
+    FavoriteRoutesDataComponent,
+    EnterLocationsComponent
   ],
   imports: [
     CommonModule,

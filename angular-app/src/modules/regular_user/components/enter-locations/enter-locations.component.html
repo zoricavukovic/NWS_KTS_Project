@@ -1,0 +1,149 @@
+<div *ngIf="rideRequestForm" [formGroup]="rideRequestForm">
+  <h1><strong>Request a ride now</strong></h1>
+  <div formArrayName="searchingRoutesForm">
+    <div
+      *ngFor="let addedLocation of searchingForm; let i = index"
+      class="div" [formGroupName]="i">
+      <mat-form-field appearance="fill">
+        <mat-label *ngIf="i === 0" class="font-size-label">Enter pickup location</mat-label>
+        <mat-label *ngIf="i ===  searchingForm.length - 1" class="font-size-label">Enter destination</mat-label>
+        <mat-label *ngIf="i !== 0 && i !==  searchingForm.length - 1" class="font-size-label">Via destination</mat-label>
+
+        <input
+          type="text"
+          matInput
+          ngx-google-places-autocomplete
+          [options]="options"
+          aria-label="State"
+          formControlName="inputPlace"
+          (onAddressChange)="addressChange($event, i)"
+          placeholder="Enter location"
+          class="font-size-input"
+        />
+        <mat-icon
+          *ngIf="i === 0 || i ===  searchingForm.length - 1"
+          [style.color]="i === 0 ? '#abbbae' : '#b73e3e'"
+          matSuffix>
+          location_on
+        </mat-icon>
+        <mat-icon
+          *ngIf="i !== 0 && i !==  searchingForm.length - 1"
+          matSuffix
+        >{{ getIconName(i) }}</mat-icon
+        >
+      </mat-form-field>
+
+      <button
+        *ngIf="searchingForm.length > 2"
+        mat-icon-button
+        class="delete-location-button"
+        (click)="deleteOneLocation(i)">
+        <mat-icon
+          matTooltip="Remove from route"
+          matTooltipClass="tooltip"
+          matTooltipHideDelay="10">
+          remove_circle
+        </mat-icon>
+      </button>
+    </div>
+
+    <button
+      *ngIf="canAddMoreLocation()"
+      mat-button
+      (click)="addOneMoreLocation()"
+      style="font-size: 1rem; color: #2c4b61; border-color: #2c4b61">
+      <mat-icon>add_circle</mat-icon>
+      Add location
+    </button>
+  </div>
+
+  <div class="margin-top">
+    <button mat-raised-button (click)="getPossibleRoutes()" style="float: left">
+      <strong>View possible routes</strong>
+    </button>
+    <div class="mat-elevation-z3" *ngIf="possibleRoutesViaPoints.length > 0" style="float: right">
+      <button
+        mat-button
+        [matMenuTriggerFor]="menu"
+        aria-label="Options"
+        class="options-button">
+        Options
+      </button>
+      <mat-menu #menu="matMenu">
+        <button
+          mat-menu-item
+          (click)="chooseFastestRoute()"
+          style="background-color:var(--gray); !important;color: var(--deep-blue)">
+          <mat-icon>access_time</mat-icon>
+          <span>Fastest route</span>
+        </button>
+        <button
+          mat-menu-item
+          (click)="chooseShortestRoute()"
+          style="background-color:var(--gray); !important; color: var(--deep-blue)">
+          <mat-icon>map</mat-icon>
+          <span>Shortest route</span>
+        </button>
+      </mat-menu>
+    </div>
+  </div>
+
+  <div *ngIf="possibleRoutesViaPoints.length > 0" class="devider-container" style="margin-top: 4rem;">
+    <div class="devider-line"><mat-divider></mat-divider></div>
+    <div class="devider-text mat-typography"><b>Possible routes</b></div>
+    <div class="devider-line"><mat-divider></mat-divider></div>
+  </div>
+
+  <div *ngIf="possibleRoutesViaPoints.length > 0" class="viewport">
+    <div *ngFor="let possibleRoute of possibleRoutesViaPoints; let i = index">
+      <h2 style="margin-left: 0.7rem">
+        <strong>
+          {{ getFromToLabel(i) }}
+          <mat-icon>arrow_right_alt</mat-icon>
+          {{ getFromToLabel(i + 1) }}
+        </strong>
+      </h2>
+      <p-carousel
+        [value]="possibleRoute.possibleRouteDTOList"
+        [numVisible]="1"
+        [numScroll]="1"
+        [circular]="false"
+        [responsiveOptions]="responsiveOptions">
+        <ng-template let-route pTemplate="item">
+          <div>
+            <div class="product-item-content">
+              <div style="position: relative">
+                <route-row
+                  [route]="route"
+                  (click)="
+                    changeOptionRouteOnClick(
+                      route,
+                      possibleRoute.possibleRouteDTOList.indexOf(route),
+                      i
+                    )
+                  "></route-row>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </p-carousel>
+      <mat-divider></mat-divider>
+    </div>
+  </div>
+
+
+  <!--  <app-routes-option *ngIf="possibleRoutesViaPoints.length > 0" [map-page]="map-page" [searchingRoutesForm]="searchingRoutesForm" [possibleRoutesViaPoints]="possibleRoutesViaPoints"></app-routes-option>-->
+
+  <br />
+  <div
+    class="continue-buttons"
+    *ngIf="currentUser && possibleRoutesViaPoints.length > 0">
+    <button mat-raised-button (click)="chooseVehicleAndPassengers()">
+      <strong>Request now</strong>
+    </button>
+    <button mat-raised-button style="background-color: var(--white);color: var(--deep-blue);margin-left:0.7rem;" (click)="chooseVehicleAndPassengersLater()">
+      <strong>Schedule for later</strong>
+    </button>
+  </div>
+
+</div>

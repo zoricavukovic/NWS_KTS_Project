@@ -1,4 +1,4 @@
-import {State, Action, StateContext, Selector} from '@ngxs/store';
+import {State, Action, StateContext, Selector, Store, Select} from '@ngxs/store';
 import { Injectable } from '@angular/core';
 import {DrivingNotification} from "../models/notification/driving-notification";
 import {
@@ -8,6 +8,7 @@ import {
   UpdateMinutesStatusDrivingNotification,
   UpdateStatusDrivingNotification
 } from "../actions/driving-notification.action";
+import {Observable} from "rxjs";
 
 export class DrivingNotificationStateModel {
     currentDrivingNotification: DrivingNotification
@@ -26,6 +27,8 @@ export class DrivingNotificationState {
     static getDrivingNotification(state: DrivingNotificationStateModel) {
         return state.currentDrivingNotification;
     }
+
+    @Select() drivingNotificationState$: Observable<DrivingNotificationState>;
 
 
     @Action(AddDrivingNotification)
@@ -108,6 +111,7 @@ export class DrivingNotificationState {
       currentDrivingNotification: null
     });
   }
+
 }
 
 

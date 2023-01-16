@@ -9,6 +9,7 @@ import {Driving} from "../models/driving/driving";
 import {VehicleCurrentLocation} from "../models/vehicle/vehicle-current-location";
 import {SearchingRoutesForm} from "../models/route/searching-routes-form";
 import {Route} from "../models/route/route";
+import {PossibleRoutesViaPoints} from "../models/route/possible-routes-via-points";
 
 
 export function addMarker(map: google.maps.Map, markerCoordinates: google.maps.LatLng | google.maps.LatLngLiteral)
@@ -225,4 +226,26 @@ export function markCurrentPosition(map: google.maps.Map, vehicleCurrentLocation
       title: 'Car',
       icon: customIcon
     });
+}
+
+
+export function calculateMinutes(routePathIndexList: number[], possibleRoutesViaPoints: PossibleRoutesViaPoints[]): number {
+  let minutes = 0;
+  routePathIndexList.forEach(index => {
+    minutes += possibleRoutesViaPoints
+      .at(routePathIndexList.indexOf(index))
+      .possibleRouteDTOList.at(index).timeInMin;
+  });
+
+  return minutes;
+}
+
+export function calculateDistance(routePathIndexList: number[], possibleRoutesViaPoints: PossibleRoutesViaPoints[]): number {
+  let distance = 0;
+  routePathIndexList.forEach(index => {
+    distance += possibleRoutesViaPoints.at(routePathIndexList.indexOf(index))
+      .possibleRouteDTOList.at(index).distance;
+  });
+
+  return distance;
 }

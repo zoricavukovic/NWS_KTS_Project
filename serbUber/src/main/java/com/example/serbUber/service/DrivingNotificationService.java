@@ -236,6 +236,7 @@ public class DrivingNotificationService implements IDrivingNotificationService {
             } else {
                 drivingService.removeDriver(driving.getId());
                 webSocketService.sendDrivingStatus(UNSUCCESSFUL_PAYMENT_PATH, UNSUCCESSFUL_PAYMENT_MESSAGE, receiversReviewed);
+
             }
 
         }
