@@ -204,44 +204,39 @@ public class DrivingNotificationService implements IDrivingNotificationService {
 
     public void shouldFindDriver(DrivingNotification drivingNotification) throws EntityNotFoundException {
         Map<RegularUser, Integer> receiversReviewed = drivingNotification.getReceiversReviewed();
-//        if (allPassengersAcceptDriving(drivingNotification)) {
-//            System.out.println("acccceptt");
-            Driver driver = driverService.getDriverForDriving(drivingNotification);
-            receiversReviewed.put(drivingNotification.getSender(), 0);
-            if (driver == null) {
-                System.out.println("nema vozacaaa");
-                DrivingStatusNotificationDTO drivingStatusNotificationDTO = new DrivingStatusNotificationDTO(0L, 0, DrivingStatus.PENDING, "Not found driver", null, drivingNotification.getId());
+        Driver driver = driverService.getDriverForDriving(drivingNotification);
+        receiversReviewed.put(drivingNotification.getSender(), 0);
+        if (driver == null) {
+            DrivingStatusNotificationDTO drivingStatusNotificationDTO = new DrivingStatusNotificationDTO(0L, 0, DrivingStatus.PENDING, "Not found driver", null, drivingNotification.getId());
+            webSocketService.sendDrivingStatus(drivingStatusNotificationDTO, receiversReviewed);
+        } else {
+            Set<RegularUser> passengers = getListOfUsers(drivingNotification.getReceiversReviewed());
+            Driving driving = drivingService.create(
+                    drivingNotification.getDuration(),
+                    drivingNotification.getStarted(),
+                    drivingNotification.getStarted().plusMinutes(2),
+                    drivingNotification.getRoute(),
+                    DrivingStatus.PAYING,
+                    driver.getId(),
+                    passengers,
+                    new HashMap<>(),
+                    drivingNotification.getPrice());
+            if (isPaidDriving(passengers, drivingNotification.getPrice())) {
+                drivingService.paidDriving(driving.getId());
+                int minutesToStartDrive = calculateMinutesForStartDriving(driver.getId(), drivingNotification.getRoute());
+                driving.setStarted(LocalDateTime.now().plusMinutes(minutesToStartDrive));
+                DrivingDTO drivingDTO = drivingService.save(driving);
+                DrivingStatusNotificationDTO drivingStatusNotificationDTO = new DrivingStatusNotificationDTO(driver.getId(), minutesToStartDrive, DrivingStatus.ACCEPTED, "", drivingDTO.getId(), drivingNotification.getId());
                 webSocketService.sendDrivingStatus(drivingStatusNotificationDTO, receiversReviewed);
+                System.out.println("placenoooo" + drivingStatusNotificationDTO.getMinutes());
+
             } else {
-                Set<RegularUser> passengers = getListOfUsers(drivingNotification.getReceiversReviewed());
-//                passengers.add(drivingNotification.getSender());
-                Driving driving = drivingService.create(
-                        drivingNotification.getDuration(),
-                        drivingNotification.getStarted(),
-                        drivingNotification.getStarted().plusMinutes(2),
-                        drivingNotification.getRoute(),
-                        DrivingStatus.PAYING,
-                        driver.getId(),
-                        passengers,
-                        new HashMap<>(),
-                        drivingNotification.getPrice());
-                if (isPaidDriving(passengers, drivingNotification.getPrice())) {
-                    drivingService.paidDriving(driving.getId());
-                    int minutesToStartDrive = calculateMinutesForStartDriving(driver.getId(), drivingNotification.getRoute());
-                    driving.setStarted(LocalDateTime.now().plusMinutes(minutesToStartDrive));
-                    DrivingDTO drivingDTO = drivingService.save(driving);
-                    DrivingStatusNotificationDTO drivingStatusNotificationDTO = new DrivingStatusNotificationDTO(driver.getId(), minutesToStartDrive, DrivingStatus.ACCEPTED, "", drivingDTO.getId(), drivingNotification.getId());
-                    webSocketService.sendDrivingStatus(drivingStatusNotificationDTO, receiversReviewed);
-                    System.out.println("placenoooo" + drivingStatusNotificationDTO.getMinutes());
-
-                } else {
-                    drivingService.removeDriver(driving.getId());
-                    DrivingStatusNotificationDTO drivingStatusNotificationDTO = new DrivingStatusNotificationDTO(driver.getId(), 0, DrivingStatus.PAYING, "Payment was not successful. Please, check your tokens!", driving.getId(), drivingNotification.getId());
-                    webSocketService.sendDrivingStatus(drivingStatusNotificationDTO, receiversReviewed);
-                }
-
+                drivingService.removeDriver(driving.getId());
+                DrivingStatusNotificationDTO drivingStatusNotificationDTO = new DrivingStatusNotificationDTO(driver.getId(), 0, DrivingStatus.PAYING, "Payment was not successful. Please, check your tokens!", driving.getId(), drivingNotification.getId());
+                webSocketService.sendDrivingStatus(drivingStatusNotificationDTO, receiversReviewed);
             }
-//        }
+
+        }
     }
 
     public int calculateMinutesForStartDriving(final Long driverId, final Route route) throws EntityNotFoundException {
