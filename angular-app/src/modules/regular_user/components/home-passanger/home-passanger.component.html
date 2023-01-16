@@ -1,5 +1,5 @@
 
-<form [formGroup]="rideRequestForm" *ngIf="!hasActiveDriving() && storedDrivingNotification?.drivingStatus!=='PAYING'">
+<form [formGroup]="rideRequestForm" *ngIf="!hasActiveDriving() && (!storedDrivingNotification || storedDrivingNotification?.drivingStatus === 'FINISHED')">
 <div *ngIf="routeChoiceView">
   <h1><strong>Request a ride now</strong></h1>
   <div formArrayName="searchingRoutesForm">
@@ -161,4 +161,4 @@
 
 <app-waiting-for-accept-ride-container *ngIf="!hasActiveDriving() && storedDrivingNotification?.drivingStatus==='PAYING'"></app-waiting-for-accept-ride-container>
 
-<app-active-drive-container *ngIf="hasActiveDriving()" [activeRide]="activeRide"></app-active-drive-container>
+<app-active-drive-container [activeRide]="activeRide" *ngIf="hasActiveDriving()"></app-active-drive-container>

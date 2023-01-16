@@ -127,14 +127,13 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.currentDrivingNotification.subscribe(response => {
       this.storedDrivingNotification = response;
-      console.log(response);
+      console.log(this.storedDrivingNotification.drivingStatus);
     })
     this.drivingSubscription = this.drivingService.checkIfUserHasActiveDriving(this.currentUser.id).subscribe(
       res => {
         this.activeRide = res;
         console.log(res);
         if(res){
-
           this.store.dispatch(new UpdateDrivingNotification(res)).subscribe(response => {
             this.storedDrivingNotification = response;
           })
@@ -620,12 +619,14 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
     this.stompClient.subscribe(environment.publisherUrl + localStorage.getItem('email') + '/finish-driving', (message: { body: string }) => {
       const drivingNotificationDetails: SimpleDrivingInfo =  JSON.parse(message.body);
       this.activeRide = null;
+      this.store.dispatch(new UpdateStatusDrivingNotification({active: false, drivingStatus: "FINISHED"})).subscribe(response => {
+        this.storedDrivingNotification = response;
+        console.log(this.storedDrivingNotification.drivingStatus);
+      })
+      this.ngOnInit();
       this.toast.info('Driving is finished.Tap to see details!')
         .onTap.subscribe(action => {
           this.router.navigate(['/serb-uber/user/map-page-view', drivingNotificationDetails.drivingId]);
-          this.store.dispatch(new UpdateStatusDrivingNotification({active: false, drivingStatus: "FINISHED"})).subscribe(response => {
-            this.storedDrivingNotification = response;
-          })
         });
 
     });
@@ -633,12 +634,13 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
     this.stompClient.subscribe(environment.publisherUrl + localStorage.getItem('email') + '/start-driving', (message: { body: string }) => {
       this.activeRide =  JSON.parse(message.body) as SimpleDrivingInfo;
       this.router.navigate(['/serb-uber/user/map-page-view', this.activeRide.drivingId]);
+      this.store.dispatch(new UpdateStatusDrivingNotification({active: true, drivingStatus: "ACCEPTED"})).subscribe(response => {
+        this.storedDrivingNotification = response;
+      })
+      this.ngOnInit();
       this.toast.info('Ride started.Tap to follow ride!')
         .onTap.subscribe(action => {
           this.router.navigate(['/serb-uber/user/map-page-view', this.activeRide.drivingId])
-          this.store.dispatch(new UpdateStatusDrivingNotification({active: true, drivingStatus: "ACCEPTED"})).subscribe(response => {
-            this.storedDrivingNotification = response;
-          })
         });
     });
 

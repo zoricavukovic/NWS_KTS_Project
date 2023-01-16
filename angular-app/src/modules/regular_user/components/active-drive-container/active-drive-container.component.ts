@@ -22,5 +22,6 @@ export class ActiveDriveContainerComponent implements OnInit {
   }
 
   ngOnInit(){
+    console.log(this.activeRide);
   }
 }

@@ -8,8 +8,10 @@ import {GenericService} from "../generic-service/generic.service";
 import {DrivingNotification} from "../../models/notification/driving-notification";
 import {DrivingStatusNotification} from "../../models/notification/driving-status-notification";
 import { Store } from '@ngxs/store';
-import { UpdateMinutesStatusDrivingNotification } from '../../actions/driving-notification.action';
+import { ClearStore, UpdateMinutesStatusDrivingNotification } from '../../actions/driving-notification.action';
 import { CreateDrivingNotification } from '../../models/notification/create-driving-notification';
+import { HomeComponent } from 'src/modules/user/components/home/home.component';
+import { HomePassangerComponent } from 'src/modules/regular_user/components/home-passanger/home-passanger.component';
 
 @Injectable({
   providedIn: 'root',
@@ -49,6 +51,7 @@ export class DrivingNotificationService extends GenericService<DrivingNotificati
   }
 
   showDrivingStatus(drivingStatusNotification: DrivingStatusNotification) {
+    console.log(drivingStatusNotification);
     if (drivingStatusNotification.drivingStatus === 'ACCEPTED') {
       let updatedDriving = {
         minutes: drivingStatusNotification.minutes,
@@ -66,6 +69,10 @@ export class DrivingNotificationService extends GenericService<DrivingNotificati
         `Driver ${drivingStatusNotification.driverEmail} reject your driving. \nReason for rejecting is
   ${drivingStatusNotification.reason}`
       );
+    }
+    else if(drivingStatusNotification.drivingStatus === 'PAYING'){
+      this.toast.info(`Ride is rejected. Reason is: ${drivingStatusNotification.reason}`, "Ride request failed");
+      this.store.dispatch(new ClearStore());
     }
   }
 
