@@ -2,8 +2,11 @@ package com.example.serbUber.controller;
 
 
 import com.example.serbUber.dto.VehicleCurrentLocationDTO;
+import com.example.serbUber.dto.VehicleCurrentLocationForLocustDTO;
 import com.example.serbUber.dto.VehicleDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
+import com.example.serbUber.request.LocationsForRoutesRequest;
+import com.example.serbUber.request.LongLatRequest;
 import com.example.serbUber.request.VehicleRequest;
 import com.example.serbUber.service.VehicleService;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -34,11 +37,18 @@ public class VehicleController {
         return this.vehicleService.getAll();
     }
 
-    @GetMapping("/active")
+    @GetMapping("/active/nesto")
     @ResponseStatus(HttpStatus.OK)
     public List<VehicleCurrentLocationDTO> getAllActiveVehicles() throws EntityNotFoundException {
 
         return vehicleService.getAllVehiclesForActiveDriver();
+    }
+
+    @GetMapping("/active")
+    @ResponseStatus(HttpStatus.OK)
+    public List<VehicleCurrentLocationForLocustDTO> getAllActiveVehiclesForLocust() throws EntityNotFoundException {
+
+        return vehicleService.getAllVehicleCurrentLocationForLocustDTOForActiveDriver();
     }
 
 
@@ -49,9 +59,19 @@ public class VehicleController {
         return vehicleService.updateCurrentVehiclesLocation();
     }
 
+    @PutMapping(value = "/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public VehicleCurrentLocationForLocustDTO updateCurrentPosition(
+        @Valid @NotNull(message = MISSING_ID) @PathVariable final Long id,
+        @Valid @RequestBody LongLatRequest longLatRequest
+        ) throws EntityNotFoundException {
+
+        return this.vehicleService.updateCurrentPosition(id, longLatRequest.getLon(), longLatRequest.getLat());
+    }
+
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
+    public void delete(@Valid @NotNull(message = MISSING_ID) @PathVariable final Long id) {
 
         this.vehicleService.delete(id);
     }
@@ -61,13 +81,6 @@ public class VehicleController {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
     public double getRatingForVehicle(@Valid @NotNull(message = MISSING_ID) @PathVariable  Long id) {
         return vehicleService.getRatingForVehicle(id);
-    }
-
-    @GetMapping("/{vehicleType}")
-    @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
-    public VehicleDTO getVehicleByVehicleType(@PathVariable String vehicleType){
-        return vehicleService.getVehicleDTOByVehicleType(vehicleType);
     }
 
     @GetMapping("/vehicle-by-driver/{driverId}")

@@ -1,6 +1,7 @@
 package com.example.serbUber.service.interfaces;
 
 import com.example.serbUber.dto.VehicleCurrentLocationDTO;
+import com.example.serbUber.dto.VehicleCurrentLocationForLocustDTO;
 import com.example.serbUber.dto.VehicleDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.model.Location;
@@ -33,5 +34,9 @@ public interface IVehicleService {
 
     double getLonOfCurrentVehiclePosition(final Vehicle vehicle) throws EntityNotFoundException;
 
+    List<VehicleCurrentLocationForLocustDTO> getAllVehicleCurrentLocationForLocustDTOForActiveDriver() throws EntityNotFoundException;
+
     VehicleDTO getVehicleOfDriver(final Long driverId) throws EntityNotFoundException;
+
+    VehicleCurrentLocationForLocustDTO updateCurrentPosition(final Long id, final double lng, final double lat) throws EntityNotFoundException;
 }

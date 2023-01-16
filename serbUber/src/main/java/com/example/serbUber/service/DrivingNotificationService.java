@@ -2,6 +2,7 @@ package com.example.serbUber.service;
 
 import com.example.serbUber.dto.DrivingDTO;
 import com.example.serbUber.dto.DrivingNotificationDTO;
+import com.example.serbUber.dto.DrivingNotificationWebSocketDTO;
 import com.example.serbUber.dto.DrivingStatusNotificationDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.EntityType;
@@ -75,6 +76,16 @@ public class DrivingNotificationService implements IDrivingNotificationService {
         drivingNotificationRepository.deleteById(drivingNotification.getId());
     }
 
+    public void deleteOutdatedNotification(final DrivingNotification notification){
+        drivingNotificationRepository.deleteById(notification.getId());
+        sendWebSocketForDrivingNotification(
+            notification.getId(),
+            notification.getSender().getEmail(),
+            DrivingNotificationType.DELETED,
+            notification.getReceiversReviewed()
+        );
+    }
+
     public DrivingNotificationDTO get(Long id) throws EntityNotFoundException {
 
         return drivingNotificationRepository.findById(id).map(DrivingNotificationDTO::new)
@@ -110,21 +121,41 @@ public class DrivingNotificationService implements IDrivingNotificationService {
             throw new ExcessiveNumOfPassengersException(vehicleType);
         }
 
-        Vehicle selectedVehicle = vehicleService.getVehicleByType(vehicleType);
+        VehicleTypeInfo vehicleTypeInfo = vehicleTypeInfoService.get(VehicleType.getVehicleType(vehicleType));
         Route route = routeService.createRoute(routeRequest.getLocations(), routeRequest.getTimeInMin(), routeRequest.getDistance(), routeRequest.getRoutePathIndex());
         LocalDateTime startedDateTime = getStartedDate(chosenDateTime);
         DrivingNotification notification = createDrivingNotification(
-                route, price, receiversReviewed, sender, startedDateTime, duration, babySeat, petFriendly, selectedVehicle
+                route, price, receiversReviewed, sender, startedDateTime, duration, babySeat, petFriendly, vehicleTypeInfo
         );
 
         if(passengers.size() > 0){
-            webSocketService.sendDrivingNotification(notification);
+            sendWebSocketForDrivingNotification(
+                notification.getId(),
+                notification.getSender().getEmail(),
+                DrivingNotificationType.LINKED_USER,
+                notification.getReceiversReviewed()
+            );
         }
         else{
             shouldFindDriver(notification);
+            delete(notification);
         }
 
         return new DrivingNotificationDTO(notification);
+    }
+
+    private void sendWebSocketForDrivingNotification(
+        final Long notificationId,
+        final String senderEmail,
+        final DrivingNotificationType drivingNotificationType,
+        final Map<RegularUser, Integer> users
+    ) {
+        DrivingNotificationWebSocketDTO dto = new DrivingNotificationWebSocketDTO(
+            notificationId,
+            senderEmail,
+            drivingNotificationType
+        );
+        webSocketService.sendDrivingNotification(dto, users);
     }
 
     private LocalDateTime getStartedDate(LocalDateTime chosenDateTime) throws InvalidStartedDateTimeException {
@@ -145,7 +176,7 @@ public class DrivingNotificationService implements IDrivingNotificationService {
             .orElseThrow(() -> new EntityNotFoundException(id, EntityType.DRIVING_NOTIFICATION));
         updateReceiversReviewedByUserEmail(drivingNotification.getReceiversReviewed(), email, accepted);
         drivingNotificationRepository.save(drivingNotification);
-        shouldFindDriver(drivingNotification);
+//        shouldFindDriver(drivingNotification);
         return new DrivingNotificationDTO(drivingNotification);
     }
 
@@ -173,8 +204,8 @@ public class DrivingNotificationService implements IDrivingNotificationService {
 
     public void shouldFindDriver(DrivingNotification drivingNotification) throws EntityNotFoundException {
         Map<RegularUser, Integer> receiversReviewed = drivingNotification.getReceiversReviewed();
-        if (allPassengersAcceptDriving(drivingNotification)) {
-            System.out.println("acccceptt");
+//        if (allPassengersAcceptDriving(drivingNotification)) {
+//            System.out.println("acccceptt");
             Driver driver = driverService.getDriverForDriving(drivingNotification);
             receiversReviewed.put(drivingNotification.getSender(), 0);
             if (driver == null) {
@@ -209,7 +240,7 @@ public class DrivingNotificationService implements IDrivingNotificationService {
                 }
 
             }
-        }
+//        }
     }
 
     public int calculateMinutesForStartDriving(final Long driverId, final Route route) throws EntityNotFoundException {
@@ -279,7 +310,7 @@ public class DrivingNotificationService implements IDrivingNotificationService {
         final int duration,
         final boolean babySeat,
         final boolean petFriendly,
-        final Vehicle vehicle
+        final VehicleTypeInfo vehicleTypeInfo
     )
     {
 
@@ -292,7 +323,7 @@ public class DrivingNotificationService implements IDrivingNotificationService {
                 duration,
                 babySeat,
                 petFriendly,
-                vehicle,
+                vehicleTypeInfo,
                 receiversReviewed
             )
         );

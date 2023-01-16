@@ -61,6 +61,7 @@ export class WebSocketService {
         that.stompClient.subscribe(
           environment.publisherUrl + localStorage.getItem('email') + '/connect',
           message => {
+            console.log("socket se uhvatio");
             if (message !== null && message !== undefined) {
               that.checkNotificationType(message.body);
             }
@@ -94,6 +95,8 @@ export class WebSocketService {
   }
 
   checkNotificationType(message: string) {
+    console.log("SOCKET");
+    console.log(message);
     if (this.isActivityResetNotification(message)) {
       this.driverService.showActivityStatusResetNotification(
         JSON.parse(message)
@@ -173,7 +176,7 @@ export class WebSocketService {
   private isDrivingNotification(message: string): boolean {
     try {
       const parsed: CreateDrivingNotification = JSON.parse(message);
-      return parsed.drivingNotificationType === 'LINKED_USER';
+      return parsed.drivingNotificationType === 'LINKED_USER' || parsed.drivingNotificationType === 'DELETED';
     } catch (e) {
       return false;
     }

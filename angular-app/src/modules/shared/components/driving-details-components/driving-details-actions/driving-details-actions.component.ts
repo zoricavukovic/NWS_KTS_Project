@@ -20,7 +20,6 @@ export class DrivingDetailsActionsComponent implements OnInit, OnDestroy {
   @Output() setFavouriteRouteEvent = new EventEmitter<boolean>();
 
   currentUser: User;
-
   authSubscription: Subscription;
   drivingId: number;
 

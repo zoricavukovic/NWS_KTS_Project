@@ -48,25 +48,19 @@ insert into routes (distance, time) values
 
 insert into vehicles (baby_seat, pet_friendly, rate, vehicle_type_id, active_route_id, current_location_index, current_stop_location_id) values
     (true, false, 2.9, 1, 2, 0, 5),
-    (true, true, 5, 2, 4, 0, 5),
+    (false, true, 5, 3, 4, 0, 5),
     (false, true, 0, 3, 1, 0, 2);
 
 insert into driving_locations(location_id, index, route_id, route_index) values
       (5,1,1, 0),
       (6,2,1, 0),
       (7,3,1, 0),
-      (8,4,1, 0),
-      (9,5,1, 0),
-      (10,6,1, 0),
-      (11,7,1, 0),
-      (12,8,1, 0),
-      (13,9,1, 0),
       (14,10,1, -1),
       (2,1,2, 0),
       (1,2,2, -1),
       (4,1,3, 0),
       (1,2,3, -1),
-      (5, 1,4, 1),
+      (5, 1,4, 0),
       (15, 2, 4, 0),
       (3, 3, 4, -1);
 
@@ -81,7 +75,7 @@ insert into drivers (id, email, password, name, surname, phone_number, city, pro
     (nextval('users_id_gen'), 'eki@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Esad', 'Esadic', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, null, null, 0, 0, true, false, false, 1);
 
 insert into drivings (active, driver_id, driving_status, duration, paying_limit, price, started, end_date, route_id) values
-   (false, 5, 2, 2, null, 4, to_timestamp('14.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), null, 1),
+   (true, 5, 2, 2, null, 4, to_timestamp('14.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('14.01.2023. 14:25', 'DD.MM.YYYY HH24:MI'), 1),
    (false, 5, 3, 2, null, 3, to_timestamp('11.01.2023. 18:01', 'DD.MM.YYYY HH24:MI'), to_timestamp('11.01.2023. 18:04', 'DD.MM.YYYY HH24:MI'),2),
    (false, 6, 3, 10, null, 5,to_timestamp('24.10.2022 14:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('24.10.2022. 14:10', 'DD.MM.YYYY HH24:MI'),3),
    (false, 6, 3, 10, null, 5,to_timestamp('24.11.2022 14:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('24.11.2022. 14:10', 'DD.MM.YYYY HH24:MI'),4);

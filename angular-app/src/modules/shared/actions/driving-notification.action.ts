@@ -28,3 +28,7 @@ export class AddDrivingNotification {
 
     constructor(public payload: {active: boolean, drivingStatus: string}) {}
   }
+
+  export class ClearStore {
+    static readonly type = "[DrivingNotification] ClearDriving";
+  }

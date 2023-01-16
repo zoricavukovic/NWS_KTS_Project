@@ -1,4 +1,4 @@
-<div *ngIf="vehiclePassengersView && rideRequestForm" [formGroup]="rideRequestForm">
+<div *ngIf="vehiclePassengersView && rideRequestForm" [formGroup]="rideRequestForm" style="min-width:25rem">
   <driver-vehicle (vehicleTypeEvent)="showPrice()"
     [formGroup] = "rideRequestForm"></driver-vehicle>
   <br />

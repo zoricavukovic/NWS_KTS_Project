@@ -28,14 +28,24 @@ export class DrivingNotificationService extends GenericService<DrivingNotificati
   }
 
   showNotification(drivingNotificationResponse:CreateDrivingNotification) {
-    //NECE MOCI DA IDE NA DETAILS, JER JOS TAD VOZNJA NIJE KREIRANA
-    this.toast
-      .info(
-        `User ${drivingNotificationResponse.senderEmail} add you as linked passenger.Tap to accept!`
-      )
-      .onTap.subscribe(action => {
-        this._router.navigate(["driving-notification", drivingNotificationResponse.id]);
+    if (drivingNotificationResponse.drivingNotificationType === 'LINKED_USER') {
+      this.toast
+        .info(
+          `User ${drivingNotificationResponse.senderEmail} add you as linked passenger.Tap to accept!`
+        )
+        .onTap.subscribe(action => {
+        this._router.navigate(["serb-uber/user/driving-notification", drivingNotificationResponse.id]);
       });
+    } else {
+      this.toast
+        .info(
+          `Ride is rejected because not all linked passengers reviewed invitation.`
+        );
+      if (this._router.url.includes("notifications")) {
+        window.location.reload();
+      }
+    }
+
   }
 
   showDrivingStatus(drivingStatusNotification: DrivingStatusNotification) {
@@ -59,8 +69,8 @@ export class DrivingNotificationService extends GenericService<DrivingNotificati
     }
   }
 
-  updateRideStatus(drivingId: number, accept: boolean, email: string): Observable<DrivingNotification> {
+  updateRideStatus(drivingNotificationNumber: number, accept: boolean, email: string): Observable<DrivingNotification> {
 
-    return this._http.put<DrivingNotification>(this.configService.acceptDrivingUrl(drivingId, accept, email), null);
+    return this._http.put<DrivingNotification>(this.configService.acceptDrivingUrl(drivingNotificationNumber, accept, email), null);
   }
 }

@@ -132,20 +132,21 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
   }
 
   showPrice(){
-    this.vehicleSubscription = this.vehicleService
-      .getVehicleByVehicleType(this.rideRequestForm.get('vehicleType').value)
-      .subscribe(response => {
-        this.vehicle = response;
-      });
-    this.priceSubscription = this.vehicleService
+    // this.vehicleSubscription = this.vehicleService
+    //   .getVehicleByVehicleType(this.rideRequestForm.get('vehicleType').value)
+    //   .subscribe(response => {
+    //     this.vehicle = response;
+    //   });
+    this.priceSubscription = this.vehicleTypeInfoService
       .getPriceForVehicleAndRoute(this.rideRequestForm.get('vehicleType').value, 3800)
       .subscribe(response => {
         this.price = response;
         this.rideRequestForm.get('price').setValue(this.price);
       });
     }
-  
+
   checkChosenDateTime(): boolean{
+    console.log(this.rideRequestForm.get('chosenDateTime').value)
     if(this.rideRequestForm.get('chosenDateTime').value > new Date(Date.now() + (5*60*60*1000))){
       this.toast.error('You can only schedule your ride 5 hours in advance!', 'Invalid chosen time');
       return false;
@@ -154,8 +155,10 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
   }
 
   requestRide() {
+    console.log("POZVAO")
     this.rideRequestForm.get('selectedPassengers').setValue(this.selectedPassengers);
     this.rideRequestForm.get('senderEmail').setValue(this.currentUser.email);
+    
     if(this.checkChosenDateTime()){
       this.waitingForAcceptDrive.emit(true);
       const drivingNotification = {
@@ -188,7 +191,7 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
         this.toast.error(error.error, 'Create ride failed.');
       });
   }
-    
+
     // this.drivingNotificationSubscription = this.store
     // .dispatch(new AddDrivingNotification(drivingNotification))
     // .subscribe((response) => {

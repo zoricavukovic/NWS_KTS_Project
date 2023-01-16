@@ -1,6 +1,7 @@
 package com.example.serbUber.service;
 
 import com.example.serbUber.dto.VehicleCurrentLocationDTO;
+import com.example.serbUber.dto.VehicleCurrentLocationForLocustDTO;
 import com.example.serbUber.dto.VehicleDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.EntityType;
@@ -18,6 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static com.example.serbUber.dto.VehicleCurrentLocationDTO.fromVehiclesToVehicleCurrentLocationDTO;
+import static com.example.serbUber.dto.VehicleCurrentLocationForLocustDTO.fromVehiclesToVehicleCurrentLocationForLocustDTO;
 import static com.example.serbUber.dto.VehicleDTO.fromVehicles;
 import static com.example.serbUber.util.Constants.TAXI_START_LOCATION_ID;
 
@@ -152,8 +154,6 @@ public class VehicleService implements IVehicleService {
         vehicleRepository.save(vehicle);
     }
 
-
-
     public Vehicle getVehicleByType(String vehicleType){
         VehicleType type = VehicleType.getVehicleType(vehicleType.toLowerCase());
         return vehicleRepository.getVehicleByType(type);
@@ -179,9 +179,33 @@ public class VehicleService implements IVehicleService {
 
     }
 
-    public VehicleDTO getVehicleOfDriver(Long driverId) throws EntityNotFoundException {
+    public List<VehicleCurrentLocationForLocustDTO> getAllVehicleCurrentLocationForLocustDTOForActiveDriver()
+        throws EntityNotFoundException
+    {
+        List<Vehicle> vehicles = vehicleRepository.getAllVehiclesForActiveDriver();
+        List<VehicleWithDriverId> withDriverIds = new LinkedList<>();
+
+        for (Vehicle vehicle : vehicles) {
+            withDriverIds.add(new VehicleWithDriverId(vehicle, getDriverIdByVehicleId(vehicle.getId())));
+        }
+
+        return fromVehiclesToVehicleCurrentLocationForLocustDTO(withDriverIds);
+    }
+
+    public VehicleDTO getVehicleOfDriver(final Long driverId) throws EntityNotFoundException {
 
         return new VehicleDTO(vehicleRepository.getVehicleByDriverId(driverId)
                 .orElseThrow(() -> new EntityNotFoundException(driverId, EntityType.VEHICLE)));
+    }
+
+    public VehicleCurrentLocationForLocustDTO updateCurrentPosition(
+        final Long id,
+        final double lng,
+        final double lat
+    ) throws EntityNotFoundException {
+        Vehicle vehicle = getVehicleById(id);
+        vehicle.setCurrentLocationIndex(vehicle.getCurrentLocationIndex() + 1);
+        vehicle.setCurrentStop(new Location(lat, lng));
+        return null;
     }
 }

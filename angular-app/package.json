@@ -15,6 +15,8 @@
     "@angular-eslint/builder": "^14.1.2",
     "@angular-eslint/eslint-plugin": "^14.1.2",
     "@angular-eslint/eslint-plugin-template": "^14.1.2",
+    "@angular-material-components/datetime-picker": "^8.0.0",
+    "@angular-material-components/moment-adapter": "^8.0.0",
     "@angular/animations": "^14.2.0",
     "@angular/cdk": "^14.2.5",
     "@angular/common": "^14.2.0",

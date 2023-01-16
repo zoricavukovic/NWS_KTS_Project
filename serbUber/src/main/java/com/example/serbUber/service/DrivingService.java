@@ -196,10 +196,9 @@ public class DrivingService implements IDrivingService {
 
     public DrivingDTO rejectDriving(final Long id, final String reason) throws EntityNotFoundException {
         Driving driving = getDriving(id);
-        Driver driver = driving.getDriver();
         driving.setDrivingStatus(DrivingStatus.REJECTED);
-        driver.getVehicle().setCurrentLocationIndex(-1);
-        driver.getVehicle().setActiveRoute(null);
+        driving.getDriver().getVehicle().setCurrentLocationIndex(-1);
+        driving.getDriver().getVehicle().setActiveRoute(null);
         drivingRepository.save(driving);
 
         DrivingStatusNotification drivingStatusNotification = drivingStatusNotificationService.create(
@@ -257,12 +256,12 @@ public class DrivingService implements IDrivingService {
         if (drivingShouldNotStartYet(driving)) {
             throw new DrivingShouldNotStartYetException();
         }
-        Driver driver = userService.getDriverById(driving.getDriver().getId());
-        driver.getVehicle().setActiveRoute(driving.getRoute());
-        driver.getVehicle().setCurrentLocationIndex(0);
-        driver.getVehicle().setCurrentStop(driving.getRoute().getLocations().first().getLocation());
         driving.setStarted(LocalDateTime.now());
         driving.setActive(true);
+        driving.getDriver().getVehicle().setActiveRoute(driving.getRoute());
+        driving.getDriver().getVehicle().setCurrentLocationIndex(0);
+        driving.getDriver().getVehicle().setCurrentStop(driving.getRoute().getLocations().first().getLocation());
+        driving.getDriver().setDrive(true);
         driving.setDrivingStatus(DrivingStatus.ACCEPTED);
         drivingRepository.save(driving);
 
@@ -277,16 +276,16 @@ public class DrivingService implements IDrivingService {
         driving.setActive(false);
         driving.setDrivingStatus(DrivingStatus.FINISHED);
         driving.setEnd(LocalDateTime.now());
-        Driver driver = userService.getDriverById(driving.getDriver().getId());
-        driver.getVehicle().setCurrentLocationIndex(-1);
-        driver.getVehicle().setActiveRoute(null);
-
+        driving.getDriver().getVehicle().setCurrentLocationIndex(-1);
+        driving.getDriver().getVehicle().setActiveRoute(null);
+        driving.getDriver().setDrive(false);
         drivingRepository.save(driving);
+
         webSocketService.finishDrivingNotification(new SimpleDrivingInfoDTO(driving), driving.getUsers());
         this.vehicleService.updateCurrentVehiclesLocation();
         Driving nextDriving = driverHasFutureDriving(driving.getDriver().getId());
         if (nextDriving != null) {
-            createDrivingToDeparture(driver, driving.getRoute().getLocations().last().getLocation(), nextDriving.getRoute());
+            createDrivingToDeparture(driving.getDriver(), driving.getRoute().getLocations().last().getLocation(), nextDriving.getRoute());
         }
         return new DrivingDTO(driving);
     }

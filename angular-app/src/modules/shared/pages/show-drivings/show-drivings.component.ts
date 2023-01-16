@@ -67,13 +67,6 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
       }
     );
 
-    /*this.drivingCountSubscription = this.drivingService
-      .getCountDrivings(this.userId)
-      .subscribe(response => {
-        console.log(response);
-        this.totalPages = response / this.pageSize;
-      });*/
-
     this.drivingsSubscription = this.drivingService
       .getDrivingsForUser(
         this.userId,
@@ -83,13 +76,15 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
         this.selectedSortOrder
       )
       .subscribe((response: Driving[]) => {
+        console.log(response);
         this.drivings = response;
-        this.totalPages = this.drivings.at(0).pageNumber;
+        this.totalPages = response.length === 0? 1: response.at(0).pageNumber;
         this.reviewedDrivingsSubscription = this.reviewService
           .getReviewedDrivingsForUser(this.userId)
-          .subscribe((response: number[]) => {
-            for (const driving of this.drivings) {
-              if (response.includes(driving.id)) {
+          .subscribe((reviewedDrivings: number[]) => {
+
+            for (const driving of response) {
+              if (reviewedDrivings.includes(driving.id)) {
                 driving.hasReviewForUser = true;
               }
             }

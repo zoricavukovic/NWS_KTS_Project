@@ -8,6 +8,8 @@ import {LoginResponse} from "../../../shared/models/user/login-response";
 import {Route} from "../../../shared/models/route/route";
 import {ConfigService} from "../../../shared/services/config-service/config.service";
 import {WebSocketService} from "../../../shared/services/web-socket-service/web-socket.service";
+import {Store} from "@ngxs/store";
+import {ClearStore} from "../../../shared/actions/driving-notification.action";
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +25,8 @@ export class AuthService {
     private http: HttpClient,
     private configService: ConfigService,
     private router: Router,
-    private chatService: WebSocketService
+    private chatService: WebSocketService,
+    private store: Store
   ) {
     this.currentUser$ = new BehaviorSubject<User>(null);
     this.ROLE_ADMIN= 'ROLE_ADMIN';
@@ -63,6 +66,7 @@ export class AuthService {
     localStorage.clear();
     this.chatService.disconnect();
     this.currentUser$.next(null);
+    this.store.dispatch(new ClearStore());
   }
 
   setOfflineStatus(): Observable<User> {

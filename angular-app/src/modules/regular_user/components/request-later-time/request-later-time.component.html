@@ -2,9 +2,8 @@
     <h1 style="font-size: 1.4rem;">Schedule for later</h1>
     <mat-card-content>
         <div class="container">
-            <p>{{getChosenDateTime() | dateFormat}}</p>
-            <!-- <timepicker [(ngModel)]="chosenTime"   
-            [showSeconds]="false" [showMeridian]="false"></timepicker> -->
+            <p>{{getChosenDateTime() | dateFormat}}</p> 
+            <ngx-mat-timepicker [(ngModel)]="chosenTime"></ngx-mat-timepicker>
             <br>
             <p style="font-size:13px;">* You can only schedule your ride 5 hours in advance.</p>
         </div>

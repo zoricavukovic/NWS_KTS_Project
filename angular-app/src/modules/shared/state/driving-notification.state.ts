@@ -1,10 +1,13 @@
 import {State, Action, StateContext, Selector} from '@ngxs/store';
-import {tap} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import {DrivingNotification} from "../models/notification/driving-notification";
-import {DrivingNotificationService} from "../services/driving-notification-service/driving-notification.service";
-import {AddDrivingNotification, UpdateDrivingNotification, UpdateMinutesStatusDrivingNotification, UpdateStatusDrivingNotification} from "../actions/driving-notification.action";
-import { SimpleDrivingInfo } from '../models/driving/simple-driving-info';
+import {
+  AddDrivingNotification,
+  ClearStore,
+  UpdateDrivingNotification,
+  UpdateMinutesStatusDrivingNotification,
+  UpdateStatusDrivingNotification
+} from "../actions/driving-notification.action";
 
 export class DrivingNotificationStateModel {
     currentDrivingNotification: DrivingNotification
@@ -19,25 +22,11 @@ export class DrivingNotificationStateModel {
 @Injectable()
 export class DrivingNotificationState {
 
-    constructor(private drivingNotificationService: DrivingNotificationService) {
-    }
-
     @Selector()
     static getDrivingNotification(state: DrivingNotificationStateModel) {
         return state.currentDrivingNotification;
     }
 
-
-    // @Action(AddDrivingNotification)
-    // addDrivingNotification({setState}: StateContext<DrivingNotificationStateModel>, {payload}: AddDrivingNotification) {
-    //     console.log(payload);
-    //     return this.drivingNotificationService.create(payload).pipe(tap((result) => {
-        
-    //         setState({
-    //             currentDrivingNotification: result
-    //         });
-    //     }));
-    // }
 
     @Action(AddDrivingNotification)
     addDrivingNotification({getState, setState}: StateContext<DrivingNotificationStateModel>, {payload}: AddDrivingNotification) {
@@ -83,8 +72,9 @@ export class DrivingNotificationState {
 
     @Action(UpdateDrivingNotification)
     updateDrivingNotification({getState, setState}: StateContext<DrivingNotificationStateModel>, {payload}: UpdateDrivingNotification) {
-        console.log(payload);
-        const state = getState();
+      const state = getState();
+
+      if (state.currentDrivingNotification){
         state.currentDrivingNotification.drivingId = payload.drivingId;
         state.currentDrivingNotification.minutes = payload.minutes;
         state.currentDrivingNotification.drivingStatus = payload.drivingStatus;
@@ -94,7 +84,30 @@ export class DrivingNotificationState {
             ...state,
             currentDrivingNotification: state.currentDrivingNotification
         });
+      } else {
+        setState({
+          ...state,
+          currentDrivingNotification: {
+            drivingId: payload.drivingId,
+            minutes: payload.minutes,
+            drivingStatus: payload.drivingStatus,
+            price: payload.cost,
+            active: payload.active,
+            route: null,
+            senderEmail: null
+          }
+        })
+      }
     }
+
+  @Action(ClearStore)
+  clearStore({getState, setState}: StateContext<DrivingNotificationStateModel>) {
+    const state = getState();
+    setState({
+      ...state,
+      currentDrivingNotification: null
+    });
+  }
 }
 
 

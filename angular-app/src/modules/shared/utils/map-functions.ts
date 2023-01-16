@@ -175,7 +175,7 @@ export function addCarMarker(map, vehicleStatus: VehicleCurrentLocation, current
 
   const marker: google.maps.Marker = new google.maps.Marker(
     {
-      position: {lat:vehicleStatus?.currentLocation?.lat, lng:vehicleStatus?.currentLocation?.lon},
+      position: {lat:+vehicleStatus?.currentLocation?.lat, lng:+vehicleStatus?.currentLocation?.lon},
       map: map,
       title: 'Car',
       icon: customIcon

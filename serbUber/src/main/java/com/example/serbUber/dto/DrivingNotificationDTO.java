@@ -1,9 +1,6 @@
 package com.example.serbUber.dto;
 
-import com.example.serbUber.model.DrivingNotification;
-import com.example.serbUber.model.DrivingNotificationType;
-import com.example.serbUber.model.Route;
-import com.example.serbUber.model.Vehicle;
+import com.example.serbUber.model.*;
 import com.example.serbUber.model.user.RegularUser;
 
 import java.time.LocalDateTime;
@@ -20,7 +17,7 @@ public class DrivingNotificationDTO {
     private DrivingNotificationType drivingNotificationType;
     private LocalDateTime started;
     private int duration;
-    private Vehicle vehicle;
+    private VehicleTypeInfo vehicleTypeInfo;
     private Set<RegularUser> receivers;
     private double price;
 
@@ -30,7 +27,7 @@ public class DrivingNotificationDTO {
         this.route = drivingNotification.getRoute();
         this.price = drivingNotification.getPrice();
         this.senderEmail = drivingNotification.getSender().getEmail();
-        this.vehicle = drivingNotification.getVehicle();
+        this.vehicleTypeInfo = drivingNotification.getVehicleTypeInfo();
         this.receivers = getListOfUsers(drivingNotification.getReceiversReviewed());
     }
 
@@ -82,12 +79,12 @@ public class DrivingNotificationDTO {
         this.duration = duration;
     }
 
-    public Vehicle getVehicle() {
-        return vehicle;
+    public VehicleTypeInfo getVehicleTypeInfo() {
+        return vehicleTypeInfo;
     }
 
-    public void setVehicle(Vehicle vehicle) {
-        this.vehicle = vehicle;
+    public void setVehicleTypeInfo(VehicleTypeInfo vehicleTypeInfo) {
+        this.vehicleTypeInfo = vehicleTypeInfo;
     }
 
     public Set<RegularUser> getReceivers() {

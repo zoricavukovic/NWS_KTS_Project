@@ -134,9 +134,10 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
         this.activeRide = res;
         console.log(res);
         if(res){
-        this.store.dispatch(new UpdateDrivingNotification(res)).subscribe(response => {
-          this.storedDrivingNotification = response;
-        })
+
+          this.store.dispatch(new UpdateDrivingNotification(res)).subscribe(response => {
+            this.storedDrivingNotification = response;
+          })
         }
       }
     )

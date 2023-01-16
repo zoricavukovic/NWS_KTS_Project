@@ -33,15 +33,16 @@ public class WebSocketService {
         this.messagingTemplate.convertAndSend("/user/global/connect", vehicleDTOs);
     }
 
-    public void sendDrivingNotification(DrivingNotification drivingNotification) {
-        DrivingNotificationWebSocketDTO dto = new DrivingNotificationWebSocketDTO(
-                drivingNotification.getId(),
-                drivingNotification.getSender().getEmail(),
-                DrivingNotificationType.LINKED_USER
-        );
-        drivingNotification.getReceiversReviewed().forEach((key, value) -> {
-            this.messagingTemplate.convertAndSendToUser(key.getEmail(), "/connect", dto);
+    public void sendDrivingNotification(
+        final DrivingNotificationWebSocketDTO drivingNotificationDTO,
+        final Map<RegularUser, Integer> users
+    ) {
+        users.forEach((key, value) -> {
+            this.messagingTemplate.convertAndSendToUser(key.getEmail(), "/connect", drivingNotificationDTO);
         });
+        if (drivingNotificationDTO.getDrivingNotificationType().equals(DrivingNotificationType.DELETED)){
+            this.messagingTemplate.convertAndSendToUser(drivingNotificationDTO.getSenderEmail(), "/connect", drivingNotificationDTO);
+        }
     }
 
     public void passengerNotAcceptDrivingNotification(Set<RegularUser> regularUsers, String userEmail, String senderEmail) {

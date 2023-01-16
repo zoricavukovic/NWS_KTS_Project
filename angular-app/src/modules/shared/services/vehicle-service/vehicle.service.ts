@@ -9,18 +9,13 @@ import {VehicleCurrentLocation} from "../../models/vehicle/vehicle-current-locat
 @Injectable({
   providedIn: 'root',
 })
-export class VehicleService extends GenericService<Vehicle> {
+export class  VehicleService extends GenericService<Vehicle> {
   vehicles$ = new BehaviorSubject<VehicleCurrentLocation[]>([]);
   constructor(
     private http: HttpClient,
     private configService: ConfigService
   ) {
     super(http, configService.VEHICLES_URL);
-  }
-
-  getPriceForVehicleAndRoute(type: string, kilometers: number): Observable<number> {
-
-    return this.http.get<number>(this.configService.priceForRouteAndVehicleUrl(type, kilometers));
   }
 
   getVehicleByDriver(driverId: string): Observable<Vehicle> {

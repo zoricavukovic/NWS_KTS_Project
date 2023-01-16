@@ -2,6 +2,7 @@ import { DATE_PIPE_DEFAULT_TIMEZONE } from '@angular/common';
 import { ThisReceiver } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import { ControlContainer, FormGroup } from '@angular/forms';
+import moment from 'moment';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -10,7 +11,7 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./request-later-time.component.css']
 })
 export class RequestLaterTimeComponent implements OnInit {
-  chosenTime: Date;
+  chosenTime: moment.Moment;
   rideRequestForm: FormGroup;
 
 
@@ -20,22 +21,28 @@ export class RequestLaterTimeComponent implements OnInit {
 
   ngOnInit(): void {
     this.rideRequestForm = <FormGroup>this.controlContainer.control;
-    this.chosenTime = new Date();
+    this.chosenTime = moment().add(1, 'hour');
   }
 
 
   getChosenDateTime(): Date {
-    const currentDateTime = new Date();
-    if(currentDateTime > this.chosenTime){
-      this.chosenTime.setDate(this.chosenTime.getDate() + 1);
+    const currentDateTime = moment();
+    const currentTime = moment(`${currentDateTime.hour()}:${currentDateTime.minutes()}`, "HH:mm");
+     console.log(`${currentDateTime.hour()}:${currentDateTime.minutes()}`);
+    console.log(currentTime);
+    const time = moment(`${this.chosenTime.hour()}:${this.chosenTime.minutes()}`, "HH:mm");
+    if(currentTime.isAfter(time)){
+      // moment([this.chosenTime.hours, this.chosenTime.minutes])
+      this.chosenTime = this.chosenTime.add(1, 'day')
+      console.log(this.chosenTime);
     }
     else{
-      if(this.chosenTime.getDate() > currentDateTime.getDate()){
-        this.chosenTime.setDate(this.chosenTime.getDate() - 1);
+      if(this.chosenTime.isAfter(currentDateTime, 'day')){
+        this.chosenTime = this.chosenTime.subtract(1, 'day');
       }
     }
-    this.rideRequestForm.get('chosenDateTime').setValue(this.chosenTime);
-    return this.chosenTime;
+    this.rideRequestForm.get('chosenDateTime').setValue(this.chosenTime.toDate());
+    return this.chosenTime.toDate();
   }
 
 }
