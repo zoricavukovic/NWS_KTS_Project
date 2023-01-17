@@ -7,9 +7,15 @@ import { ConfigService } from 'src/modules/shared/services/config-service/config
 import { DrivingNotificationService } from 'src/modules/shared/services/driving-notification-service/driving-notification.service';
 import { RouteService } from 'src/modules/shared/services/route-service/route.service';
 import { UserService } from 'src/modules/shared/services/user-service/user.service';
-import { drawAllMarkers, drawPolylineWithLngLatArray } from 'src/modules/shared/utils/map-functions';
+import {
+  drawAllMarkers,
+  drawPolylineWithLngLatArray,
+  removeAllMarkersFromList,
+  removeLine
+} from 'src/modules/shared/utils/map-functions';
 import {AuthService} from "../../../auth/services/auth-service/auth.service";
 import {ToastrService} from "ngx-toastr";
+import {Vehicle} from "../../../shared/models/vehicle/vehicle";
 
 @Component({
   selector: 'app-driving-notification-details',
@@ -18,7 +24,7 @@ import {ToastrService} from "ngx-toastr";
 })
 export class DrivingNotificationDetailsComponent implements OnInit, OnDestroy {
   @Input() map: google.maps.Map;
-  id:number;
+  id: number;
   currentUser: User;
   base64Prefix = this.configService.BASE64_PHOTO_PREFIX;
   drivingNotification: DrivingNotification;
@@ -26,6 +32,7 @@ export class DrivingNotificationDetailsComponent implements OnInit, OnDestroy {
   markers: google.maps.Marker[];
   users: User[];
   answered: boolean;
+  vehicle: Vehicle;
 
   drivingNotificationSubscription: Subscription;
   routeSubscription: Subscription;
@@ -44,12 +51,12 @@ export class DrivingNotificationDetailsComponent implements OnInit, OnDestroy {
     ) {
       this.users = [];
       this.answered = false;
-     }
+      this.vehicle = {
+        vehicleTypeInfo: null
+      }
+  }
 
   ngOnInit(): void {
-    // this.router.events.subscribe((event) => {
-    //   this.ngOnDestroy();
-    // });
     this.id = +this.route.snapshot.paramMap.get('id');
     this.authSubscription = this.authService
       .getSubjectCurrentUser()
@@ -59,8 +66,11 @@ export class DrivingNotificationDetailsComponent implements OnInit, OnDestroy {
 
     this.drivingNotificationSubscription = this.drivingNotificationService.get(this.id).subscribe(
       (response) => {
-        console.log(this.map);
+
         this.drivingNotification = response;
+        this.vehicle = {
+          vehicleTypeInfo: response.vehicleTypeInfo
+        }
         this.users = response.receivers;
         if (this.map){
           this.routeSubscription = this.routeService.getRoutePath(this.drivingNotification?.route?.id).subscribe(path => {
@@ -72,6 +82,10 @@ export class DrivingNotificationDetailsComponent implements OnInit, OnDestroy {
         this.userSubscription = this.userService.getUserByEmail(response.senderEmail).subscribe(response => {
           this.users.push(response);
         })
+      },
+      error=>{
+        console.log(error);
+        this.drivingNotification = null;
       }
     )
   }
@@ -80,6 +94,7 @@ export class DrivingNotificationDetailsComponent implements OnInit, OnDestroy {
     this.answered = true;
     this.drivingNotificationService.updateRideStatus(this.id, true, this.currentUser.email).subscribe(res => {
       console.log(res);
+      this.toastService.success("Successfully accepted ride");
     }, err => this.toastService.error(err.error, "Accepting ride failed"));
   }
 
@@ -87,10 +102,16 @@ export class DrivingNotificationDetailsComponent implements OnInit, OnDestroy {
     this.answered = true;
     this.drivingNotificationService.updateRideStatus(this.id, false, this.currentUser.email).subscribe(res => {
       console.log(res);
+      this.toastService.success("Successfully rejected ride");
     }, err => this.toastService.error(err.error, "Rejecting ride failed"));
   }
 
   ngOnDestroy(): void {
+    if (this.routePolyline){
+      removeLine(this.routePolyline);
+      removeAllMarkersFromList(this.markers);
+    }
+
     if(this.drivingNotificationSubscription){
       this.drivingNotificationSubscription.unsubscribe();
     }

@@ -7,6 +7,7 @@ import {User} from "../../../shared/models/user/user";
 import {ConfigService} from "../../../shared/services/config-service/config.service";
 import {AuthService} from "../../../auth/services/auth-service/auth.service";
 import {DriverService} from "../../../shared/services/driver-service/driver.service";
+import {SocialAuthService, SocialUser} from "@abacritt/angularx-social-login";
 
 @Component({
   selector: 'nav-bar',
@@ -22,6 +23,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
   driverSubscription: Subscription;
 
   loggedUser: User = null;
+  authUser: SocialUser;
   isAdmin: boolean;
   isRegular: boolean;
   isDriver: boolean;
@@ -32,12 +34,16 @@ export class NavBarComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private router: Router,
     private driverService: DriverService,
-    private toast: ToastrService
+    private toast: ToastrService,
+    private authServiceForLogin: SocialAuthService
   ) {
     this.driverActivityStatus = false;
   }
 
   ngOnInit(): void {
+    this.authServiceForLogin.authState.subscribe((user) => {
+      this.authUser = user;
+    });
     this.authSubscription = this.authService
       .getSubjectCurrentUser()
       .subscribe(user => {
@@ -119,6 +125,9 @@ export class NavBarComponent implements OnInit, OnDestroy {
         this.driverData = null;
         this.driverService.resetGlobalDriver();
         this.router.navigate(['/serb-uber/auth/login']);
+        if (this.authUser){
+          this.authServiceForLogin.signOut();
+        }
       },
       error => {
         this.toast.error(error.error, 'Cannot log out!');

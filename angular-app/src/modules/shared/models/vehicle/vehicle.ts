@@ -3,8 +3,8 @@ import {Route} from "../route/route";
 
 export interface Vehicle {
   id?: number;
-  petFriendly: boolean;
-  babySeat: boolean;
+  petFriendly?: boolean;
+  babySeat?: boolean;
   vehicleType?: string;
   vehicleTypeInfo?: VehicleTypeInfo;
   rate?: number;

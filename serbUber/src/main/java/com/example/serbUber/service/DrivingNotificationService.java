@@ -182,7 +182,7 @@ public class DrivingNotificationService implements IDrivingNotificationService {
             .orElseThrow(() -> new EntityNotFoundException(id, EntityType.DRIVING_NOTIFICATION));
         updateReceiversReviewedByUserEmail(drivingNotification.getReceiversReviewed(), email, accepted);
         drivingNotificationRepository.save(drivingNotification);
-//        shouldFindDriver(drivingNotification);
+
         return new DrivingNotificationDTO(drivingNotification);
     }
 
@@ -243,15 +243,15 @@ public class DrivingNotificationService implements IDrivingNotificationService {
     }
 
     public int calculateMinutesForStartDriving(final Long driverId, final Route route) throws EntityNotFoundException {
-        Driver driver = driverService.getDriverById(driverId);
-        Location userLocation = route.getLocations().first().getLocation();
-        GHRequest request = new GHRequest(
-            vehicleService.getLatOfCurrentVehiclePosition(driver.getVehicle()),
-            vehicleService.getLonOfCurrentVehiclePosition(driver.getVehicle()),
-            userLocation.getLat(),
-            userLocation.getLon()
-        );
-        request.setProfile("car");
+//        Driver driver = driverService.getDriverById(driverId);
+//        Location userLocation = route.getLocations().first().getLocation();
+//        GHRequest request = new GHRequest(
+//            vehicleService.getLatOfCurrentVehiclePosition(driver.getVehicle()),
+//            vehicleService.getLonOfCurrentVehiclePosition(driver.getVehicle()),
+//            userLocation.getLat(),
+//            userLocation.getLon()
+//        );
+//        request.setProfile("car");
 //        GHResponse routeHopper = hopper.route(request);
 //        System.out.println("vreemeee" + TimeUnit.MILLISECONDS.toMinutes(routeHopper.getBest().getTime()));
 //        System.out.println((routeHopper.getBest().getTime()/1000)/60);

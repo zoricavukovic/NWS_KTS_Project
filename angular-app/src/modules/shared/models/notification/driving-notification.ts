@@ -1,6 +1,7 @@
 import { Route } from '../route/route';
 import {User} from "../user/user";
 import {Vehicle} from "../vehicle/vehicle";
+import {VehicleTypeInfo} from "../vehicle/vehicle-type-info";
 
 export interface DrivingNotification {
   route: Route;
@@ -24,4 +25,5 @@ export interface DrivingNotification {
   chosenDateTime?: Date;
   receivers?: User[];
   vehicle?: Vehicle;
+  vehicleTypeInfo?: VehicleTypeInfo;
 }

@@ -74,9 +74,9 @@ public class DrivingService implements IDrivingService {
 
         Driving driving = drivingRepository.save(new Driving(duration, started, null, payingLimit, route, drivingStatus, driver, price));
         users.forEach(user -> {
-            List<Driving> drivingsOfUser = user.getDrivings();
-            drivingsOfUser.add(driving);
-            user.setDrivings(drivingsOfUser);
+            List<Driving> drivings = getAllDrivingsForUserEmail(user.getEmail());
+            drivings.add(driving);
+            user.setDrivings(drivings);
             userService.saveUser(user);
         });
 
@@ -104,6 +104,11 @@ public class DrivingService implements IDrivingService {
         List<Driving> drivings = drivingRepository.findAll();
 
         return fromDrivings(drivings);
+    }
+
+    public List<Driving> getAllDrivingsForUserEmail(final String email) {
+
+        return drivingRepository.getAllDrivingsForUserEmail(email);
     }
 
     public List<DrivingPageDTO> getDrivingsForUser(

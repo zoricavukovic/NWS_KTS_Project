@@ -5,6 +5,7 @@ import {AuthService} from "../../../auth/services/auth-service/auth.service";
 import {addCarMarkers, removeMarker} from "../../../shared/utils/map-functions";
 import {RouteService} from "../../../shared/services/route-service/route.service";
 import {VehicleService} from "../../../shared/services/vehicle-service/vehicle.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-home',
@@ -23,7 +24,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   constructor(
     private routeService: RouteService,
     private authService: AuthService,
-    private vehicleService: VehicleService
+    private vehicleService: VehicleService,
+    private router: Router
   ) {
     this.currentUser = null;
     this.isDriver = false;
@@ -32,6 +34,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.router.events.subscribe((event) => {
+      this.ngOnDestroy();
+    });
     this.authSubscription = this.authService
       .getSubjectCurrentUser()
       .subscribe(user => {

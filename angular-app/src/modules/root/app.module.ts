@@ -16,7 +16,6 @@ import { NgxsReduxDevtoolsPluginModule } from "@ngxs/devtools-plugin";
 import { NgxsLoggerPluginModule } from "@ngxs/logger-plugin";
 import { DrivingNotificationState } from "../shared/state/driving-notification.state";
 import { NgxsStoragePluginModule } from "@ngxs/storage-plugin";
-import {NgxMatTimepickerModule} from "@angular-material-components/datetime-picker";
 
 @NgModule({
   declarations: [

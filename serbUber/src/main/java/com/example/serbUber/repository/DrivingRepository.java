@@ -1,4 +1,5 @@
 package com.example.serbUber.repository;
+import com.example.serbUber.dto.DrivingDTO;
 import com.example.serbUber.model.Driving;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -48,4 +49,7 @@ public interface DrivingRepository extends JpaRepository<Driving, Long> {
 
     @Query("select distinct d.id from Driving d where d.route.id = ?1")
     Optional<Long> findDrivingByFavouriteRoute(Long routeId);
+
+    @Query("select d from Driving d left join d.users u where u.email = ?1")
+    List<Driving> getAllDrivingsForUserEmail(String email);
 }

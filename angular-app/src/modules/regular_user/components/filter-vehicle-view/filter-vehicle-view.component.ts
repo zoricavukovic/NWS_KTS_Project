@@ -48,7 +48,6 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
   private authSubscription: Subscription;
   private drivingNotificationSubscription: Subscription;
   private vehicleTypesSubscription: Subscription;
-  private vehicleSubscription: Subscription;
   private userSubscription: Subscription;
   rideRequestForm: FormGroup;
 
@@ -156,7 +155,7 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
   requestRide() {
     this.rideRequestForm.get('selectedPassengers').setValue(this.selectedPassengers);
     this.rideRequestForm.get('senderEmail').setValue(this.currentUser.email);
-
+    console.log("doslo je dovde 2")
     if(this.checkChosenDateTime()){
       this.waitingForAcceptDrive.emit(true);
       const drivingNotification = {
@@ -173,7 +172,6 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
         active: false,
         chosenDateTime: this.rideRequestForm.get('chosenDateTime').value
       };
-      console.log(drivingNotification);
       this.store.dispatch(new AddDrivingNotification(drivingNotification)).subscribe((response) => {
         console.log(response);
       });
@@ -182,13 +180,7 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
         this.store.dispatch(new UpdateStatusDrivingNotification({active: false, drivingStatus: "ACCEPTED"})).subscribe(response => {
           console.log(response);
         })
-      },
-
-      (error) => {
-        console.log(error);
-        this.toast.error(error.error, 'Create ride failed.');
-      });
-  }
+  })}
 
     // this.drivingNotificationSubscription = this.store
     // .dispatch(new AddDrivingNotification(drivingNotification))

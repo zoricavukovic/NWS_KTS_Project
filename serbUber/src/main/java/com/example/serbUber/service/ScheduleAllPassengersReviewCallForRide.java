@@ -19,7 +19,7 @@ public class ScheduleAllPassengersReviewCallForRide {
         this.drivingNotificationService = drivingNotificationService;
     }
 
-    @Scheduled(cron = "${scheduler.cron.every.minute}")
+    @Scheduled(cron = "*/30 * * * * *")
     public void allPassengersReviewCallForRide() throws EntityNotFoundException {
         List<DrivingNotification> allDrivingNotifications = drivingNotificationService.getAll();
         for(DrivingNotification drivingNotification : allDrivingNotifications){
@@ -33,6 +33,8 @@ public class ScheduleAllPassengersReviewCallForRide {
                     if(receiverReview.getValue() == 1){
                         drivingNotificationService.sendPassengersNotAcceptDrivingNotification(receiversReviewed.keySet(), receiverReview.getKey().getEmail(), drivingNotification.getSender().getEmail());
                         drivingNotificationService.delete(drivingNotification);
+                        allPassengersReviewed = false;
+                        break;
                     }
                     else if(receiverReview.getValue() == 2){
                         allPassengersReviewed = false;

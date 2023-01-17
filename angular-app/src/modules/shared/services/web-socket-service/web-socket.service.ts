@@ -62,7 +62,7 @@ export class WebSocketService {
       const ws = new SockJS(serverUrl);
       this.stompClient = Stomp.over(ws);
 
-      const that = this;
+      let that = this;
 
       this.stompClient.connect({}, function () {
         that.chatNotification();
@@ -71,7 +71,11 @@ export class WebSocketService {
 
         that.deleteDrivingNotification();
 
+        that.deleteDrivingForCreatorNotification();
+
         that.passengerNotAcceptDriving();
+
+        that.passengerNotAcceptDrivingCreator();
 
         that.rejectDrivingNotification();
 
@@ -94,7 +98,7 @@ export class WebSocketService {
     this.stompClient.subscribe(
       environment.publisherUrl + localStorage.getItem('email') + '/agreement-passenger',
       message => {
-        const drivingNotificationResponse = message.body as CreateDrivingNotification;
+        const drivingNotificationResponse:CreateDrivingNotification = JSON.parse(message.body);
         this.toast
           .info(
             `User ${drivingNotificationResponse.senderEmail} add you as linked passenger.Tap to accept!`
@@ -119,7 +123,7 @@ export class WebSocketService {
     this.stompClient.subscribe(
       environment.publisherUrl + localStorage.getItem('email') + '/successful-driving',
       message => {
-        const drivingStatusNotification = message.body as DrivingStatusNotification;
+        const drivingStatusNotification: DrivingStatusNotification = JSON.parse(message.body);
         const updatedDriving = {
           minutes: drivingStatusNotification.minutes,
           drivingStatus: drivingStatusNotification.drivingStatus,
@@ -145,7 +149,7 @@ export class WebSocketService {
     this.stompClient.subscribe(
       environment.publisherUrl + localStorage.getItem('email') + '/start-driving',
       (message: { body: string }) => {
-        const drivingNotificationDetails =  JSON.parse(message.body) as SimpleDrivingInfo;
+        const drivingNotificationDetails: SimpleDrivingInfo =  JSON.parse(message.body);
         this.store.dispatch(new UpdateStatusDrivingNotification({active: true, drivingStatus: "ACCEPTED"}));
         this.toast.info('Ride started.Tap to follow ride!')
           .onTap.subscribe(action => {
@@ -159,7 +163,7 @@ export class WebSocketService {
       environment.publisherUrl + localStorage.getItem('email') + '/finish-driving',
       (message: { body: string }) => {
       const drivingNotificationDetails: SimpleDrivingInfo =  JSON.parse(message.body);
-      this.store.dispatch(new UpdateStatusDrivingNotification({active: false, drivingStatus: "FINISHED"}));
+      this.store.dispatch(new UpdateStatusDrivingNotification({active: false, drivingStatus: "FINISHED"})).subscribe();
       this.toast.info('Driving is finished.Tap to see details!')
         .onTap.subscribe(action => {
         this.router.navigate(['/serb-uber/user/map-page-view', drivingNotificationDetails.drivingId]);
@@ -185,6 +189,19 @@ export class WebSocketService {
         if (this.router.url.includes("notifications")) {
           window.location.reload();
         }
+        else {
+          this.router.navigate(['/serb-uber/user/map-page-view/-1']);
+        }
+      }
+    );
+  }
+
+  deleteDrivingForCreatorNotification(){
+    this.stompClient.subscribe(
+      environment.publisherUrl + localStorage.getItem('email') + '/delete-driving-creator',
+      message => {
+        this.toast.info(message.body);
+        this.store.dispatch(new ClearStore());
       }
     );
   }
@@ -194,6 +211,17 @@ export class WebSocketService {
       environment.publisherUrl + localStorage.getItem('email') + '/passenger-not-accept-driving',
       message => {
         this.toast.info(message.body, 'Requesting ride failed');
+        this.router.navigate(['/serb-uber/user/map-page-view/-1']);
+      }
+    );
+  }
+
+  passengerNotAcceptDrivingCreator() {
+    this.stompClient.subscribe(
+      environment.publisherUrl + localStorage.getItem('email') + '/passenger-not-accept-driving-creator',
+      message => {
+        this.toast.info(message.body, 'Requesting ride failed');
+        this.store.dispatch(new ClearStore());
       }
     );
   }
@@ -220,8 +248,6 @@ export class WebSocketService {
   }
 
   checkNotificationType(message: string) {
-    console.log("SOCKET");
-    console.log(message);
     if (this.isActivityResetNotification(message)) {
       this.driverService.showActivityStatusResetNotification(
         JSON.parse(message)
