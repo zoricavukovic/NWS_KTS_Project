@@ -4,6 +4,7 @@ import com.example.serbUber.model.Driving;
 import com.example.serbUber.model.DrivingStatus;
 import com.example.serbUber.model.Location;
 
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 public class SimpleDrivingInfoDTO {
@@ -15,6 +16,8 @@ public class SimpleDrivingInfoDTO {
     private double cost;
 
     private String drivingStatus;
+
+    private LocalDateTime started;
 
     public SimpleDrivingInfoDTO(Driving driving) {
         this.drivingStatus = driving.getDrivingStatus().toString();
@@ -28,6 +31,7 @@ public class SimpleDrivingInfoDTO {
         this.startLocation = driving.getRoute().getLocations().first().getLocation();
         this.endLocation = driving.getRoute().getLocations().last().getLocation();
         this.cost = driving.getPrice();
+        this.started = driving.getStarted();
     }
 
     public boolean isActive() {
@@ -84,5 +88,13 @@ public class SimpleDrivingInfoDTO {
 
     public void setDrivingStatus(String drivingStatus) {
         this.drivingStatus = drivingStatus;
+    }
+
+    public LocalDateTime getStarted() {
+        return started;
+    }
+
+    public void setStarted(LocalDateTime started) {
+        this.started = started;
     }
 }

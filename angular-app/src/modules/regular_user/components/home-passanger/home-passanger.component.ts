@@ -7,7 +7,6 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import {User} from "../../../shared/models/user/user";
 import {AuthService} from "../../../auth/services/auth-service/auth.service";
 import {DrivingService} from "../../../shared/services/driving-service/driving.service";
-import {SimpleDrivingInfo} from "../../../shared/models/driving/simple-driving-info";
 import {RouteService} from "../../../shared/services/route-service/route.service";
 import {VehicleService} from "../../../shared/services/vehicle-service/vehicle.service";
 import {SearchingRoutesForm} from "../../../shared/models/route/searching-routes-form";
@@ -17,11 +16,7 @@ import {removeAllMarkers, removeAllPolyline,
 import { DrivingNotificationState } from 'src/modules/shared/state/driving-notification.state';
 import { Select, Store } from '@ngxs/store';
 import { DrivingNotification } from 'src/modules/shared/models/notification/driving-notification';
-import { UpdateDrivingNotification } from 'src/modules/shared/actions/driving-notification.action';
-import {
-  DrivingNotificationService
-} from "../../../shared/services/driving-notification-service/driving-notification.service";
-import { WebSocketService } from 'src/modules/shared/services/web-socket-service/web-socket.service';
+import {UpdateDrivingNotification} from "../../../shared/actions/driving-notification.action";
 
 @Component({
   selector: 'app-home-passanger',
@@ -64,7 +59,6 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
   routeSubscription: Subscription;
   drivingSubscription: Subscription;
   rideIsRequested: boolean;
-  activeRide: SimpleDrivingInfo;
 
   options: Options = new Options({
     bounds: undefined,
@@ -72,7 +66,7 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
     strictBounds: false,
     componentRestrictions: { country: 'rs' },
   });
-  private stompClient: any;
+  activeRide = null;
 
   constructor(
     private routeService: RouteService,
@@ -82,14 +76,12 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
     private toast: ToastrService,
     public router: Router,
     private formBuilder: FormBuilder,
-    private store: Store,
-    private webSocketService: WebSocketService
+    private store: Store
   ){
     this.routeChoiceView = true;
     this.filterVehicleView = false;
     this.requestLater = false;
     this.rideIsRequested = false;
-    this.activeRide = null;
     this.rideRequestForm = new FormGroup({
       searchingRoutesForm: this.formBuilder.array([this.createEmptySearchForm(), this.createEmptySearchForm()]),
       selectedRoute: new FormControl(this.createEmptyRoute()),
@@ -101,33 +93,24 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
       senderEmail: new FormControl(''),
       selectedPassengers: new FormControl([]),
       chosenDateTime: new FormControl(null)
-    })
-  }
-
-  eventEmit(){
-    this.webSocketService.aClickedEvent
-      .subscribe(() => {
-        console.log("ucitaaaj");
-        this.ngOnInit();
-      })
+    });
   }
 
   ngOnInit(): void {
-    
-    console.log("USAO")
     this.currentDrivingNotification.subscribe(response => {
+      console.log(response);
       this.storedDrivingNotification = response;
       this.routeChoiceView = true;
-      // console.log(this.storedDrivingNotification.drivingStatus);
-    })
+      if (!response?.active) {
+        this.activeRide = null;
+      }
+    });
+
     this.drivingSubscription = this.drivingService.checkIfUserHasActiveDriving(this.currentUser.id).subscribe(
       res => {
         this.activeRide = res;
-        console.log(res);
         if(res){
-          this.store.dispatch(new UpdateDrivingNotification(res)).subscribe(response => {
-            this.storedDrivingNotification = response;
-          })
+          this.store.dispatch(new UpdateDrivingNotification(res)).subscribe()
         }
       }
     )
@@ -147,13 +130,6 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
     if (this.drivingSubscription) {
       this.drivingSubscription.unsubscribe();
     }
-  }
-
-
-
-  hasActiveDriving():boolean {
-
-    return this.activeRide !== null && this.activeRide !== undefined;
   }
 
   loadingView(loadingViewv:boolean) {

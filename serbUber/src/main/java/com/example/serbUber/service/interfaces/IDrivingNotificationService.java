@@ -4,6 +4,7 @@ import com.example.serbUber.dto.DrivingNotificationDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.ExcessiveNumOfPassengersException;
 import com.example.serbUber.exception.InvalidStartedDateTimeException;
+import com.example.serbUber.exception.PassengerNotHaveTokensException;
 import com.example.serbUber.request.DrivingLocationIndexRequest;
 import com.example.serbUber.request.RouteRequest;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,7 @@ public interface IDrivingNotificationService {
                                                         final String vehicleType,
                                                         final LocalDateTime chosenDateTime
 
-    ) throws EntityNotFoundException, ExcessiveNumOfPassengersException, InvalidStartedDateTimeException;
+    ) throws EntityNotFoundException, ExcessiveNumOfPassengersException, InvalidStartedDateTimeException, PassengerNotHaveTokensException;
 
     DrivingNotificationDTO updateStatus(final Long id, final String email, final boolean accepted) throws EntityNotFoundException;
     

@@ -128,4 +128,11 @@ public class GlobalExceptionHandler {
         return invalidStartedDateTimeException.getMessage();
     }
 
+    @ExceptionHandler(value = PassengerNotHaveTokensException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String passengerNotHaveTokensException(PassengerNotHaveTokensException passengerNotHaveTokensException) {
+
+        return passengerNotHaveTokensException.getMessage();
+    }
+
 }

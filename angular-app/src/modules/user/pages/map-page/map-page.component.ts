@@ -5,6 +5,9 @@ import {
   DrivingDetailsComponent
 } from "../../../shared/pages/driving-details/driving-details.component";
 import {HomeComponent} from "../../components/home/home.component";
+import {
+  DrivingNotificationDetailsComponent
+} from "../../../regular_user/components/driving-notification-details/driving-notification-details.component";
 
 @Component({
   selector: 'map-page',
@@ -15,6 +18,7 @@ export class MapPageComponent implements OnInit, OnDestroy {
 
   @ViewChild(DrivingDetailsComponent) private drivingDetailsComponent: DrivingDetailsComponent;
   @ViewChild(HomeComponent) private homeComponent: HomeComponent;
+  @ViewChild(DrivingNotificationDetailsComponent) private drivingNotificationDetailsComponent: DrivingNotificationDetailsComponent;
 
   map: google.maps.Map;
   center: google.maps.LatLngLiteral = {lat: 45.25167, lng: 19.83694};

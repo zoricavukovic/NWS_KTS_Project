@@ -17,6 +17,8 @@ import {
   DrivingNotificationService
 } from "../../../shared/services/driving-notification-service/driving-notification.service";
 import {Route} from "../../../shared/models/route/route";
+import { DrivingService } from 'src/modules/shared/services/driving-service/driving.service';
+import moment from 'moment';
 
 @Component({
   selector: 'app-filter-vehicle-view',
@@ -31,6 +33,7 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
   vehicle: Vehicle;
 
   petFriendly = false;
+  usersHaveAlreadyRide = false;
   babySeat = false;
   vehicleType: string;
   vehicleTypesSeats = {};
@@ -48,8 +51,8 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
   private priceSubscription: Subscription;
   private authSubscription: Subscription;
   private drivingNotificationSubscription: Subscription;
+  private passengerSubscription: Subscription;
   private vehicleTypesSubscription: Subscription;
-  private vehicleSubscription: Subscription;
   private userSubscription: Subscription;
   rideRequestForm: FormGroup;
 
@@ -62,7 +65,8 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
     private vehicleTypeInfoService: VehicleTypeInfoService,
     private toast: ToastrService,
     private controlContainer: ControlContainer,
-    private store: Store
+    private store: Store,
+    private drivingService: DrivingService
   ) {
     this.rideRequestForm = <FormGroup>this.controlContainer.control;
 
@@ -162,7 +166,24 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
   requestRide() {
     this.rideRequestForm.get('selectedPassengers').setValue(this.selectedPassengers);
     this.rideRequestForm.get('senderEmail').setValue(this.currentUser.email);
+    let started = moment().toDate();
+    console.log(started);
+    if(this.rideRequestForm.get('chosenDateTime').value != null){
+      started = this.rideRequestForm.get('chosenDateTime').value
+    }
+    this.passengerSubscription = this.drivingService.havePassengersAlreadyRide(this.selectedPassengers, started).subscribe(response => {
+      this.usersHaveAlreadyRide = response;
+      if(response){
+        this.toast.error("Some passengers have scheduled ride at time.", "Ride request failed");
+      }
+      else{
+       this.createDriving();
+    }
+  });
+  }
 
+
+  private createDriving(){
     if(this.checkChosenDateTime()){
       this.waitingForAcceptDrive.emit(true);
       const drivingNotification = {
@@ -179,7 +200,6 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
         active: false,
         chosenDateTime: this.rideRequestForm.get('chosenDateTime').value
       };
-      console.log(drivingNotification);
       this.store.dispatch(new AddDrivingNotification(drivingNotification)).subscribe((response) => {
         console.log(response);
       });
@@ -188,21 +208,9 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
         this.store.dispatch(new UpdateStatusDrivingNotification({active: false, drivingStatus: "ACCEPTED"})).subscribe(response => {
           console.log(response);
         })
-      },
-
-      (error) => {
-        console.log(error);
-        this.toast.error(error.error, 'Create ride failed.');
-      });
+  })}
   }
 
-    // this.drivingNotificationSubscription = this.store
-    // .dispatch(new AddDrivingNotification(drivingNotification))
-    // .subscribe((response) => {
-    //   console.log(response);
-    //   console.log("lfddsf");
-    // });
-  }
 
   private findPassengerObj(email: string): void {
     let user: User;

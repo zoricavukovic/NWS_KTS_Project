@@ -71,4 +71,7 @@ public interface IDrivingService {
     VehicleCurrentLocationDTO getVehicleCurrentLocation(final Long id) throws EntityNotFoundException;
 
     Long getDrivingByFavouriteRoute(final Long routeId) throws EntityNotFoundException;
+
+    boolean isPassengersAlreadyHaveRide(final List<String> passengersEmail, final LocalDateTime started)
+            throws EntityNotFoundException;
 }

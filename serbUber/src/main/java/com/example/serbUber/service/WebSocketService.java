@@ -41,14 +41,14 @@ public class WebSocketService {
         users.forEach((key, value) -> {
             this.messagingTemplate.convertAndSendToUser(key.getEmail(), "/delete-driving", DELETED_DRIVING_MESSAGE);
         });
-        this.messagingTemplate.convertAndSendToUser(drivingNotificationDTO.getSenderEmail(), "/delete-driving", DELETED_DRIVING_MESSAGE);
+        this.messagingTemplate.convertAndSendToUser(drivingNotificationDTO.getSenderEmail(), "/delete-driving-creator", DELETED_DRIVING_MESSAGE);
     }
 
 
     public void sendPassengerAgreementNotification( final DrivingNotificationWebSocketDTO drivingNotificationDTO,
                                                     final Map<RegularUser, Integer> users){
         users.forEach((key, value) -> {
-            this.messagingTemplate.convertAndSendToUser(key.getEmail(), "/agreement-passenger", DELETED_DRIVING_MESSAGE);
+            this.messagingTemplate.convertAndSendToUser(key.getEmail(), "/agreement-passenger", drivingNotificationDTO);
         });
     }
 
@@ -62,7 +62,7 @@ public class WebSocketService {
             });
         }
         String messageForSender = String.format("Your ride is rejected. Passenger %s is not accept ride.", userEmail);
-        this.messagingTemplate.convertAndSendToUser(senderEmail, "/passenger-not-accept-driving", messageForSender);
+        this.messagingTemplate.convertAndSendToUser(senderEmail, "/passenger-not-accept-driving-creator", messageForSender);
     }
 
 

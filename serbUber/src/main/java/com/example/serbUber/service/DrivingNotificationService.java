@@ -4,10 +4,7 @@ import com.example.serbUber.dto.DrivingDTO;
 import com.example.serbUber.dto.DrivingNotificationDTO;
 import com.example.serbUber.dto.DrivingNotificationWebSocketDTO;
 import com.example.serbUber.dto.DrivingStatusNotificationDTO;
-import com.example.serbUber.exception.EntityNotFoundException;
-import com.example.serbUber.exception.EntityType;
-import com.example.serbUber.exception.ExcessiveNumOfPassengersException;
-import com.example.serbUber.exception.InvalidStartedDateTimeException;
+import com.example.serbUber.exception.*;
 import com.example.serbUber.model.*;
 import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.model.user.RegularUser;
@@ -17,19 +14,12 @@ import com.example.serbUber.service.interfaces.IDrivingNotificationService;
 import com.example.serbUber.service.payment.TokenBankService;
 import com.example.serbUber.service.user.DriverService;
 import com.example.serbUber.service.user.RegularUserService;
-import com.graphhopper.GHRequest;
-import com.graphhopper.GHResponse;
-import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
-import static com.example.serbUber.SerbUberApplication.hopper;
 import static com.example.serbUber.model.DrivingNotification.getListOfUsers;
 import static com.example.serbUber.util.Constants.*;
 
@@ -107,7 +97,7 @@ public class DrivingNotificationService implements IDrivingNotificationService {
             final boolean petFriendly,
             final String vehicleType,
             final LocalDateTime chosenDateTime
-            ) throws EntityNotFoundException, ExcessiveNumOfPassengersException, InvalidStartedDateTimeException {
+            ) throws EntityNotFoundException, ExcessiveNumOfPassengersException, InvalidStartedDateTimeException, PassengerNotHaveTokensException {
         RegularUser sender = regularUserService.getRegularByEmail(senderEmail);
 
         Map<RegularUser, Integer> receiversReviewed = new HashMap<>();
@@ -182,7 +172,7 @@ public class DrivingNotificationService implements IDrivingNotificationService {
             .orElseThrow(() -> new EntityNotFoundException(id, EntityType.DRIVING_NOTIFICATION));
         updateReceiversReviewedByUserEmail(drivingNotification.getReceiversReviewed(), email, accepted);
         drivingNotificationRepository.save(drivingNotification);
-//        shouldFindDriver(drivingNotification);
+
         return new DrivingNotificationDTO(drivingNotification);
     }
 
@@ -208,7 +198,7 @@ public class DrivingNotificationService implements IDrivingNotificationService {
     }
 
 
-    public void shouldFindDriver(DrivingNotification drivingNotification) throws EntityNotFoundException {
+    public void shouldFindDriver(DrivingNotification drivingNotification) throws EntityNotFoundException, PassengerNotHaveTokensException {
         Map<RegularUser, Integer> receiversReviewed = drivingNotification.getReceiversReviewed();
         Driver driver = driverService.getDriverForDriving(drivingNotification);
         receiversReviewed.put(drivingNotification.getSender(), 0);
@@ -226,32 +216,32 @@ public class DrivingNotificationService implements IDrivingNotificationService {
                     passengers,
                     new HashMap<>(),
                     drivingNotification.getPrice());
-            if (isPaidDriving(passengers, drivingNotification.getPrice())) {
-                drivingService.paidDriving(driving.getId());
+            if (isPaidDriving(passengers, driving.getPrice())) {
                 int minutesToStartDrive = calculateMinutesForStartDriving(driver.getId(), drivingNotification.getRoute());
                 driving.setStarted(LocalDateTime.now().plusMinutes(minutesToStartDrive));
+                driving.setDrivingStatus(DrivingStatus.ACCEPTED);
                 DrivingDTO drivingDTO = drivingService.save(driving);
                 DrivingStatusNotificationDTO drivingStatusNotificationDTO = new DrivingStatusNotificationDTO(driver.getId(), minutesToStartDrive, DrivingStatus.ACCEPTED, "", drivingDTO.getId(), drivingNotification.getId());
                 webSocketService.sendSuccessfulDriving(drivingStatusNotificationDTO, receiversReviewed);
             } else {
                 drivingService.removeDriver(driving.getId());
                 webSocketService.sendDrivingStatus(UNSUCCESSFUL_PAYMENT_PATH, UNSUCCESSFUL_PAYMENT_MESSAGE, receiversReviewed);
-
+                throw new PassengerNotHaveTokensException();
             }
 
         }
     }
 
     public int calculateMinutesForStartDriving(final Long driverId, final Route route) throws EntityNotFoundException {
-        Driver driver = driverService.getDriverById(driverId);
-        Location userLocation = route.getLocations().first().getLocation();
-        GHRequest request = new GHRequest(
-            vehicleService.getLatOfCurrentVehiclePosition(driver.getVehicle()),
-            vehicleService.getLonOfCurrentVehiclePosition(driver.getVehicle()),
-            userLocation.getLat(),
-            userLocation.getLon()
-        );
-        request.setProfile("car");
+//        Driver driver = driverService.getDriverById(driverId);
+//        Location userLocation = route.getLocations().first().getLocation();
+//        GHRequest request = new GHRequest(
+//            vehicleService.getLatOfCurrentVehiclePosition(driver.getVehicle()),
+//            vehicleService.getLonOfCurrentVehiclePosition(driver.getVehicle()),
+//            userLocation.getLat(),
+//            userLocation.getLon()
+//        );
+//        request.setProfile("car");
 //        GHResponse routeHopper = hopper.route(request);
 //        System.out.println("vreemeee" + TimeUnit.MILLISECONDS.toMinutes(routeHopper.getBest().getTime()));
 //        System.out.println((routeHopper.getBest().getTime()/1000)/60);
@@ -259,66 +249,42 @@ public class DrivingNotificationService implements IDrivingNotificationService {
         return 5;
     }
 
-    public boolean isPaidDriving(final  Set<RegularUser> passengers, final double price){
-        double priceForOnePassenger = Math.round(price/passengers.size()*100.0)/100.0;
-        boolean isPaid = true;
-        Map<Long, Double> usersEnoughTokens = haveUsersEnoughTokens(passengers, priceForOnePassenger);
-        if(usersEnoughTokens.size()>0 && !usersEnoughTokens.containsValue(0)){
-            usersEnoughTokens.forEach((passengerId, priceForRide) -> {
-                try {
-                    tokenBankService.updateNumOfTokens(passengerId, priceForRide);
-                } catch (EntityNotFoundException e) {
-                    System.out.println("Token bank not found");
-                }
-            });
-        }
-        else{
-            isPaid = false;
-        }
-       return isPaid;
-    }
-
-    private Map<Long, Double> haveUsersEnoughTokens(
+    private boolean isPaidDriving(
         final  Set<RegularUser> passengers,
         final double priceForOnePassenger
-    ) {
-        Map<Long, Double> usersHaveEnoughTokens = new HashMap<>();
-        Set<Long> usersNotHaveEnoughTokens = new HashSet<>();
-        passengers.forEach((passenger) -> {
-            double passengerTokens = 0;
-            try {
-                passengerTokens = tokenBankService.getTokensForUser(passenger.getId());
-            } catch (EntityNotFoundException e) {
-                //BLALLLA
-            }
-            if(passengerTokens > priceForOnePassenger){
-                usersHaveEnoughTokens.put(passenger.getId(), passengerTokens);
-            }
-            else{
-                usersNotHaveEnoughTokens.add(passenger.getId());
-            }
-        });
-
-        if(usersNotHaveEnoughTokens.size() > 0){
-            double priceForUsersNotHaveEnoughTokens = usersNotHaveEnoughTokens.size() * priceForOnePassenger;
-            double addedPrice = priceForUsersNotHaveEnoughTokens / usersHaveEnoughTokens.size();
-            for(Map.Entry<Long, Double> passengerTokens : usersHaveEnoughTokens.entrySet()){
-                if(passengerTokens.getValue() - addedPrice > 0){
-                    passengerTokens.setValue(priceForOnePassenger + addedPrice);
-                }
-                else{
-                    passengerTokens.setValue(0.0);
-                }
+    ) throws EntityNotFoundException {
+        Map<Long, Double> updatedUsersTokens = new HashMap<>();
+        double missingTokens = 0;
+        for(RegularUser passenger : passengers) {
+            double passengerTokens = tokenBankService.getTokensForUser(passenger.getId());
+            if (passengerTokens >= priceForOnePassenger) {
+                updatedUsersTokens.put(passenger.getId(), passengerTokens - priceForOnePassenger);
+            } else {
+                missingTokens += priceForOnePassenger - passengerTokens;
+                updatedUsersTokens.put(passenger.getId(), 0.0);
             }
         }
-        else{
-            for(Map.Entry<Long, Double> passengerTokens : usersHaveEnoughTokens.entrySet()) {
-                passengerTokens.setValue(priceForOnePassenger);
+            for(Map.Entry<Long, Double> passengerTokens : updatedUsersTokens.entrySet()) {
+                if (passengerTokens.getValue() > 0 && missingTokens > 0) {
+                    if (passengerTokens.getValue() >= missingTokens) {
+                        passengerTokens.setValue(passengerTokens.getValue() - missingTokens);
+                        break;
+                    } else {
+                        missingTokens -= passengerTokens.getValue();
+                        passengerTokens.setValue(0.0);
+                    }
+                }
             }
+
+
+        if(missingTokens == 0){
+           for(Map.Entry<Long,Double> passengerToken : updatedUsersTokens.entrySet()){
+               tokenBankService.updateNumOfTokens(passengerToken.getKey(), passengerToken.getValue());
+           }
+           return true;
         }
 
-
-        return usersHaveEnoughTokens;
+        return false;
     }
 
 

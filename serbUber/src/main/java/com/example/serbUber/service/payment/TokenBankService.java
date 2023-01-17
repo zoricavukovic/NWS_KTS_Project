@@ -101,13 +101,13 @@ public class TokenBankService implements ITokenBankService {
     }
 
     public TokenBank updateNumOfTokens(final Long userId, final double price) throws EntityNotFoundException {
-        TokenBank tokenBank = getTokenBankById(userId);
+        TokenBank tokenBank = getTokenBankByUserId(userId);
         tokenBank.setNumOfTokens(tokenBank.getNumOfTokens() - price);
         return tokenBankRepository.save(tokenBank);
     }
 
     public double getTokensForUser(final Long id) throws EntityNotFoundException {
-        Optional<TokenBank> tokenBank = tokenBankRepository.getTokenBankById(id);
+        Optional<TokenBank> tokenBank = tokenBankRepository.getTokenBankByUserId(id);
         if(tokenBank.isPresent()){
             return tokenBank.get().getNumOfTokens();
         }

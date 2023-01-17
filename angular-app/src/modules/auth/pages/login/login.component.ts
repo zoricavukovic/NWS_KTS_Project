@@ -1,9 +1,9 @@
-import { Component, OnDestroy } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import {
-  FacebookLoginProvider,
+  FacebookLoginProvider, GoogleLoginProvider,
   SocialAuthService,
 } from '@abacritt/angularx-social-login';
 import { Router } from '@angular/router';
@@ -18,7 +18,7 @@ import {WebSocketService} from "../../../shared/services/web-socket-service/web-
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
-export class LoginComponent implements OnDestroy {
+export class LoginComponent implements OnInit, OnDestroy {
   loginForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [
@@ -39,28 +39,50 @@ export class LoginComponent implements OnDestroy {
     private chatService: WebSocketService
   ) {}
 
-  // ngOnInit(): void {
-    // this.signInWithGoogle();
-  // }
-
-  signInWithGoogle(): void {
+  ngOnInit(): void {
     const router = this.router;
     const toast = this.toast;
     const chatService = this.chatService;
     this.authService.authState.subscribe(user => {
       const authService = this.social;
-      authService.loginWithGoogle(user.idToken).subscribe({
-        next(loggedUser: LoginResponse): void {
-          authService.setLocalStorage(loggedUser);
-          chatService.connect();
-          router.navigate(['/serb-uber/user/map-page-view/-1']);
-        },
-        error(): void {
-          toast.error('Email or password is not correct!', 'Login failed');
-        },
-      });
-    });
+      if (user){
+        authService.loginWithGoogle(user.idToken).subscribe({
+          next(loggedUser: LoginResponse): void {
+            authService.setLocalStorage(loggedUser);
+            chatService.connect();
+            router.navigate(['/serb-uber/user/map-page-view/-1']);
+          },
+          error(): void {
+            toast.error('Email or password is not correct!', 'Login failed');
+          },
+        });
+      }
+    })
   }
+
+  refreshToken(): void {
+    this.authService.refreshAuthToken(GoogleLoginProvider.PROVIDER_ID);
+  }
+
+  // signInWithGoogle(): void {
+  //   console.log("google mail");
+  //   const router = this.router;
+  //   const toast = this.toast;
+  //   const chatService = this.chatService;
+  //   this.authService.authState.subscribe(user => {
+  //     const authService = this.social;
+  //     authService.loginWithGoogle(user.idToken).subscribe({
+  //       next(loggedUser: LoginResponse): void {
+  //         authService.setLocalStorage(loggedUser);
+  //         chatService.connect();
+  //         router.navigate(['/serb-uber/user/map-page-view/-1']);
+  //       },
+  //       error(): void {
+  //         toast.error('Email or password is not correct!', 'Login failed');
+  //       },
+  //     });
+  //   });
+  // }
 
   signInWithFB(): void {
     const router = this.router;

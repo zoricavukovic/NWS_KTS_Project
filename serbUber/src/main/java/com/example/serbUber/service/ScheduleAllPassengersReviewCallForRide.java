@@ -1,6 +1,7 @@
 package com.example.serbUber.service;
 
 import com.example.serbUber.exception.EntityNotFoundException;
+import com.example.serbUber.exception.PassengerNotHaveTokensException;
 import com.example.serbUber.model.DrivingNotification;
 import com.example.serbUber.model.user.RegularUser;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -19,8 +20,8 @@ public class ScheduleAllPassengersReviewCallForRide {
         this.drivingNotificationService = drivingNotificationService;
     }
 
-    @Scheduled(cron = "${scheduler.cron.every.minute}")
-    public void allPassengersReviewCallForRide() throws EntityNotFoundException {
+    @Scheduled(cron = "*/30 * * * * *")
+    public void allPassengersReviewCallForRide() throws EntityNotFoundException, PassengerNotHaveTokensException {
         List<DrivingNotification> allDrivingNotifications = drivingNotificationService.getAll();
         for(DrivingNotification drivingNotification : allDrivingNotifications){
             if(drivingNotification.getStarted().plusMinutes(10).isBefore(LocalDateTime.now())){
@@ -33,6 +34,8 @@ public class ScheduleAllPassengersReviewCallForRide {
                     if(receiverReview.getValue() == 1){
                         drivingNotificationService.sendPassengersNotAcceptDrivingNotification(receiversReviewed.keySet(), receiverReview.getKey().getEmail(), drivingNotification.getSender().getEmail());
                         drivingNotificationService.delete(drivingNotification);
+                        allPassengersReviewed = false;
+                        break;
                     }
                     else if(receiverReview.getValue() == 2){
                         allPassengersReviewed = false;

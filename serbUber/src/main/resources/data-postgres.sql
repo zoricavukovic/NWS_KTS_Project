@@ -75,8 +75,8 @@ insert into drivers (id, email, password, name, surname, phone_number, city, pro
     (nextval('users_id_gen'), 'eki@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Esad', 'Esadic', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, null, null, 0, 0, true, false, false, 1);
 
 insert into drivings (active, driver_id, driving_status, duration, paying_limit, price, started, end_date, route_id) values
-   (true, 5, 2, 2, null, 4, to_timestamp('14.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('14.01.2023. 14:25', 'DD.MM.YYYY HH24:MI'), 1),
-   (false, 5, 3, 2, null, 3, to_timestamp('11.01.2023. 18:01', 'DD.MM.YYYY HH24:MI'), to_timestamp('11.01.2023. 18:04', 'DD.MM.YYYY HH24:MI'),2),
+   (true, 5, 2, 2, null, 3, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), null, 1),
+   (false, 5, 2, 2, null, 3, to_timestamp('17.01.2023. 23:20', 'DD.MM.YYYY HH24:MI'), null, 2),
    (false, 6, 3, 10, null, 5,to_timestamp('24.10.2022 14:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('24.10.2022. 14:10', 'DD.MM.YYYY HH24:MI'),3),
    (false, 6, 3, 10, null, 5,to_timestamp('24.11.2022 14:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('24.11.2022. 14:10', 'DD.MM.YYYY HH24:MI'),4);
 
@@ -107,7 +107,7 @@ insert into drivings_users(driving_id, user_id) values
     (1, 2),
     (1, 3),
     (1, 4),
-    (2, 2),
+    (2, 9),
     (3, 2),
     (4, 4),
     (4, 2);
@@ -169,8 +169,8 @@ insert into token_banks(user_id, num_of_tokens, total_token_amount_spent, total_
                                                                                                                         (2, 9, 2, 11, 1),
                                                                                                                         (3, 8, 0, 8, 1),
                                                                                                                         (4, 0, 0, 0, 1),
-                                                                                                                        (9, 0, 0, 0, 1),
-                                                                                                                        (10, 0, 0, 0, 1),
+                                                                                                                        (9, 3, 0, 0, 1),
+                                                                                                                        (10, 1, 0, 0, 1),
                                                                                                                         (11, 0, 0, 0, 1),
                                                                                                                         (12, 0, 0, 0, 1),
                                                                                                                         (13, 0, 0, 0, 1),

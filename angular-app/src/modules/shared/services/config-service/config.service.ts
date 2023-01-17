@@ -94,6 +94,7 @@ export class ConfigService {
   ///////////////////DRIVING///////////////////
 
   DRIVINGS_URL = `${this.API_URL}/drivings`;
+  HAVE_PASSENGERS_ALREADY_RIDE_URL = `${this.DRIVINGS_URL}/busy-passengers`;
 
   drivingsSortPaginationUrl(userId: number, pageNumber: number, pageSize: number, parameter: string, sortOrder: string): string{
     return `${this.DRIVINGS_URL}/${userId}/${pageNumber}/${pageSize}/${parameter}/${sortOrder}`;

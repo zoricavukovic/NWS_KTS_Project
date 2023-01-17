@@ -1,5 +1,4 @@
-
-<form [formGroup]="rideRequestForm" *ngIf="!hasActiveDriving() && (!storedDrivingNotification || storedDrivingNotification?.drivingStatus === 'FINISHED')">
+<form [formGroup]="rideRequestForm" *ngIf="!storedDrivingNotification?.active && (!storedDrivingNotification || storedDrivingNotification?.drivingStatus === 'FINISHED')">
   <app-enter-locations
     *ngIf="routeChoiceView"
     [currentUser]="currentUser"
@@ -11,7 +10,5 @@
   <app-filter-vehicle-view *ngIf="filterVehicleView" [requestLater]="requestLater" (waitingForAcceptDrive)="loadingView($event)"></app-filter-vehicle-view>
 
 </form>
-
-<app-waiting-for-accept-ride-container *ngIf="!hasActiveDriving() && storedDrivingNotification?.drivingStatus==='PAYING'"></app-waiting-for-accept-ride-container>
-
-<app-active-drive-container [activeRide]="activeRide" *ngIf="hasActiveDriving()"></app-active-drive-container>
+<app-waiting-for-accept-ride-container *ngIf="storedDrivingNotification && !storedDrivingNotification?.active && storedDrivingNotification?.drivingStatus==='PAYING'"></app-waiting-for-accept-ride-container>
+<app-active-drive-container [currentUserId]="currentUser.id" *ngIf="storedDrivingNotification && (storedDrivingNotification?.active || storedDrivingNotification?.drivingStatus === 'ACCEPTED')"></app-active-drive-container>

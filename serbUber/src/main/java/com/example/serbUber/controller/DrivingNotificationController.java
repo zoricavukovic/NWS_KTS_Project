@@ -4,6 +4,8 @@ import com.example.serbUber.dto.DrivingNotificationDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.ExcessiveNumOfPassengersException;
 import com.example.serbUber.exception.InvalidStartedDateTimeException;
+import com.example.serbUber.exception.PassengerNotHaveTokensException;
+import com.example.serbUber.model.DrivingNotification;
 import com.example.serbUber.request.DrivingNotificationRequest;
 import com.example.serbUber.service.DrivingNotificationService;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+
+import java.util.List;
 
 import static com.example.serbUber.exception.ErrorMessagesConstants.*;
 
@@ -29,7 +33,7 @@ public class DrivingNotificationController {
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyRole('ROLE_REGULAR_USER')")
-    public DrivingNotificationDTO create(@Valid @RequestBody DrivingNotificationRequest drivingNotificationRequest) throws EntityNotFoundException, ExcessiveNumOfPassengersException, InvalidStartedDateTimeException {
+    public DrivingNotificationDTO create(@Valid @RequestBody DrivingNotificationRequest drivingNotificationRequest) throws EntityNotFoundException, ExcessiveNumOfPassengersException, InvalidStartedDateTimeException, PassengerNotHaveTokensException {
 
         return this.drivingNotificationService.createDrivingNotificationDTO(
             drivingNotificationRequest.getRoute(),
@@ -49,6 +53,12 @@ public class DrivingNotificationController {
     @PreAuthorize("hasAnyRole('ROLE_REGULAR_USER')")
     public DrivingNotificationDTO get(@Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable final Long id) throws EntityNotFoundException {
         return drivingNotificationService.get(id);
+    }
+
+    @GetMapping()
+    @ResponseStatus(HttpStatus.OK)
+    public List<DrivingNotification> getAll() throws EntityNotFoundException {
+        return drivingNotificationService.getAll();
     }
 
     @PutMapping("/update-status/{id}/{accepted}/{email}")

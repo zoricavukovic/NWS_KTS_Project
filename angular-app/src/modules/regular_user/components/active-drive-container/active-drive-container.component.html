@@ -6,8 +6,8 @@
             matTooltipHideDelay="1000"
   >chevron_right_outline</mat-icon>
   <br/>
-  <div class="text-container" *ngIf="activeRide?.active"><b>Your active ride</b></div>
-  <div class="text-container" *ngIf="!activeRide?.active"><b>Your future ride</b></div>
+  <div class="text-container" *ngIf="storedDrivingNotification?.active"><b>Your active ride</b></div>
+  <div class="text-container" *ngIf="!storedDrivingNotification?.active"><b>Your future ride</b></div>
   <div class="spinner-div">
     <mat-progress-spinner class="spinner" color='accent' [mode]="'determinate'" [value]="activeRide?.minutes">
     </mat-progress-spinner>
