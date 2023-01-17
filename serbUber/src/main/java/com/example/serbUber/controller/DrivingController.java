@@ -4,9 +4,12 @@ import com.example.serbUber.dto.DrivingDTO;
 import com.example.serbUber.dto.DrivingPageDTO;
 import com.example.serbUber.dto.SimpleDrivingInfoDTO;
 import com.example.serbUber.dto.VehicleCurrentLocationDTO;
+import com.example.serbUber.dto.chart.ChartDataDTO;
+import com.example.serbUber.dto.chart.ChartItemDTO;
 import com.example.serbUber.exception.DriverAlreadyHasStartedDrivingException;
 import com.example.serbUber.exception.DrivingShouldNotStartYetException;
 import com.example.serbUber.exception.EntityNotFoundException;
+import com.example.serbUber.request.ChartRequest;
 import com.example.serbUber.request.DrivingRequest;
 import com.example.serbUber.service.DrivingService;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -149,4 +152,35 @@ public class DrivingController {
 
         return drivingService.getDrivingByFavouriteRoute(routeId);
     }
+
+    @PostMapping("/chart-data")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_REGULAR_USER', 'ROLE_DRIVER')")
+    public ChartDataDTO getChartData(@Valid @RequestBody ChartRequest chartRequest)
+            throws EntityNotFoundException
+    {
+
+        return drivingService.getChartData(
+                chartRequest.getId(),
+                chartRequest.getChartType(),
+                chartRequest.getStartDate(),
+                chartRequest.getEndDate()
+        );
+    }
+
+    @PostMapping("/admin-chart-data")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public ChartDataDTO getAdminChartData(@Valid @RequestBody ChartRequest chartRequest)
+            throws EntityNotFoundException
+    {
+
+        return drivingService.getAdminChartData(
+                chartRequest.getId(),
+                chartRequest.getChartType(),
+                chartRequest.getStartDate(),
+                chartRequest.getEndDate()
+        );
+    }
+
 }

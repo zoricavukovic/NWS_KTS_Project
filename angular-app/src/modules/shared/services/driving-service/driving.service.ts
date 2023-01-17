@@ -6,6 +6,7 @@ import {ConfigService} from "../config-service/config.service";
 import {Driving} from "../../models/driving/driving";
 import {VehicleCurrentLocation} from "../../models/vehicle/vehicle-current-location";
 import {SimpleDrivingInfo} from "../../models/driving/simple-driving-info";
+import { ChartData, ChartRequest } from '../../models/chart/chart-data';
 
 @Injectable({
   providedIn: 'root',
@@ -85,4 +86,26 @@ export class DrivingService extends GenericService<Driving> {
   updateRide(vehicleCurrentLocation: VehicleCurrentLocation) {
     this.ride$.next(vehicleCurrentLocation);
   }
+
+  getChartData(chartRequest: ChartRequest): Observable<ChartData> {
+    return this.http.post<ChartData>(
+      this.configService.getChartData(), chartRequest
+    );
+  }
+
+  getAdminChartData(chartRequest: ChartRequest): Observable<ChartData> {
+    return this.http.post<ChartData>(
+      this.configService.getAdminChartData(), chartRequest
+    );
+  }
+
+  createChartRequest(id: number, chartType: string, startDate: string, endDate: string): ChartRequest {
+    return {
+      id: id,
+      chartType: chartType,
+      startDate: startDate,
+      endDate: endDate
+    }
+  }
+
 }

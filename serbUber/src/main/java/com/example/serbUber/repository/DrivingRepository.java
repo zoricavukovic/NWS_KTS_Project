@@ -48,4 +48,14 @@ public interface DrivingRepository extends JpaRepository<Driving, Long> {
 
     @Query("select distinct d.id from Driving d where d.route.id = ?1")
     Optional<Long> findDrivingByFavouriteRoute(Long routeId);
+
+    //ako se promeni enum mora se ovde promeniti!
+    @Query("select d from Driving d left join fetch d.driver driver where driver.id=?1 and d.drivingStatus=3")
+    List<Driving> getDrivingsForDriver(Long id);
+
+    @Query("select d from Driving d inner join d.users user where user.id=?1 and d.drivingStatus=3")
+    List<Driving> getDrivingsForRegular(Long id);
+
+    @Query("select d from Driving d where d.drivingStatus=3")
+    List<Driving> getAllDrivings();
 }

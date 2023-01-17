@@ -3,9 +3,15 @@ package com.example.serbUber.util;
 import com.example.serbUber.dto.PossibleRoutesViaPointsDTO;
 import com.example.serbUber.request.LongLatRequest;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Constants {
+
+    public static DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
     public static final String PHOTOS_FILE_PATH = "src/main/resources/static/images/";
     public static final String TARGET_PHOTO_FILE_PATH = "./src/main/resources/static/images/";
@@ -45,6 +51,8 @@ public class Constants {
     public static final Long DEFAULT_PAYING_INFO_ID = 1L;
     public static final int MAX_MINUTES_BEFORE_DRIVING_CAN_START = 5;
     public static final Long TAXI_START_LOCATION_ID = 1L;
+    public static final double ONE_DRIVING = 1.0;
+    public static final double NOT_BY_SPECIFIC_USER = -1;
 
     public static int generateSecurityCode() {
         return (int)(Math.random() * (Constants.MAX_SECURITY_NUM - Constants.MIN_SECURITY_NUM + 1) + Constants.MIN_SECURITY_NUM);
@@ -61,6 +69,13 @@ public class Constants {
     }
     private static boolean isDefaultPicture(String profilePicture) {
         return profilePicture == null || profilePicture.equalsIgnoreCase(DEFAULT_PICTURE);
+    }
+
+    public static List<LocalDate> getDatesBetween(
+            LocalDate startDate, LocalDate endDate) {
+
+        return startDate.datesUntil(endDate.plusDays(1))
+                .collect(Collectors.toList());
     }
 
 

@@ -1,0 +1,17 @@
+.statistics-content {
+    border: 4px solid var(--gray-transparent);
+    margin-top: 4rem;
+    min-height: 15rem;
+    min-width: 20rem;
+}
+
+.knob-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin: 1.5rem 0rem;
+    text-align: center;
+}
+
+p-knob {
+    margin-left: 1.2rem;
+}

@@ -2,6 +2,7 @@ package com.example.serbUber.service.user;
 
 import com.example.serbUber.dto.RouteDTO;
 import com.example.serbUber.dto.VerifyDTO;
+import com.example.serbUber.dto.chart.ChartItemDTO;
 import com.example.serbUber.dto.user.RegistrationDTO;
 import com.example.serbUber.dto.user.RegularUserDTO;
 import com.example.serbUber.dto.user.RegularUserPageDTO;
@@ -201,4 +202,5 @@ public class RegularUserService implements IRegularUserService {
         Page<RegularUser> results = getRegularUserPage(page);
         return fromRegularUsersPage(results.getContent(), results.getSize(), results.getTotalPages());
     }
+
 }

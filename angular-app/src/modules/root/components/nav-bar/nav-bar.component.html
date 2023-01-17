@@ -83,6 +83,15 @@
         color="primary">
         Payment
       </a>
+
+      <a
+        *ngIf="loggedUser"
+        [routerLink]="['/serb-uber/reports']"
+        routerLinkActive="active"
+        mat-button
+        color="primary">
+        Reports
+      </a>
     </div>
   </div>
 

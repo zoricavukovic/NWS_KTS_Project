@@ -51,6 +51,11 @@ import {AvatarGroupModule} from "primeng/avatargroup";
 import { VehicleRateDataComponent } from './components/vehicle/vehicle-rate-data/vehicle-rate-data.component';
 import { ReviewRowComponent } from './components/review-row/review-row.component';
 import { UserProfileInfoComponent } from "./components/user-profile-info/user-profile-info.component";
+import { ReportsPageComponent } from './pages/reports-page/reports-page.component';
+import { ReportStatisticsComponent } from './components/reports/report-statistics/report-statistics.component';
+import { ReportGraphComponent } from './components/reports/report-graph/report-graph.component';
+import { ReportTabComponent } from './components/reports/report-tab/report-tab.component';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -76,7 +81,11 @@ import { UserProfileInfoComponent } from "./components/user-profile-info/user-pr
     DateFormatPipe,
     VehicleRateDataComponent,
     ReviewRowComponent,
-    UserProfileInfoComponent
+    UserProfileInfoComponent,
+    ReportsPageComponent,
+    ReportStatisticsComponent,
+    ReportGraphComponent,
+    ReportTabComponent
   ],
   imports: [
     CommonModule,
@@ -120,7 +129,8 @@ import { UserProfileInfoComponent } from "./components/user-profile-info/user-pr
     UserProfileInfoComponent
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: CustomInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: CustomInterceptor, multi: true },
+    DatePipe
   ],
 })
 export class SharedModule {}

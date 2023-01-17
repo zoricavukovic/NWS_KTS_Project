@@ -23,11 +23,17 @@ import static com.example.serbUber.util.JwtProperties.getHashedNewUserPassword;
 public class AdminService {
 
     private final AdminRepository adminRepository;
+    private final RegularUserService regularUserService;
+    private final DriverService driverService;
 
     public AdminService(
-        final AdminRepository adminRepository
+        final AdminRepository adminRepository,
+        final RegularUserService regularUserService,
+        final DriverService driverService
     ) {
         this.adminRepository = adminRepository;
+        this.regularUserService = regularUserService;
+        this.driverService = driverService;
     }
 
     public List<AdminDTO> getAll() {

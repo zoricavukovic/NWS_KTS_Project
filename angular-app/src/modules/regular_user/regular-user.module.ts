@@ -59,7 +59,6 @@ import { FavoriteRoutesDataComponent } from "./components/favorite-routes-data/f
     GoogleMapsModule,
     GooglePlaceModule,
     ProgressSpinnerModule,
-    // TimepickerModule.forRoot()
   ],
   exports: [HomePassangerComponent, DrivingNotificationDetailsComponent, FavoriteRoutesDataComponent],
   providers: []
