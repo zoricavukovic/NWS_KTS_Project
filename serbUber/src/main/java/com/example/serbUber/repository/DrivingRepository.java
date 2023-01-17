@@ -55,4 +55,7 @@ public interface DrivingRepository extends JpaRepository<Driving, Long> {
 
     @Query("select d from Driving d inner join d.users user where user.id=?1 and d.drivingStatus=3")
     List<Driving> getDrivingsForRegular(Long id);
+
+    @Query("select d from Driving d where d.drivingStatus=3")
+    List<Driving> getAllDrivings();
 }

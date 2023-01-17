@@ -60,6 +60,12 @@ public class UserService implements IUserService {
         return fromUsers(users);
     }
 
+    public List<UserDTO> getAllVerified() {
+        List<User> users = userRepository.getAllVerified();
+
+        return fromUsers(users);
+    }
+
     public User getUserByEmail(final String email) throws EntityNotFoundException {
 
         return userRepository.getUserByEmail(email)

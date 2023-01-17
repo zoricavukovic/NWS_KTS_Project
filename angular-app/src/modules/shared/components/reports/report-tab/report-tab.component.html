@@ -10,5 +10,34 @@
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-date-range-picker #picker></mat-date-range-picker>
         </mat-form-field>
+        <mat-form-field appearance="fill" *ngIf="isAdmin" style="margin-left: 2rem;">
+            <mat-label>User</mat-label>
+            <input
+              type="text"
+              matInput
+              aria-label="State"
+              [matAutocomplete]="auto"
+              placeholder="Enter user's email" />
+            <mat-autocomplete
+                #auto="matAutocomplete"
+                (optionSelected)="showBySpecificUser($event.option.value)">
+                <mat-option *ngFor="let email of tempListOfUserEmails" [value]="email">
+                    <span>{{ email }}</span>
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+        <button 
+            mat-raised-button 
+            (click)="loadData()">
+            Show
+        </button>
+    </div>
+    <div style="display: flex;" *ngIf="chartData && selectedReport">
+        <div>
+            <app-report-statistics [sum]="chartData.chartSumData.sum" [average]="chartData.chartSumData.average"></app-report-statistics>
+        </div>
+        <div style="min-height: 20rem; min-width: 50rem; margin-left: 2rem;">
+            <app-report-graph [chartItems]="chartData.chartData" [isRegular]="isRegular" [chartType]="selectedReport" [dateRange]="dateRange"></app-report-graph>
+        </div>
     </div>
 </div>

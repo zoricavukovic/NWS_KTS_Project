@@ -75,4 +75,6 @@ public interface IDrivingService {
     Long getDrivingByFavouriteRoute(final Long routeId) throws EntityNotFoundException;
 
     ChartDataDTO getChartData(final Long id, final ChartType chartType, final LocalDate startDate, final LocalDate endDate) throws EntityNotFoundException;
+
+    ChartDataDTO getAdminChartData(final Long id, final ChartType chartType, final LocalDate startDate, final LocalDate endDate) throws EntityNotFoundException;
 }

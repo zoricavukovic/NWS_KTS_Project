@@ -336,6 +336,31 @@ public class DrivingService implements IDrivingService {
         return new ChartDataDTO(chartItemDTOS, new ChartSumDataDTO(totalSum, getChartAverage(numOfAcceptedDrivings, totalSum)));
     }
 
+    public ChartDataDTO getAdminChartData(
+            final Long id,
+            final ChartType chartType,
+            LocalDate startDate,
+            LocalDate endDate
+    ) throws EntityNotFoundException {
+        User user = null;
+        if (id != NOT_BY_SPECIFIC_USER) {
+            user = this.userService.getUserById(id);
+        }
+
+        return (id != NOT_BY_SPECIFIC_USER) ? calculateChartData(user.getRole().isRegularUser() ? this.drivingRepository.getDrivingsForRegular(id)
+                : this.drivingRepository.getDrivingsForDriver(id), chartType, startDate, endDate)
+                : calculateForAllUsers(chartType, startDate, endDate);
+    }
+
+    private ChartDataDTO calculateForAllUsers(
+            final ChartType chartType,
+            final LocalDate startDate,
+            final LocalDate endDate
+    ) {
+
+        return calculateChartData(this.drivingRepository.getAllDrivings(), chartType, startDate, endDate);
+    }
+
     private double getTotalPerDay(final Driving driving, final ChartType chartType) {
 
         switch (chartType) {

@@ -1,7 +1,7 @@
 
 export interface ChartData {
     chartData: ChartItem[];
-    chartSum: ChartSumData;
+    chartSumData: ChartSumData;
 }
 
 export interface ChartItem {
@@ -12,4 +12,11 @@ export interface ChartItem {
 export interface ChartSumData {
     sum: number;
     average: number;
+}
+
+export interface ChartRequest {
+    id?: number;
+    chartType: string;
+    startDate: string;
+    endDate: string;
 }

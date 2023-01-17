@@ -52,6 +52,7 @@ public class Constants {
     public static final int MAX_MINUTES_BEFORE_DRIVING_CAN_START = 5;
     public static final Long TAXI_START_LOCATION_ID = 1L;
     public static final double ONE_DRIVING = 1.0;
+    public static final double NOT_BY_SPECIFIC_USER = -1;
 
     public static int generateSecurityCode() {
         return (int)(Math.random() * (Constants.MAX_SECURITY_NUM - Constants.MIN_SECURITY_NUM + 1) + Constants.MIN_SECURITY_NUM);
@@ -73,7 +74,7 @@ public class Constants {
     public static List<LocalDate> getDatesBetween(
             LocalDate startDate, LocalDate endDate) {
 
-        return startDate.datesUntil(endDate)
+        return startDate.datesUntil(endDate.plusDays(1))
                 .collect(Collectors.toList());
     }
 

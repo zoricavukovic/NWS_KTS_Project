@@ -168,4 +168,19 @@ public class DrivingController {
         );
     }
 
+    @PostMapping("/admin-chart-data")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public ChartDataDTO getAdminChartData(@Valid @RequestBody ChartRequest chartRequest)
+            throws EntityNotFoundException
+    {
+
+        return drivingService.getAdminChartData(
+                chartRequest.getId(),
+                chartRequest.getChartType(),
+                chartRequest.getStartDate(),
+                chartRequest.getEndDate()
+        );
+    }
+
 }

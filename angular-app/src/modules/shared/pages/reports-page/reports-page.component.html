@@ -1,14 +1,14 @@
-<div style="height: 70%;">
-    <div class="report-tabs-container">
-        <mat-tab-group  mat-align-tabs="center" animationDuration="0ms">
+<div style="min-height: 70%;">
+    <div class="report-tabs-container" style="min-height: 30rem; overflow-y: auto;">
+        <mat-tab-group  mat-align-tabs="center" animationDuration="0ms" (selectedTabChange)="tabChanged($event)">
             <mat-tab label="Spending">
-                <app-report-tab [selectedReport]="configService.SELECTED_SPENDING_REPORT"></app-report-tab>
+                <app-report-tab *ngIf="selectedTabIndex === 0" [selectedReport]="selectedReport"></app-report-tab>
             </mat-tab>
             <mat-tab label="Number of rides">
-                <app-report-tab [selectedReport]="configService.SELECTED_RIDES_REPORT"></app-report-tab>
+                <app-report-tab *ngIf="selectedTabIndex === 1" [selectedReport]="selectedReport"></app-report-tab>
             </mat-tab>
             <mat-tab label="Distance">
-                <app-report-tab [selectedReport]="configService.SELECTED_DISTANCE_REPORT"></app-report-tab>
+                <app-report-tab *ngIf="selectedTabIndex === 2" [selectedReport]="selectedReport"></app-report-tab>
             </mat-tab>
           </mat-tab-group>
     </div>

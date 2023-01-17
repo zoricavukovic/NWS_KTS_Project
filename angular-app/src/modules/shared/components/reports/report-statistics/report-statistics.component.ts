@@ -1,15 +1,30 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import {ChartSumData} from './../../../models/chart/chart-data'
 
 @Component({
   selector: 'app-report-statistics',
   templateUrl: './report-statistics.component.html',
   styleUrls: ['./report-statistics.component.css']
 })
-export class ReportStatisticsComponent implements OnInit {
+export class ReportStatisticsComponent {
 
-  constructor() { }
+  @Input() sum: number;
 
-  ngOnInit(): void {
+  @Input() average: number;
+ 
+  constructor() {
+    this.sum = 0;
+    this.average = 0;
+  }
+
+  getMaxValueTotal(): number {
+
+    return (this.sum === 0) ? 1 : this.sum;
+  }
+
+  getMaxValueAverage(): number {
+
+    return (this.average === 0) ? 1 : this.average;
   }
 
 }

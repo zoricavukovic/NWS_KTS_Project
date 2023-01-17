@@ -114,6 +114,11 @@ export class UserService extends GenericService<User> {
     return this.http.get<User>(this.configService.userByEmailUrl(email));
   }
 
+  getAllVerified(): Observable<User[]> {
+
+    return this.http.get<User[]>(this.configService.ALL_VERIFIED_URL);
+  }
+
   createUserDetails(
     email: string,
     name: string,
