@@ -21,6 +21,7 @@ import { UpdateDrivingNotification } from 'src/modules/shared/actions/driving-no
 import {
   DrivingNotificationService
 } from "../../../shared/services/driving-notification-service/driving-notification.service";
+import { WebSocketService } from 'src/modules/shared/services/web-socket-service/web-socket.service';
 
 @Component({
   selector: 'app-home-passanger',
@@ -82,7 +83,7 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
     public router: Router,
     private formBuilder: FormBuilder,
     private store: Store,
-    private drivingNotificationService: DrivingNotificationService
+    private webSocketService: WebSocketService
   ){
     this.routeChoiceView = true;
     this.filterVehicleView = false;
@@ -103,11 +104,16 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
     })
   }
 
+  eventEmit(){
+    this.webSocketService.aClickedEvent
+      .subscribe(() => {
+        console.log("ucitaaaj");
+        this.ngOnInit();
+      })
+  }
+
   ngOnInit(): void {
-    // this.drivingNotificationService.aClickedEvent
-    //   .subscribe(() => {
-    //     console.log("ucitaaaj");
-    //   })
+    
     console.log("USAO")
     this.currentDrivingNotification.subscribe(response => {
       this.storedDrivingNotification = response;

@@ -29,7 +29,7 @@
       <mat-autocomplete
         #auto="matAutocomplete"
         (optionSelected)="addSelectedPassenger($event.option.value)">
-        <mat-option *ngFor="let user of allRegularUsers" [value]="user">
+        <mat-option *ngFor="let user of filteredRegularUsers | async" [value]="user">
           <span>{{ user }}</span>
         </mat-option>
       </mat-autocomplete>

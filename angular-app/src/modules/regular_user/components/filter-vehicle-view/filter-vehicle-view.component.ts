@@ -2,7 +2,7 @@ import {Component, Input, OnInit, OnDestroy, Output, EventEmitter} from '@angula
 import { ControlContainer, FormControl, FormGroup } from '@angular/forms';
 import { Select, Store } from '@ngxs/store';
 import { ToastrService } from 'ngx-toastr';
-import { Observable, Subscription } from 'rxjs';
+import { map, Observable, startWith, Subscription } from 'rxjs';
 import {Vehicle} from "../../../shared/models/vehicle/vehicle";
 import {DrivingNotificationState} from "../../../shared/state/driving-notification.state";
 import {User} from "../../../shared/models/user/user";
@@ -38,6 +38,7 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
   currentUser: User = null;
 
   allRegularUsers: string[] = [];
+  filteredRegularUsers: Observable<string[]>;
   selectedPassengers: string[] = [];
   passengers: User[] = [];
 
@@ -83,6 +84,9 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
             this.allRegularUsers.push(user.email);
           }
         }
+        this.filteredRegularUsers = this.passengerCtrl.valueChanges.pipe(startWith(''),
+        map(value => this._filter(value || '')),
+      );
       });
 
     this.vehicleTypesSubscription = this.vehicleTypeInfoService
@@ -92,6 +96,8 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
           this.vehicleTypesSeats[type.vehicleType] = type.numOfSeats;
         }
       });
+
+   
   }
 
   addSelectedPassenger(email: string) {
@@ -207,6 +213,14 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
         this.passengers.push(user);
       });
   }
+
+  
+
+private _filter(value: string): string[] {
+  const filterValue = value.toLowerCase();
+
+  return this.allRegularUsers.filter(option => option.toLowerCase().includes(filterValue));
+}
 
   ngOnDestroy(): void {
     if (this.allUsersSubscription) {

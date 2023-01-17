@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable, Output } from '@angular/core';
 import * as SockJS from 'sockjs-client';
 import { Stomp } from '@stomp/stompjs';
 import { environment } from 'src/environments/environment';
@@ -32,6 +32,7 @@ export class WebSocketService {
   private globalStompClient = null;
   initialized = false;
   initializedGlobal = false;
+  @Output() aClickedEvent = new EventEmitter()
 
   constructor(
     private chatRoomService: ChatRoomService,
@@ -164,6 +165,7 @@ export class WebSocketService {
         .onTap.subscribe(action => {
         this.router.navigate(['/serb-uber/user/map-page-view', drivingNotificationDetails.drivingId]);
       });
+      // this.aClickedEvent.emit();
 
     });
   }
