@@ -116,9 +116,16 @@ public class UserService implements IUserService {
             final String name,
             final String surname,
             final String phoneNumber,
-            final String city
+            final String city,
+            final VehicleType vehicleType,
+            final boolean petFriendly,
+            final boolean babySeat
     ) throws EntityUpdateException {
-        driverUpdateApprovalService.save(email, name, surname, phoneNumber, city);
+        if (!checkDriverApprovalData(vehicleType)) {
+            throw new EntityUpdateException("Vehicle type is not valid.");
+        }
+
+        driverUpdateApprovalService.save(email, name, surname, phoneNumber, city, vehicleType, petFriendly, babySeat);
         UserDTO userDTO = new UserDTO(user);
         userDTO.setProfilePicture(userDTO.getProfilePicture());
 
@@ -148,12 +155,15 @@ public class UserService implements IUserService {
             final String name,
             final String surname,
             final String phoneNumber,
-            final String city
+            final String city,
+            final VehicleType vehicleType,
+            final boolean petFriendly,
+            final boolean babySeat
     ) throws EntityNotFoundException, EntityUpdateException {
         User user = getUserByEmail(email);
 
         return user.getRole().isDriver() ?
-                updateDriver(user, email, name, surname, phoneNumber, city) :
+                updateDriver(user, email, name, surname, phoneNumber, city, vehicleType, petFriendly, babySeat) :
                 updateRegularOrAdmin(user, name, surname, phoneNumber, city);
     }
 
@@ -307,6 +317,11 @@ public class UserService implements IUserService {
 
         return (user.getRole().isDriver()) ? driverService.blockDriver(id, reason)
                 : regularUserService.blockRegular(id, reason);
+    }
+
+    private boolean checkDriverApprovalData(final VehicleType vehicleType) {
+
+        return vehicleType != null;
     }
 
     private void updateAndSavePassword(String newPassword, User user) {

@@ -7,4 +7,7 @@ export interface UserDetails {
   phoneNumber?: string;
   city?: string;
   role?: Role;
+  petFriendly?: boolean;
+  babySeat?: boolean;
+  vehicleType?: string;
 }

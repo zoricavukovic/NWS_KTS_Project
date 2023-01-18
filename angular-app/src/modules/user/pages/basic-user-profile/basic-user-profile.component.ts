@@ -109,7 +109,9 @@ export class BasicUserProfileComponent implements OnInit, OnDestroy {
   checkIfUserIsCurrent(): void {
     this.authSubscription = this.authService.getSubjectCurrentUser().subscribe(
       user => {
-        this.currentUserIsLogged = user.email === this.user.email
+        if (user) {
+          this.currentUserIsLogged = user.email === this.user.email
+        }
       }
     );
   }

@@ -65,7 +65,10 @@ public class UserController {
                 userData.getName(),
                 userData.getSurname(),
                 userData.getPhoneNumber(),
-                userData.getCity()
+                userData.getCity(),
+                userData.getVehicleType(),
+                userData.isPetFriendly(),
+                userData.isBabySeat()
         );
     }
 

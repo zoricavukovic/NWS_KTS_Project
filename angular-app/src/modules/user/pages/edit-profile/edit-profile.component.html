@@ -15,7 +15,7 @@
         <div class="data-container">
             <mat-form-field class="colomn" appearance="fill">
                 <mat-label>Name</mat-label>
-                <input type="text" matInput formControlName="nameFormControl" [errorStateMatcher]="matcher" [(ngModel)]="user.name">
+                <input type="text" matInput formControlName="nameFormControl" [errorStateMatcher]="matcher">
                 <mat-error *ngIf="editDataForm.get('nameFormControl').hasError('required')">
                     Name is <strong>required</strong>
                 </mat-error>
@@ -27,8 +27,7 @@
 
             <mat-form-field class="colomn" appearance="fill">
                 <mat-label>Surname</mat-label>
-                <input type="text" matInput formControlName="surnameFormControl" [errorStateMatcher]="matcher"
-                    [(ngModel)]="user.surname">
+                <input type="text" matInput formControlName="surnameFormControl" [errorStateMatcher]="matcher">
                 <mat-error *ngIf="editDataForm.get('surnameFormControl').hasError('required')">
                     Surname is <strong>required</strong>
                 </mat-error>
@@ -40,8 +39,7 @@
 
             <mat-form-field class="colomn" appearance="fill">
                 <mat-label>Phone number</mat-label>
-                <input type="tel" matInput formControlName="phoneNumberFormControl" [errorStateMatcher]="matcher"
-                    [(ngModel)]="user.phoneNumber" placeholder="Enter phone number">
+                <input type="tel" matInput formControlName="phoneNumberFormControl" [errorStateMatcher]="matcher"placeholder="Enter phone number">
                 <mat-error *ngIf="editDataForm.get('phoneNumberFormControl').hasError('required')">
                     Phone number is <strong>required</strong>
                 </mat-error>
@@ -53,7 +51,7 @@
             <mat-form-field class="colomn" appearance="fill">
                 <mat-label>City</mat-label>
                 <input type="text" matInput [errorStateMatcher]="matcher" aria-label="State" [matAutocomplete]="auto"
-                    [(ngModel)]="user.city" formControlName="cityFormControl" placeholder="Choose city">
+                formControlName="cityFormControl" placeholder="Choose city">
                 <mat-autocomplete #auto="matAutocomplete">
                     <mat-option *ngFor="let city of filteredCities | async" [value]="city">
                         <span>{{city}}</span>
@@ -63,6 +61,8 @@
                     City is <strong>required</strong>
                 </mat-error>
             </mat-form-field>
+
+            <driver-vehicle *ngIf="vehicle && isDriver" [vehicle]="vehicle"></driver-vehicle>
         </div>
         <div class="center">
             <button mat-button class="cancel-button" (click)="cancel()">

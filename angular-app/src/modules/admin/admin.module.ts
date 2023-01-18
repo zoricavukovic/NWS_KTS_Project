@@ -18,6 +18,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {CarouselModule} from "primeng/carousel";
 import {SharedModule} from "../shared/shared.module";
 import { ReportRowComponent } from './components/report-row/report-row.component';
+import { AdminHomeComponent } from './components/admin-home/admin-home.component';
 
 @NgModule({
     declarations: [
@@ -31,10 +32,12 @@ import { ReportRowComponent } from './components/report-row/report-row.component
         PayingInfoBoxComponent,
         ReportsHistoryComponent,
         UserRowComponent,
-        ReportRowComponent
+        ReportRowComponent,
+        AdminHomeComponent
     ],
     exports: [
-        ReportsHistoryComponent
+        ReportsHistoryComponent,
+        AdminHomeComponent
     ],
     providers: [],
     imports: [

@@ -16,6 +16,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   currentUser: User;
   isDriver: boolean;
   isRegular: boolean;
+  isAdmin: boolean;
   carMarkers: google.maps.Marker[];
 
   authSubscription: Subscription;
@@ -28,6 +29,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.currentUser = null;
     this.isDriver = false;
     this.isRegular = false;
+    this.isAdmin = false;
     this.carMarkers = [];
   }
 
@@ -39,6 +41,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           this.currentUser = user;
           this.isDriver = this.authService.userIsDriver();
           this.isRegular = this.authService.userIsRegular();
+          this.isAdmin = this.authService.userIsAdmin();
           this.vehicleService.getAllVehicle().subscribe(vehicleCurrentLocation => {
             this.carMarkers = addCarMarkers(
               this.map,

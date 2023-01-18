@@ -1,12 +1,14 @@
 import {
   Component,
   EventEmitter,
+  Input,
   OnDestroy,
   OnInit,
   Output,
 } from '@angular/core';
 import { ControlContainer, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { Vehicle } from 'src/modules/shared/models/vehicle/vehicle';
 import {VehicleTypeInfo} from "../../../models/vehicle/vehicle-type-info";
 import {VehicleService} from "../../../services/vehicle-service/vehicle.service";
 import {VehicleTypeInfoService} from "../../../services/vehicle-type-info-service/vehicle-type-info.service";
@@ -18,6 +20,9 @@ import {VehicleTypeInfoService} from "../../../services/vehicle-type-info-servic
 })
 export class DriverVehicleComponent implements OnInit, OnDestroy {
   @Output() vehicleTypeEvent = new EventEmitter();
+
+  @Input() vehicle: Vehicle;
+
   petFriendly = false;
   babySeat = false;
   selectedVehicleType: string;
@@ -34,6 +39,7 @@ export class DriverVehicleComponent implements OnInit, OnDestroy {
     private controlContainer: ControlContainer
   ) {
     this.rideRequestForm = <FormGroup>this.controlContainer.control;
+    this.vehicle = null;
   }
 
   ngOnInit(): void {
@@ -47,6 +53,10 @@ export class DriverVehicleComponent implements OnInit, OnDestroy {
         );
         this.vehicleTypes = vehicleTypes;
         this.styleArray = new Array<boolean>(vehicleTypes.length).fill(false);
+        if (this.vehicle){
+          this.vehicle.vehicleTypeInfo = this.setAdditionalData(this.vehicle.vehicleTypeInfo, this.vehicle.id - 1);
+          this.changeSelectedVehicleType(this.vehicle.vehicleTypeInfo)
+        }
       });
 
     this.responsiveOptions = [
@@ -89,7 +99,7 @@ export class DriverVehicleComponent implements OnInit, OnDestroy {
   }
 
 
-  changeSelectedVehicleType(selectedVehicleType) {
+  changeSelectedVehicleType(selectedVehicleType: VehicleTypeInfo) {
     this.selectedVehicleType = selectedVehicleType.vehicleType;
     this.styleArray.forEach(
       (value, index) =>
