@@ -57,4 +57,7 @@ public interface DriverRepository extends JpaRepository<Driver, Long> {
     @Modifying
     @Query("update Driver d set d.rate = :rate where d.id = :id")
     void updateDrivingRate(Long id, double rate);
+
+    @Query("select d from Driver d left join fetch d.vehicle v where d.email=?1")
+    Optional<Driver> getDriverByEmail(String email);
 }

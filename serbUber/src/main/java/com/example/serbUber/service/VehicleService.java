@@ -5,12 +5,9 @@ import com.example.serbUber.dto.VehicleCurrentLocationForLocustDTO;
 import com.example.serbUber.dto.VehicleDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.EntityType;
-import com.example.serbUber.model.Location;
-import com.example.serbUber.model.VehicleWithDriverId;
+import com.example.serbUber.model.*;
 import com.example.serbUber.service.interfaces.IVehicleService;
 import com.example.serbUber.util.Constants;
-import com.example.serbUber.model.Vehicle;
-import com.example.serbUber.model.VehicleType;
 import com.example.serbUber.repository.VehicleRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -207,5 +204,10 @@ public class VehicleService implements IVehicleService {
         vehicle.setCurrentLocationIndex(vehicle.getCurrentLocationIndex() + 1);
         vehicle.setCurrentStop(new Location(lat, lng));
         return null;
+    }
+
+    public VehicleTypeInfo driverUpdateApprovalVehicle(final VehicleType vehicleType) throws EntityNotFoundException {
+
+        return this.vehicleTypeInfoService.get(vehicleType);
     }
 }

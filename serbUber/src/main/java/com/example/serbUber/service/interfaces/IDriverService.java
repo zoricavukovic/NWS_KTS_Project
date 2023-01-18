@@ -6,6 +6,7 @@ import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.*;
 import com.example.serbUber.model.VehicleType;
 import com.example.serbUber.model.user.Driver;
+import com.example.serbUber.model.user.DriverUpdateApproval;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,4 +37,7 @@ public interface IDriverService {
             throws EntityNotFoundException, EntityUpdateException;
     boolean getIsBlocked(Long id);
     List<DriverPageDTO> getDriversWithPagination(int pageNumber, int pageSize);
+
+    boolean approveDriverChanges(final DriverUpdateApproval driverUpdateApproval) throws EntityNotFoundException;
+    Driver getDriverByEmail(final String email) throws EntityNotFoundException;
 }

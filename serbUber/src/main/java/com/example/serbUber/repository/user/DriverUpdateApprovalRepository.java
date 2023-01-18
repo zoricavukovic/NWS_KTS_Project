@@ -12,5 +12,5 @@ import java.util.List;
 public interface DriverUpdateApprovalRepository extends JpaRepository<DriverUpdateApproval, Long> {
 
     @Query("select u from DriverUpdateApproval u where u.approved=false")
-    List<UserDTO> getAllNotApproved();
+    List<DriverUpdateApproval> getAllNotApproved();
 }

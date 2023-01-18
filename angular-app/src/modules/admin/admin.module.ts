@@ -19,6 +19,8 @@ import {CarouselModule} from "primeng/carousel";
 import {SharedModule} from "../shared/shared.module";
 import { ReportRowComponent } from './components/report-row/report-row.component';
 import { AdminHomeComponent } from './components/admin-home/admin-home.component';
+import { ApprovalDialogComponent } from './components/driver-update-approval/approval-dialog/approval-dialog.component';
+import { ApprovalRowComponent } from './components/driver-update-approval/approval-row/approval-row.component';
 
 @NgModule({
     declarations: [
@@ -33,7 +35,9 @@ import { AdminHomeComponent } from './components/admin-home/admin-home.component
         ReportsHistoryComponent,
         UserRowComponent,
         ReportRowComponent,
-        AdminHomeComponent
+        AdminHomeComponent,
+        ApprovalDialogComponent,
+        ApprovalRowComponent
     ],
     exports: [
         ReportsHistoryComponent,

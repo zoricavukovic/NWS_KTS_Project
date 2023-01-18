@@ -1,22 +1,19 @@
 package com.example.serbUber.service.user;
 
 import com.example.serbUber.dto.DriverActivityResetNotificationDTO;
-import com.example.serbUber.dto.DrivingNotificationDTO;
-import com.example.serbUber.dto.DrivingStatusNotificationDTO;
 import com.example.serbUber.dto.user.DriverDTO;
 import com.example.serbUber.dto.user.DriverPageDTO;
 import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.*;
 import com.example.serbUber.model.*;
 import com.example.serbUber.model.user.Driver;
+import com.example.serbUber.model.user.DriverUpdateApproval;
 import com.example.serbUber.repository.user.DriverRepository;
 import com.example.serbUber.service.*;
 import com.example.serbUber.service.interfaces.IDriverService;
 import com.example.serbUber.util.Constants;
 import com.graphhopper.GHRequest;
 import com.graphhopper.GHResponse;
-import com.graphhopper.util.Parameters;
-import com.graphhopper.util.shapes.GHPoint;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -87,6 +84,12 @@ public class DriverService implements IDriverService{
 
         return driverRepository.getDriverById(id)
             .orElseThrow(() -> new EntityNotFoundException(id, EntityType.USER));
+    }
+
+    public Driver getDriverByEmail(final String email) throws EntityNotFoundException {
+
+        return driverRepository.getDriverByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException(email, EntityType.USER));
     }
 
     public Driver getDriverByIdWithoutDrivings(final Long id) throws EntityNotFoundException {
@@ -303,6 +306,23 @@ public class DriverService implements IDriverService{
         Pageable page = PageRequest.of(pageNumber, pageSize);
         Page<Driver> results = getDriverPage(page);
         return fromDriversPage(results.getContent(), results.getSize(), results.getTotalPages());
+    }
+
+    public boolean approveDriverChanges(final DriverUpdateApproval driverUpdateApproval)
+            throws EntityNotFoundException
+    {
+        Driver driver = getDriverByEmail(driverUpdateApproval.getUserEmail());
+
+        driver.setName(driverUpdateApproval.getName());
+        driver.setSurname(driverUpdateApproval.getSurname());
+        driver.setPhoneNumber(driverUpdateApproval.getPhoneNumber());
+        driver.setCity(driverUpdateApproval.getCity());
+        driver.getVehicle().setPetFriendly(driverUpdateApproval.isPetFriendly());
+        driver.getVehicle().setBabySeat(driverUpdateApproval.isBabySeat());
+        driver.getVehicle().setVehicleTypeInfo(this.vehicleService.driverUpdateApprovalVehicle(driverUpdateApproval.getVehicleType()));
+        this.driverRepository.save(driver);
+
+        return true;
     }
 
     public Page<Driver> getDriverPage(Pageable page){

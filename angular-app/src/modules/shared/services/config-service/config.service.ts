@@ -196,6 +196,18 @@ export class ConfigService {
   }
 
 
+  ///////////////////DRIVER UPDATE APPROVAL/////
+
+  DRIVER_UPDATE_APPROVAL = `${this.API_URL}/driver-update-approval`;
+
+  rejectDriverRequest(id: number): string{
+    return `${this.DRIVER_UPDATE_APPROVAL}/reject/${id}`;
+  }
+
+  approveDriverRequest(id: number): string{
+    return `${this.DRIVER_UPDATE_APPROVAL}/approve/${id}`;
+  }
+
   ///////////////////VEHICLE///////////////////
 
   VEHICLES_URL = `${this.API_URL}/vehicles`;

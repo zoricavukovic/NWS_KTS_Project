@@ -1,0 +1,26 @@
+<div class="dialog-container" *ngIf="request">
+    <h1 mat-dialog-title style="display: flex; margin-top: 2%;" class="center"><b>Driver's data</b></h1>
+    <mat-dialog-content>
+        <br>
+        <label><b>Name: </b>{{request.name}}</label>
+        <label><b>Surname: </b>{{request.surname}}</label>
+        <label><b>Phone number: </b>{{request.phoneNumber}}</label>
+        <label><b>City: </b>{{request.city}}</label>
+        <div class="vehicle-info">
+            <h3>Vehicle's info</h3>
+            <div>
+                <mat-checkbox [checked]="request.petFriendly" disabled>Pet friendly</mat-checkbox>
+                <mat-checkbox [checked]="request.babySeat" disabled>Baby seat</mat-checkbox>
+            </div>
+            <img class="car-img"
+               src="../../../assets/images/{{request.vehicleType.toLowerCase()}}.png"
+            >
+        </div>
+    </mat-dialog-content>
+
+    <mat-dialog-actions class="activity-buttons" align="center">
+        <button mat-button class="cancel-button" (click)="rejectCahnges()" [mat-dialog-close]="true">Reject</button>
+        <button mat-raised-button class="green-button" (click)="approveChanges()" [mat-dialog-close]="true">Approve</button>
+    </mat-dialog-actions>
+
+</div>

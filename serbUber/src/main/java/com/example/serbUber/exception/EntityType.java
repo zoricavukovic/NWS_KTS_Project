@@ -13,6 +13,7 @@ public enum EntityType {
     ROLE,
     TOKEN_BANK,
     PAYING_INFO,
+    DRIVER_UPDATE_APPROVAL,
     DRIVING_NOTIFICATION;
 
     public static String getEntityErrorMessage(String id, EntityType entityType){
@@ -63,6 +64,10 @@ public enum EntityType {
             case PAYING_INFO -> {
 
                 return "Paying info with : " + id + " is not found";
+            }
+            case DRIVER_UPDATE_APPROVAL -> {
+
+                return "Driver approval request : " + id + " is not found";
             }
             default -> {
 
