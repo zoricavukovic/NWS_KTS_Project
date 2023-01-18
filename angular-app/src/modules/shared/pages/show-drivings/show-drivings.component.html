@@ -1,5 +1,5 @@
-<div class="allDrivings">
-  <div class="sortDiv" *ngIf="drivings.length !== 0">
+<div class="allDrivings"  *ngIf="drivings.length !== 0">
+  <div class="sortDiv">
     <div>
       <label id="sort-order-radio-group-label">Pick sort order</label>
       <mat-radio-group
@@ -41,11 +41,11 @@
       [user]="currentUser"></driving-row>
   </div>
 
-  <util-message
-    message="User don't have any drivings."
-    *ngIf="drivings.length === 0"></util-message>
-
     <app-pagination class="paginator" [totalPages]="totalPages" [currentPage]="currentPage"
     (onPageSelected)="changePage($event)" *ngIf="drivings.length>0">
   </app-pagination>
 </div>
+
+<util-message
+message="User don't have any drivings."
+*ngIf="drivings.length === 0"></util-message>

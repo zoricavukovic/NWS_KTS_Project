@@ -24,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -223,7 +224,7 @@ public class DriverService implements IDriverService{
         }
         else return !babySeat && !petFriendly;
     }
-
+    
     private boolean checkIfDriverNotHaveNowOrFutureDriving(Driver driver, final LocalDateTime start, final LocalDateTime end) {
         boolean matches = true;
         for (Driving driving: driver.getDrivings()){

@@ -1,5 +1,5 @@
-<div>
-  <div *ngFor="let driver of drivers; let i=index" style="margin-left: 9%; margin-top:2rem;">
+<div *ngIf="drivers.length > 0">
+  <div *ngFor="let driver of drivers; let i=index" style="margin-left: 8%; margin-top:2rem;">
     <div *ngIf="i%3 === 0" style="display:flex">
       <driver-row [driver]="driver" [index]="i" ></driver-row>
       <driver-row style="margin-left: 2rem" *ngIf="i < drivers.length-1" [driver]="drivers.at(i + 1)" [index]="i + 1" ></driver-row>
@@ -10,5 +10,7 @@
 			(onPageSelected)="changePage($event)">
 		</app-pagination>
 </div>
+
+<util-message message="Drivers are not found" *ngIf="drivers.length === 0">
 
 

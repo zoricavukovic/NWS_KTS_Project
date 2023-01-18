@@ -17,7 +17,9 @@ export class ShowDriversComponent implements OnInit, OnDestroy {
 
   driversSubscription: Subscription;
 
-  constructor(private driverService: DriverService) {}
+  constructor(private driverService: DriverService) {
+    this.drivers = [];
+  }
 
   ngOnInit(): void {
     this.driversSubscription = this.driverService
@@ -26,6 +28,7 @@ export class ShowDriversComponent implements OnInit, OnDestroy {
         this.drivers = response;
         this.totalPages = response[0].pageNumber;
       });
+      console.log(this.drivers);
   }
 
   changePage(newPage: number) {
