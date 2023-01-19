@@ -6,6 +6,7 @@ import com.example.serbUber.exception.EntityType;
 import com.example.serbUber.model.user.Admin;
 import com.example.serbUber.model.user.Role;
 import com.example.serbUber.repository.user.AdminRepository;
+import com.example.serbUber.service.DriverUpdateApprovalService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -23,11 +24,20 @@ import static com.example.serbUber.util.JwtProperties.getHashedNewUserPassword;
 public class AdminService {
 
     private final AdminRepository adminRepository;
+    private final RegularUserService regularUserService;
+    private final DriverService driverService;
+    private final DriverUpdateApprovalService driverUpdateApprovalService;
 
     public AdminService(
-        final AdminRepository adminRepository
+        final AdminRepository adminRepository,
+        final RegularUserService regularUserService,
+        final DriverService driverService,
+        final DriverUpdateApprovalService driverUpdateApprovalService
     ) {
         this.adminRepository = adminRepository;
+        this.regularUserService = regularUserService;
+        this.driverService = driverService;
+        this.driverUpdateApprovalService = driverUpdateApprovalService;
     }
 
     public List<AdminDTO> getAll() {

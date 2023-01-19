@@ -1,0 +1,44 @@
+
+.dialog-container {
+    min-height: 40rem;
+    min-width: 25rem;
+    overflow: hidden;
+}
+
+label {
+    display: block;
+    font-size: 1.2rem;
+    margin: 1rem;
+}
+
+.vehicle-info {
+    margin: 1rem;
+    margin-bottom: 0;
+    padding: 1rem;
+    background-color: white;
+    border-radius: 1rem;
+}
+
+mat-checkbox {
+    margin-left: 1.4rem;
+}
+
+::ng-deep.mat-checkbox-checked.mat-accent.mat-checkbox-disabled .mat-checkbox-background, .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background {
+    background-color: var(--deep-blue) !important;
+    color: var(--deep-blue);
+  }
+
+.car-img {
+    margin-left: 5rem;
+    height:10rem; 
+    width:10rem; 
+}
+
+h3 {
+    font-size: 1.3rem;
+    margin-left: 1rem;
+}
+
+.activity-buttons {
+    margin-top: 4%;
+}

@@ -37,6 +37,14 @@ public class UserController {
         return userService.getAll();
     }
 
+    @GetMapping("/all-verified")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public List<UserDTO> getAllVerified() {
+
+        return userService.getAllVerified();
+    }
+
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
@@ -57,7 +65,10 @@ public class UserController {
                 userData.getName(),
                 userData.getSurname(),
                 userData.getPhoneNumber(),
-                userData.getCity()
+                userData.getCity(),
+                userData.getVehicleType(),
+                userData.isPetFriendly(),
+                userData.isBabySeat()
         );
     }
 

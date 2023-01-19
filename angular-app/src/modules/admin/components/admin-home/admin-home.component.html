@@ -1,0 +1,13 @@
+<div class="box mat-elevation-z1" style="overflow-y: auto; max-height: 25rem;">
+    <div class="content" *ngIf="requests.length > 0; else noContentBlock">
+        <hr>
+        <div *ngFor="let request of requests; index as i">
+            <app-approval-row [request]="request" (changedRequestEvent)="changedRequest()"></app-approval-row>
+        </div>
+    </div>
+    <ng-template #noContentBlock>
+        <div class="no-content">
+            You don't have any requests.
+        </div>
+    </ng-template>
+</div>

@@ -12,7 +12,7 @@ insert into regular_users (id, email, password, name, surname, phone_number, cit
     (nextval('users_id_gen'), 'miki@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Miki', 'Mikic', '0651234567', 'Novi Sad', 'default-user.png',2, false, true, false);
 
 insert into regular_users (id, email, password, name, surname, phone_number, city, profile_picture, role_id, blocked, verified, online) values
-    (nextval('users_id_gen'), 'zoka200015@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Zorica', 'Vukovic', '0651234567', 'Novi Sad', 'default-user.png',2, false, true, false);
+    (nextval('users_id_gen'), 'zoka200015@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Zorica', 'Vukovic', '0651234567', 'Novi Sad', 'default-user.png',2, false, false, false);
 
 insert into vehicle_type_infos (num_of_seats, start_price, vehicle_type) values
     (9, 3, 0);
@@ -109,7 +109,7 @@ insert into drivings_users(driving_id, user_id) values
     (1, 4),
     (2, 9),
     (3, 2),
-    (4, 4),
+    (2, 3),
     (4, 2);
 --     (5, 2),
 --     (5, 4),

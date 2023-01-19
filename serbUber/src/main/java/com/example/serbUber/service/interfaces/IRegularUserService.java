@@ -1,6 +1,7 @@
 package com.example.serbUber.service.interfaces;
 
 import com.example.serbUber.dto.RouteDTO;
+import com.example.serbUber.dto.chart.ChartItemDTO;
 import com.example.serbUber.dto.user.RegistrationDTO;
 import com.example.serbUber.dto.user.RegularUserDTO;
 import com.example.serbUber.dto.user.RegularUserPageDTO;
@@ -32,4 +33,5 @@ public interface IRegularUserService {
     boolean getIsBlocked(final Long id);
     boolean unblock(final Long id) throws EntityNotFoundException, EntityUpdateException;
     List<RegularUserPageDTO> getRegularUsersWithPagination(int pageNumber, int pageSize);
+
 }

@@ -1,5 +1,7 @@
 package com.example.serbUber.model.user;
 
+import com.example.serbUber.model.VehicleType;
+
 import javax.persistence.*;
 
 @Entity
@@ -27,6 +29,15 @@ public class DriverUpdateApproval {
     @Column(name="approved", nullable = false)
     private boolean approved = false;
 
+    @Column(name="vehicle_type", nullable = false)
+    private VehicleType vehicleType;
+
+    @Column(name="pet_friendly", nullable = false)
+    private boolean petFriendly;
+
+    @Column(name="baby_seat", nullable = false)
+    private boolean babySeat;
+
     public DriverUpdateApproval() {}
 
     public DriverUpdateApproval(
@@ -35,13 +46,19 @@ public class DriverUpdateApproval {
             final String surname,
             final String phoneNumber,
             final String city,
-            final boolean approved
+            final boolean approved,
+            final VehicleType vehicleType,
+            final boolean petFriendly,
+            final boolean babySeat
     ) {
         this.userEmail = userEmail;
         this.name = name;
         this.surname = surname;
         this.phoneNumber = phoneNumber;
         this.city = city;
+        this.vehicleType = vehicleType;
+        this.petFriendly = petFriendly;
+        this.babySeat = babySeat;
         this.approved = approved;
     }
 
@@ -50,13 +67,19 @@ public class DriverUpdateApproval {
             final String name,
             final String surname,
             final String phoneNumber,
-            final String city
+            final String city,
+            final VehicleType vehicleType,
+            final boolean petFriendly,
+            final boolean babySeat
     ) {
         this.userEmail = userEmail;
         this.name = name;
         this.surname = surname;
         this.phoneNumber = phoneNumber;
         this.city = city;
+        this.vehicleType = vehicleType;
+        this.petFriendly = petFriendly;
+        this.babySeat = babySeat;
     }
 
     public Long getId() {
@@ -113,5 +136,29 @@ public class DriverUpdateApproval {
 
     public void setApproved(boolean approved) {
         this.approved = approved;
+    }
+
+    public VehicleType getVehicleType() {
+        return vehicleType;
+    }
+
+    public void setVehicleType(VehicleType vehicleType) {
+        this.vehicleType = vehicleType;
+    }
+
+    public boolean isPetFriendly() {
+        return petFriendly;
+    }
+
+    public void setPetFriendly(boolean petFriendly) {
+        this.petFriendly = petFriendly;
+    }
+
+    public boolean isBabySeat() {
+        return babySeat;
+    }
+
+    public void setBabySeat(boolean babySeat) {
+        this.babySeat = babySeat;
     }
 }

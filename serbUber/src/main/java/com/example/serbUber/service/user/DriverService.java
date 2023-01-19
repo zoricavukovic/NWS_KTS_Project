@@ -7,6 +7,7 @@ import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.*;
 import com.example.serbUber.model.*;
 import com.example.serbUber.model.user.Driver;
+import com.example.serbUber.model.user.DriverUpdateApproval;
 import com.example.serbUber.repository.user.DriverRepository;
 import com.example.serbUber.service.*;
 import com.example.serbUber.service.interfaces.IDriverService;
@@ -82,6 +83,12 @@ public class DriverService implements IDriverService{
 
         return driverRepository.getDriverById(id)
             .orElseThrow(() -> new EntityNotFoundException(id, EntityType.USER));
+    }
+
+    public Driver getDriverByEmail(final String email) throws EntityNotFoundException {
+
+        return driverRepository.getDriverByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException(email, EntityType.USER));
     }
 
     public Driver getDriverByIdWithoutDrivings(final Long id) throws EntityNotFoundException {
@@ -373,6 +380,23 @@ public class DriverService implements IDriverService{
         Pageable page = PageRequest.of(pageNumber, pageSize);
         Page<Driver> results = getDriverPage(page);
         return fromDriversPage(results.getContent(), results.getSize(), results.getTotalPages());
+    }
+
+    public boolean approveDriverChanges(final DriverUpdateApproval driverUpdateApproval)
+            throws EntityNotFoundException
+    {
+        Driver driver = getDriverByEmail(driverUpdateApproval.getUserEmail());
+
+        driver.setName(driverUpdateApproval.getName());
+        driver.setSurname(driverUpdateApproval.getSurname());
+        driver.setPhoneNumber(driverUpdateApproval.getPhoneNumber());
+        driver.setCity(driverUpdateApproval.getCity());
+        driver.getVehicle().setPetFriendly(driverUpdateApproval.isPetFriendly());
+        driver.getVehicle().setBabySeat(driverUpdateApproval.isBabySeat());
+        driver.getVehicle().setVehicleTypeInfo(this.vehicleService.driverUpdateApprovalVehicle(driverUpdateApproval.getVehicleType()));
+        this.driverRepository.save(driver);
+
+        return true;
     }
 
     public Page<Driver> getDriverPage(Pageable page){

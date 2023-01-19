@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 
+
 @Injectable({
   providedIn: 'root',
 })
@@ -10,6 +11,14 @@ export class ConfigService {
   BASE64_PHOTO_PREFIX = 'data:image/png;base64,';
   ROLE_DRIVER = 'ROLE_DRIVER';
   ROLE_REGULAR_USER = 'ROLE_REGULAR_USER';
+
+  TODAY = new Date();
+  MONTH = this.TODAY.getMonth();
+  YEAR = this.TODAY.getFullYear();
+
+  SELECTED_SPENDING_REPORT = 'SPENDING';
+  SELECTED_RIDES_REPORT = 'RIDES';
+  SELECTED_DISTANCE_REPORT = 'DISTANCE';
 
   ///////////////////ADMIN///////////////////
   ADMINS_URL = `${this.API_URL}/admins`;
@@ -77,6 +86,7 @@ export class ConfigService {
   BLOCK_USER_URL = `${this.USERS_URL}/block`;
   CREATE_DRIVER_URL = `${this.USERS_URL}/create/driver`;
   CREATE_REGULAR_USER_URL = `${this.USERS_URL}/create/regular-user`;
+  ALL_VERIFIED_URL = `${this.USERS_URL}/all-verified`;
 
   userByIdUrl(id: number){
     return `${this.USERS_URL}/${id}`;
@@ -132,6 +142,14 @@ export class ConfigService {
     return `${this.DRIVINGS_URL}/vehicle-current-location/${drivingId}`;
   }
 
+  getChartData(): string {
+    return `${this.DRIVINGS_URL}/chart-data`;
+  } 
+
+  getAdminChartData(): string {
+    return `${this.DRIVINGS_URL}/admin-chart-data`;
+  } 
+
   ///////////////////DRIVING-NOTIFICATION///////////////////
 
   DRIVING_NOTIFICATIONS_URL = `${this.API_URL}/driving-notifications`;
@@ -178,6 +196,18 @@ export class ConfigService {
     return `${this.ROUTES_URL}/path/${id}`;
   }
 
+
+  ///////////////////DRIVER UPDATE APPROVAL/////
+
+  DRIVER_UPDATE_APPROVAL = `${this.API_URL}/driver-update-approval`;
+
+  rejectDriverRequest(id: number): string{
+    return `${this.DRIVER_UPDATE_APPROVAL}/reject/${id}`;
+  }
+
+  approveDriverRequest(id: number): string{
+    return `${this.DRIVER_UPDATE_APPROVAL}/approve/${id}`;
+  }
 
   ///////////////////VEHICLE///////////////////
 

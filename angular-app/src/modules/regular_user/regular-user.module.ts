@@ -61,7 +61,6 @@ import { EnterLocationsComponent } from './components/enter-locations/enter-loca
     GoogleMapsModule,
     GooglePlaceModule,
     ProgressSpinnerModule,
-    // TimepickerModule.forRoot()
   ],
   exports: [HomePassangerComponent, DrivingNotificationDetailsComponent, FavoriteRoutesDataComponent],
   providers: []

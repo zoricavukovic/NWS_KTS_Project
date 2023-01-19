@@ -4,15 +4,17 @@ import com.example.serbUber.dto.DrivingDTO;
 import com.example.serbUber.dto.DrivingPageDTO;
 import com.example.serbUber.dto.SimpleDrivingInfoDTO;
 import com.example.serbUber.dto.VehicleCurrentLocationDTO;
+import com.example.serbUber.dto.chart.ChartDataDTO;
 import com.example.serbUber.exception.DriverAlreadyHasStartedDrivingException;
 import com.example.serbUber.exception.DrivingShouldNotStartYetException;
 import com.example.serbUber.exception.EntityNotFoundException;
+import com.example.serbUber.model.ChartType;
 import com.example.serbUber.model.Driving;
 import com.example.serbUber.model.DrivingStatus;
 import com.example.serbUber.model.Route;
 import com.example.serbUber.model.user.RegularUser;
-import com.example.serbUber.service.DrivingService;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -74,4 +76,8 @@ public interface IDrivingService {
 
     boolean isPassengersAlreadyHaveRide(final List<String> passengersEmail, final LocalDateTime started)
             throws EntityNotFoundException;
+
+    ChartDataDTO getChartData(final Long id, final ChartType chartType, final LocalDate startDate, final LocalDate endDate) throws EntityNotFoundException;
+
+    ChartDataDTO getAdminChartData(final Long id, final ChartType chartType, final LocalDate startDate, final LocalDate endDate) throws EntityNotFoundException;
 }

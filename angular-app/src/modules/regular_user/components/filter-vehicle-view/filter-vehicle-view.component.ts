@@ -164,6 +164,9 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
     if(this.rideRequestForm.get('chosenDateTime').value !== null){
       started = this.rideRequestForm.get('chosenDateTime').value
     }
+    if(this.rideRequestForm.get('chosenDateTime').value !== null && !this.checkChosenDateTime()){
+      return;
+    }
     const timeZone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
     console.log(timeZone);
     this.passengerSubscription = this.drivingService.havePassengersAlreadyRide(this.selectedPassengers, started).subscribe(response => {
@@ -178,7 +181,6 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
   }
 
   private createDriving(started: Date){
-    if(this.checkChosenDateTime()){
       this.waitingForAcceptDrive.emit(true);
       const drivingNotification = {
         route: this.rideRequestForm.get('selectedRoute').value,
@@ -210,9 +212,8 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
           console.log(error);
           this.toast.error(error.error, "Requesting ride failed")
         }
-    )}
+    )
   }
-
 
   private _findPassengerObj(email: string): void {
     let user: User;

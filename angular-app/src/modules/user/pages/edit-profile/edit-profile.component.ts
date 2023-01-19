@@ -8,6 +8,8 @@ import {ConfigService} from "../../../shared/services/config-service/config.serv
 import {UserService} from "../../../shared/services/user-service/user.service";
 import {AuthService} from "../../../auth/services/auth-service/auth.service";
 import {MyErrorStateMatcher} from "../registration/registration.component";
+import { VehicleService } from 'src/modules/shared/services/vehicle-service/vehicle.service';
+import { Vehicle } from 'src/modules/shared/models/vehicle/vehicle';
 
 @Component({
   selector: 'app-edit-profile',
@@ -19,6 +21,9 @@ export class EditProfileComponent implements OnInit, OnDestroy {
 
   authSubscription: Subscription;
   updateProfileSubscription: Subscription;
+  vehicleSubscription: Subscription;
+  isDriver: boolean;
+  vehicle: Vehicle;
 
   editDataForm = new FormGroup({
     phoneNumberFormControl: new FormControl('', [
@@ -37,6 +42,9 @@ export class EditProfileComponent implements OnInit, OnDestroy {
       Validators.required,
       Validators.pattern('[a-zA-Z ]*'),
     ]),
+    petFriendly: new FormControl(false, []),
+    babySeat: new FormControl(false, []),
+    vehicleType: new FormControl(null, [])
   });
 
   matcher = new MyErrorStateMatcher();
@@ -48,7 +56,8 @@ export class EditProfileComponent implements OnInit, OnDestroy {
     public configService: ConfigService,
     private userService: UserService,
     private router: Router,
-    private toast: ToastrService
+    private toast: ToastrService,
+    private vehicleService: VehicleService
   ) {
     this.filteredCities = this.editDataForm
       .get('cityFormControl')
@@ -58,14 +67,47 @@ export class EditProfileComponent implements OnInit, OnDestroy {
       );
 
     this.user = null;
+    this.isDriver = false;
+    this.vehicle = null;
   }
 
   ngOnInit(): void {
     this.authSubscription = this.authService.getSubjectCurrentUser().subscribe(
       user => {
-        this.user = user
+        if (user) {
+          this.user = user
+          this.isDriver = this.authService.userIsDriver();
+          this.editDataForm.get('nameFormControl').setValue(this.user.name),
+          this.editDataForm.get('surnameFormControl').setValue(this.user.surname),
+          this.editDataForm.get('phoneNumberFormControl').setValue(this.user.phoneNumber),
+          this.editDataForm.get('cityFormControl').setValue(this.user.city),
+          this.loadVehicle();
+        }
       }
     );
+  }
+
+  checkFormRequirements() {
+    if (this.isDriver && this.editDataForm && this.vehicle) {
+      this.editDataForm.get('petFriendly').setValidators(Validators.required);
+      this.editDataForm.get('petFriendly').setValue(this.vehicle.petFriendly);
+      this.editDataForm.get('babySeat').setValidators(Validators.required);
+      this.editDataForm.get('babySeat').setValue(this.vehicle.babySeat);
+      this.editDataForm.get('vehicleType').setValidators(Validators.required);
+      this.editDataForm.get('vehicleType').setValue(this.vehicle.vehicleType);
+      this.editDataForm.updateValueAndValidity();
+    }
+  }
+
+  loadVehicle(): void {
+    if (this.isDriver) {
+      this.vehicleSubscription = this.vehicleService.getVehicleByDriver(this.user.id.toString()).subscribe(
+        res => {
+          this.vehicle = res;
+          this.checkFormRequirements();
+        }
+      );
+    }
   }
 
   saveChanges() {
@@ -73,10 +115,14 @@ export class EditProfileComponent implements OnInit, OnDestroy {
       .updateProfileData(
         this.userService.createUserDetails(
           this.user.email,
-          this.user.name,
-          this.user.surname,
-          this.user.phoneNumber,
-          this.user.city
+          this.editDataForm.get('nameFormControl').value,
+          this.editDataForm.get('surnameFormControl').value,
+          this.editDataForm.get('phoneNumberFormControl').value,
+          this.editDataForm.get('cityFormControl').value,
+          this.user.role,
+          this.editDataForm.get('petFriendly').value,
+          this.editDataForm.get('babySeat').value,
+          this.editDataForm.get('vehicleType').value
         )
       )
       .subscribe(
@@ -119,6 +165,10 @@ export class EditProfileComponent implements OnInit, OnDestroy {
 
     if (this.updateProfileSubscription) {
       this.updateProfileSubscription.unsubscribe();
+    }
+
+    if (this.vehicleSubscription) {
+      this.vehicleSubscription.unsubscribe();
     }
   }
 }

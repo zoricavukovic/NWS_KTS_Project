@@ -52,4 +52,14 @@ public interface DrivingRepository extends JpaRepository<Driving, Long> {
 
     @Query("select d from Driving d left join d.users u where u.email = ?1")
     List<Driving> getAllDrivingsForUserEmail(String email);
+
+    //ako se promeni enum mora se ovde promeniti!
+    @Query("select d from Driving d left join fetch d.driver driver where driver.id=?1 and d.drivingStatus=3")
+    List<Driving> getDrivingsForDriver(Long id);
+
+    @Query("select d from Driving d inner join d.users user where user.id=?1 and d.drivingStatus=3")
+    List<Driving> getDrivingsForRegular(Long id);
+
+    @Query("select d from Driving d where d.drivingStatus=3")
+    List<Driving> getAllDrivings();
 }

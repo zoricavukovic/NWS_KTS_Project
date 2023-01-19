@@ -3,6 +3,7 @@ package com.example.serbUber.service.interfaces;
 import com.example.serbUber.dto.user.RegistrationDTO;
 import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.*;
+import com.example.serbUber.model.VehicleType;
 import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.model.user.User;
 
@@ -21,7 +22,10 @@ public interface IUserService {
             final String name,
             final String surname,
             final String phoneNumber,
-            final String city
+            final String city,
+            final VehicleType vehicleType,
+            final boolean petFriendly,
+            final boolean babySeat
     ) throws EntityUpdateException;
     UserDTO updateRegularOrAdmin(
             final User user,
@@ -35,8 +39,11 @@ public interface IUserService {
             final String name,
             final String surname,
             final String phoneNumber,
-            final String city
-    ) throws EntityNotFoundException, EntityUpdateException;
+            final String city,
+            final VehicleType vehicleType,
+            final boolean petFriendly,
+            final boolean babySeat
+            ) throws EntityNotFoundException, EntityUpdateException;
     UserDTO updateProfilePicture(final String email, final String profilePicture)
             throws EntityUpdateException;
     UserDTO updatePassword(

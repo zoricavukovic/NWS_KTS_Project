@@ -25,6 +25,9 @@ import {MatChipsModule} from "@angular/material/chips";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {NgxMatTimepickerModule} from '@angular-material-components/datetime-picker';
 import { NgxMatMomentModule } from '@angular-material-components/moment-adapter';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+
 
 const MaterialConstants = [
   MatTooltipModule,
@@ -56,6 +59,8 @@ const MaterialConstants = [
   MatProgressSpinnerModule,
   NgxMatTimepickerModule,
   NgxMatMomentModule,
+  MatDatepickerModule,
+  MatNativeDateModule
 ]
 
 @NgModule({
