@@ -2,6 +2,8 @@ package com.example.serbUber.model;
 
 import javax.persistence.*;
 
+import java.time.LocalDateTime;
+
 import static com.example.serbUber.util.Constants.MAX_NUM_VERIFY_TRIES;
 
 @Entity
@@ -26,23 +28,25 @@ public class Verify {
     @Column(name="num_of_tries", nullable = false)
     private int numOfTries = 0;
 
+    @Column(name = "expiration_time", nullable = false)
+    private LocalDateTime expirationTime;
+
     public Verify() {}
 
-    public Verify(Long userId, String email, int securityCode, boolean used, int numOfTries) {
+    public Verify(
+            final Long userId,
+            final String email,
+            final int securityCode,
+            final boolean used,
+            final int numOfTries,
+            final LocalDateTime expirationTime
+    ) {
         this.userId = userId;
         this.email = email;
         this.securityCode = securityCode;
         this.used = used;
         this.numOfTries = numOfTries;
-    }
-
-    public Verify(Long id, Long userId, String email, int securityCode, boolean used, int numOfTries) {
-        this.id = id;
-        this.userId = userId;
-        this.email = email;
-        this.securityCode = securityCode;
-        this.used = used;
-        this.numOfTries = numOfTries;
+        this.expirationTime = expirationTime;
     }
 
     public Long getId() {
@@ -103,9 +107,22 @@ public class Verify {
         return this.securityCode == securityCode;
     }
 
-    public boolean canVerify(int securityCode) {
-        return isNotUsed() && hasTries() && checkSecurityCode(securityCode);
+    public boolean notExpired() {
+
+        return this.expirationTime.isAfter(LocalDateTime.now());
     }
 
-    public boolean wrongCodeButHasTries() {return hasTries() && isNotUsed(); }
+    public boolean canVerify(int securityCode) {
+        return isNotUsed() && hasTries() && checkSecurityCode(securityCode) && notExpired();
+    }
+
+    public boolean wrongCodeButHasTries() {return hasTries() && isNotUsed() && notExpired(); }
+
+    public LocalDateTime getExpirationTime() {
+        return expirationTime;
+    }
+
+    public void setExpirationTime(LocalDateTime expirationTime) {
+        this.expirationTime = expirationTime;
+    }
 }

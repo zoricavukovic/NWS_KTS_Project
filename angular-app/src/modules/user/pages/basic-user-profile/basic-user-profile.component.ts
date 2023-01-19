@@ -53,6 +53,7 @@ export class BasicUserProfileComponent implements OnInit, OnDestroy {
     this.currentUserIsLogged = false;
     this.user = null;
     this.driverStatus = false;
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   }
 
   ngOnInit(): void {

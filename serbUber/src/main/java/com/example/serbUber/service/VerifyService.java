@@ -16,6 +16,8 @@ import com.example.serbUber.util.Constants;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 import static com.example.serbUber.util.Constants.MAX_NUM_VERIFY_TRIES;
 import static com.example.serbUber.util.EmailConstants.FRONT_VERIFY_URL;
 
@@ -67,7 +69,8 @@ public class VerifyService implements IVerifyService {
           email,
           Constants.generateSecurityCode(),
           false,
-          0
+          0,
+          getExpirationTime()
         )));
     }
 
@@ -89,7 +92,7 @@ public class VerifyService implements IVerifyService {
         } else {
             saveChanges(verify, true);
 
-            throw new WrongVerifyTryException("You tried to verify with wrong code more than 3 times.");
+            throw new WrongVerifyTryException("Your verification code is either expired or typed wrong 3 times. Reset code.");
         }
     }
 
@@ -98,6 +101,11 @@ public class VerifyService implements IVerifyService {
         Verify verify = get(verifyId);
         create(verify.getUserId(), verify.getEmail());
         verifyRepository.delete(verify);
+    }
+
+    private LocalDateTime getExpirationTime() {
+
+        return LocalDateTime.now().plusMinutes(10);
     }
 
     private void saveChanges(final Verify verify, final boolean used) {

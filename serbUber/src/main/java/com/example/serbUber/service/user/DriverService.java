@@ -29,6 +29,7 @@ import static com.example.serbUber.dto.user.DriverDTO.fromDrivers;
 import static com.example.serbUber.dto.user.DriverPageDTO.fromDriversPage;
 import static com.example.serbUber.exception.ErrorMessagesConstants.ACTIVE_DRIVING_IN_PROGRESS_MESSAGE;
 import static com.example.serbUber.exception.ErrorMessagesConstants.UNBLOCK_UNBLOCKED_USER_MESSAGE;
+import static com.example.serbUber.model.DrivingStatus.ACCEPTED;
 import static com.example.serbUber.util.Constants.*;
 import static com.example.serbUber.util.JwtProperties.getHashedNewUserPassword;
 import static com.example.serbUber.util.PictureHandler.convertPictureToBase64ByName;
@@ -575,7 +576,8 @@ public class DriverService implements IDriverService{
 
     private boolean checkIfDrivingInProgress(final List<Driving> drivings) {
         for (Driving driving : drivings){
-            if (driving.isActive()) {
+            if (driving.isActive() || (driving.getDrivingStatus() == ACCEPTED && driving.getStarted().isAfter(LocalDateTime.now()))) {
+
                 return true;
             }
         }

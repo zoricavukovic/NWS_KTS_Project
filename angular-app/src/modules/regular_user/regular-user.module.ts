@@ -4,8 +4,6 @@ import {MaterialModule} from "../material/material.module";
 import {RouterModule} from "@angular/router";
 import {SharedModule} from "../shared/shared.module";
 import {RegularUserRoutes} from "./regular-user.routes";
-import {FavouriteRoutesComponent} from "./pages/favourite-routes/favourite-routes.component";
-import {FavouriteRouteRowComponent} from "./components/favourite-route-row/favourite-route-row.component";
 import {HomePassangerComponent} from "./components/home-passanger/home-passanger.component";
 import {AcceptingDrivingViewComponent} from "./components/accepting-driving-view/accepting-driving-view.component";
 import {ActiveDriveContainerComponent} from "./components/active-drive-container/active-drive-container.component";
@@ -32,8 +30,6 @@ import { EnterLocationsComponent } from './components/enter-locations/enter-loca
 
 @NgModule({
   declarations: [
-    FavouriteRoutesComponent,
-    FavouriteRouteRowComponent,
     HomePassangerComponent,
     AcceptingDrivingViewComponent,
     ActiveDriveContainerComponent,
