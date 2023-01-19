@@ -95,21 +95,21 @@ public class VehicleService implements IVehicleService {
 
         List<Vehicle> vehicles = vehicleRepository.getAllVehiclesForActiveDriver();
         List<VehicleWithDriverId> withDriverIds = new LinkedList<>();
-        List<List<double[]>> listOfVehiclesRoutes = new LinkedList<>();
+//        List<List<double[]>> listOfVehiclesRoutes = new LinkedList<>();
         for (Vehicle vehicle : vehicles) {
-            if (vehicle.hasRoute()){
-                List<double[]> coordinatesList = routeService.getRoutePath(vehicle.getActiveRoute().getId());
-                listOfVehiclesRoutes.add(coordinatesList);
-            }
-            else {
-                List<double[]> coordinatesList = List.of(new double[]{vehicle.getCurrentStop().getLon(), vehicle.getCurrentStop().getLat()});
-                listOfVehiclesRoutes.add(coordinatesList);
-            }
-
+//            if (vehicle.hasRoute()){
+//                List<double[]> coordinatesList = routeService.getRoutePath(vehicle.getActiveRoute().getId());
+//                listOfVehiclesRoutes.add(coordinatesList);
+//            }
+//            else {
+//                List<double[]> coordinatesList = List.of(new double[]{vehicle.getCurrentStop().getLon(), vehicle.getCurrentStop().getLat()});
+//                listOfVehiclesRoutes.add(coordinatesList);
+//            }
+//
             withDriverIds.add(new VehicleWithDriverId(vehicle, getDriverIdByVehicleId(vehicle.getId())));
         }
 
-        return fromVehiclesToVehicleCurrentLocationDTO(withDriverIds, listOfVehiclesRoutes);
+        return fromVehiclesToVehicleCurrentLocationDTO(withDriverIds);
     }
 
     private Long getDriverIdByVehicleId(final Long vehicleId) throws EntityNotFoundException {
@@ -118,27 +118,27 @@ public class VehicleService implements IVehicleService {
             .orElseThrow(() -> new EntityNotFoundException(vehicleId, EntityType.VEHICLE));
     }
 
-    public List<VehicleCurrentLocationDTO> updateCurrentVehiclesLocation() throws EntityNotFoundException {
-        List<Vehicle> vehicles = vehicleRepository.getAllVehiclesForActiveDriver();
-        List<VehicleWithDriverId> withDriverIds = new LinkedList<>();
-        List<List<double[]>> listOfVehiclesRoutes = new LinkedList<>();
-        for (Vehicle vehicle : vehicles) {
-            List<double[]> coordinatesList;
-            if (vehicle.hasRoute()){
-                coordinatesList = routeService.getRoutePath(vehicle.getActiveRoute().getId());
-            }
-            else {
-                coordinatesList = List.of(new double[]{vehicle.getCurrentStop().getLon(), vehicle.getCurrentStop().getLat()});
-            }
-            listOfVehiclesRoutes.add(coordinatesList);
-            saveCurrentVehicleLocation(vehicle, coordinatesList);
-            withDriverIds.add(new VehicleWithDriverId(vehicle, getDriverIdByVehicleId(vehicle.getId())));
-        }
-        List<VehicleCurrentLocationDTO> vehicleCurrentLocationDTOs = fromVehiclesToVehicleCurrentLocationDTO(withDriverIds, listOfVehiclesRoutes);
-        webSocketService.sendVehicleCurrentLocation(vehicleCurrentLocationDTOs);
-
-        return vehicleCurrentLocationDTOs;
-    }
+//    public List<VehicleCurrentLocationDTO> updateCurrentVehiclesLocation() throws EntityNotFoundException {
+//        List<Vehicle> vehicles = vehicleRepository.getAllVehiclesForActiveDriver();
+//        List<VehicleWithDriverId> withDriverIds = new LinkedList<>();
+//        List<List<double[]>> listOfVehiclesRoutes = new LinkedList<>();
+//        for (Vehicle vehicle : vehicles) {
+//            List<double[]> coordinatesList;
+//            if (vehicle.hasRoute()){
+//                coordinatesList = routeService.getRoutePath(vehicle.getActiveRoute().getId());
+//            }
+//            else {
+//                coordinatesList = List.of(new double[]{vehicle.getCurrentStop().getLon(), vehicle.getCurrentStop().getLat()});
+//            }
+//            listOfVehiclesRoutes.add(coordinatesList);
+//            saveCurrentVehicleLocation(vehicle, coordinatesList);
+//            withDriverIds.add(new VehicleWithDriverId(vehicle, getDriverIdByVehicleId(vehicle.getId())));
+//        }
+//        List<VehicleCurrentLocationDTO> vehicleCurrentLocationDTOs = fromVehiclesToVehicleCurrentLocationDTO(withDriverIds, listOfVehiclesRoutes);
+//        webSocketService.sendVehicleCurrentLocation(vehicleCurrentLocationDTOs);
+//
+//        return vehicleCurrentLocationDTOs;
+//    }
 
     private void saveCurrentVehicleLocation(Vehicle vehicle, List<double[]> vehicleRoutePath) {
         int currentLocationIndex = vehicle.getCurrentLocationIndex();
@@ -206,6 +206,10 @@ public class VehicleService implements IVehicleService {
         Vehicle vehicle = getVehicleById(id);
         vehicle.setCurrentLocationIndex(vehicle.getCurrentLocationIndex() + 1);
         vehicle.setCurrentStop(new Location(lat, lng));
+        vehicleRepository.save(vehicle);
+        webSocketService.sendVehicleCurrentLocation(
+            new VehicleCurrentLocationDTO(new VehicleWithDriverId(vehicle, getDriverIdByVehicleId(vehicle.getId())))
+        );
         return null;
     }
 }

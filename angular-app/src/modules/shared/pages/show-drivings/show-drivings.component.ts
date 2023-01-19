@@ -77,7 +77,7 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
       )
       .subscribe((response: Driving[]) => {
         console.log(response);
-        this.drivings = response;
+        // this.drivings = response;
         this.totalPages = response.length === 0? 1: response.at(0).pageNumber;
         this.reviewedDrivingsSubscription = this.reviewService
           .getReviewedDrivingsForUser(this.userId)

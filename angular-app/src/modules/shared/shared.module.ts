@@ -7,11 +7,7 @@ import {PaymentStatisticsComponent} from "./components/payment-statistics/paymen
 import {RouterModule} from "@angular/router";
 import {ToastrModule} from "ngx-toastr";
 import {SharedRoutes} from "./shared.routes";
-import {NgxsModule} from "@ngxs/store";
-import {NgxsReduxDevtoolsPluginModule} from "@ngxs/devtools-plugin";
-import {NgxsLoggerPluginModule} from "@ngxs/logger-plugin";
 import {KnobModule} from "primeng/knob";
-import {DrivingNotificationState, DrivingNotificationStateModel} from "./state/driving-notification.state";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {ChangeProfilePicComponent} from "./components/change-profile-pic/change-profile-pic.component";
 import {BasicUserDataComponent} from "./components/basic-user-data/basic-user-data.component";
@@ -51,6 +47,7 @@ import {AvatarGroupModule} from "primeng/avatargroup";
 import { VehicleRateDataComponent } from './components/vehicle/vehicle-rate-data/vehicle-rate-data.component';
 import { ReviewRowComponent } from './components/review-row/review-row.component';
 import { UserProfileInfoComponent } from "./components/user-profile-info/user-profile-info.component";
+import {ErrorCatchingInterceptor} from "./interceptors/errors/error-catching.interceptor";
 
 @NgModule({
   declarations: [
@@ -89,12 +86,6 @@ import { UserProfileInfoComponent } from "./components/user-profile-info/user-pr
       preventDuplicates: true,
       closeButton: true,
     }),
-    // NgxsModule.forRoot([
-    //   DrivingNotificationState
-    // ]),
-    // NgxsReduxDevtoolsPluginModule.forRoot(),
-    // NgxsLoggerPluginModule.forRoot(),
-    // NgxsModule.forFeature([DrivingNotificationState]),
     KnobModule,
     NgxStarsModule,
     GoogleMapsModule,
@@ -115,12 +106,13 @@ import { UserProfileInfoComponent } from "./components/user-profile-info/user-pr
     DrivingDetailsComponent,
     ReviewsHistoryComponent,
     BasicUserDataComponent,
-    PaginationComponent, 
+    PaginationComponent,
     DateFormatPipe,
     UserProfileInfoComponent
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: CustomInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: CustomInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorCatchingInterceptor, multi: true }
   ],
 })
 export class SharedModule {}

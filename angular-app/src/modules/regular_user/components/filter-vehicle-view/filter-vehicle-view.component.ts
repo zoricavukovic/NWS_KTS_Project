@@ -2,7 +2,7 @@ import {Component, Input, OnInit, OnDestroy, Output, EventEmitter} from '@angula
 import { ControlContainer, FormControl, FormGroup } from '@angular/forms';
 import { Select, Store } from '@ngxs/store';
 import { ToastrService } from 'ngx-toastr';
-import { Observable, Subscription } from 'rxjs';
+import { map, Observable, startWith, Subscription } from 'rxjs';
 import {Vehicle} from "../../../shared/models/vehicle/vehicle";
 import {DrivingNotificationState} from "../../../shared/state/driving-notification.state";
 import {User} from "../../../shared/models/user/user";
@@ -17,6 +17,8 @@ import {
   DrivingNotificationService
 } from "../../../shared/services/driving-notification-service/driving-notification.service";
 import {Route} from "../../../shared/models/route/route";
+import { DrivingService } from 'src/modules/shared/services/driving-service/driving.service';
+import moment from 'moment';
 
 @Component({
   selector: 'app-filter-vehicle-view',
@@ -31,6 +33,7 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
   vehicle: Vehicle;
 
   petFriendly = false;
+  usersHaveAlreadyRide = false;
   babySeat = false;
   vehicleType: string;
   vehicleTypesSeats = {};
@@ -38,6 +41,7 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
   currentUser: User = null;
 
   allRegularUsers: string[] = [];
+  filteredRegularUsers: Observable<string[]>;
   selectedPassengers: string[] = [];
   passengers: User[] = [];
 
@@ -47,8 +51,8 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
   private priceSubscription: Subscription;
   private authSubscription: Subscription;
   private drivingNotificationSubscription: Subscription;
+  private passengerSubscription: Subscription;
   private vehicleTypesSubscription: Subscription;
-  private vehicleSubscription: Subscription;
   private userSubscription: Subscription;
   rideRequestForm: FormGroup;
 
@@ -61,7 +65,8 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
     private vehicleTypeInfoService: VehicleTypeInfoService,
     private toast: ToastrService,
     private controlContainer: ControlContainer,
-    private store: Store
+    private store: Store,
+    private drivingService: DrivingService
   ) {
     this.rideRequestForm = <FormGroup>this.controlContainer.control;
 
@@ -83,6 +88,9 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
             this.allRegularUsers.push(user.email);
           }
         }
+        this.filteredRegularUsers = this.passengerCtrl.valueChanges.pipe(startWith(''),
+        map(value => this._filter(value || '')),
+      );
       });
 
     this.vehicleTypesSubscription = this.vehicleTypeInfoService
@@ -101,7 +109,7 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
         this.selectedPassengers.length + 1
       ) {
         this.selectedPassengers.push(email);
-        this.findPassengerObj(email);
+        this._findPassengerObj(email);
         this.passengerCtrl.setValue(null);
         const index = this.allRegularUsers.indexOf(email);
         this.allRegularUsers.splice(index, 1);
@@ -132,33 +140,44 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
   }
 
   showPrice(){
-    // this.vehicleSubscription = this.vehicleService
-    //   .getVehicleByVehicleType(this.rideRequestForm.get('vehicleType').value)
-    //   .subscribe(response => {
-    //     this.vehicle = response;
-    //   });
+    const distance = (this.rideRequestForm.get('selectedRoute').value as Route).distance;
     this.priceSubscription = this.vehicleTypeInfoService
-      .getPriceForVehicleAndRoute(this.rideRequestForm.get('vehicleType').value, 3800)
+      .getPriceForVehicleAndRoute(this.rideRequestForm.get('vehicleType').value, distance)
       .subscribe(response => {
         this.price = response;
         this.rideRequestForm.get('price').setValue(this.price);
       });
-    }
+  }
 
   checkChosenDateTime(): boolean{
-    console.log(this.rideRequestForm.get('chosenDateTime').value)
-    if(this.rideRequestForm.get('chosenDateTime').value > new Date(Date.now() + (5*60*60*1000))){
-      this.toast.error('You can only schedule your ride 5 hours in advance!', 'Invalid chosen time');
+    if(this.rideRequestForm.get('chosenDateTime').value > new Date(Date.now() + (5*60*60*1000)) || this.rideRequestForm.get('chosenDateTime').value < new Date(Date.now() + (0.5*60*60*1000))){
+      this.toast.error('You can only schedule your ride 30 minutes to 5 hours in advance!', 'Invalid chosen time');
       return false;
     }
     return true;
   }
 
   requestRide() {
-    console.log("POZVAO")
     this.rideRequestForm.get('selectedPassengers').setValue(this.selectedPassengers);
     this.rideRequestForm.get('senderEmail').setValue(this.currentUser.email);
-    
+    let started = moment().toDate();
+    if(this.rideRequestForm.get('chosenDateTime').value !== null){
+      started = this.rideRequestForm.get('chosenDateTime').value
+    }
+    const timeZone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
+    console.log(timeZone);
+    this.passengerSubscription = this.drivingService.havePassengersAlreadyRide(this.selectedPassengers, started).subscribe(response => {
+      this.usersHaveAlreadyRide = response;
+      if(response){
+        this.toast.error("Some passengers have scheduled ride at time.", "Ride request failed");
+      }
+      else{
+       this.createDriving(started);
+      }
+    });
+  }
+
+  private createDriving(started: Date){
     if(this.checkChosenDateTime()){
       this.waitingForAcceptDrive.emit(true);
       const drivingNotification = {
@@ -173,34 +192,29 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
         minutes: -1,
         drivingStatus: "PAYING",
         active: false,
-        chosenDateTime: this.rideRequestForm.get('chosenDateTime').value
+        chosenDateTime: started,
+        reservation: this.rideRequestForm.get('chosenDateTime').value != null
       };
-      console.log(drivingNotification);
       this.store.dispatch(new AddDrivingNotification(drivingNotification)).subscribe((response) => {
         console.log(response);
       });
 
       this.drivingNotificationSubscription = this.drivingNotificationService.create(drivingNotification).subscribe((result) => {
-        this.store.dispatch(new UpdateStatusDrivingNotification({active: false, drivingStatus: "ACCEPTED"})).subscribe(response => {
+        this.store.dispatch(new UpdateStatusDrivingNotification({active: false, drivingStatus: "ACCEPTED"}))
+          .subscribe(response => {
           console.log(response);
         })
-      },
-
-      (error) => {
-        console.log(error);
-        this.toast.error(error.error, 'Create ride failed.');
-      });
+    },
+        error => {
+          console.log("Javio se error");
+          console.log(error);
+          this.toast.error(error.error, "Requesting ride failed")
+        }
+    )}
   }
 
-    // this.drivingNotificationSubscription = this.store
-    // .dispatch(new AddDrivingNotification(drivingNotification))
-    // .subscribe((response) => {
-    //   console.log(response);
-    //   console.log("lfddsf");
-    // });
-  }
 
-  private findPassengerObj(email: string): void {
+  private _findPassengerObj(email: string): void {
     let user: User;
     this.userSubscription = this.userService
       .getUserByEmail(email)
@@ -208,6 +222,14 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
         user = userResponse;
         this.passengers.push(user);
       });
+  }
+
+
+
+  private _filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+
+    return this.allRegularUsers.filter(option => option.toLowerCase().includes(filterValue));
   }
 
   ngOnDestroy(): void {

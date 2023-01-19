@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static com.example.serbUber.util.Constants.BLOCKED_NOTIFICATION;
+import static com.example.serbUber.util.Constants.DELETED_DRIVING_MESSAGE;
 
 @Service
 public class WebSocketService {
@@ -29,20 +30,26 @@ public class WebSocketService {
         this.emailService = emailService;
     }
 
-    public void sendVehicleCurrentLocation(List<VehicleCurrentLocationDTO> vehicleDTOs) {
-        this.messagingTemplate.convertAndSend("/user/global/connect", vehicleDTOs);
+    public void sendVehicleCurrentLocation(VehicleCurrentLocationDTO vehicleDTO) {
+        this.messagingTemplate.convertAndSend("/user/global/connect", vehicleDTO);
     }
 
-    public void sendDrivingNotification(
+    public void sendDeletedDrivingNotification(
         final DrivingNotificationWebSocketDTO drivingNotificationDTO,
         final Map<RegularUser, Integer> users
     ) {
         users.forEach((key, value) -> {
-            this.messagingTemplate.convertAndSendToUser(key.getEmail(), "/connect", drivingNotificationDTO);
+            this.messagingTemplate.convertAndSendToUser(key.getEmail(), "/delete-driving", DELETED_DRIVING_MESSAGE);
         });
-        if (drivingNotificationDTO.getDrivingNotificationType().equals(DrivingNotificationType.DELETED)){
-            this.messagingTemplate.convertAndSendToUser(drivingNotificationDTO.getSenderEmail(), "/connect", drivingNotificationDTO);
-        }
+        this.messagingTemplate.convertAndSendToUser(drivingNotificationDTO.getSenderEmail(), "/delete-driving-creator", DELETED_DRIVING_MESSAGE);
+    }
+
+
+    public void sendPassengerAgreementNotification( final DrivingNotificationWebSocketDTO drivingNotificationDTO,
+                                                    final Map<RegularUser, Integer> users){
+        users.forEach((key, value) -> {
+            this.messagingTemplate.convertAndSendToUser(key.getEmail(), "/agreement-passenger", drivingNotificationDTO);
+        });
     }
 
     public void passengerNotAcceptDrivingNotification(Set<RegularUser> regularUsers, String userEmail, String senderEmail) {
@@ -55,7 +62,7 @@ public class WebSocketService {
             });
         }
         String messageForSender = String.format("Your ride is rejected. Passenger %s is not accept ride.", userEmail);
-        this.messagingTemplate.convertAndSendToUser(senderEmail, "/passenger-not-accept-driving", messageForSender);
+        this.messagingTemplate.convertAndSendToUser(senderEmail, "/passenger-not-accept-driving-creator", messageForSender);
     }
 
 
@@ -64,23 +71,32 @@ public class WebSocketService {
         this.messagingTemplate.convertAndSendToUser(dto.getEmail(), "/connect", dto);
     }
 
-    public void sendDrivingStatus(DrivingStatusNotificationDTO dto, Map<RegularUser, Integer> receiversReviewed) {
+    public void sendDrivingStatus(String destinationPath, String message, Map<RegularUser, Integer> receiversReviewed) {
         if (receiversReviewed.size() > 0) {
             receiversReviewed.forEach((key, value) -> {
-                this.messagingTemplate.convertAndSendToUser(key.getEmail(), "/connect", dto);
+                this.messagingTemplate.convertAndSendToUser(key.getEmail(), destinationPath, message);
             });
         }
     }
 
-    public void sendRejectDriving(DrivingStatusNotificationDTO dto, Set<RegularUser> users) {
+    public void sendSuccessfulDriving(DrivingStatusNotificationDTO dto,  Map<RegularUser, Integer> receiversReviewed){
+        if (receiversReviewed.size() > 0) {
+            receiversReviewed.forEach((key, value) -> {
+                this.messagingTemplate.convertAndSendToUser(key.getEmail(), "/successful-driving", dto);
+            });
+        }
+    }
+
+    public void sendRejectDriving(String driverEmail, String reason, Set<RegularUser> users) {
+        String message = String.format("Driver %s reject your driving. Reason for rejecting is %s", driverEmail, reason);
         if (users.size() > 0) {
             users.forEach(user -> {
-                this.messagingTemplate.convertAndSendToUser(user.getEmail(), "/connect", dto);
+                this.messagingTemplate.convertAndSendToUser(user.getEmail(), "/reject-driving", message);
             });
         }
     }
 
-    public void sendBlockedNotification(final String email, final String reason) {
+    public void sendBlockedNotification(final String email) {
         this.messagingTemplate.convertAndSendToUser(email, "/connect", BLOCKED_NOTIFICATION);
     }
 

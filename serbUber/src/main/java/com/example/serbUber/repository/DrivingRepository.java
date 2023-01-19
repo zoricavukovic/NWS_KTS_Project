@@ -1,4 +1,5 @@
 package com.example.serbUber.repository;
+import com.example.serbUber.dto.DrivingDTO;
 import com.example.serbUber.model.Driving;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -39,7 +40,7 @@ public interface DrivingRepository extends JpaRepository<Driving, Long> {
     @Query("select d from Driving d left join fetch d.driver driver where driver.id=?1 and d.active = true")
     Optional<Driving> getActiveDrivingForDriver(Long driverId);
 
-    @Query("select distinct d from Driving d inner join d.users user where user.id=?1 and (d.active = true or (d.drivingStatus=2 and d.end is null))")
+    @Query("select distinct d from Driving d left join fetch d.driver driver inner join d.users user where user.id=?1 and (d.active = true or (d.drivingStatus=2 and d.end is null)) and driver.id is not null")
     Optional<Driving> getActiveDrivingForUser(Long userId, LocalDateTime limitDateTime);
 
     @Query(value = "select distinct d from Driving d left join fetch d.driver driver left join fetch d.route r left join fetch r.locations dest left join fetch d.users u " +
@@ -48,4 +49,7 @@ public interface DrivingRepository extends JpaRepository<Driving, Long> {
 
     @Query("select distinct d.id from Driving d where d.route.id = ?1")
     Optional<Long> findDrivingByFavouriteRoute(Long routeId);
+
+    @Query("select d from Driving d left join d.users u where u.email = ?1")
+    List<Driving> getAllDrivingsForUserEmail(String email);
 }

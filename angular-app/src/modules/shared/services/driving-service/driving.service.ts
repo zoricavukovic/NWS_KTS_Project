@@ -85,4 +85,8 @@ export class DrivingService extends GenericService<Driving> {
   updateRide(vehicleCurrentLocation: VehicleCurrentLocation) {
     this.ride$.next(vehicleCurrentLocation);
   }
+
+  havePassengersAlreadyRide(passengers: string[], started: Date): Observable<boolean>{
+    return this.http.post<boolean>(this.configService.HAVE_PASSENGERS_ALREADY_RIDE_URL, {passengersEmail: passengers, started: started});
+  }
 }

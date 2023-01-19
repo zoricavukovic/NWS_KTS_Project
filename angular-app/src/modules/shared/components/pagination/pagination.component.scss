@@ -1,4 +1,5 @@
-@import "~compass-mixins/lib/compass/css3";
+@use "sass:math";
+@import "compass-mixins/lib/compass/css3";
 
 $size: 20px;
 $thickness: 5px;
@@ -17,9 +18,9 @@ $angleActive: 25deg;
 }
 
 body {
-  background: #33ab83; 
+  background: #33ab83;
 }
-  
+
 button {
   -webkit-appearance: none;
   background: transparent;
@@ -46,7 +47,7 @@ button {
     left: 0;
     width: $size;
     height: $thickness;
-    border-radius: $thickness / 2;
+    border-radius: math.div($thickness, 2);
     background: #fff;
 
     transition: all 0.15s ease;

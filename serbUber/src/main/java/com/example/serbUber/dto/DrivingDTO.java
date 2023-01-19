@@ -33,7 +33,12 @@ public class DrivingDTO {
         this.payingLimit = driving.getPayingLimit();
         this.route = driving.getRoute();
         this.drivingStatus = driving.getDrivingStatus();
-        this.driverId = driving.getDriver().getId();
+        if(driving.getDriver() == null){
+            this.driverId = null;
+        }
+        else {
+            this.driverId = driving.getDriver().getId();
+        }
         this.users = setPictureForUsers(driving.getUsers());
         this.price = driving.getPrice();
         this.hasReviewForUser = false;

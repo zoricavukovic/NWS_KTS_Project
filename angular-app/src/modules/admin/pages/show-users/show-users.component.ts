@@ -15,7 +15,9 @@ export class ShowUsersComponent implements OnInit, OnDestroy {
   currentPage = 0;
 
   usersSubscription: Subscription;
-  constructor(private regularUserService: RegularUserService) {}
+  constructor(private regularUserService: RegularUserService) {
+    this.regularUsers = [];
+  }
 
   ngOnInit(): void {
     this.usersSubscription = this.regularUserService

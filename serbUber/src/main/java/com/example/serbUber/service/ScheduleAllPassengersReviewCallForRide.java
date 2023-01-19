@@ -1,6 +1,7 @@
 package com.example.serbUber.service;
 
 import com.example.serbUber.exception.EntityNotFoundException;
+import com.example.serbUber.exception.PassengerNotHaveTokensException;
 import com.example.serbUber.model.DrivingNotification;
 import com.example.serbUber.model.user.RegularUser;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -9,6 +10,8 @@ import org.springframework.stereotype.Controller;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+
+import static com.example.serbUber.util.Constants.*;
 
 @Controller
 public class ScheduleAllPassengersReviewCallForRide {
@@ -19,33 +22,37 @@ public class ScheduleAllPassengersReviewCallForRide {
         this.drivingNotificationService = drivingNotificationService;
     }
 
-    @Scheduled(cron = "${scheduler.cron.every.minute}")
-    public void allPassengersReviewCallForRide() throws EntityNotFoundException {
-        List<DrivingNotification> allDrivingNotifications = drivingNotificationService.getAll();
+    @Scheduled(cron = "*/30 * * * * *")
+    public void allPassengersReviewCallForRide() throws EntityNotFoundException, PassengerNotHaveTokensException {
+        List<DrivingNotification> allDrivingNotifications = drivingNotificationService.getAllNotReservation();
         for(DrivingNotification drivingNotification : allDrivingNotifications){
-            if(drivingNotification.getStarted().plusMinutes(10).isBefore(LocalDateTime.now())){
+            if(drivingNotificationService.checkIfDrivingNotificationIsOutdated(drivingNotification)){
                 drivingNotificationService.deleteOutdatedNotification(drivingNotification);
             }
-            else {
-                Map<RegularUser, Integer> receiversReviewed = drivingNotification.getReceiversReviewed();
-                boolean allPassengersReviewed = true;
-                for(Map.Entry<RegularUser, Integer> receiverReview : receiversReviewed.entrySet()){
-                    if(receiverReview.getValue() == 1){
-                        drivingNotificationService.sendPassengersNotAcceptDrivingNotification(receiversReviewed.keySet(), receiverReview.getKey().getEmail(), drivingNotification.getSender().getEmail());
-                        drivingNotificationService.delete(drivingNotification);
-                    }
-                    else if(receiverReview.getValue() == 2){
-                        allPassengersReviewed = false;
-                    }
-                }
-
-                if(allPassengersReviewed){
-                    //pozivamo metodu da se trazi vozac...
-                    drivingNotificationService.shouldFindDriver(drivingNotification);
-                    drivingNotificationService.delete(drivingNotification);
-                }
+            else if (drivingNotificationService.checkIfUsersReviewed(drivingNotification)){
+                drivingNotificationService.findDriverNow(drivingNotification);
+                drivingNotificationService.delete(drivingNotification);
             }
 
+        }
+
+    }
+
+    @Scheduled(cron = "*/30 * * * * *")
+    public void reservationShouldFindDriverForRide() throws EntityNotFoundException, PassengerNotHaveTokensException {
+        List<DrivingNotification> allDrivingNotifications = drivingNotificationService.getAllReservation();
+        for(DrivingNotification drivingNotification : allDrivingNotifications){
+            if (drivingNotificationService.checkIfUsersReviewed(drivingNotification)){
+                if (drivingNotificationService.checkTimeOfStartingReservationRide(drivingNotification.getStarted())){
+                    drivingNotificationService.findDriverNow(drivingNotification);
+                }else if (drivingNotificationService.checkTimeOfStartingReservationIsSoonRide(drivingNotification.getStarted())){
+                    drivingNotificationService.deleteOutdatedReservationWithoutDriverNotification(drivingNotification);
+                }
+            } else {
+                if(drivingNotificationService.checkIfDrivingNotificationIsOutdated(drivingNotification)){
+                    drivingNotificationService.deleteOutdatedNotification(drivingNotification);
+                }
+            }
         }
 
     }

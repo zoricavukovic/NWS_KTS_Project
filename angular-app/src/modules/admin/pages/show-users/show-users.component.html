@@ -1,8 +1,8 @@
-<div>
+<div *ngIf="regularUsers.length > 0">
   <div
     *ngFor="let user of regularUsers; let i = index"
     class="div"
-    style="margin-left: 11%; margin-top:2rem;">
+    style="margin-left:11%; margin-top:4rem;">
     <div *ngIf="i % 3 === 0" style="display: flex">
       <user-row [user]="user" [index]="i"></user-row>
       <user-row
@@ -21,6 +21,5 @@
   <app-pagination class="paginator" [totalPages]="totalPages" [currentPage]="currentPage"
   (onPageSelected)="changePage($event)">
 </app-pagination>
-
-
 </div>
+<util-message message="Users are not found." *ngIf="regularUsers.length === 0"></util-message>

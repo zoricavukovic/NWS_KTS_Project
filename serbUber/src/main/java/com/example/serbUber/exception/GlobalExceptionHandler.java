@@ -8,11 +8,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
-
-import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 import static com.example.serbUber.exception.ErrorMessagesConstants.UNAUTHORIZED_MESSAGE;
@@ -121,11 +116,18 @@ public class GlobalExceptionHandler {
         return excessiveNumOfPassengersException.getMessage();
     }
 
-    @ExceptionHandler(value = InvalidStartedDateTimeException.class)
+    @ExceptionHandler(value = InvalidChosenTimeForReservationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String invalidStartedDateTimeException(InvalidStartedDateTimeException invalidStartedDateTimeException) {
+    public String invalidChosenTimeForReservationException(InvalidChosenTimeForReservationException invalidChosenTimeForReservationException) {
 
-        return invalidStartedDateTimeException.getMessage();
+        return invalidChosenTimeForReservationException.getMessage();
+    }
+
+    @ExceptionHandler(value = PassengerNotHaveTokensException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String passengerNotHaveTokensException(PassengerNotHaveTokensException passengerNotHaveTokensException) {
+
+        return passengerNotHaveTokensException.getMessage();
     }
 
 }

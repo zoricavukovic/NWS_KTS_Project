@@ -70,14 +70,13 @@ public class DrivingService implements IDrivingService {
             final HashMap<Long, Boolean> usersPaid,
             final double price
     ) throws EntityNotFoundException {
-        LocalDateTime end = started.plusMinutes(duration);
         Driver driver = userService.getDriverById(driverId);
 
-        Driving driving = drivingRepository.save(new Driving(duration, started, end, payingLimit, route, drivingStatus, driver, price));
+        Driving driving = drivingRepository.save(new Driving(duration, started, null, payingLimit, route, drivingStatus, driver, price));
         users.forEach(user -> {
-            List<Driving> drivingsOfUser = user.getDrivings();
-            drivingsOfUser.add(driving);
-            user.setDrivings(drivingsOfUser);
+            List<Driving> drivings = getAllDrivingsForUserEmail(user.getEmail());
+            drivings.add(driving);
+            user.setDrivings(drivings);
             userService.saveUser(user);
         });
 
@@ -105,6 +104,11 @@ public class DrivingService implements IDrivingService {
         List<Driving> drivings = drivingRepository.findAll();
 
         return fromDrivings(drivings);
+    }
+
+    public List<Driving> getAllDrivingsForUserEmail(final String email) {
+
+        return drivingRepository.getAllDrivingsForUserEmail(email);
     }
 
     public List<DrivingPageDTO> getDrivingsForUser(
@@ -204,20 +208,11 @@ public class DrivingService implements IDrivingService {
         DrivingStatusNotification drivingStatusNotification = drivingStatusNotificationService.create(
                 reason, DrivingStatus.REJECTED, driving);
 
-        DrivingStatusNotificationDTO drivingStatusNotificationDTO = new DrivingStatusNotificationDTO(
-                drivingStatusNotification.getDriving().getId(),
-                drivingStatusNotification.getDriving().getRoute().getTimeInMin(),
-                DrivingStatus.REJECTED,
-                reason,
-                driving.getId(),
-                drivingStatusNotification.getId()
-        );
-
         webSocketService.sendRejectDriving(
-                drivingStatusNotificationDTO,
+                driving.getDriver().getEmail(), reason,
                 drivingStatusNotification.getDriving().getUsers()
         );
-        this.vehicleService.updateCurrentVehiclesLocation();
+//        this.vehicleService.updateCurrentVehiclesLocation();
 
         return new DrivingDTO(driving);
     }
@@ -226,16 +221,10 @@ public class DrivingService implements IDrivingService {
         Driving driving = getDriving(id);
         Driver driver = driving.getDriver();
         Vehicle vehicle = driver.getVehicle();
-        List<double[]> listOfVehiclesRoutes;
-        if (vehicle.hasRoute()) {
-            listOfVehiclesRoutes = routeService.getRoutePath(vehicle.getActiveRoute().getId());
-        } else {
-            listOfVehiclesRoutes = List.of(new double[]{vehicle.getCurrentStop().getLon(), vehicle.getCurrentStop().getLat()});
-        }
 
         VehicleWithDriverId withDriverIds = new VehicleWithDriverId(vehicle, driving.getDriver().getId());
 
-        VehicleCurrentLocationDTO vehicleCurrentLocationDTO = new VehicleCurrentLocationDTO(withDriverIds, listOfVehiclesRoutes);
+        VehicleCurrentLocationDTO vehicleCurrentLocationDTO = new VehicleCurrentLocationDTO(withDriverIds);
         webSocketService.sendVehicleCurrentLocation(vehicleCurrentLocationDTO, driver.getEmail(), driving.getUsers());
 
         return vehicleCurrentLocationDTO;
@@ -245,6 +234,28 @@ public class DrivingService implements IDrivingService {
 
         return drivingRepository.findDrivingByFavouriteRoute(routeId)
                 .orElseThrow(() -> new EntityNotFoundException(routeId, EntityType.DRIVING));
+    }
+
+    public boolean isPassengersAlreadyHaveRide(final List<String> passengersEmail, final LocalDateTime started) throws EntityNotFoundException {
+
+        boolean busyPassengers = false;
+        for(String passengerEmail : passengersEmail){
+            User user = userService.getUserByEmail(passengerEmail);
+            SimpleDrivingInfoDTO activeDriving = checkUserHasActiveDriving(user.getId());
+            if(activeDriving == null){
+                busyPassengers = false;
+                break;
+            }
+            if(ChronoUnit.MINUTES.between(activeDriving.getStarted(), started.plusHours(1)) > 30){
+                busyPassengers = false;
+                break;
+            }
+            else{
+                busyPassengers = true;
+                break;
+            }
+        }
+        return busyPassengers;
     }
 
     public DrivingDTO startDriving(final Long id) throws EntityNotFoundException, DriverAlreadyHasStartedDrivingException, DrivingShouldNotStartYetException {
@@ -266,7 +277,7 @@ public class DrivingService implements IDrivingService {
         drivingRepository.save(driving);
 
         webSocketService.startDrivingNotification(new SimpleDrivingInfoDTO(driving), driving.getUsers());
-        this.vehicleService.updateCurrentVehiclesLocation();
+//        this.vehicleService.updateCurrentVehiclesLocation();
 
         return new DrivingDTO(driving);
     }
@@ -282,7 +293,7 @@ public class DrivingService implements IDrivingService {
         drivingRepository.save(driving);
 
         webSocketService.finishDrivingNotification(new SimpleDrivingInfoDTO(driving), driving.getUsers());
-        this.vehicleService.updateCurrentVehiclesLocation();
+//        this.vehicleService.updateCurrentVehiclesLocation();
         Driving nextDriving = driverHasFutureDriving(driving.getDriver().getId());
         if (nextDriving != null) {
             createDrivingToDeparture(driving.getDriver(), driving.getRoute().getLocations().last().getLocation(), nextDriving.getRoute());

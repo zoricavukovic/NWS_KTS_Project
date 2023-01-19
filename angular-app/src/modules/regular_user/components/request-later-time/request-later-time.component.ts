@@ -1,5 +1,3 @@
-import { DATE_PIPE_DEFAULT_TIMEZONE } from '@angular/common';
-import { ThisReceiver } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import { ControlContainer, FormGroup } from '@angular/forms';
 import moment from 'moment';
@@ -15,7 +13,7 @@ export class RequestLaterTimeComponent implements OnInit {
   rideRequestForm: FormGroup;
 
 
-  constructor(private toast: ToastrService, private controlContainer: ControlContainer) { 
+  constructor(private toast: ToastrService, private controlContainer: ControlContainer) {
     this.rideRequestForm = <FormGroup>this.controlContainer.control;
   }
 
@@ -28,13 +26,11 @@ export class RequestLaterTimeComponent implements OnInit {
   getChosenDateTime(): Date {
     const currentDateTime = moment();
     const currentTime = moment(`${currentDateTime.hour()}:${currentDateTime.minutes()}`, "HH:mm");
-     console.log(`${currentDateTime.hour()}:${currentDateTime.minutes()}`);
-    console.log(currentTime);
     const time = moment(`${this.chosenTime.hour()}:${this.chosenTime.minutes()}`, "HH:mm");
     if(currentTime.isAfter(time)){
-      // moment([this.chosenTime.hours, this.chosenTime.minutes])
-      this.chosenTime = this.chosenTime.add(1, 'day')
-      console.log(this.chosenTime);
+      if (this.chosenTime.day()===currentDateTime.day()){
+        this.chosenTime = this.chosenTime.add(1, 'day')
+      }
     }
     else{
       if(this.chosenTime.isAfter(currentDateTime, 'day')){
@@ -42,6 +38,7 @@ export class RequestLaterTimeComponent implements OnInit {
       }
     }
     this.rideRequestForm.get('chosenDateTime').setValue(this.chosenTime.toDate());
+
     return this.chosenTime.toDate();
   }
 

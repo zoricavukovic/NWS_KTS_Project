@@ -23,16 +23,11 @@ export class  VehicleService extends GenericService<Vehicle> {
     return this.http.get<Vehicle>(this.configService.vehicleByDriverId(driverId));
   }
 
-  getAllActiveVehicles(): Observable<VehicleCurrentLocation[]> {
-    return this.http.get<VehicleCurrentLocation[]>(
-      this.configService.ACTIVE_VEHICLES_URL
-    );
-  }
-
   getAllVehicle(): BehaviorSubject<VehicleCurrentLocation[]> {
     this.http
       .get<VehicleCurrentLocation[]>(this.configService.ACTIVE_VEHICLES_URL)
       .subscribe(vehiclesCurrentLocation => {
+        console.log(vehiclesCurrentLocation);
         this.vehicles$.next(vehiclesCurrentLocation);
       });
 

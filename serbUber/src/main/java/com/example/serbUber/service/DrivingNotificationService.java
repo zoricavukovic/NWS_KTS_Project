@@ -4,10 +4,7 @@ import com.example.serbUber.dto.DrivingDTO;
 import com.example.serbUber.dto.DrivingNotificationDTO;
 import com.example.serbUber.dto.DrivingNotificationWebSocketDTO;
 import com.example.serbUber.dto.DrivingStatusNotificationDTO;
-import com.example.serbUber.exception.EntityNotFoundException;
-import com.example.serbUber.exception.EntityType;
-import com.example.serbUber.exception.ExcessiveNumOfPassengersException;
-import com.example.serbUber.exception.InvalidStartedDateTimeException;
+import com.example.serbUber.exception.*;
 import com.example.serbUber.model.*;
 import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.model.user.RegularUser;
@@ -17,20 +14,16 @@ import com.example.serbUber.service.interfaces.IDrivingNotificationService;
 import com.example.serbUber.service.payment.TokenBankService;
 import com.example.serbUber.service.user.DriverService;
 import com.example.serbUber.service.user.RegularUserService;
-import com.graphhopper.GHRequest;
-import com.graphhopper.GHResponse;
-import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
-import static com.example.serbUber.SerbUberApplication.hopper;
+import static com.example.serbUber.exception.ErrorMessagesConstants.*;
 import static com.example.serbUber.model.DrivingNotification.getListOfUsers;
+import static com.example.serbUber.util.Constants.*;
 
 @Component
 @Qualifier("drivingNotificationServiceConfiguration")
@@ -68,8 +61,9 @@ public class DrivingNotificationService implements IDrivingNotificationService {
         this.vehicleTypeInfoService = vehicleTypeInfoService;
     }
 
-    public List<DrivingNotification> getAll(){
-        return drivingNotificationRepository.findAll();
+    public List<DrivingNotification> getAllNotReservation(){
+
+        return drivingNotificationRepository.findAllNotReservation();
     }
 
     public void delete(DrivingNotification drivingNotification){
@@ -84,6 +78,13 @@ public class DrivingNotificationService implements IDrivingNotificationService {
             DrivingNotificationType.DELETED,
             notification.getReceiversReviewed()
         );
+    }
+
+    public void deleteOutdatedReservationWithoutDriverNotification(final DrivingNotification notification){
+        Map<RegularUser, Integer> receiversReviewed = notification.getReceiversReviewed();
+        receiversReviewed.put(notification.getSender(), 0);
+        webSocketService.sendDrivingStatus(DRIVER_NOT_FOUND_PATH, DRIVER_NOT_FOUND_MESSAGE, receiversReviewed);
+        drivingNotificationRepository.deleteById(notification.getId());
     }
 
     public DrivingNotificationDTO get(Long id) throws EntityNotFoundException {
@@ -105,27 +106,26 @@ public class DrivingNotificationService implements IDrivingNotificationService {
             final boolean babySeat,
             final boolean petFriendly,
             final String vehicleType,
-            final LocalDateTime chosenDateTime
-            ) throws EntityNotFoundException, ExcessiveNumOfPassengersException, InvalidStartedDateTimeException {
+            final LocalDateTime chosenDateTime,
+            final boolean isReservation
+    ) throws EntityNotFoundException, ExcessiveNumOfPassengersException, PassengerNotHaveTokensException, InvalidChosenTimeForReservationException {
         RegularUser sender = regularUserService.getRegularByEmail(senderEmail);
 
         Map<RegularUser, Integer> receiversReviewed = new HashMap<>();
-        passengers.forEach(passengerEmail -> {
-            try {
-                receiversReviewed.put(regularUserService.getRegularByEmail(passengerEmail), NotificationReviewedType.NOT_REVIEWED.ordinal());
-            } catch (EntityNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        for (String passengerEmail: passengers){
+            receiversReviewed.put(regularUserService.getRegularByEmail(passengerEmail), NotificationReviewedType.NOT_REVIEWED.ordinal());
+        }
+
         if(!vehicleTypeInfoService.isCorrectNumberOfSeats(vehicleType, passengers.size()+1)) {
             throw new ExcessiveNumOfPassengersException(vehicleType);
         }
 
         VehicleTypeInfo vehicleTypeInfo = vehicleTypeInfoService.get(VehicleType.getVehicleType(vehicleType));
         Route route = routeService.createRoute(routeRequest.getLocations(), routeRequest.getTimeInMin(), routeRequest.getDistance(), routeRequest.getRoutePathIndex());
-        LocalDateTime startedDateTime = getStartedDate(chosenDateTime);
+        LocalDateTime startedDateTime = getStartedDate(chosenDateTime, isReservation);
         DrivingNotification notification = createDrivingNotification(
-                route, price, receiversReviewed, sender, startedDateTime, duration, babySeat, petFriendly, vehicleTypeInfo
+            route, price, receiversReviewed, sender, startedDateTime,
+            duration, babySeat, petFriendly, vehicleTypeInfo, isReservation
         );
 
         if(passengers.size() > 0){
@@ -138,7 +138,6 @@ public class DrivingNotificationService implements IDrivingNotificationService {
         }
         else{
             shouldFindDriver(notification);
-            delete(notification);
         }
 
         return new DrivingNotificationDTO(notification);
@@ -155,20 +154,32 @@ public class DrivingNotificationService implements IDrivingNotificationService {
             senderEmail,
             drivingNotificationType
         );
-        webSocketService.sendDrivingNotification(dto, users);
+        if(drivingNotificationType.equals(DrivingNotificationType.LINKED_USER)){
+            webSocketService.sendPassengerAgreementNotification(dto, users);
+        }
+        else{
+            webSocketService.sendDeletedDrivingNotification(dto, users);
+        }
     }
 
-    private LocalDateTime getStartedDate(LocalDateTime chosenDateTime) throws InvalidStartedDateTimeException {
-        if(chosenDateTime != null){
-            if(LocalDateTime.now().plusHours(5).isAfter(chosenDateTime)){
-                return chosenDateTime;
-            }
+    private LocalDateTime getStartedDate(final LocalDateTime chosenDateTime, final boolean isReservation)
+        throws InvalidChosenTimeForReservationException
+    {
 
-            throw new InvalidStartedDateTimeException();
+        return isReservation? getStartedDateForReservation(chosenDateTime) : LocalDateTime.now();
+    }
+
+    private LocalDateTime getStartedDateForReservation(LocalDateTime chosenDateTime) throws InvalidChosenTimeForReservationException {
+
+        if (LocalDateTime.now().plusHours(5).isBefore(chosenDateTime)){
+            throw new InvalidChosenTimeForReservationException(INVALID_CHOSEN_TIME_AFTER_FOR_RESERVATION_MESSAGE);
         }
 
-        return LocalDateTime.now();
+//        if (chosenDateTime.plusMinutes(HALF_AN_HOUR).isBefore(LocalDateTime.now())){
+//            throw new InvalidChosenTimeForReservationException(INVALID_CHOSEN_TIME_BEFORE_FOR_RESERVATION_MESSAGE);
+//        }
 
+        return chosenDateTime;
     }
 
     public DrivingNotificationDTO updateStatus(final Long id, final String email, final boolean accepted) throws EntityNotFoundException {
@@ -176,8 +187,50 @@ public class DrivingNotificationService implements IDrivingNotificationService {
             .orElseThrow(() -> new EntityNotFoundException(id, EntityType.DRIVING_NOTIFICATION));
         updateReceiversReviewedByUserEmail(drivingNotification.getReceiversReviewed(), email, accepted);
         drivingNotificationRepository.save(drivingNotification);
-//        shouldFindDriver(drivingNotification);
+
         return new DrivingNotificationDTO(drivingNotification);
+    }
+
+    public boolean checkIfDrivingNotificationIsOutdated(final DrivingNotification drivingNotification) {
+
+        return drivingNotification.getStarted().plusMinutes(TEN_MINUTES).isBefore(LocalDateTime.now());
+    }
+
+    public boolean checkIfUsersReviewed(final DrivingNotification drivingNotification) {
+
+        Map<RegularUser, Integer> receiversReviewed = drivingNotification.getReceiversReviewed();
+        boolean allPassengersReviewed = true;
+        for(Map.Entry<RegularUser, Integer> receiverReview : receiversReviewed.entrySet()){
+            if(receiverReview.getValue() == 1){
+                sendPassengersNotAcceptDrivingNotification(receiversReviewed.keySet(), receiverReview.getKey().getEmail(), drivingNotification.getSender().getEmail());
+                delete(drivingNotification);
+                allPassengersReviewed = false;
+                break;
+            }
+            else if(receiverReview.getValue() == 2){
+                allPassengersReviewed = false;
+                break;
+            }
+        }
+
+        return allPassengersReviewed;
+    }
+
+    public List<DrivingNotification> getAllReservation() {
+
+        return drivingNotificationRepository.findAllReservation();
+    }
+
+    public boolean checkTimeOfStartingReservationRide(final LocalDateTime started) {
+        long minutesBetweenStartingRideAndNow = ChronoUnit.MINUTES.between(LocalDateTime.now(), started);
+
+        return minutesBetweenStartingRideAndNow >= TWENTY_MINUTES && minutesBetweenStartingRideAndNow <= HALF_AN_HOUR;
+    }
+
+    public boolean checkTimeOfStartingReservationIsSoonRide(final LocalDateTime started) {
+        long minutesBetweenStartingRideAndNow = ChronoUnit.MINUTES.between(LocalDateTime.now(), started);
+
+        return minutesBetweenStartingRideAndNow < TWENTY_MINUTES;
     }
 
     private void updateReceiversReviewedByUserEmail(
@@ -202,57 +255,59 @@ public class DrivingNotificationService implements IDrivingNotificationService {
     }
 
 
-    public void shouldFindDriver(DrivingNotification drivingNotification) throws EntityNotFoundException {
+    public void shouldFindDriver(final DrivingNotification drivingNotification) throws EntityNotFoundException, PassengerNotHaveTokensException {
+        if (!drivingNotification.isReservation()){
+            findDriverNow(drivingNotification);
+            delete(drivingNotification);
+        }
+    }
+
+    public void findDriverNow(DrivingNotification drivingNotification) throws PassengerNotHaveTokensException, EntityNotFoundException {
         Map<RegularUser, Integer> receiversReviewed = drivingNotification.getReceiversReviewed();
-//        if (allPassengersAcceptDriving(drivingNotification)) {
-//            System.out.println("acccceptt");
-            Driver driver = driverService.getDriverForDriving(drivingNotification);
-            receiversReviewed.put(drivingNotification.getSender(), 0);
-            if (driver == null) {
-                System.out.println("nema vozacaaa");
-                DrivingStatusNotificationDTO drivingStatusNotificationDTO = new DrivingStatusNotificationDTO(0L, 0, DrivingStatus.PENDING, "Not found driver", null, drivingNotification.getId());
-                webSocketService.sendDrivingStatus(drivingStatusNotificationDTO, receiversReviewed);
+        Driver driver = driverService.getDriverForDriving(drivingNotification);
+        receiversReviewed.put(drivingNotification.getSender(), 0);
+        if (driver == null && !drivingNotification.isReservation()) {
+            webSocketService.sendDrivingStatus(DRIVER_NOT_FOUND_PATH, DRIVER_NOT_FOUND_MESSAGE, receiversReviewed);
+        } else if (driver != null) {
+            Set<RegularUser> passengers = getListOfUsers(receiversReviewed);
+            Driving driving = drivingService.create(
+                drivingNotification.getDuration(),
+                drivingNotification.getStarted(),
+                drivingNotification.getStarted().plusMinutes(2),
+                drivingNotification.getRoute(),
+                DrivingStatus.PAYING,
+                driver.getId(),
+                passengers,
+                new HashMap<>(),
+                drivingNotification.getPrice());
+            passengers.remove(drivingNotification.getSender());
+            if (isPaidDriving(driving.getPrice(), passengers, drivingNotification.getSender())) {
+                int minutesToStartDrive = calculateMinutesForStartDriving(driver.getId(), drivingNotification.getRoute());
+                driving.setStarted(LocalDateTime.now().plusMinutes(minutesToStartDrive));
+                driving.setDrivingStatus(DrivingStatus.ACCEPTED);
+                DrivingDTO drivingDTO = drivingService.save(driving);
+                DrivingStatusNotificationDTO drivingStatusNotificationDTO = new DrivingStatusNotificationDTO(driver.getId(), minutesToStartDrive, DrivingStatus.ACCEPTED, "", drivingDTO.getId(), drivingNotification.getId());
+                webSocketService.sendSuccessfulDriving(drivingStatusNotificationDTO, receiversReviewed);
             } else {
-                System.out.println("vozaaacccc" + driver.getEmail());
-                Driving driving = drivingService.create(
-                        drivingNotification.getDuration(),
-                        drivingNotification.getStarted(),
-                        drivingNotification.getStarted().plusMinutes(2),
-                        drivingNotification.getRoute(),
-                        DrivingStatus.PAYING,
-                        driver.getId(),
-                        getListOfUsers(drivingNotification.getReceiversReviewed()),
-                        new HashMap<>(),
-                        drivingNotification.getPrice());
-                if (isPaidDriving(drivingNotification.getReceiversReviewed(), drivingNotification.getPrice())) {
-                    drivingService.paidDriving(driving.getId());
-                    int minutesToStartDrive = calculateMinutesForStartDriving(driver.getId(), drivingNotification.getRoute());
-                    driving.setStarted(LocalDateTime.now().plusMinutes(minutesToStartDrive));
-                    DrivingDTO drivingDTO = drivingService.save(driving);
-                    DrivingStatusNotificationDTO drivingStatusNotificationDTO = new DrivingStatusNotificationDTO(driver.getId(), minutesToStartDrive, DrivingStatus.ACCEPTED, "", drivingDTO.getId(), drivingNotification.getId());
-                    webSocketService.sendDrivingStatus(drivingStatusNotificationDTO, receiversReviewed);
-                    System.out.println("placenoooo" + drivingStatusNotificationDTO.getMinutes());
-
-                } else {
-                    drivingService.removeDriver(driving.getId());
-                    DrivingStatusNotificationDTO drivingStatusNotificationDTO = new DrivingStatusNotificationDTO(driver.getId(), 0, DrivingStatus.REJECTED, "Payment was not successful. Please, check your tokens!", driving.getId(), drivingNotification.getId());
-                    webSocketService.sendDrivingStatus(drivingStatusNotificationDTO, receiversReviewed);
-                }
-
+                drivingService.removeDriver(driving.getId());
+                webSocketService.sendDrivingStatus(UNSUCCESSFUL_PAYMENT_PATH, UNSUCCESSFUL_PAYMENT_MESSAGE, receiversReviewed);
+                delete(drivingNotification);
+                throw new PassengerNotHaveTokensException();
             }
-//        }
+
+        }
     }
 
     public int calculateMinutesForStartDriving(final Long driverId, final Route route) throws EntityNotFoundException {
-        Driver driver = driverService.getDriverById(driverId);
-        Location userLocation = route.getLocations().first().getLocation();
-        GHRequest request = new GHRequest(
-            vehicleService.getLatOfCurrentVehiclePosition(driver.getVehicle()),
-            vehicleService.getLonOfCurrentVehiclePosition(driver.getVehicle()),
-            userLocation.getLat(),
-            userLocation.getLon()
-        );
-        request.setProfile("car");
+//        Driver driver = driverService.getDriverById(driverId);
+//        Location userLocation = route.getLocations().first().getLocation();
+//        GHRequest request = new GHRequest(
+//            vehicleService.getLatOfCurrentVehiclePosition(driver.getVehicle()),
+//            vehicleService.getLonOfCurrentVehiclePosition(driver.getVehicle()),
+//            userLocation.getLat(),
+//            userLocation.getLon()
+//        );
+//        request.setProfile("car");
 //        GHResponse routeHopper = hopper.route(request);
 //        System.out.println("vreemeee" + TimeUnit.MILLISECONDS.toMinutes(routeHopper.getBest().getTime()));
 //        System.out.println((routeHopper.getBest().getTime()/1000)/60);
@@ -260,37 +315,68 @@ public class DrivingNotificationService implements IDrivingNotificationService {
         return 5;
     }
 
-    public boolean isPaidDriving(final  Map<RegularUser, Integer> receiversReviewed, final double price){
-        double priceForOnePassenger = Math.round(price/receiversReviewed.size()*100.0)/100.0;
-        Map<Long, Boolean> usersEnoughTokens = haveUsersEnoughTokens(receiversReviewed, priceForOnePassenger);
-        if(!usersEnoughTokens.containsValue(false)){
-            receiversReviewed.forEach((passenger, value) -> {
-                try {
-                    tokenBankService.updateNumOfTokens(passenger.getId(), priceForOnePassenger);
-                } catch (EntityNotFoundException e) {
-                    System.out.println("Token bank not found");
-                }
-            });
+    private boolean isPaidDriving(
+        final double price,
+        final  Set<RegularUser> passengers,
+        final RegularUser sender
+    ) throws EntityNotFoundException {
+        Map<Long, Double> updatedUsersTokens = new HashMap<>();
+        double priceForOnePassenger = getPriceForOnePassenger(price, passengers.size() + 1);
+        double priceForSender = getPriceForSender(price, passengers.size()*priceForOnePassenger);
+        double missingTokens = getMissingTokens(sender, priceForSender, updatedUsersTokens, START_MISSING_NUM_OF_TOKENS);
+
+        for(RegularUser passenger : passengers) {
+            missingTokens = getMissingTokens(passenger, priceForOnePassenger, updatedUsersTokens, missingTokens);
         }
-        return true;
+
+        missingTokens = secondTryPayment(updatedUsersTokens, missingTokens);
+
+
+        if(missingTokens == 0){
+           for(Map.Entry<Long,Double> passengerToken : updatedUsersTokens.entrySet()){
+               tokenBankService.updateNumOfTokens(passengerToken.getKey(), passengerToken.getValue());
+           }
+           return true;
+        }
+
+        return false;
     }
 
-    private Map<Long, Boolean> haveUsersEnoughTokens(
-        final  Map<RegularUser, Integer> receiversReviewed,
-        final double priceForOnePassenger
-    ) {
-        Map<Long, Boolean> usersEnoughTokens = new HashMap<>();
-        receiversReviewed.forEach((passenger, value) -> {
-            double passengerTokens = 0;
-            try {
-                passengerTokens = tokenBankService.getTokensForUser(passenger.getId());
-            } catch (EntityNotFoundException e) {
-                //BLALLLA
+    private double secondTryPayment(Map<Long, Double> updatedUsersTokens, double missingTokens) {
+        for(Map.Entry<Long, Double> passengerTokens : updatedUsersTokens.entrySet()) {
+            if (passengerTokens.getValue() > 0 && missingTokens > 0) {
+                if (passengerTokens.getValue() >= missingTokens) {
+                    passengerTokens.setValue(passengerTokens.getValue() - missingTokens);
+                    missingTokens = 0;
+                    break;
+                } else {
+                    missingTokens -= passengerTokens.getValue();
+                    passengerTokens.setValue(WITHOUT_TOKENS);
+                }
             }
-            usersEnoughTokens.put(passenger.getId(), passengerTokens > priceForOnePassenger);
-        });
+        }
+        return missingTokens;
+    }
 
-        return usersEnoughTokens;
+    private double getMissingTokens(RegularUser user, double priceForUser, Map<Long, Double> updatedUsersTokens, double missingTokens) throws EntityNotFoundException {
+        double tokensForUser = tokenBankService.getTokensForUser(user.getId());
+        if (tokensForUser >= priceForUser) {
+            updatedUsersTokens.put(user.getId(), tokensForUser - priceForUser);
+        } else {
+            missingTokens += priceForUser - tokensForUser;
+            updatedUsersTokens.put(user.getId(), WITHOUT_TOKENS);
+        }
+        return missingTokens;
+    }
+
+    private double getPriceForSender(double price, double paidPrice) {
+
+        return price - paidPrice;
+    }
+
+    private double getPriceForOnePassenger(double price, int numOfPassengers) {
+
+        return Math.floor(price / numOfPassengers);
     }
 
 
@@ -310,9 +396,9 @@ public class DrivingNotificationService implements IDrivingNotificationService {
         final int duration,
         final boolean babySeat,
         final boolean petFriendly,
-        final VehicleTypeInfo vehicleTypeInfo
-    )
-    {
+        final VehicleTypeInfo vehicleTypeInfo,
+        final boolean isReservation
+    ){
 
         return drivingNotificationRepository.save(
             new DrivingNotification(
@@ -324,7 +410,8 @@ public class DrivingNotificationService implements IDrivingNotificationService {
                 babySeat,
                 petFriendly,
                 vehicleTypeInfo,
-                receiversReviewed
+                receiversReviewed,
+                isReservation
             )
         );
     }

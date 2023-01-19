@@ -47,6 +47,9 @@ public class DrivingNotification {
     @ElementCollection
     private Map<RegularUser, Integer> receiversReviewed;
 
+    @Column(name="is_reservation")
+    private boolean reservation = false;
+
     public DrivingNotification(
             final Route route,
             final double price,
@@ -56,7 +59,8 @@ public class DrivingNotification {
             final boolean babySeat,
             final boolean petFriendly,
             final VehicleTypeInfo vehicleTypeInfo,
-            final Map<RegularUser, Integer> receiversReviewed
+            final Map<RegularUser, Integer> receiversReviewed,
+            final boolean reservation
     ) {
         this.route = route;
         this.price = price;
@@ -67,6 +71,7 @@ public class DrivingNotification {
         this.babySeat = babySeat;
         this.vehicleTypeInfo = vehicleTypeInfo;
         this.receiversReviewed = receiversReviewed;
+        this.reservation = reservation;
     }
 
     public DrivingNotification() {}
@@ -156,6 +161,14 @@ public class DrivingNotification {
         receiversReviewed.forEach((key, value)-> users.add(key));
 
         return users;
+    }
+
+    public boolean isReservation() {
+        return reservation;
+    }
+
+    public void setReservation(boolean reservation) {
+        this.reservation = reservation;
     }
 }
 

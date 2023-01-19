@@ -10,6 +10,7 @@ import com.example.serbUber.model.Driving;
 import com.example.serbUber.model.Route;
 import com.example.serbUber.model.user.RegularUser;
 import com.example.serbUber.repository.user.RegularUserRepository;
+import com.example.serbUber.service.EmailService;
 import com.example.serbUber.service.RouteService;
 import com.example.serbUber.service.VerifyService;
 import com.example.serbUber.service.WebSocketService;
@@ -43,6 +44,7 @@ public class RegularUserService implements IRegularUserService {
     private final RouteService routeService;
     private final WebSocketService webSocketService;
     private final TokenBankService tokenBankService;
+    private final EmailService emailService;
 
     public RegularUserService(
             final RegularUserRepository regularUserRepository,
@@ -50,7 +52,8 @@ public class RegularUserService implements IRegularUserService {
             final RouteService routeService,
             final RoleService roleService,
             final WebSocketService webSocketService,
-            final TokenBankService tokenBankService
+            final TokenBankService tokenBankService,
+            final EmailService emailService
     ) {
         this.regularUserRepository = regularUserRepository;
         this.verifyService = verifyService;
@@ -58,6 +61,7 @@ public class RegularUserService implements IRegularUserService {
         this.roleService = roleService;
         this.webSocketService = webSocketService;
         this.tokenBankService = tokenBankService;
+        this.emailService = emailService;
     }
 
     public List<RegularUserDTO> getAll() {
@@ -160,7 +164,8 @@ public class RegularUserService implements IRegularUserService {
         regularUser.setBlocked(true);
         regularUser.setVerified(false);
         regularUserRepository.save(regularUser);
-        this.webSocketService.sendBlockedNotification(regularUser.getEmail(), reason);
+        emailService.sendBlockDriverMail(regularUser.getEmail(), reason);
+        this.webSocketService.sendBlockedNotification(regularUser.getEmail());
 
         return true;
     }

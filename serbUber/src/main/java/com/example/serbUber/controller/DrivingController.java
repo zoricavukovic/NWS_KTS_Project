@@ -8,6 +8,7 @@ import com.example.serbUber.exception.DriverAlreadyHasStartedDrivingException;
 import com.example.serbUber.exception.DrivingShouldNotStartYetException;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.request.DrivingRequest;
+import com.example.serbUber.request.LinkedPassengersRequest;
 import com.example.serbUber.service.DrivingService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -148,5 +149,12 @@ public class DrivingController {
     {
 
         return drivingService.getDrivingByFavouriteRoute(routeId);
+    }
+
+    @PostMapping("/busy-passengers")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_REGULAR_USER')")
+    public boolean isPassengersAlreadyHaveRide(@RequestBody LinkedPassengersRequest linkedPassengersRequest) throws EntityNotFoundException {
+        return drivingService.isPassengersAlreadyHaveRide(linkedPassengersRequest.getPassengersEmail(), linkedPassengersRequest.getStarted());
     }
 }

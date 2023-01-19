@@ -27,6 +27,7 @@ public class DrivingNotificationRequest {
     private boolean petFriendly;
     private String vehicleType;
     private LocalDateTime chosenDateTime;
+    private boolean reservation = false;
 
     public DrivingNotificationRequest() {
     }
@@ -122,5 +123,13 @@ public class DrivingNotificationRequest {
 
     public void setChosenDateTime(LocalDateTime chosenDateTime) {
         this.chosenDateTime = chosenDateTime;
+    }
+
+    public boolean isReservation() {
+        return reservation;
+    }
+
+    public void setReservation(boolean reservation) {
+        this.reservation = reservation;
     }
 }

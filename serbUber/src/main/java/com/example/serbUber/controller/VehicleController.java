@@ -37,14 +37,14 @@ public class VehicleController {
         return this.vehicleService.getAll();
     }
 
-    @GetMapping("/active/nesto")
+    @GetMapping("/active")
     @ResponseStatus(HttpStatus.OK)
     public List<VehicleCurrentLocationDTO> getAllActiveVehicles() throws EntityNotFoundException {
 
         return vehicleService.getAllVehiclesForActiveDriver();
     }
 
-    @GetMapping("/active")
+    @GetMapping("/active/locust")
     @ResponseStatus(HttpStatus.OK)
     public List<VehicleCurrentLocationForLocustDTO> getAllActiveVehiclesForLocust() throws EntityNotFoundException {
 
@@ -52,17 +52,17 @@ public class VehicleController {
     }
 
 
-    @PutMapping("/update-current-location")
-    @ResponseStatus(HttpStatus.OK)
-    public List<VehicleCurrentLocationDTO> updateCurrentVehiclesLocation() throws EntityNotFoundException {
+//    @PutMapping("/update-current-location")
+//    @ResponseStatus(HttpStatus.OK)
+//    public List<VehicleCurrentLocationDTO> updateCurrentVehiclesLocation() throws EntityNotFoundException {
+//
+//        return vehicleService.updateCurrentVehiclesLocation();
+//    }
 
-        return vehicleService.updateCurrentVehiclesLocation();
-    }
-
-    @PutMapping(value = "/{id}")
+    @PutMapping(value = "update-current-location/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public VehicleCurrentLocationForLocustDTO updateCurrentPosition(
-        @Valid @NotNull(message = MISSING_ID) @PathVariable final Long id,
+        @Valid @NotNull(message = MISSING_ID) @PathVariable final long id,
         @Valid @RequestBody LongLatRequest longLatRequest
         ) throws EntityNotFoundException {
 

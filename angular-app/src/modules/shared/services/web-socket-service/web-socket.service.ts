@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable, Output } from '@angular/core';
 import * as SockJS from 'sockjs-client';
 import { Stomp } from '@stomp/stompjs';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
-import {Toast, ToastrService} from "ngx-toastr";
+import { ToastrService } from "ngx-toastr";
 import {ChatRoomService} from "../chat-room-service/chat-room.service";
 import {VehicleService} from "../vehicle-service/vehicle.service";
 import {DriverActivityResetNotification} from "../../models/notification/driver-activity-reset-notification";
@@ -11,11 +11,21 @@ import {ChatRoomWithNotify} from "../../models/message/chat-room-with-notify";
 import {ChatRoom} from "../../models/message/chat-room";
 import {DrivingService} from "../driving-service/driving.service";
 import {VehicleCurrentLocation} from "../../models/vehicle/vehicle-current-location";
-import {DrivingNotification} from "../../models/notification/driving-notification";
 import {DrivingNotificationService} from "../driving-notification-service/driving-notification.service";
 import {BlockNotification} from "../../models/notification/block-notification";
 import {DriverService} from "../driver-service/driver.service";
 import { CreateDrivingNotification } from '../../models/notification/create-driving-notification';
+import {
+  ClearStore,
+  GetDrivingNotification,
+  UpdateMinutesStatusDrivingNotification,
+  UpdateStatusDrivingNotification
+} from "../../actions/driving-notification.action";
+import {Store} from "@ngxs/store";
+import {SimpleDrivingInfo} from "../../models/driving/simple-driving-info";
+import {DrivingStatusNotification} from "../../models/notification/driving-status-notification";
+import { Subscription } from 'rxjs';
+import { DrivingNotification } from '../../models/notification/driving-notification';
 
 @Injectable({
   providedIn: 'root',
@@ -25,6 +35,9 @@ export class WebSocketService {
   private globalStompClient = null;
   initialized = false;
   initializedGlobal = false;
+  @Output() aClickedEvent = new EventEmitter()
+
+  currentDrivingSubscription: Subscription;
 
   constructor(
     private chatRoomService: ChatRoomService,
@@ -33,7 +46,8 @@ export class WebSocketService {
     private driverService: DriverService,
     private router: Router,
     private toast: ToastrService,
-    private drivingService: DrivingService
+    private drivingService: DrivingService,
+    private store: Store
   ) {
     if (!this.stompClient) {
       this.initialized = false;
@@ -54,49 +68,191 @@ export class WebSocketService {
       const ws = new SockJS(serverUrl);
       this.stompClient = Stomp.over(ws);
 
-      const that = this;
+      let that = this;
 
-      this.stompClient.connect({}, function (frame) {
+      this.stompClient.connect({}, function () {
+        that.chatNotification();
+
         that.vehicleUpdateCoordinate();
-        that.stompClient.subscribe(
-          environment.publisherUrl + localStorage.getItem('email') + '/connect',
-          message => {
-            console.log("socket se uhvatio");
-            if (message !== null && message !== undefined) {
-              that.checkNotificationType(message.body);
-            }
-          }
-        );
 
-        that.stompClient.subscribe(
-          environment.publisherUrl + localStorage.getItem('email') + '/passenger-not-accept-driving',
-          message => {
-            that.toast.info(message.body, 'Requesting ride failed');
-          }
-        );
+        that.deleteDrivingNotification();
+
+        that.deleteDrivingForCreatorNotification();
+
+        that.passengerNotAcceptDriving();
+
+        that.passengerNotAcceptDrivingCreator();
+
+        that.rejectDrivingNotification();
+
+        that.startDrivingNotification();
+
+        that.finishDrivingNotification();
+
+        that.driverNotFoundNotification();
+
+        that.unsuccessfulPaymentNotification();
+
+        that.successfulCreatedDrivingNotification();
+
+        that.passengerAgreementNotification();
       });
     }
   }
 
-  vehicleUpdateCoordinate() {
-    this.stompClient.subscribe(environment.publisherUrl + localStorage.getItem('email') + '/update-driving', (message: { body: string }) => {
-      if (
-        (message !== null && message !== undefined) ||
-        message?.body !== null
-      ) {
-        const vehicleCurrentLocation: VehicleCurrentLocation = JSON.parse(message.body);
-        this.drivingService.updateRide(vehicleCurrentLocation);
+  passengerAgreementNotification(){
+    this.stompClient.subscribe(
+      environment.publisherUrl + localStorage.getItem('email') + '/agreement-passenger',
+      message => {
+        const drivingNotificationResponse:CreateDrivingNotification = JSON.parse(message.body);
+        this.toast
+          .info(
+            `User ${drivingNotificationResponse.senderEmail} add you as linked passenger.Tap to accept!`
+          )
+          .onTap.subscribe(action => {
+          this.router.navigate(["serb-uber/user/driving-notification", drivingNotificationResponse.id]);
+        });
       }
+    );
+  }
 
-      //   this.toast.info('Driving is finished.Tap to see details!')
-      //     .onTap.subscribe(action => this.router.navigate(['/serb-uber/user/map-page-view', drivingNotificationDetails.drivingId]));
-      // });
+  driverNotFoundNotification(){
+    this.stompClient.subscribe(
+      environment.publisherUrl + localStorage.getItem('email') + '/driver-not-found',
+      message => {
+        this.toast.info(message.body);
+      }
+    );
+  }
+
+  successfulCreatedDrivingNotification(){
+    this.stompClient.subscribe(
+      environment.publisherUrl + localStorage.getItem('email') + '/successful-driving',
+      message => {
+        const drivingStatusNotification: DrivingStatusNotification = JSON.parse(message.body);
+        const updatedDriving = {
+          minutes: drivingStatusNotification.minutes,
+          drivingStatus: drivingStatusNotification.drivingStatus,
+          drivingId: drivingStatusNotification.drivingId
+        }
+
+      this.store.dispatch(new GetDrivingNotification());
+      this.store.dispatch(new UpdateMinutesStatusDrivingNotification(updatedDriving));
+      this.router.navigate([`/serb-uber/user/map-page-view/${drivingStatusNotification.drivingId}`]);
+
+      }
+    );
+  }
+
+  unsuccessfulPaymentNotification(){
+    this.stompClient.subscribe(
+      environment.publisherUrl + localStorage.getItem('email') + '/unsuccessful-payment',
+      message => {
+        this.toast.info(message.body);
+        this.store.dispatch(new ClearStore());
+      }
+    );
+  }
+
+  startDrivingNotification(){
+    this.stompClient.subscribe(
+      environment.publisherUrl + localStorage.getItem('email') + '/start-driving',
+      (message: { body: string }) => {
+        const drivingNotificationDetails: SimpleDrivingInfo =  JSON.parse(message.body);
+        this.store.dispatch(new UpdateStatusDrivingNotification({active: true, drivingStatus: "ACCEPTED"}));
+        this.toast.info('Ride started.Tap to follow ride!')
+          .onTap.subscribe(action => {
+          this.router.navigate(['/serb-uber/user/map-page-view', drivingNotificationDetails.drivingId])
+        });
     });
   }
 
+  finishDrivingNotification() {
+    this.stompClient.subscribe(
+      environment.publisherUrl + localStorage.getItem('email') + '/finish-driving',
+      (message: { body: string }) => {
+      const drivingNotificationDetails: SimpleDrivingInfo =  JSON.parse(message.body);
+      this.store.dispatch(new UpdateStatusDrivingNotification({active: false, drivingStatus: "FINISHED"})).subscribe();
+      this.toast.info('Driving is finished.Tap to see details!')
+        .onTap.subscribe(action => {
+        this.router.navigate(['/serb-uber/user/map-page-view', drivingNotificationDetails.drivingId]);
+      });
+      // this.aClickedEvent.emit();
+
+    });
+  }
+
+  rejectDrivingNotification(){
+    this.stompClient.subscribe(
+      environment.publisherUrl + localStorage.getItem('email') + '/reject-driving',
+      message => {
+        this.toast.info(message.body);
+      }
+    );
+  }
+
+  deleteDrivingNotification(){
+    this.stompClient.subscribe(
+      environment.publisherUrl + localStorage.getItem('email') + '/delete-driving',
+      message => {
+        this.toast.info(message.body);
+        this.router.navigate(['/serb-uber/user/map-page-view/-1']);
+      }
+    );
+  }
+
+  deleteDrivingForCreatorNotification(){
+    this.stompClient.subscribe(
+      environment.publisherUrl + localStorage.getItem('email') + '/delete-driving-creator',
+      message => {
+        this.toast.info(message.body);
+        this.store.dispatch(new ClearStore());
+      }
+    );
+  }
+
+  passengerNotAcceptDriving() {
+    this.stompClient.subscribe(
+      environment.publisherUrl + localStorage.getItem('email') + '/passenger-not-accept-driving',
+      message => {
+        this.toast.info(message.body, 'Requesting ride failed');
+        this.router.navigate(['/serb-uber/user/map-page-view/-1']);
+      }
+    );
+  }
+
+  passengerNotAcceptDrivingCreator() {
+    this.stompClient.subscribe(
+      environment.publisherUrl + localStorage.getItem('email') + '/passenger-not-accept-driving-creator',
+      message => {
+        this.toast.info(message.body, 'Requesting ride failed');
+        this.store.dispatch(new ClearStore());
+      }
+    );
+  }
+
+  vehicleUpdateCoordinate() {
+    this.stompClient.subscribe(environment.publisherUrl + localStorage.getItem('email') + '/update-driving', (message: { body: string }) => {
+      if ((message !== null && message !== undefined) || message?.body !== null) {
+        console.log(message.body);
+        const vehicleCurrentLocation: VehicleCurrentLocation = JSON.parse(message.body);
+        this.drivingService.updateRide(vehicleCurrentLocation);
+      }
+    });
+  }
+
+  chatNotification(){
+    this.stompClient.subscribe(
+      environment.publisherUrl + localStorage.getItem('email') + '/connect',
+      message => {
+        if (message !== null && message !== undefined) {
+          this.checkNotificationType(message.body);
+        }
+      }
+    );
+  }
+
   checkNotificationType(message: string) {
-    console.log("SOCKET");
-    console.log(message);
     if (this.isActivityResetNotification(message)) {
       this.driverService.showActivityStatusResetNotification(
         JSON.parse(message)
@@ -105,13 +261,7 @@ export class WebSocketService {
       this.logOutUser();
 
     } else {
-      this.isMessageType(message)
-        ? this.chatRoomService.addMessage(JSON.parse(message))
-        : this.isDrivingNotification(message)
-        ? this.drivingNotificationService.showNotification(JSON.parse(message))
-        : this.drivingNotificationService.showDrivingStatus(
-            JSON.parse(message)
-          );
+        this.chatRoomService.addMessage(JSON.parse(message));
     }
   }
 
@@ -173,23 +323,6 @@ export class WebSocketService {
     }
   }
 
-  private isDrivingNotification(message: string): boolean {
-    try {
-      const parsed: CreateDrivingNotification = JSON.parse(message);
-      return parsed.drivingNotificationType === 'LINKED_USER' || parsed.drivingNotificationType === 'DELETED';
-    } catch (e) {
-      return false;
-    }
-  }
-
-  private isMessageType(webSocketNotification: string): boolean {
-    try {
-      const parsed: ChatRoomWithNotify = JSON.parse(webSocketNotification);
-      return parsed.notifyAdmin !== null && parsed.notifyAdmin !== undefined;
-    } catch (e) {
-      return false;
-    }
-  }
 
   disconnect(): void {
     if (this.stompClient != null) {

@@ -4,15 +4,15 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 import static com.example.serbUber.exception.ErrorMessagesConstants.MISSING_ID;
-import static com.example.serbUber.exception.ErrorMessagesConstants.MISSIN_NUM_OF_TOKENS;
+import static com.example.serbUber.exception.ErrorMessagesConstants.MISSING_NUM_OF_TOKENS;
 
 public class CreatePaymentRequest {
 
     @NotNull(message = MISSING_ID)
     private final Long tokenBankId;
 
-    @NotNull(message = MISSIN_NUM_OF_TOKENS)
-    @Positive(message = MISSIN_NUM_OF_TOKENS)
+    @NotNull(message = MISSING_NUM_OF_TOKENS)
+    @Positive(message = MISSING_NUM_OF_TOKENS)
     private final double numOfTokens;
 
     public CreatePaymentRequest(
