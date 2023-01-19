@@ -208,8 +208,6 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
         })
     },
         error => {
-          console.log("Javio se error");
-          console.log(error);
           this.toast.error(error.error, "Requesting ride failed")
         }
     )

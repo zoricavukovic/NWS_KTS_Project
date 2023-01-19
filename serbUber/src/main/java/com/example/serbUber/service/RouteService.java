@@ -173,6 +173,12 @@ public class RouteService implements IRouteService {
 
         return create(drivingLocations, distance, time);
     }
+
+    public double getTimeFromDistance(final double distance) {
+        return distance == 0 ? 0.0 :  Math.ceil((distance/50000L)*60 + 0.5);
+    }
+
+
     private boolean isDestination(int indexOfLocation, int numOfLocations){
 
         return indexOfLocation == numOfLocations - 1;
@@ -197,33 +203,43 @@ public class RouteService implements IRouteService {
             final double secondPointLat,
             final double secondPointLng
     ) throws IOException {
-        List<PossibleRouteDTO> possibleRouteDTOs = new LinkedList<>();
 
+        return fromOSMResponse(getOSMResult(firstPointLat, firstPointLng, secondPointLat, secondPointLng));
+    }
+
+    private String getOSMResult(
+            final double firstPointLat,
+            final double firstPointLng,
+            final double secondPointLat,
+            final double secondPointLng
+    ){
         RestTemplate restTemplate = new RestTemplate();
-
         HttpHeaders headers = new HttpHeaders();
-//        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-
         HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
         ResponseEntity<?> result =
-            restTemplate.exchange("https://routing.openstreetmap.de/routed-car/route/v1/driving/" + firstPointLng + "," + firstPointLat + ";" + secondPointLng+ "," + secondPointLat+ " ?geometries=geojson&overview=false&alternatives=true&steps=true",
-                HttpMethod.GET, entity, Object.class);
-        return fromOSMResponse(Objects.requireNonNull(result.getBody()).toString());
+                restTemplate.exchange("https://routing.openstreetmap.de/routed-car/route/v1/driving/" + firstPointLng + "," + firstPointLat + ";" + secondPointLng+ "," + secondPointLat+ " ?geometries=geojson&overview=false&alternatives=true&steps=true",
+                        HttpMethod.GET, entity, Object.class);
 
-//        List<ResponsePath> responsePaths = routing(
-//            hopper,
-//            firstPointLat,
-//            firstPointLng,
-//            secondPointLat,
-//            secondPointLng
-//        );
-//
-//        responsePaths.forEach( responsePath -> possibleRouteDTOs.add(
-//            new PossibleRouteDTO(responsePath.getDistance(), responsePath.getTime(), getPointsDTO(responsePath))
-//        ));
-
-//        return possibleRouteDTOs;
+        return Objects.requireNonNull(result.getBody()).toString();
     }
+
+    public double calculateMinutesForDistance(
+            final double firstPointLat,
+            final double firstPointLng,
+            final double secondPointLat,
+            final double secondPointLng
+    ){
+        double minutes = 0;
+        String result = getOSMResult(firstPointLat, firstPointLng, secondPointLat, secondPointLng);
+        List<String> legs = Arrays.stream(result.split("legs=")).toList();
+        if(legs.size() > 1){
+            double distance = getDistance(Arrays.stream(legs.get(1).split("distance=")).toList());
+            minutes = getTimeFromDistance(distance);
+        }
+
+        return minutes;
+    }
+
 
     private List<PossibleRouteDTO> fromOSMResponse(String object) {
 
@@ -244,7 +260,8 @@ public class RouteService implements IRouteService {
             List<String> steps = Arrays.stream(leg.split("steps=")).toList();
             fromSteps(locations, steps);
             double distance = getDistance(Arrays.stream(leg.split("distance=")).toList());
-            possibleRouteDTOs.add(new PossibleRouteDTO(distance, locations));
+            double minutes = getTimeFromDistance(distance);
+            possibleRouteDTOs.add(new PossibleRouteDTO(distance, locations, minutes));
         }
     }
 

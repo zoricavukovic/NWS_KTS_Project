@@ -3,6 +3,7 @@ package com.example.serbUber.request;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Positive;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,24 +21,22 @@ public class DrivingNotificationRequest {
     private String senderEmail;
     private List<String> passengers;
 
-    private LocalDateTime started;
 //    @Positive(message = "Duration of driving must be positive")
     private int duration;
     private boolean babySeat;
     private boolean petFriendly;
     private String vehicleType;
-    private LocalDateTime chosenDateTime;
+    private Timestamp chosenDateTime;
     private boolean reservation = false;
 
     public DrivingNotificationRequest() {
     }
 
-    public DrivingNotificationRequest(RouteRequest routeRequest, double price, String senderEmail, List<String> passengers, LocalDateTime started, int duration, boolean babySeat, boolean petFriendly, String vehicleType, double time, double distance, LocalDateTime chosenDateTime) {
+    public DrivingNotificationRequest(RouteRequest routeRequest, double price, String senderEmail, List<String> passengers, LocalDateTime started, int duration, boolean babySeat, boolean petFriendly, String vehicleType, double time, double distance, Timestamp chosenDateTime) {
         this.route = routeRequest;
         this.price = price;
         this.senderEmail = senderEmail;
         this.passengers = passengers;
-        this.started = started;
         this.duration = duration;
         this.babySeat = babySeat;
         this.petFriendly = petFriendly;
@@ -67,14 +66,6 @@ public class DrivingNotificationRequest {
 
     public void setPassengers(List<String> passengers) {
         this.passengers = passengers;
-    }
-
-    public LocalDateTime getStarted() {
-        return started;
-    }
-
-    public void setStarted(LocalDateTime started) {
-        this.started = started;
     }
 
     public int getDuration() {
@@ -117,11 +108,11 @@ public class DrivingNotificationRequest {
         this.route = route;
     }
 
-    public LocalDateTime getChosenDateTime() {
+    public Timestamp getChosenDateTime() {
         return chosenDateTime;
     }
 
-    public void setChosenDateTime(LocalDateTime chosenDateTime) {
+    public void setChosenDateTime(Timestamp chosenDateTime) {
         this.chosenDateTime = chosenDateTime;
     }
 

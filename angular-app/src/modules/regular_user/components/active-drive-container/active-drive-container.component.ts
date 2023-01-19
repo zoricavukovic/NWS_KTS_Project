@@ -22,7 +22,7 @@ export class ActiveDriveContainerComponent implements OnInit {
   constructor(private _router: Router, private _drivingService: DrivingService, private store: Store) { }
 
   goToDrivingDetails() {
-    this._router.navigate(['/serb-uber/user/map-page-view', this.activeRide.drivingId]);
+    this._router.navigate(['/serb-uber/user/map-page-view', this.storedDrivingNotification.drivingId]);
   }
 
   ngOnInit(){

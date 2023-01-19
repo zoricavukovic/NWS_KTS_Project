@@ -121,6 +121,7 @@ export class WebSocketService {
       environment.publisherUrl + localStorage.getItem('email') + '/driver-not-found',
       message => {
         this.toast.info(message.body);
+        this.store.dispatch(new ClearStore());
       }
     );
   }

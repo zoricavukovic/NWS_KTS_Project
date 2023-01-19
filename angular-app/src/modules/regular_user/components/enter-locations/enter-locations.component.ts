@@ -133,10 +133,9 @@ export class EnterLocationsComponent implements OnDestroy {
   }
 
   public addressChange(address: Address, index: number) {
-    // console.log(index);
-    // console.log(this.rideRequestForm.get('searchingRoutesForm').value);
     this.deleteMarker(index);
     this.drawPolylineList = removeAllPolyline(this.drawPolylineList);
+    this.possibleRoutesViaPoints = [];
     if(address.formatted_address){
 
       (this.searchingForm).at(index).inputPlace = address.formatted_address;
@@ -149,13 +148,6 @@ export class EnterLocationsComponent implements OnDestroy {
         lng: lng,
       });
       marker.setIcon(this.getIconUrl(index));
-      // (this.searchingForm).at(index).value["marker"].setValue();
-      // this.rideRequestForm.get('searchingRoutesForm').value.at(index).marker = addMarker(this.map, {
-      //   lat: lat,
-      //   lng: lng,
-      // });
-      // (this.searchingForm).at(index).value.marker.setIcon(this.getIconUrl(index));
-      console.log(this.rideRequestForm.get('searchingRoutesForm').value);
       const location = this.createLocation(address, index);
       this.searchingForm.at(index).setValue({
         inputPlace: address.formatted_address,

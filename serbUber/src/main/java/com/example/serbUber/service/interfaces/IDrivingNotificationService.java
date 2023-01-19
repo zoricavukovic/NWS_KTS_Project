@@ -7,6 +7,7 @@ import com.example.serbUber.exception.InvalidChosenTimeForReservationException;
 import com.example.serbUber.exception.PassengerNotHaveTokensException;
 import com.example.serbUber.model.DrivingNotification;
 import com.example.serbUber.request.RouteRequest;
+import com.google.maps.errors.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -26,7 +27,7 @@ public interface IDrivingNotificationService {
        final String vehicleType,
        final LocalDateTime chosenDateTime,
        final boolean isReservation
-    ) throws EntityNotFoundException, ExcessiveNumOfPassengersException, PassengerNotHaveTokensException, InvalidChosenTimeForReservationException;
+    ) throws EntityNotFoundException, ExcessiveNumOfPassengersException, PassengerNotHaveTokensException, InvalidChosenTimeForReservationException, NotFoundException;
 
     DrivingNotificationDTO updateStatus(final Long id, final String email, final boolean accepted) throws EntityNotFoundException;
 

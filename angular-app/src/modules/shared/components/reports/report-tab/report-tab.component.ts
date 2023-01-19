@@ -87,7 +87,7 @@ export class ReportTabComponent implements OnInit, OnDestroy {
   loadData(): void {
     this.startDate = this.datePipe.transform(this.dates.get("starting").value, 'yyyy-MM-dd');
     this.endDate = this.datePipe.transform(this.dates.get("ending").value, 'yyyy-MM-dd');
-    this.dateRange = `${this.startDate} to ${this.endDate}`;
+    this.dateRange = this.getDateRange();
 
     if (!this.isAdmin) {
       this.drivingSubscription = this.drivingService.getChartData(
@@ -112,6 +112,12 @@ export class ReportTabComponent implements OnInit, OnDestroy {
         }
       );
     }
+  }
+
+  private getDateRange(): string {
+    const startDate = this.datePipe.transform(this.dates.get("starting").value, 'dd.MM.yyyy.');
+    const endDate = this.datePipe.transform(this.dates.get("ending").value, 'dd.MM.yyyy.');
+    return `${startDate} to ${endDate}`;
   }
 
   loadAllUsers() {

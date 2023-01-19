@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
@@ -6,16 +6,16 @@ import { Router } from '@angular/router';
   templateUrl: './not-found-page.component.html',
   styleUrls: ['./not-found-page.component.css']
 })
-export class NotFoundPageComponent implements OnInit {
+export class NotFoundPageComponent implements OnInit, OnDestroy {
 
   constructor(private router: Router) { }
 
   ngOnInit(): void {
+    document.getElementById("button-live-chat").style.visibility = 'hidden';
   }
 
-  goToHome(){
-    console.log("hsfafhh");
-    this.router.navigate(["/serb-uber/user/map-page-view/-1"]);
+  ngOnDestroy(): void{
+    document.getElementById("button-live-chat").style.visibility = 'visible';
   }
 
 }

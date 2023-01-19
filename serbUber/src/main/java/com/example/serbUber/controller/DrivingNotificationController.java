@@ -8,6 +8,7 @@ import com.example.serbUber.exception.PassengerNotHaveTokensException;
 import com.example.serbUber.model.DrivingNotification;
 import com.example.serbUber.request.DrivingNotificationRequest;
 import com.example.serbUber.service.DrivingNotificationService;
+import com.google.maps.errors.NotFoundException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,11 +35,10 @@ public class DrivingNotificationController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyRole('ROLE_REGULAR_USER')")
     public DrivingNotificationDTO create(@Valid @RequestBody DrivingNotificationRequest drivingNotificationRequest)
-        throws EntityNotFoundException,
-               ExcessiveNumOfPassengersException,
-               PassengerNotHaveTokensException,
-               InvalidChosenTimeForReservationException
-    {
+            throws EntityNotFoundException,
+            ExcessiveNumOfPassengersException,
+            PassengerNotHaveTokensException,
+            InvalidChosenTimeForReservationException, NotFoundException {
 
         return this.drivingNotificationService.createDrivingNotificationDTO(
             drivingNotificationRequest.getRoute(),
@@ -49,7 +49,7 @@ public class DrivingNotificationController {
             drivingNotificationRequest.isBabySeat(),
             drivingNotificationRequest.isPetFriendly(),
             drivingNotificationRequest.getVehicleType(),
-            drivingNotificationRequest.getChosenDateTime(),
+            drivingNotificationRequest.getChosenDateTime().toLocalDateTime(),
             drivingNotificationRequest.isReservation()
         );
     }

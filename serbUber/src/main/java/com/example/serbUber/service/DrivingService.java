@@ -252,7 +252,7 @@ public class DrivingService implements IDrivingService {
                 busyPassengers = false;
                 break;
             }
-            if(ChronoUnit.MINUTES.between(activeDriving.getStarted(), started.plusHours(1)) > 30){
+            if(ChronoUnit.MINUTES.between(activeDriving.getStarted(), started) > 30){
                 busyPassengers = false;
                 break;
             }
