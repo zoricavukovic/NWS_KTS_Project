@@ -8,6 +8,7 @@ import com.example.serbUber.dto.user.RegularUserDTO;
 import com.example.serbUber.dto.user.RegularUserPageDTO;
 import com.example.serbUber.exception.*;
 import com.example.serbUber.model.Driving;
+import com.example.serbUber.model.DrivingStatus;
 import com.example.serbUber.model.Route;
 import com.example.serbUber.model.user.RegularUser;
 import com.example.serbUber.repository.user.RegularUserRepository;
@@ -22,6 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +31,7 @@ import static com.example.serbUber.dto.RouteDTO.fromRoutes;
 import static com.example.serbUber.dto.user.RegularUserDTO.fromRegularUsers;
 import static com.example.serbUber.dto.user.RegularUserPageDTO.fromRegularUsersPage;
 import static com.example.serbUber.exception.ErrorMessagesConstants.UNBLOCK_UNBLOCKED_USER_MESSAGE;
+import static com.example.serbUber.model.DrivingStatus.ACCEPTED;
 import static com.example.serbUber.util.Constants.ROLE_REGULAR_USER;
 import static com.example.serbUber.util.Constants.getProfilePicture;
 import static com.example.serbUber.util.JwtProperties.getHashedNewUserPassword;
@@ -186,7 +189,7 @@ public class RegularUserService implements IRegularUserService {
 
     private boolean regularUserInActiveDriving(final List<Driving> drivings) {
         for (Driving driving : drivings) {
-            if (driving.isActive()) {
+            if (driving.isActive() || (driving.getDrivingStatus() == ACCEPTED && driving.getStarted().isAfter(LocalDateTime.now()))) {
                 return true;
             }
         }
