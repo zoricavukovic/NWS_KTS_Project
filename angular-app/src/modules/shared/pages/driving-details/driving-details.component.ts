@@ -2,10 +2,8 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import {User} from "../../models/user/user";
-import {UserService} from "../../services/user-service/user.service";
 import {Driving} from "../../models/driving/driving";
 import {DrivingService} from "../../services/driving-service/driving.service";
-import {VehicleService} from "../../services/vehicle-service/vehicle.service";
 import {Vehicle} from "../../models/vehicle/vehicle";
 import {ConfigService} from "../../services/config-service/config.service";
 import {AuthService} from "../../../auth/services/auth-service/auth.service";
@@ -21,6 +19,7 @@ import {
 import { DrivingNotificationState } from '../../state/driving-notification.state';
 import { DrivingNotification } from '../../models/notification/driving-notification';
 import { Select } from '@ngxs/store';
+import { RegularUserService } from '../../services/regular-user-service/regular-user.service';
 
 @Component({
   selector: 'app-driving-details',
@@ -60,12 +59,11 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private configService: ConfigService,
     private authService: AuthService,
-    private userService: UserService,
     private drivingService: DrivingService,
     private driverService: DriverService,
+    private regularUserService: RegularUserService,
     private routeService: RouteService,
     private router: Router,
-    private vehicleService: VehicleService
   ) {
     this.activeRide = false;
     this.markers = [];
@@ -113,7 +111,7 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
             this.isDriver = this.authService.userIsDriver();
           });
 
-        this.favouriteRouteSubscription = this.userService
+        this.favouriteRouteSubscription = this.regularUserService
           .isFavouriteRouteForUser(driving?.route?.id, this.loggedUser?.id)
           .subscribe(response => {
             if (response) {
@@ -125,9 +123,9 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
 
   setFavouriteRoute(favourite: boolean) {
     if (favourite) {
-      this.userService
+      this.regularUserService
         .updateFavouriteRoutes(
-          this.userService.createFavouriteRequest(
+          this.regularUserService.createFavouriteRequest(
             this.authService.getCurrentUserId,
             this.driving.route.id
           )
@@ -136,9 +134,9 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
           this.favouriteRoute = false;
         });
     } else {
-      this.userService
+      this.regularUserService
         .addToFavouriteRoutes(
-          this.userService.createFavouriteRequest(
+          this.regularUserService.createFavouriteRequest(
             this.authService.getCurrentUserId,
             this.driving.route.id
           )

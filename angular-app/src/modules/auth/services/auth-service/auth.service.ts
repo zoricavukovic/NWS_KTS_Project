@@ -5,7 +5,6 @@ import {Router} from '@angular/router';
 import {User} from "../../../shared/models/user/user";
 import {LoginRequest} from "../../../shared/models/user/login-request";
 import {LoginResponse} from "../../../shared/models/user/login-response";
-import {Route} from "../../../shared/models/route/route";
 import {ConfigService} from "../../../shared/services/config-service/config.service";
 import {WebSocketService} from "../../../shared/services/web-socket-service/web-socket.service";
 import {Store} from "@ngxs/store";
@@ -137,11 +136,5 @@ export class AuthService {
       return parsedUser.id;
     }
     return -1;
-  }
-
-  getFavouriteRoutesForUser(userId: number): Observable<Route[]> {
-    return this.http.get<Route[]>(
-      this.configService.allFavouriteRoutesUrl(userId)
-    );
   }
 }
