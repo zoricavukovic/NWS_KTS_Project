@@ -1,5 +1,5 @@
 #map {
-  height: 100vh !important;
+  height: 100% !important;
 }
 
 .map-pill {
@@ -18,7 +18,7 @@
 
 #wrapper {
   position:relative;
-  height: 90vh;
+  height: 100%;
 }
 
 #float-div {

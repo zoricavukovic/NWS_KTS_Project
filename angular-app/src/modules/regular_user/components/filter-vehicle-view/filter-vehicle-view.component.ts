@@ -150,8 +150,8 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
   }
 
   checkChosenDateTime(): boolean{
-    if(this.rideRequestForm.get('chosenDateTime').value > new Date(Date.now() + (5*60*60*1000))){
-      this.toast.error('You can only schedule your ride 5 hours in advance!', 'Invalid chosen time');
+    if(this.rideRequestForm.get('chosenDateTime').value > new Date(Date.now() + (5*60*60*1000)) || this.rideRequestForm.get('chosenDateTime').value < new Date(Date.now() + (0.5*60*60*1000))){
+      this.toast.error('You can only schedule your ride 30 minutes to 5 hours in advance!', 'Invalid chosen time');
       return false;
     }
     return true;

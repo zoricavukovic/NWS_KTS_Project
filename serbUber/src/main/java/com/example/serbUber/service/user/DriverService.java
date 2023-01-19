@@ -1,8 +1,6 @@
 package com.example.serbUber.service.user;
 
 import com.example.serbUber.dto.DriverActivityResetNotificationDTO;
-import com.example.serbUber.dto.DrivingNotificationDTO;
-import com.example.serbUber.dto.DrivingStatusNotificationDTO;
 import com.example.serbUber.dto.user.DriverDTO;
 import com.example.serbUber.dto.user.DriverPageDTO;
 import com.example.serbUber.dto.user.UserDTO;
@@ -15,15 +13,12 @@ import com.example.serbUber.service.interfaces.IDriverService;
 import com.example.serbUber.util.Constants;
 import com.graphhopper.GHRequest;
 import com.graphhopper.GHResponse;
-import com.graphhopper.util.Parameters;
-import com.graphhopper.util.shapes.GHPoint;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -299,6 +294,7 @@ public class DriverService implements IDriverService{
         }
         else return !babySeat && !petFriendly;
     }
+
 
     private boolean checkIfDriverIsFree(Driver driver, final LocalDateTime start, final LocalDateTime end) {
         boolean matches = true;

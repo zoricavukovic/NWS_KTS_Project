@@ -61,7 +61,7 @@
     <button mat-raised-button (click)="getPossibleRoutes()" style="float: left">
       <strong>View possible routes</strong>
     </button>
-    <div class="mat-elevation-z3" *ngIf="possibleRoutesViaPoints.length > 0" style="float: right">
+    <div class="mat-elevation-z3" *ngIf="possibleRoutesViaPoints.length > 0 && currentUser" style="float: right">
       <button
         mat-button
         [matMenuTriggerFor]="menu"
