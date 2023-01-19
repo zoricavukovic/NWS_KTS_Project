@@ -165,13 +165,6 @@ public class DriverService implements IDriverService{
         LocalDateTime startDate = drivingNotification.getStarted();
         LocalDateTime endDate = drivingNotification.getStarted().plusMinutes(drivingNotification.getDuration());
         Location startLocation = drivingNotification.getRoute().getLocations().first().getLocation();
-//        List<Driver> activeAndFreeDrivers = getActiveAndFreeDrivers(
-//            startDate,
-//            endDate,
-//            vehicle.getVehicleTypeInfo().getVehicleType(),
-//            vehicle.isBabySeat(),
-//            vehicle.isPetFriendly()
-//        );
 
         List<Driver> drivers = driverRepository.getActiveDriversWhichVehicleMatchParams(drivingNotification.getVehicleTypeInfo().getVehicleType());
 
@@ -200,13 +193,96 @@ public class DriverService implements IDriverService{
         List<Driver> matchedDrivers = new LinkedList<>();
         for (Driver driver: drivers){
             if (checkDriverVehicleAttributes(driver, babySeat, petFriendly)){
-                if (checkIfDriverNotHaveNowOrFutureDriving(driver, start, end)){
+                if (driverHasActiveAndFutureRide(driver)){
+                   continue;
+                }
+                if (checkIfDriverIsFree(driver, start, end)){
                     matchedDrivers.add(driver);
-                };
+                }
             }
-
         }
-        return matchedDrivers.size() > 0? findNearestDriver(matchedDrivers, lonStart, latStart): null;
+        //u matchesDrivers se nalaze vozaci koji su trenutno slobodni i koji ili nemaju buducu voznju ili imaju buducu voznju ali se one ne preklapaju sa nasom trenutnom voznjom
+        if (matchedDrivers.size() == 0){
+
+            return findBusyDriversWithoutFutureDrivings(drivers);
+        }
+
+        return findNearestDriver(matchedDrivers, lonStart, latStart);
+    }
+
+    private Driver findBusyDriversWithoutFutureDrivings(List<Driver> drivers) {
+        List<Driver> busyDriversWithoutFutureDrivings = new LinkedList<>();
+        for (Driver driver: drivers){
+            boolean hasFutureDriving = false;
+            if (driver.isDrive()){
+                for (Driving driving: driver.getDrivings()){
+                    if (driving.getDrivingStatus().equals(DrivingStatus.ACCEPTED) && !driving.isActive()){
+                        hasFutureDriving = true;
+                        break;
+                    }
+                }
+            }
+            if (!hasFutureDriving){
+                busyDriversWithoutFutureDrivings.add(driver);
+            }
+        }
+
+        if (busyDriversWithoutFutureDrivings.size()!=0){
+
+            return getSoonFreeDriver(busyDriversWithoutFutureDrivings);
+        }
+
+        return null;
+    }
+
+    private Driving getActiveDriving(List<Driving> drivings){
+        for (Driving driving: drivings){
+            if (driving.getDrivingStatus().equals(DrivingStatus.ACCEPTED) && driving.isActive()){
+
+                return driving;
+            }
+        }
+
+        return null;
+    }
+
+    private Driver getSoonFreeDriver(List<Driver> busyDriversWithoutFutureDrivings) {
+        Driver soonFreeDriver = busyDriversWithoutFutureDrivings.get(0);
+        Driving activeDriving = getActiveDriving(busyDriversWithoutFutureDrivings.get(0).getDrivings());
+        if (activeDriving != null){
+            double minMinutes = getMinToEndOfRide(activeDriving);
+            for(Driver driver : busyDriversWithoutFutureDrivings) {
+                activeDriving = getActiveDriving(driver.getDrivings());
+                if (activeDriving != null){
+                    double minutes = getMinToEndOfRide(activeDriving);
+                    if (minutes < minMinutes){
+                        minMinutes = minutes;
+                        soonFreeDriver = driver;
+                    }
+                }
+            }
+        }
+
+        return soonFreeDriver;
+    }
+
+    private double getMinToEndOfRide(Driving activeDriving) {
+
+        return ChronoUnit.MINUTES.between(LocalDateTime.now(), activeDriving.getStarted().plusMinutes(activeDriving.getDuration()));
+    }
+
+    private boolean driverHasActiveAndFutureRide(Driver driver) {
+        boolean drive = driver.isDrive(); //trenutno vozi
+        boolean driverHasFutureDrivings = false;
+
+        for (Driving driving: driver.getDrivings()){
+            if (driving.getDrivingStatus().equals(DrivingStatus.ACCEPTED) && !driving.isActive()){
+                driverHasFutureDrivings = true;
+                break;
+            }
+        }
+
+        return drive && driverHasFutureDrivings;
     }
 
     private boolean checkDriverVehicleAttributes(Driver driver, boolean babySeat, boolean petFriendly) {
@@ -224,25 +300,23 @@ public class DriverService implements IDriverService{
         else return !babySeat && !petFriendly;
     }
 
-    private boolean checkIfDriverNotHaveNowOrFutureDriving(Driver driver, final LocalDateTime start, final LocalDateTime end) {
+    private boolean checkIfDriverIsFree(Driver driver, final LocalDateTime start, final LocalDateTime end) {
         boolean matches = true;
-        for (Driving driving: driver.getDrivings()){
-            if (driving.getDrivingStatus().equals(DrivingStatus.ACCEPTED) && driving.isActive()){
-                long minutesDifference = Math.abs(ChronoUnit.MINUTES.between(driving.getStarted().plusMinutes(driving.getDuration()), start));
-                if (minutesDifference > 5){
-                    matches = false;
-                    break;
+
+        if (!driver.isDrive()){
+            for (Driving driving: driver.getDrivings()) { //TODO: PROVERITI LOCALDATETIME KAKO GA VRACAMO
+                if (driving.getDrivingStatus().equals(DrivingStatus.ACCEPTED) && !driving.isActive()) {
+                    //ako se preklapaju datumi, onda se taj vozac ne moze izabrati
+                    if (!(start.isAfter(driving.getStarted().plusMinutes(driving.getDuration())) || end.isBefore(driving.getStarted()))){
+                        matches = false;
+                        break;
+                    }
                 }
             }
-            if (driving.getDrivingStatus().equals(DrivingStatus.ACCEPTED) && !driving.isActive()){
-                if (!(start.isAfter(driving.getEnd()) || end.isBefore(driving.getStarted()))){
-                    matches = false;
-                    break;
-                }
-            }
+            return matches;
         }
 
-        return matches;
+        return false;
     }
 
     private Driver findNearestDriver(List<Driver> activeAndFreeDrivers, double lonStart, double latStart) throws EntityNotFoundException {
@@ -366,7 +440,7 @@ public class DriverService implements IDriverService{
             throws EntityNotFoundException
     {
         Driver driver = getDriverById(id);
-        driver = this.setDriverLoginData(driver);
+        setDriverLoginData(driver);
         driver.setOnline(true);
 
         return driverRepository.save(driver);
@@ -386,7 +460,7 @@ public class DriverService implements IDriverService{
         driver.setVerified(false);
         driverRepository.save(driver);
         emailService.sendBlockDriverMail(driver.getEmail(), reason);
-        webSocketService.sendBlockedNotification(driver.getEmail(), reason);
+        webSocketService.sendBlockedNotification(driver.getEmail());
 
         return true;
     }

@@ -58,7 +58,8 @@ public class VehicleTypeInfoService implements IVehicleTypeInfoService {
 
     public double getPriceForVehicleAndChosenRoute(double kilometers, VehicleType vehicleType) throws EntityNotFoundException {
         double priceForType = getPriceForVehicle(vehicleType);
-        return priceForType + (kilometers/1000)*1; // *1 token -> 1token=1e
+
+        return Math.ceil(priceForType + (kilometers/1000)*1); // *1 token -> 1token=1e
     }
 
     public VehicleTypeInfo get(VehicleType vehicleType) throws EntityNotFoundException {

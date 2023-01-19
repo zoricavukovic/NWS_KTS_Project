@@ -26,4 +26,6 @@ export interface DrivingNotification {
   receivers?: User[];
   vehicle?: Vehicle;
   vehicleTypeInfo?: VehicleTypeInfo;
+  reservation?: boolean
 }
+

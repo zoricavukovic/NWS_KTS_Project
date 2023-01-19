@@ -50,6 +50,11 @@ public class Constants {
     public static final String DELETED_DRIVING_MESSAGE = "Ride is rejected because not all linked passengers reviewed invitation.";
     public static final String UNSUCCESSFUL_PAYMENT_PATH = "/unsuccessful-payment";
     public static final String DRIVER_NOT_FOUND_PATH = "/driver-not-found";
+    public static final double WITHOUT_TOKENS = 0.0;
+    public static final double START_MISSING_NUM_OF_TOKENS = 0;
+    public static final int HALF_AN_HOUR = 30;
+    public static final int TWENTY_MINUTES = 20;
+    public static final int TEN_MINUTES = 10;
 
     public static int generateSecurityCode() {
         return (int)(Math.random() * (Constants.MAX_SECURITY_NUM - Constants.MIN_SECURITY_NUM + 1) + Constants.MIN_SECURITY_NUM);
@@ -64,9 +69,8 @@ public class Constants {
 
         return list.size()-1;
     }
+
     private static boolean isDefaultPicture(String profilePicture) {
         return profilePicture == null || profilePicture.equalsIgnoreCase(DEFAULT_PICTURE);
     }
-
-
 }

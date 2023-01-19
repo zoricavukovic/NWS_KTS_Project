@@ -61,6 +61,7 @@ export class DrivingNotificationState {
 
     @Action(UpdateStatusDrivingNotification)
     updateStatusDrivingNotification({getState, setState}: StateContext<DrivingNotificationStateModel>, {payload}: UpdateStatusDrivingNotification) {
+      try {
         console.log(payload);
         const state = getState();
         console.log("blafd");
@@ -71,6 +72,9 @@ export class DrivingNotificationState {
             ...state,
             currentDrivingNotification: state.currentDrivingNotification
         });
+      } catch (error) {
+        console.log("eroor se javio");
+      }
     }
 
     @Action(UpdateDrivingNotification)

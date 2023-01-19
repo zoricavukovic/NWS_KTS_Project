@@ -100,8 +100,6 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
           this.vehicleTypesSeats[type.vehicleType] = type.numOfSeats;
         }
       });
-
-   
   }
 
   addSelectedPassenger(email: string) {
@@ -111,7 +109,7 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
         this.selectedPassengers.length + 1
       ) {
         this.selectedPassengers.push(email);
-        this.findPassengerObj(email);
+        this._findPassengerObj(email);
         this.passengerCtrl.setValue(null);
         const index = this.allRegularUsers.indexOf(email);
         this.allRegularUsers.splice(index, 1);
@@ -142,18 +140,14 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
   }
 
   showPrice(){
-    // this.vehicleSubscription = this.vehicleService
-    //   .getVehicleByVehicleType(this.rideRequestForm.get('vehicleType').value)
-    //   .subscribe(response => {
-    //     this.vehicle = response;
-    //   });
+    const distance = (this.rideRequestForm.get('selectedRoute').value as Route).distance;
     this.priceSubscription = this.vehicleTypeInfoService
-      .getPriceForVehicleAndRoute(this.rideRequestForm.get('vehicleType').value, 3800)
+      .getPriceForVehicleAndRoute(this.rideRequestForm.get('vehicleType').value, distance)
       .subscribe(response => {
         this.price = response;
         this.rideRequestForm.get('price').setValue(this.price);
       });
-    }
+  }
 
   checkChosenDateTime(): boolean{
     if(this.rideRequestForm.get('chosenDateTime').value > new Date(Date.now() + (5*60*60*1000))){
@@ -167,23 +161,23 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
     this.rideRequestForm.get('selectedPassengers').setValue(this.selectedPassengers);
     this.rideRequestForm.get('senderEmail').setValue(this.currentUser.email);
     let started = moment().toDate();
-    console.log(started);
-    if(this.rideRequestForm.get('chosenDateTime').value != null){
+    if(this.rideRequestForm.get('chosenDateTime').value !== null){
       started = this.rideRequestForm.get('chosenDateTime').value
     }
+    const timeZone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
+    console.log(timeZone);
     this.passengerSubscription = this.drivingService.havePassengersAlreadyRide(this.selectedPassengers, started).subscribe(response => {
       this.usersHaveAlreadyRide = response;
       if(response){
         this.toast.error("Some passengers have scheduled ride at time.", "Ride request failed");
       }
       else{
-       this.createDriving();
-    }
-  });
+       this.createDriving(started);
+      }
+    });
   }
 
-
-  private createDriving(){
+  private createDriving(started: Date){
     if(this.checkChosenDateTime()){
       this.waitingForAcceptDrive.emit(true);
       const drivingNotification = {
@@ -198,21 +192,29 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
         minutes: -1,
         drivingStatus: "PAYING",
         active: false,
-        chosenDateTime: this.rideRequestForm.get('chosenDateTime').value
+        chosenDateTime: started,
+        reservation: this.rideRequestForm.get('chosenDateTime').value != null
       };
       this.store.dispatch(new AddDrivingNotification(drivingNotification)).subscribe((response) => {
         console.log(response);
       });
 
       this.drivingNotificationSubscription = this.drivingNotificationService.create(drivingNotification).subscribe((result) => {
-        this.store.dispatch(new UpdateStatusDrivingNotification({active: false, drivingStatus: "ACCEPTED"})).subscribe(response => {
+        this.store.dispatch(new UpdateStatusDrivingNotification({active: false, drivingStatus: "ACCEPTED"}))
+          .subscribe(response => {
           console.log(response);
         })
-  })}
+    },
+        error => {
+          console.log("Javio se error");
+          console.log(error);
+          this.toast.error(error.error, "Requesting ride failed")
+        }
+    )}
   }
 
 
-  private findPassengerObj(email: string): void {
+  private _findPassengerObj(email: string): void {
     let user: User;
     this.userSubscription = this.userService
       .getUserByEmail(email)
@@ -222,13 +224,13 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
       });
   }
 
-  
 
-private _filter(value: string): string[] {
-  const filterValue = value.toLowerCase();
 
-  return this.allRegularUsers.filter(option => option.toLowerCase().includes(filterValue));
-}
+  private _filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+
+    return this.allRegularUsers.filter(option => option.toLowerCase().includes(filterValue));
+  }
 
   ngOnDestroy(): void {
     if (this.allUsersSubscription) {

@@ -634,7 +634,7 @@ public class EmailService {
         ApplicationContext context = new ClassPathXmlApplicationContext("Spring-Mail.xml");
         HTMLEmailService mm = (HTMLEmailService) context.getBean("htmlMail");
 
-        mm.sendMail("serbUberNWTKTS@gmail.com", "serbUberNWTKTS@gmail.com", SUBJECT_BLOCK_DRIVER, html);
+        mm.sendMail("serbUberNWTKTS@gmail.com", "serbUberNWTKTS@gmail.com", SUBJECT_BLOCK, html);
     }
 
     @Async

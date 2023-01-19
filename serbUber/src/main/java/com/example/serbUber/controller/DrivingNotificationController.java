@@ -3,7 +3,7 @@ package com.example.serbUber.controller;
 import com.example.serbUber.dto.DrivingNotificationDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.ExcessiveNumOfPassengersException;
-import com.example.serbUber.exception.InvalidStartedDateTimeException;
+import com.example.serbUber.exception.InvalidChosenTimeForReservationException;
 import com.example.serbUber.exception.PassengerNotHaveTokensException;
 import com.example.serbUber.model.DrivingNotification;
 import com.example.serbUber.request.DrivingNotificationRequest;
@@ -33,7 +33,12 @@ public class DrivingNotificationController {
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyRole('ROLE_REGULAR_USER')")
-    public DrivingNotificationDTO create(@Valid @RequestBody DrivingNotificationRequest drivingNotificationRequest) throws EntityNotFoundException, ExcessiveNumOfPassengersException, InvalidStartedDateTimeException, PassengerNotHaveTokensException {
+    public DrivingNotificationDTO create(@Valid @RequestBody DrivingNotificationRequest drivingNotificationRequest)
+        throws EntityNotFoundException,
+               ExcessiveNumOfPassengersException,
+               PassengerNotHaveTokensException,
+               InvalidChosenTimeForReservationException
+    {
 
         return this.drivingNotificationService.createDrivingNotificationDTO(
             drivingNotificationRequest.getRoute(),
@@ -44,7 +49,8 @@ public class DrivingNotificationController {
             drivingNotificationRequest.isBabySeat(),
             drivingNotificationRequest.isPetFriendly(),
             drivingNotificationRequest.getVehicleType(),
-            drivingNotificationRequest.getChosenDateTime()
+            drivingNotificationRequest.getChosenDateTime(),
+            drivingNotificationRequest.isReservation()
         );
     }
 
@@ -53,12 +59,6 @@ public class DrivingNotificationController {
     @PreAuthorize("hasAnyRole('ROLE_REGULAR_USER')")
     public DrivingNotificationDTO get(@Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable final Long id) throws EntityNotFoundException {
         return drivingNotificationService.get(id);
-    }
-
-    @GetMapping()
-    @ResponseStatus(HttpStatus.OK)
-    public List<DrivingNotification> getAll() throws EntityNotFoundException {
-        return drivingNotificationService.getAll();
     }
 
     @PutMapping("/update-status/{id}/{accepted}/{email}")

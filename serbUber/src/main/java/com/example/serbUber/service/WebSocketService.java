@@ -96,7 +96,7 @@ public class WebSocketService {
         }
     }
 
-    public void sendBlockedNotification(final String email, final String reason) {
+    public void sendBlockedNotification(final String email) {
         this.messagingTemplate.convertAndSendToUser(email, "/connect", BLOCKED_NOTIFICATION);
     }
 

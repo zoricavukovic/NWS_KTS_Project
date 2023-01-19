@@ -7,8 +7,8 @@ import static com.example.serbUber.exception.ErrorMessagesConstants.*;
 
 public class UpdatePayingInfoRequest {
 
-    @NotNull(message = MISSIN_NUM_OF_TOKENS)
-    @Positive(message = MISSIN_NUM_OF_TOKENS)
+    @NotNull(message = MISSING_NUM_OF_TOKENS)
+    @Positive(message = MISSING_NUM_OF_TOKENS)
     private final double tokenPrice;
 
     @NotNull(message = MAX_NUM_OF_TOKENS)

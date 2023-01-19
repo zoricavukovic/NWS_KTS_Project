@@ -166,18 +166,18 @@ insert into paying_info(currency, token_price, max_num_of_tokens_per_transaction
     ('EUR', 1, 20);
 
 insert into token_banks(user_id, num_of_tokens, total_token_amount_spent, total_money_amount_spent, paying_info_id) values
-                                                                                                                        (2, 9, 2, 11, 1),
-                                                                                                                        (3, 8, 0, 8, 1),
-                                                                                                                        (4, 0, 0, 0, 1),
-                                                                                                                        (9, 3, 0, 0, 1),
-                                                                                                                        (10, 1, 0, 0, 1),
-                                                                                                                        (11, 0, 0, 0, 1),
-                                                                                                                        (12, 0, 0, 0, 1),
-                                                                                                                        (13, 0, 0, 0, 1),
-                                                                                                                        (14, 0, 0, 0, 1);
+                        (2, 4, 0, 4, 1),
+                        (3, 1, 0, 1, 1),
+                        (4, 5, 1, 6, 1),
+                        (9, 3, 0, 0, 1),
+                        (10, 1, 0, 0, 1),
+                        (11, 0, 0, 0, 1),
+                        (12, 0, 0, 0, 1),
+                        (13, 0, 0, 0, 1),
+                        (14, 0, 0, 0, 1);
 
 insert into token_transactions(time_stamp, num_of_bought_tokens, total_price, token_bank_id) values
-                                                                                                 ('2022-12-01 14:03', 4, 4, 1),
-                                                                                                 ('2022-12-03 14:00', 7, 7, 1),
-                                                                                                 ('2022-12-03 15:00', 8, 8, 2);
+                             ('2022-12-01 14:03', 4, 4, 1),
+                             ('2022-12-03 14:00', 7, 7, 1),
+                             ('2022-12-03 15:00', 8, 8, 2);
 

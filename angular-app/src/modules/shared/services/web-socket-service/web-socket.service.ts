@@ -139,7 +139,7 @@ export class WebSocketService {
       this.store.dispatch(new GetDrivingNotification());
       this.store.dispatch(new UpdateMinutesStatusDrivingNotification(updatedDriving));
       this.router.navigate([`/serb-uber/user/map-page-view/${drivingStatusNotification.drivingId}`]);
-        
+
       }
     );
   }
@@ -196,12 +196,7 @@ export class WebSocketService {
       environment.publisherUrl + localStorage.getItem('email') + '/delete-driving',
       message => {
         this.toast.info(message.body);
-        if (this.router.url.includes("notifications")) {
-          window.location.reload();
-        }
-        else {
-          this.router.navigate(['/serb-uber/user/map-page-view/-1']);
-        }
+        this.router.navigate(['/serb-uber/user/map-page-view/-1']);
       }
     );
   }
