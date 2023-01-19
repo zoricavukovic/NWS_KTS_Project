@@ -10,7 +10,6 @@ import {BlockNotification} from "../../models/notification/block-notification";
 import {RegularUser} from "../../models/user/regular-user";
 import {RegistrationResponse} from "../../models/user/registration-response";
 import {Driver} from "../../models/user/driver";
-import {FavouriteRouteRequest} from "../../models/route/favourite-route-request";
 import {Role} from "../../models/user/role";
 
 @Injectable({
@@ -91,24 +90,6 @@ export class UserService extends GenericService<User> {
     return this.http.post<User>(this.configService.CREATE_DRIVER_URL, driverRequest);
   }
 
-  addToFavouriteRoutes(favouriteRouteRequest: FavouriteRouteRequest) {
-
-    return this.http.post<boolean>(this.configService.SET_FAVOURITE_ROUTE_URL, favouriteRouteRequest);
-  }
-
-  updateFavouriteRoutes(favouriteRouteRequest: FavouriteRouteRequest) {
-    return this.http.post<boolean>(
-      this.configService.SET_FAVOURITE_ROUTE_URL,
-      favouriteRouteRequest
-    );
-  }
-
-  isFavouriteRouteForUser(routeId: number, userId: number) {
-    return this.http.get(
-      this.configService.isFavouriteRouteUrl(routeId, userId)
-    );
-  }
-
   getUserByEmail(email: string): Observable<User> {
 
     return this.http.get<User>(this.configService.userByEmailUrl(email));
@@ -143,13 +124,4 @@ export class UserService extends GenericService<User> {
     };
   }
 
-  createFavouriteRequest(
-    userId: number,
-    routeId: number
-  ): FavouriteRouteRequest {
-    return {
-      userId: userId,
-      routeId: routeId,
-    };
-  }
 }

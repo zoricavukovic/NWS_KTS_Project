@@ -14,16 +14,7 @@
         routerLinkActive="active"
         mat-button
         color="primary"
-        >Drivings</a
-      >
-      <a
-      *ngIf="isRegular"
-      [routerLink]="['/serb-uber/regular-user/favourite-routes']"
-      routerLinkActive="active"
-      mat-button
-      color="primary"
-      >Favourite Routes</a
-      >
+        >Drivings</a>
       <a
         *ngIf="!isAdmin && isRegular"
         [routerLink]="['/serb-uber/regular-user/payment/financial-card', loggedUser?.id]"
