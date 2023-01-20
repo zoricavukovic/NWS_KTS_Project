@@ -26,6 +26,8 @@ import {SimpleDrivingInfo} from "../../models/driving/simple-driving-info";
 import {DrivingStatusNotification} from "../../models/notification/driving-status-notification";
 import { Subscription } from 'rxjs';
 import { DrivingNotification } from '../../models/notification/driving-notification';
+import { BellNotification } from '../../models/notification/bell-notification';
+import { BellNotificationsService } from '../bell-notifications-service/bell-notifications.service';
 
 @Injectable({
   providedIn: 'root',
@@ -47,7 +49,8 @@ export class WebSocketService {
     private router: Router,
     private toast: ToastrService,
     private drivingService: DrivingService,
-    private store: Store
+    private store: Store,
+    private bellNotificationService: BellNotificationsService
   ) {
     if (!this.stompClient) {
       this.initialized = false;
@@ -96,10 +99,23 @@ export class WebSocketService {
         that.successfulCreatedDrivingNotification();
 
         that.passengerAgreementNotification();
+
+        that.bellNotificationsUpdate();
       });
     }
   }
 
+  bellNotificationsUpdate(){
+    this.stompClient.subscribe(
+      environment.publisherUrl + localStorage.getItem('email') + '/bell-notification',
+      message => {
+        const bellNotification:BellNotification = JSON.parse(message.body);
+        this.bellNotificationService.addNotification(bellNotification);
+      }
+    );
+  }
+
+  //za ovaj treba i na klik da moze da ode
   passengerAgreementNotification(){
     this.stompClient.subscribe(
       environment.publisherUrl + localStorage.getItem('email') + '/agreement-passenger',
@@ -125,6 +141,7 @@ export class WebSocketService {
     );
   }
 
+  //ovo isto moze da vodi kao i ono prvo, a i ne mora
   successfulCreatedDrivingNotification(){
     this.stompClient.subscribe(
       environment.publisherUrl + localStorage.getItem('email') + '/successful-driving',
@@ -182,6 +199,7 @@ export class WebSocketService {
     });
   }
 
+  //ovo treba
   rejectDrivingNotification(){
     this.stompClient.subscribe(
       environment.publisherUrl + localStorage.getItem('email') + '/reject-driving',
@@ -191,6 +209,7 @@ export class WebSocketService {
     );
   }
 
+  //ovo isto treba, nakon 10 min, za regular
   deleteDrivingNotification(){
     this.stompClient.subscribe(
       environment.publisherUrl + localStorage.getItem('email') + '/delete-driving',
@@ -201,6 +220,7 @@ export class WebSocketService {
     );
   }
 
+  //ovo je isto kao za putnike posl 10 min, samo za drivera
   deleteDrivingForCreatorNotification(){
     this.stompClient.subscribe(
       environment.publisherUrl + localStorage.getItem('email') + '/delete-driving-creator',
@@ -211,6 +231,7 @@ export class WebSocketService {
     );
   }
 
+  //kad jedan ne prihvati, poruka da se svima odbija
   passengerNotAcceptDriving() {
     this.stompClient.subscribe(
       environment.publisherUrl + localStorage.getItem('email') + '/passenger-not-accept-driving',

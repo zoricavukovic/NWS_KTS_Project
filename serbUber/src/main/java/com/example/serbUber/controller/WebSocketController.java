@@ -1,7 +1,5 @@
 package com.example.serbUber.controller;
 
-import com.example.serbUber.dto.VehicleDTO;
-import com.example.serbUber.request.message.ChatRoomRequest;
 import com.example.serbUber.request.message.ChatRoomWithNotifyRequest;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -9,7 +7,6 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @Controller
 public class WebSocketController {

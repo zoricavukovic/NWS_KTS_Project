@@ -37,6 +37,17 @@
   color: var(--deep-blue);
 }
 
+.bell-icon {
+  margin-right: 1rem;
+  position: relative;
+}
+
+.bell-icon mat-icon {
+  color: white;
+  margin-top: 0.5rem;
+  transform: scale(1.2);
+}
+
 .driver-registration-icon {
   height: 1.3rem;
   width: 1.3rem;
@@ -62,3 +73,47 @@ a {
   transform: scale(0.9);
 }
 
+.notification-content {
+  margin: 0.5rem;
+  padding: 0.2rem;
+  min-height: 2rem;
+  color: white;
+}
+
+::ng-deep .bell-notifications-menu {
+  max-height: 18rem !important;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.notification-row {
+  border-radius: 0.4rem;
+  padding: 0.2rem;
+}
+
+.notification-row:hover {
+  background-color: #283b50;
+}
+
+.badge {
+  box-sizing: border-box;
+  position: absolute;
+  min-width: 1.4rem;
+  min-height: 1.4rem;
+  max-width: 1.5rem;
+  max-height: 1.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+  padding: 0.125rem;
+  border-radius: 1rem;
+
+  top: 0;
+  left: 0.8rem;
+  background: var(--gray);
+  color: var(--deep-blue);
+}
+
+.badge span {
+  position: relative;
+  top: -0.4rem;
+}

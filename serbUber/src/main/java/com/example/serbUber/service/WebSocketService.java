@@ -1,6 +1,7 @@
 package com.example.serbUber.service;
 
 import com.example.serbUber.dto.*;
+import com.example.serbUber.dto.bell.BellNotificationDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.model.DrivingNotification;
 import com.example.serbUber.model.DrivingNotificationType;
@@ -8,12 +9,12 @@ import com.example.serbUber.model.user.RegularUser;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static com.example.serbUber.util.Constants.BLOCKED_NOTIFICATION;
-import static com.example.serbUber.util.Constants.DELETED_DRIVING_MESSAGE;
+import static com.example.serbUber.util.Constants.*;
 
 @Service
 public class WebSocketService {
@@ -22,12 +23,16 @@ public class WebSocketService {
 
     private final EmailService emailService;
 
+    private final BellNotificationService bellNotificationService;
+
     public WebSocketService(
             final SimpMessagingTemplate messagingTemplate,
-            final EmailService emailService
+            final EmailService emailService,
+            final BellNotificationService bellNotificationService
     ) {
         this.messagingTemplate = messagingTemplate;
         this.emailService = emailService;
+        this.bellNotificationService = bellNotificationService;
     }
 
     public void sendVehicleCurrentLocation(VehicleCurrentLocationDTO vehicleDTO) {
@@ -40,6 +45,14 @@ public class WebSocketService {
     ) {
         users.forEach((key, value) -> {
             this.messagingTemplate.convertAndSendToUser(key.getEmail(), "/delete-driving", DELETED_DRIVING_MESSAGE);
+            BellNotificationDTO bellNotificationDTO = this.bellNotificationService.saveBellNotification(
+                    DELETED_DRIVING_MESSAGE,
+                    !SHOULD_REDIRECT,
+                    null,
+                    key.getId()
+            );
+
+            this.messagingTemplate.convertAndSendToUser(key.getEmail(), "/bell-notification", bellNotificationDTO);
         });
         this.messagingTemplate.convertAndSendToUser(drivingNotificationDTO.getSenderEmail(), "/delete-driving-creator", DELETED_DRIVING_MESSAGE);
     }
@@ -49,6 +62,14 @@ public class WebSocketService {
                                                     final Map<RegularUser, Integer> users){
         users.forEach((key, value) -> {
             this.messagingTemplate.convertAndSendToUser(key.getEmail(), "/agreement-passenger", drivingNotificationDTO);
+            BellNotificationDTO bellNotificationDTO = this.bellNotificationService.saveBellNotification(
+                    getAgreementMessage(drivingNotificationDTO.getSenderEmail()),
+                    SHOULD_REDIRECT,
+                    getDrivingNotificationPath(drivingNotificationDTO.getId().toString()),
+                    key.getId()
+            );
+
+            this.messagingTemplate.convertAndSendToUser(key.getEmail(), "/bell-notification", bellNotificationDTO);
         });
     }
 
@@ -58,6 +79,14 @@ public class WebSocketService {
             regularUsers.forEach(user -> {
                 if(!user.getEmail().equals(userEmail)) {
                     this.messagingTemplate.convertAndSendToUser(user.getEmail(), "/passenger-not-accept-driving", messageForPassengers);
+                    BellNotificationDTO bellNotificationDTO = this.bellNotificationService.saveBellNotification(
+                            messageForPassengers,
+                            !SHOULD_REDIRECT,
+                            null,
+                            user.getId()
+                    );
+
+                    this.messagingTemplate.convertAndSendToUser(user.getEmail(), "/bell-notification", bellNotificationDTO);
                 }
             });
         }
@@ -75,6 +104,14 @@ public class WebSocketService {
         if (receiversReviewed.size() > 0) {
             receiversReviewed.forEach((key, value) -> {
                 this.messagingTemplate.convertAndSendToUser(key.getEmail(), destinationPath, message);
+                BellNotificationDTO bellNotificationDTO = this.bellNotificationService.saveBellNotification(
+                        message,
+                        !SHOULD_REDIRECT,
+                        null,
+                        key.getId()
+                );
+
+                this.messagingTemplate.convertAndSendToUser(key.getEmail(), "/bell-notification", bellNotificationDTO);
             });
         }
     }
@@ -83,6 +120,14 @@ public class WebSocketService {
         if (receiversReviewed.size() > 0) {
             receiversReviewed.forEach((key, value) -> {
                 this.messagingTemplate.convertAndSendToUser(key.getEmail(), "/successful-driving", dto);
+                BellNotificationDTO bellNotificationDTO = this.bellNotificationService.saveBellNotification(
+                        SUCCESSFUL_DRIVING_CREATION,
+                        SHOULD_REDIRECT,
+                        getDrivingCreationPath(dto.getDrivingId().toString()),
+                        key.getId()
+                );
+
+                this.messagingTemplate.convertAndSendToUser(key.getEmail(), "/bell-notification", bellNotificationDTO);
             });
         }
     }
@@ -92,6 +137,14 @@ public class WebSocketService {
         if (users.size() > 0) {
             users.forEach(user -> {
                 this.messagingTemplate.convertAndSendToUser(user.getEmail(), "/reject-driving", message);
+                BellNotificationDTO bellNotificationDTO = this.bellNotificationService.saveBellNotification(
+                        message,
+                        !SHOULD_REDIRECT,
+                        null,
+                        user.getId()
+                );
+
+                this.messagingTemplate.convertAndSendToUser(user.getEmail(), "/bell-notification", bellNotificationDTO);
             });
         }
     }

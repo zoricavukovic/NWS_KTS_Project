@@ -27,7 +27,7 @@ import {NgxMatTimepickerModule} from '@angular-material-components/datetime-pick
 import { NgxMatMomentModule } from '@angular-material-components/moment-adapter';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-
+import {MatBadgeModule} from '@angular/material/badge';
 
 const MaterialConstants = [
   MatTooltipModule,
@@ -60,7 +60,8 @@ const MaterialConstants = [
   NgxMatTimepickerModule,
   NgxMatMomentModule,
   MatDatepickerModule,
-  MatNativeDateModule
+  MatNativeDateModule,
+  MatBadgeModule
 ]
 
 @NgModule({

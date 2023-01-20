@@ -8,6 +8,8 @@ import {ConfigService} from "../../../shared/services/config-service/config.serv
 import {AuthService} from "../../../auth/services/auth-service/auth.service";
 import {DriverService} from "../../../shared/services/driver-service/driver.service";
 import {SocialAuthService, SocialUser} from "@abacritt/angularx-social-login";
+import { BellNotification } from 'src/modules/shared/models/notification/bell-notification';
+import { BellNotificationsService } from 'src/modules/shared/services/bell-notifications-service/bell-notifications.service';
 
 @Component({
   selector: 'nav-bar',
@@ -29,15 +31,23 @@ export class NavBarComponent implements OnInit, OnDestroy {
   isDriver: boolean;
   driverActivityStatus: boolean;
 
+  bellNotificationsSubscription: Subscription;
+  bellAllSeenSubscription: Subscription;
+  bellNotifications: BellNotification[];
+  numOfNotifications: number;
+
   constructor(
     public configService: ConfigService,
     private authService: AuthService,
     private router: Router,
     private driverService: DriverService,
     private toast: ToastrService,
-    private authServiceForLogin: SocialAuthService
+    private authServiceForLogin: SocialAuthService,
+    private bellNotificationsService: BellNotificationsService
   ) {
     this.driverActivityStatus = false;
+    this.bellNotifications = [];
+    this.numOfNotifications = 0;
   }
 
   ngOnInit(): void {
@@ -56,10 +66,47 @@ export class NavBarComponent implements OnInit, OnDestroy {
         } else {
           this.driverService.resetGlobalDriver();
         }
+        if (this.loggedUser && this.isRegular) {
+          this.loadBellNotifications();
+        }
       });
 
     if (this.isDriver) {
       this.followDriverChanges();
+    }
+  }
+
+  loadBellNotifications(): void {
+    this.bellNotificationsSubscription = this.bellNotificationsService.getBellNotifications(this.loggedUser.id).subscribe(
+      res => {
+        if (res) {
+          this.bellNotifications = res;
+          this.loadNumOfNotifications();
+        }
+      }
+    );
+  }
+
+  loadNumOfNotifications(): void {
+    this.numOfNotifications = this.bellNotificationsService.getNumOfNotifications();
+  }
+
+  setAllAsSeen(): void {
+    if (this.numOfNotifications > 0)
+    this.bellAllSeenSubscription = this.bellNotificationsService.setAllAsSeen(this.loggedUser.id).subscribe(
+      res => {
+        if (res) {
+          this.bellNotifications.filter(notification => notification.seen = true);
+          this.numOfNotifications = 0;
+        }
+      }
+    );
+  }
+
+  notificationRedirect(bellNotification: BellNotification): void {
+    console.log(bellNotification.shouldRedirect)
+    if (bellNotification.shouldRedirect) {
+      this.router.navigate([bellNotification.redirectId]);
     }
   }
 
@@ -118,9 +165,21 @@ export class NavBarComponent implements OnInit, OnDestroy {
     this.router.navigate([`/serb-uber/user/reset-password/${this.loggedUser.email}`]);
   }
 
+  bellNotificationsDelete(user: User) {
+    if (user.role.name === this.configService.ROLE_REGULAR_USER) {
+      this.bellNotificationsService.resetBell();
+      this.bellNotificationsSubscription = this.bellNotificationsService.delete(user.id).subscribe(
+        res => {
+          console.log(res);
+        }
+      );
+    }
+  }
+
   logOut() {
     this.logoutSubscription = this.authService.setOfflineStatus().subscribe(
       response => {
+        this.bellNotificationsDelete(response);
         this.authService.logOut();
         this.driverData = null;
         this.driverService.resetGlobalDriver();
@@ -143,6 +202,11 @@ export class NavBarComponent implements OnInit, OnDestroy {
     if (this.driverSubscription) {
       this.driverSubscription.unsubscribe();
       this.driverService.resetGlobalDriver();
+    }
+
+    if (this.bellAllSeenSubscription) {
+      this.bellAllSeenSubscription.unsubscribe();
+      this.bellNotificationsService.resetBell();
     }
   }
 }

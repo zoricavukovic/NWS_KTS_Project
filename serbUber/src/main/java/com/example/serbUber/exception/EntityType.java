@@ -14,7 +14,9 @@ public enum EntityType {
     TOKEN_BANK,
     PAYING_INFO,
     DRIVER_UPDATE_APPROVAL,
-    DRIVING_NOTIFICATION;
+    DRIVING_NOTIFICATION,
+    BELL_NOTIFICATION
+    ;
 
     public static String getEntityErrorMessage(String id, EntityType entityType){
         switch (entityType){
@@ -68,6 +70,10 @@ public enum EntityType {
             case DRIVER_UPDATE_APPROVAL -> {
 
                 return "Driver approval request : " + id + " is not found";
+            }
+            case BELL_NOTIFICATION -> {
+
+                return "Bell notification : " + id + " is not found";
             }
             default -> {
 

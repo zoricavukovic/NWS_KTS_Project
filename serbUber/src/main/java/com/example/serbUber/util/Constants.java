@@ -54,6 +54,7 @@ public class Constants {
     public static final String DRIVER_NOT_FOUND_MESSAGE = "Ride is rejected because driver is not found.";
     public static final String UNSUCCESSFUL_PAYMENT_MESSAGE = "Ride is rejected because payment was not successful. Please, check your tokens!";
     public static final String DELETED_DRIVING_MESSAGE = "Ride is rejected because not all linked passengers reviewed invitation.";
+    public static final String SUCCESSFUL_DRIVING_CREATION = "Driving is successfully created!";
     public static final String UNSUCCESSFUL_PAYMENT_PATH = "/unsuccessful-payment";
     public static final String DRIVER_NOT_FOUND_PATH = "/driver-not-found";
     public static final double WITHOUT_TOKENS = 0.0;
@@ -63,9 +64,25 @@ public class Constants {
     public static final int TEN_MINUTES = 10;
     public static final double ONE_DRIVING = 1.0;
     public static final double NOT_BY_SPECIFIC_USER = -1;
+    public static final boolean SHOULD_REDIRECT = true;
 
     public static int generateSecurityCode() {
         return (int)(Math.random() * (Constants.MAX_SECURITY_NUM - Constants.MIN_SECURITY_NUM + 1) + Constants.MIN_SECURITY_NUM);
+    }
+
+    public static String getAgreementMessage(String user) {
+
+        return String.format("User %s added you as linked passenger. Tap to accept!", user);
+    }
+
+    public static String getDrivingNotificationPath(String id) {
+
+        return String.format("serb-uber/user/driving-notification/%s", id);
+    }
+
+    public static String getDrivingCreationPath(String id) {
+
+        return String.format("/serb-uber/user/map-page-view/%s", id);
     }
 
     public static String getProfilePicture(String profilePicture) {

@@ -282,6 +282,17 @@ export class ConfigService {
   }
 
 
+  ///////////////////NOTIFICATION BELL///////////////////
+  NOTIFICATION_BELL_URL = `${this.API_URL}/bell-notifications`;
+
+  bellNotificationsForUser(userId: number): string {
+    return `${this.NOTIFICATION_BELL_URL}/${userId}`;
+  }
+
+  setAllNotificationsAsSeen(userId: number): string {
+    return `${this.NOTIFICATION_BELL_URL}/seen/${userId}`;
+  }
+
   // public role_driver = 'ROLE_DRIVER';
   // public role_regular_user = 'ROLE_REGULAR_USER';
 

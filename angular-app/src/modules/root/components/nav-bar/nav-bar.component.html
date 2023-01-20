@@ -24,14 +24,6 @@
         >Tokens</a
       >
       <a
-        *ngIf="isRegular"
-        [routerLink]="['/notifications']"
-        routerLinkActive="active"
-        mat-button
-        color="primary"
-      >Notifications</a
-      >
-      <a
         *ngIf="isAdmin"
         [routerLink]="['/serb-uber/admin/drivers']"
         routerLinkActive="active"
@@ -103,6 +95,20 @@
     >Sign up</a
   >
 
+  <div
+    *ngIf="isRegular"
+    class="bell-icon"
+    mat-button
+    [matMenuTriggerFor]="bellNotificationsMenu"
+    (click)="setAllAsSeen()"
+    >
+    <mat-icon>notifications</mat-icon>
+    <div *ngIf="numOfNotifications > 0" class="badge">
+      <span>{{numOfNotifications}}</span>
+    </div>
+  </div
+>
+
   <div *ngIf="loggedUser" class="temp">
     <img
       mat-button
@@ -145,4 +151,25 @@
       <mat-icon color="primary">logout</mat-icon><span>Log out</span>
     </button>
   </mat-menu>
+
+  <mat-menu class="bell-notifications-menu" #bellNotificationsMenu="matMenu">
+    <div 
+    *ngFor="let notification of bellNotifications; index as i"
+    class="notification-content"
+    >
+      <div class="notification-row" (click)="notificationRedirect(notification)">
+        <div>
+          {{notification.timeStamp | dateFormat}}
+        </div>
+        <div>
+          {{notification.message}}
+        </div>
+        <hr>
+      </div>
+    </div>
+    <div *ngIf="bellNotifications.length < 1" class="notification-content">
+      Your inbox is empty.
+    </div>
+  </mat-menu>
+
 </mat-toolbar>

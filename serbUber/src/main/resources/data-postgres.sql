@@ -77,8 +77,8 @@ insert into drivers (id, email, password, name, surname, phone_number, city, pro
 insert into drivings (active, driver_id, driving_status, duration, paying_limit, price, started, end_date, route_id) values
    (true, 5, 2, 2, null, 3, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), null, 1),
    (false, 5, 2, 2, null, 3, to_timestamp('17.01.2023. 23:20', 'DD.MM.YYYY HH24:MI'), null, 2),
-   (false, 6, 3, 10, null, 5,to_timestamp('24.10.2022 14:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('24.10.2022. 14:10', 'DD.MM.YYYY HH24:MI'),3),
-   (false, 6, 3, 10, null, 5,to_timestamp('24.11.2022 14:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('24.11.2022. 14:10', 'DD.MM.YYYY HH24:MI'),4);
+   (false, 6, 3, 10, null, 5,to_timestamp('24.11.2022. 14:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('24.11.2022. 14:10', 'DD.MM.YYYY HH24:MI'),3),
+   (false, 6, 3, 10, null, 5,to_timestamp('25.11.2022. 14:00', 'DD.MM.YYYY HH24:MI'), to_timestamp('25.11.2022. 14:10', 'DD.MM.YYYY HH24:MI'),4);
 
 
 insert into admins (id, email, password, name, surname, phone_number, city, profile_picture, role_id, verified, online) values
@@ -167,7 +167,7 @@ insert into paying_info(currency, token_price, max_num_of_tokens_per_transaction
 
 insert into token_banks(user_id, num_of_tokens, total_token_amount_spent, total_money_amount_spent, paying_info_id) values
                         (2, 4, 0, 4, 1),
-                        (3, 1, 0, 1, 1),
+                        (3, 8, 0, 8, 1),
                         (4, 5, 1, 6, 1),
                         (9, 3, 0, 0, 1),
                         (10, 1, 0, 0, 1),
@@ -180,4 +180,9 @@ insert into token_transactions(time_stamp, num_of_bought_tokens, total_price, to
                              ('2022-12-01 14:03', 4, 4, 1),
                              ('2022-12-03 14:00', 7, 7, 1),
                              ('2022-12-03 15:00', 8, 8, 2);
+
+insert into bell_notifications(message, redirect_id, seen, should_redirect, time_stamp, user_id) values
+    ('Driver has declined driving.', null, false, false, '2022-01-01 14:03', 2),
+    ('Driver accepted driving.', null, false, false, '2022-01-01 14:05', 2),
+    ('Driver accepted driving.', null, false, false, '2022-12-01 14:03', 3);
 
