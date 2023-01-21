@@ -45,7 +45,7 @@ export class SimpleDrivingDetailContainerComponent {
   }
 
   goToUserProfile(id: number): void {
-    this.router.navigate([`/serb-uber/user/user-profile/${id}`]);
+    this.router.navigate([`/serb-uber/user/user-profile/${id}/status`]);
   }
 
   getNumOfNotShowedUsers(driving: Driving): string {

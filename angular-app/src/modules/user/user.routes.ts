@@ -53,5 +53,12 @@ export const UserRoutes: Routes = [
     component: BasicUserProfileComponent,
     canActivate: [RoleGuard],
     data: {expectedRoles: "ROLE_ADMIN|ROLE_REGULAR_USER|ROLE_DRIVER"}
+  },
+  {
+    path: "user-profile/:id/:status",
+    pathMatch: "full",
+    component: BasicUserProfileComponent,
+    canActivate: [RoleGuard],
+    data: {expectedRoles: "ROLE_ADMIN|ROLE_REGULAR_USER|ROLE_DRIVER"}
   }
 ]

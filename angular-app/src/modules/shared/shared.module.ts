@@ -53,6 +53,7 @@ import { ReportStatisticsComponent } from './components/reports/report-statistic
 import { ReportGraphComponent } from './components/reports/report-graph/report-graph.component';
 import { ReportTabComponent } from './components/reports/report-tab/report-tab.component';
 import { DatePipe } from '@angular/common';
+import { BehaviourReportDialogComponent } from './components/behaviour-report-dialog/behaviour-report-dialog.component';
 
 @NgModule({
   declarations: [
@@ -82,7 +83,8 @@ import { DatePipe } from '@angular/common';
     ReportsPageComponent,
     ReportStatisticsComponent,
     ReportGraphComponent,
-    ReportTabComponent
+    ReportTabComponent,
+    BehaviourReportDialogComponent
   ],
   imports: [
     CommonModule,

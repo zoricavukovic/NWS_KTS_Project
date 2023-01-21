@@ -130,4 +130,11 @@ public class GlobalExceptionHandler {
         return passengerNotHaveTokensException.getMessage();
     }
 
+    @ExceptionHandler(value = ReportCannotBeCreatedException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String reportCannotBeCreatedException(ReportCannotBeCreatedException reportCannotBeCreatedException) {
+
+        return reportCannotBeCreatedException.getMessage();
+    }
+
 }

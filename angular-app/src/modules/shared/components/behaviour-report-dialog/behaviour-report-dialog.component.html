@@ -1,0 +1,17 @@
+<div style="padding: 3%;" class="report-container">
+    <h1 *ngIf="data.driver" mat-dialog-title style="display: flex;" class="center"><b>Report a {{data.driver.name + ' ' + data.driver.surname}}</b></h1>
+    <h1 *ngIf="data.userToReport" mat-dialog-title style="display: flex;" class="center"><b>Report a {{data.userToReport.name + ' ' + data.userToReport.surname}}</b></h1>
+    <mat-dialog-content>
+        <br>
+        <textarea
+        matInput
+        rows="4"
+        placeholder="Enter a reason(at least 5 characters)..."
+        [(ngModel)]="reason"></textarea>
+    </mat-dialog-content>
+
+    <mat-dialog-actions class="activity-buttons" align="center">
+        <button mat-button class="cancel-button" [mat-dialog-close]="null">Close</button>
+        <button mat-raised-button class="green-button block-button" [disabled]="!checkEnteredReason()" (click)="createReport()" [mat-dialog-close]="null">Report</button>
+    </mat-dialog-actions>
+</div>

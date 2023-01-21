@@ -363,6 +363,11 @@ public class DrivingService implements IDrivingService {
                 : calculateForAllUsers(chartType, startDate, endDate);
     }
 
+    boolean checkSenderAndReceiverInActiveDriving(Long driverId, Long userId) {
+
+        return driverHasActiveDriving(driverId) && this.checkUserHasActiveDriving(userId) != null;
+    }
+
     private ChartDataDTO calculateForAllUsers(
             final ChartType chartType,
             final LocalDate startDate,

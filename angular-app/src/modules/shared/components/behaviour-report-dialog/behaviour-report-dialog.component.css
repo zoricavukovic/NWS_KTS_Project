@@ -1,0 +1,15 @@
+
+.report-container {
+    min-width: 20rem;
+    min-height: 15rem;
+    overflow: hidden;
+}
+
+textarea {
+    width: 90%;
+    overflow: hidden;
+}
+
+h2 {
+    font-size: 1rem;
+}

@@ -13,7 +13,7 @@ import java.util.List;
 @Repository
 public interface BellNotificationRepository extends JpaRepository<BellNotification, Long> {
 
-    @Query("select b from BellNotification b where b.userId=?1 order by b.timeStamp asc")
+    @Query("select b from BellNotification b where b.userId=?1 order by b.timeStamp desc")
     List<BellNotification> getBellNotificationsForUser(Long id);
 
     @Modifying

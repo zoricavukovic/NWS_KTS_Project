@@ -1,3 +1,4 @@
+import { Driver } from "../user/driver";
 import { User } from "../user/user";
 
 export interface Report{
@@ -6,3 +7,15 @@ export interface Report{
     timeStamp: Date;
     sender: User;
   }
+
+export interface BehaviourReportDialogData {
+  currentUser: User;
+  driver: Driver;
+  userToReport: User;
+}
+
+export interface BehaviourReportRequest {
+  senderId: number;
+  receiverId: number;
+  message: string;
+}

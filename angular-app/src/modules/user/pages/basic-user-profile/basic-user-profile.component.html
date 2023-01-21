@@ -14,6 +14,15 @@
                         Block
                     </button>
                 </div>
+                <div *ngIf="status" style="position: relative;">
+                    <button
+                        mat-raised-button 
+                        (click)="reportUser()"
+                        class="block-button-regular"
+                        style="background-color: var(--deep-blue); margin-left: 12rem;">
+                        Report
+                    </button>
+                </div>
                 <div *ngIf="loggedAdmin && userBlocked" style="position: relative;">
                     <button 
                     mat-raised-button
