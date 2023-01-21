@@ -11,7 +11,8 @@ import {RouteService} from "../../../shared/services/route-service/route.service
 import {VehicleService} from "../../../shared/services/vehicle-service/vehicle.service";
 import {SearchingRoutesForm} from "../../../shared/models/route/searching-routes-form";
 import {Route} from "../../../shared/models/route/route";
-import {removeAllMarkers, removeAllPolyline,
+import {
+  hideAllMarkers, removeAllPolyline,
 } from "../../../shared/utils/map-functions";
 import { DrivingNotificationState } from 'src/modules/shared/state/driving-notification.state';
 import { Select, Store } from '@ngxs/store';
@@ -118,7 +119,7 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
 
 
   ngOnDestroy(): void {
-    removeAllMarkers(this.searchingForm);
+    hideAllMarkers(this.searchingForm);
 
     this.drawPolylineList = removeAllPolyline(this.drawPolylineList);
     if (this.authSubscription) {
@@ -132,9 +133,9 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
     }
   }
 
-  loadingView(loadingViewv:boolean) {
-    this.loadingViewVar =loadingViewv;
-    if (loadingViewv){
+  loadingView(loadingView:boolean): void {
+    this.loadingViewVar = loadingView;
+    if (loadingView){
       this.filterVehicleView = false;
     }
   }

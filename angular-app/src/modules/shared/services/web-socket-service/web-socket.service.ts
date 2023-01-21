@@ -178,8 +178,6 @@ export class WebSocketService {
         .onTap.subscribe(action => {
         this.router.navigate(['/serb-uber/user/map-page-view', drivingNotificationDetails.drivingId]);
       });
-      // this.aClickedEvent.emit();
-
     });
   }
 
@@ -188,6 +186,7 @@ export class WebSocketService {
       environment.publisherUrl + localStorage.getItem('email') + '/reject-driving',
       message => {
         this.toast.info(message.body);
+        this.store.dispatch(new ClearStore());
       }
     );
   }
@@ -274,30 +273,29 @@ export class WebSocketService {
   }
 
   globalConnect() {
-    if (!this.initializedGlobal) {
-      this.initializedGlobal = true;
-      const serverUrl = environment.webSocketUrl;
-      const ws = new SockJS(serverUrl);
-      this.globalStompClient = Stomp.over(ws);
-
-      const that = this;
-
-      this.globalStompClient.connect({}, function (frame) {
-        that.globalStompClient.subscribe(
-          environment.publisherUrl + 'global/connect',
-          message => {
-            if (
-              (message !== null && message !== undefined) ||
-              message?.body !== null
-            ) {
-              const vehicleCurrentLocation: VehicleCurrentLocation[] =
-                JSON.parse(message.body);
-              that.vehicleService.addVehicle(vehicleCurrentLocation);
-            }
-          }
-        );
-      });
-    }
+    // if (!this.initializedGlobal) {
+    //   this.initializedGlobal = true;
+      // const serverUrl = environment.webSocketUrl;
+      // const ws = new SockJS(serverUrl);
+      // this.globalStompClient = Stomp.over(ws);
+      //
+      // const that = this;
+      //
+      // this.globalStompClient.connect({}, function (frame) {
+      //   that.globalStompClient.subscribe(
+      //     environment.publisherUrl + 'global/connect',
+      //     message => {
+      //       if (
+      //         (message !== null && message !== undefined) ||
+      //         message?.body !== null
+      //       ) {
+      //         const vehicleCurrentLocation: VehicleCurrentLocation = JSON.parse(message.body);
+      //         that.vehicleService.updateVehiclePosition(vehicleCurrentLocation);
+      //       }
+      //     }
+      //   );
+      // });
+    // }
   }
 
   private isBlockingNotification(message: string): boolean {

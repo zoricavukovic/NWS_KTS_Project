@@ -46,16 +46,16 @@ insert into routes (distance, time) values
                      (6, 6),
                      (3200, 3);
 
-insert into vehicles (baby_seat, pet_friendly, rate, vehicle_type_id, active_route_id, current_location_index, current_stop_location_id) values
+insert into vehicles (baby_seat, pet_friendly, rate, vehicle_type_id, active_route_id, current_location_index, current_stop_location_id, crossed_waypoints) values
 --     (true, false, 2.9, 1, null, 0, 5),
-    (false, true, 5, 3, null, 2, 2),
-    (false, true, 0, 3, null, 1, 2);
+    (false, true, 5, 3, 2, 0, 2, 0),
+    (false, true, 0, 3, 1, 0, 5, 0);
 --     (true, true, 0, 1, null, 0, 2),
 --     (false, true, 0, 2, null, 0, 2);
 
 insert into driving_locations(location_id, index, route_id, route_index) values
       (5,1,1, 0),
-      (6,2,1, 0),
+      (10,2,1, 0),
       (7,3,1, 0),
       (14,10,1, -1),
       (2,1,2, 0),
@@ -79,7 +79,7 @@ insert into drivers (id, email, password, name, surname, phone_number, city, pro
 insert into drivings (active, driver_id, driving_status, duration, paying_limit, price, started, end_date, route_id) values
    (true, 5, 2, 2, null, 3, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), null, 1),
    (true, 6, 2, 8, null, 3, to_timestamp('19.01.2023. 22:40', 'DD.MM.YYYY HH24:MI'), null, 2),
-   (false, 5, 2, 10, null, 5,to_timestamp('20.01.2023 02:00', 'DD.MM.YYYY HH24:MI'), null,3);
+   (false, 5, 2, 10, null, 5,to_timestamp('21.01.2023 03:00', 'DD.MM.YYYY HH24:MI'), null, 3);
 --    (false, 6, 2, 10, null, 5,to_timestamp('20.01.2023. 01:00', 'DD.MM.YYYY. HH24:MI'), null,4);
 
 
@@ -111,7 +111,7 @@ insert into drivings_users(driving_id, user_id) values
     (1, 4),
     (2, 9),
     (3, 2),
-    (2, 3);
+    (2, 10);
 --     (4, 2);
 --     (5, 2),
 --     (5, 4),

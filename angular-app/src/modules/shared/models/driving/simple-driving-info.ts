@@ -8,4 +8,5 @@ export interface SimpleDrivingInfo {
   active: boolean;
   cost: number;
   drivingStatus: string;
+  vehicleId: number;
 }

@@ -11,10 +11,14 @@ public class VehicleCurrentLocationDTO {
     private boolean inDrive;
     private VehicleType type;
     private long driverId;
+    private boolean activeDriver;
+    private int crossedWaypoints;
 
     public VehicleCurrentLocationDTO(final VehicleWithDriverId vehicleWithDriverId) {
         this.id = vehicleWithDriverId.getVehicle().getId();
         this.type = vehicleWithDriverId.getVehicle().getVehicleTypeInfo().getVehicleType();
+        this.crossedWaypoints = vehicleWithDriverId.getVehicle().getCrossedWaypoints();
+        this.activeDriver = vehicleWithDriverId.isActiveDriver();
         this.driverId = vehicleWithDriverId.getDriverId();
         if (vehicleWithDriverId.getVehicle().hasRoute()){
             this.inDrive = true;
@@ -72,5 +76,21 @@ public class VehicleCurrentLocationDTO {
 
     public void setCurrentLocation(Location currentLocation) {
         this.currentLocation = currentLocation;
+    }
+
+    public boolean isActiveDriver() {
+        return activeDriver;
+    }
+
+    public void setActiveDriver(boolean activeDriver) {
+        this.activeDriver = activeDriver;
+    }
+
+    public int getCrossedWaypoints() {
+        return crossedWaypoints;
+    }
+
+    public void setCrossedWaypoints(int crossedWaypoints) {
+        this.crossedWaypoints = crossedWaypoints;
     }
 }

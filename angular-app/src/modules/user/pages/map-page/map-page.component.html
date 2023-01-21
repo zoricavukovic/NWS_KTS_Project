@@ -2,10 +2,10 @@
   <div id="map"></div>
   <div id="float-div">
     <div *ngIf="!router.url.includes('driving-notification')">
-      <app-home *ngIf="actRoute.snapshot.paramMap.get('id') === '-1'" [map]="map"></app-home>
-      <app-driving-details *ngIf="actRoute.snapshot.paramMap.get('id') !== '-1'" [map]="map"></app-driving-details>
+      <app-home *ngIf="actRoute.snapshot.paramMap.get('id') === '-1'" [map]="map" [vehiclesCurrentPosition]="vehiclesCurrentPosition" [currentUser]="currentUser"></app-home>
+      <app-driving-details *ngIf="actRoute.snapshot.paramMap.get('id') !== '-1'" [map]="map" [vehiclesCurrentPosition]="vehiclesCurrentPosition"></app-driving-details>
     </div>
-    <app-driving-notification-details *ngIf="router.url.includes('driving-notification')" [map]="map"></app-driving-notification-details>
+    <app-driving-notification-details *ngIf="router.url.includes('driving-notification')" [map]="map" [vehiclesCurrentPosition]="vehiclesCurrentPosition"></app-driving-notification-details>
   </div>
 </div>
 

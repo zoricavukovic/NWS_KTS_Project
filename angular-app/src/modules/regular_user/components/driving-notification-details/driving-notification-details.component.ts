@@ -18,6 +18,7 @@ import {ToastrService} from "ngx-toastr";
 import {Vehicle} from "../../../shared/models/vehicle/vehicle";
 import { AddDrivingNotification } from 'src/modules/shared/actions/driving-notification.action';
 import { Store } from '@ngxs/store';
+import {CurrentVehiclePosition} from "../../../shared/models/vehicle/current-vehicle-position";
 
 @Component({
   selector: 'app-driving-notification-details',
@@ -26,6 +27,8 @@ import { Store } from '@ngxs/store';
 })
 export class DrivingNotificationDetailsComponent implements OnInit, OnDestroy {
   @Input() map: google.maps.Map;
+  @Input() vehiclesCurrentPosition: CurrentVehiclePosition[];
+
   id: number;
   currentUser: User;
   base64Prefix = this.configService.BASE64_PHOTO_PREFIX;

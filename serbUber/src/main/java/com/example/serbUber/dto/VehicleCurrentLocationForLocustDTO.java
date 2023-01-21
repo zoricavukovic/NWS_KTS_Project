@@ -11,18 +11,23 @@ public class VehicleCurrentLocationForLocustDTO {
     private List<LngLatLiteralDTO> waypoints = new LinkedList<>();
     private List<Integer> chosenRouteIdx = new LinkedList<>();
     private boolean inDrive;
+    private boolean activeDriver;
     private Long driverId;
     private int currentIndexOfLocation;
     private int crossedWaypoints = 0;
 
     public VehicleCurrentLocationForLocustDTO(final VehicleWithDriverId vehicleWithDriverId) {
         this.vehicleId = vehicleWithDriverId.getVehicle().getId();
+        this.activeDriver = vehicleWithDriverId.isActiveDriver();
+        this.crossedWaypoints = vehicleWithDriverId.getVehicle().getCrossedWaypoints();
         this.driverId = vehicleWithDriverId.getDriverId();
-        vehicleWithDriverId.getVehicle().getActiveRoute().getLocations().forEach(drivingLocationIndex -> {
-                this.waypoints.add(new LngLatLiteralDTO(drivingLocationIndex.getLocation().getLat(), drivingLocationIndex.getLocation().getLon()));
-                this.chosenRouteIdx.add(drivingLocationIndex.getRouteIndex());
-            }
-        );
+        if (vehicleWithDriverId.getVehicle().hasRoute()){
+            vehicleWithDriverId.getVehicle().getActiveRoute().getLocations().forEach(drivingLocationIndex -> {
+                    this.waypoints.add(new LngLatLiteralDTO(drivingLocationIndex.getLocation().getLat(), drivingLocationIndex.getLocation().getLon()));
+                    this.chosenRouteIdx.add(drivingLocationIndex.getRouteIndex());
+                }
+            );
+        }
         this.inDrive = vehicleWithDriverId.getVehicle().hasRoute();
        this.currentIndexOfLocation = vehicleWithDriverId.getVehicle().getCurrentLocationIndex();
     }
@@ -96,5 +101,13 @@ public class VehicleCurrentLocationForLocustDTO {
 
     public void setCrossedWaypoints(int crossedWaypoints) {
         this.crossedWaypoints = crossedWaypoints;
+    }
+
+    public boolean isActiveDriver() {
+        return activeDriver;
+    }
+
+    public void setActiveDriver(boolean activeDriver) {
+        this.activeDriver = activeDriver;
     }
 }

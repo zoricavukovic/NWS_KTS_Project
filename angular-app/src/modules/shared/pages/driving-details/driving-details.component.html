@@ -1,6 +1,7 @@
 <div *ngIf="driving" id="route-div" class="box mat-elevation-z1">
   <h1 *ngIf="!canAcceptOrDeclineRide()"><b>Driving</b></h1>
   <h1 *ngIf="canAcceptOrDeclineRide()"><b>Accept ride</b></h1>
+<!--  <h1>{{vehiclesCurrentPosition[indexOfVehicleForDriving]?.vehicleCurrentLocation?.timeToDestination}}</h1>-->
   <app-driving-details-route
     [locations]="driving.route.locations"></app-driving-details-route>
   <br />
@@ -28,7 +29,9 @@
   <div class="spinner-div" *ngIf="storedDrivingNotification && storedDrivingNotification.drivingId===id" style="float:left;">
     <mat-progress-spinner class="spinner" color='accent' [mode]="'determinate'" [value]="storedDrivingNotification.minutes">
     </mat-progress-spinner>
-    <h1 style="margin-left:6rem; margin-top: 2rem;" id="minutes">{{storedDrivingNotification.minutes}}min</h1>
+
+    <h2 *ngIf="indexOfVehicleForDriving >= 0 && driving.active" style="margin-left:6rem; margin-top: 2rem;" id="minutes">{{getTime()}}</h2>
+
   </div>
 
 </div>

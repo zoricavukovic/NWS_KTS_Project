@@ -13,8 +13,6 @@ import com.example.serbUber.request.DrivingLocationIndexRequest;
 import com.example.serbUber.request.LocationsForRoutesRequest;
 import com.example.serbUber.request.LongLatRequest;
 import com.example.serbUber.service.interfaces.IRouteService;
-import com.graphhopper.ResponsePath;
-import okhttp3.*;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -26,13 +24,9 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.IntStream;
-
-import static com.example.serbUber.SerbUberApplication.hopper;
 import static com.example.serbUber.dto.RouteDTO.fromRoutes;
 import static com.example.serbUber.exception.EntityType.ROUTE;
-import static com.example.serbUber.util.Constants.START_LIST_INDEX;
-import static com.example.serbUber.util.Constants.getBeforeLastIndexOfList;
-import static com.example.serbUber.util.GraphHopperUtil.routing;
+import static com.example.serbUber.util.Constants.*;
 
 @Component
 @Qualifier("routeServiceConfiguration")
@@ -61,28 +55,13 @@ public class RouteService implements IRouteService {
     }
 
     public Route get(Long id) throws EntityNotFoundException {
-        Optional<Route> route = routeRepository.findById(id)
-                ;
+        Optional<Route> route = routeRepository.findById(id);
         if(route.isPresent()){
             return route.get();
         }
         throw new EntityNotFoundException(id, ROUTE);
     }
 
-    public RouteDTO createDTO(
-            final SortedSet<DrivingLocationIndex> locations,
-            final double distance,
-            final double time
-    ) {
-
-        Route route = routeRepository.save(new Route(
-                locations,
-                distance,
-                time
-        ));
-
-        return new RouteDTO(route);
-    }
 
     public Route create(
             final SortedSet<DrivingLocationIndex> locations,
@@ -138,6 +117,7 @@ public class RouteService implements IRouteService {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                    assert path != null;
                     points.addAll(path.getPointList());
                 });
 
@@ -154,12 +134,13 @@ public class RouteService implements IRouteService {
         locations.forEach(locationIndex -> {
             Location location = locationService.tryToFindLocation(locationIndex.getLocation().getLon(), locationIndex.getLocation().getLat());
             if (location == null){
-                location = locationService.create( locationIndex.getLocation().getCity(),
-                        locationIndex.getLocation().getStreet(),
-                        locationIndex.getLocation().getNumber(),
-                        locationIndex.getLocation().getZipCode(),
-                        locationIndex.getLocation().getLon(),
-                        locationIndex.getLocation().getLat()
+                location = locationService.create(
+                    locationIndex.getLocation().getCity(),
+                    locationIndex.getLocation().getStreet(),
+                    locationIndex.getLocation().getNumber(),
+                    locationIndex.getLocation().getZipCode(),
+                    locationIndex.getLocation().getLon(),
+                    locationIndex.getLocation().getLat()
                 );
             }
             DrivingLocationIndex drivingLocationIndex = drivingLocationIndexService.create(
@@ -175,9 +156,14 @@ public class RouteService implements IRouteService {
     }
 
     public double getTimeFromDistance(final double distance) {
-        return distance == 0 ? 0.0 :  Math.ceil((distance/50000L)*60 + 0.5);
+
+        return distance == ZERO_DISTANCE ? ZERO_MINUTES :  Math.ceil((distance/AVERAGE_CAR_SPEED_IN_M_H)*MINUTES_FOR_ONE_HOUR + 0.5);
     }
 
+    public double getDistanceInKmFromTime(final double minutes) {
+
+        return minutes == ZERO_MINUTES ? ZERO_DISTANCE : AVERAGE_CAR_SPEED_IN_KM_H*(minutes/MINUTES_FOR_ONE_HOUR);
+    }
 
     private boolean isDestination(int indexOfLocation, int numOfLocations){
 
@@ -314,16 +300,5 @@ public class RouteService implements IRouteService {
             locations.add(new double[]{Double.parseDouble(lat), Double.parseDouble(lng)});
 
         }
-    }
-
-    private List<double[]> getPointsDTO(ResponsePath responsePath) {
-        List<double[]> points = new LinkedList<>();
-//        for (int i=0; i< responsePath.getPoints().getLat())
-        IntStream.range(START_LIST_INDEX, responsePath.getPoints().size())
-                .forEach(index ->
-                        points.add(new double[]{responsePath.getPoints().getLat(index), responsePath.getPoints().getLon(index)})
-                );
-
-        return points;
     }
 }

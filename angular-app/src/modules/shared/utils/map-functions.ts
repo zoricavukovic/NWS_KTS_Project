@@ -1,4 +1,4 @@
-import {LngLat} from "../models/route/location";
+import {LngLat, Location} from "../models/route/location";
 import {PossibleRoute} from "../models/route/possible-routes";
 import {DrivingLocation} from "../models/route/driving-location";
 import {
@@ -10,6 +10,8 @@ import {VehicleCurrentLocation} from "../models/vehicle/vehicle-current-location
 import {SearchingRoutesForm} from "../models/route/searching-routes-form";
 import {Route} from "../models/route/route";
 import {PossibleRoutesViaPoints} from "../models/route/possible-routes-via-points";
+import {CurrentVehiclePosition} from "../models/vehicle/current-vehicle-position";
+import {Driver} from "../models/user/driver";
 
 
 export function addMarker(map: google.maps.Map, markerCoordinates: google.maps.LatLng | google.maps.LatLngLiteral)
@@ -52,23 +54,87 @@ export function drawAllMarkers(locations: DrivingLocation[] | undefined, map: go
 }
 
 
-export function drawActiveRide(map: google.maps.Map, lngLatList: LngLat[] | undefined, driving: Driving): google.maps.Marker[] {
+function calculateMinutesToDestination(
+  vehicle: CurrentVehiclePosition,
+  directionService: google.maps.DirectionsService,
+  currentLocation: Location,
+  endLocation: Location
+): void {
+  const source = {
+    lat: currentLocation.lat,
+    lng: currentLocation.lon
+  }
+
+  const destination = {
+    lat: endLocation.lat,
+    lng: endLocation.lon
+  }
+
+  const request = {
+    origin: source,
+    destination: destination,
+    travelMode: google.maps.TravelMode.DRIVING
+  }
+  console.log(destination);
+  console.log(source);
+  directionService.route(request, (response, status) => {
+    if (status === google.maps.DirectionsStatus.OK){
+      console.log(response);
+      const distanceInfo = response.routes[0].legs[0];
+      vehicle.vehicleCurrentLocation.timeToDestination += distanceInfo.duration.value/60;
+      console.log("vreee");
+    }
+  });
+}
+
+export function calculateTimeToDestination(vehicle: CurrentVehiclePosition, route: Route, directionService: google.maps.DirectionsService) {
+  vehicle.vehicleCurrentLocation.timeToDestination = 0;
+  route?.locations.forEach(location => {
+    if (vehicle.vehicleCurrentLocation.crossedWaypoints < route.locations.length - 1 &&
+      location.index < route?.locations.length
+    ) {
+      if (location.index - 1 === vehicle.vehicleCurrentLocation.crossedWaypoints) {
+        console.log("uslo drugi if");
+        calculateMinutesToDestination(vehicle, directionService, vehicle.vehicleCurrentLocation.currentLocation, location.location);
+
+      } else if (location.index > vehicle.vehicleCurrentLocation.crossedWaypoints) {
+        console.log("uslo else if");
+        calculateMinutesToDestination(vehicle, directionService, location.location, route?.locations.at(location.index).location);
+      }
+    }
+  })
+}
+
+export function drawActiveRide(
+  map: google.maps.Map,
+  driving: Driving,
+  driver: Driver,
+  vehicle: CurrentVehiclePosition,
+  index: number,
+  directionService: google.maps.DirectionsService
+): google.maps.Marker[] {
   const markers: google.maps.Marker[] = [];
+  if (vehicle) {
+    visibleMarker(vehicle.marker);
+    calculateTimeToDestination(vehicle, driving?.route, directionService);
+  }
+
   driving?.route?.locations.forEach(location => {
     const markerCoordinates: google.maps.LatLngLiteral = { lat: location.location.lat, lng: location.location.lon };
     const marker: google.maps.Marker = addMarker(map, markerCoordinates);
     if (location.index === 1 || location.index === driving?.route?.locations.length){
-      // const infowindow = new google.maps.InfoWindow({
-      //   content: `${location.location?.street} ${location.location?.number}`,
-      //   ariaLabel: "Uluru",
-      // });
-      // google.maps.event.addListener(marker, 'click', function() {
-      //   infowindow.open(map-page,marker);
-      // });
-      // infowindow.open(map-page,marker);
+      const infowindow = new google.maps.InfoWindow({
+        content: `${location.location?.street} ${location.location?.number}`,
+        ariaLabel: "Uluru",
+      });
+      google.maps.event.addListener(marker, 'click', function() {
+        infowindow.open(map,marker);
+      });
+      infowindow.open(map,marker);
     }
     markers.push(marker);
   })
+
   return markers;
 }
 
@@ -76,10 +142,26 @@ export function removeMarker(marker: google.maps.Marker) {
   marker.setMap(null);
 }
 
+export function hideMarker(marker: google.maps.Marker) {
+  marker.setVisible(false);
+}
+
+export function visibleMarker(marker: google.maps.Marker) {
+  marker.setVisible(true);
+}
+
 export function removeAllMarkers(markers: SearchingRoutesForm[]): void{
   for (let i; i < markers.length; i++) {
     if (markers.at(i).marker){
       removeMarker(markers.at(i).marker);
+    }
+  }
+}
+
+export function hideAllMarkers(markers: SearchingRoutesForm[]): void{
+  for (let i; i < markers.length; i++) {
+    if (markers.at(i).marker){
+      hideMarker(markers.at(i).marker);
     }
   }
 }
@@ -157,22 +239,28 @@ export function getRouteCoordinates(route: PossibleRoute): google.maps.LatLngLit
   return routeCoordinates;
 }
 
-export function addCarMarker(map, vehicleStatus: VehicleCurrentLocation, currentLoggedUserId: number): google.maps.Marker {
-  const customIcon: google.maps.Icon = vehicleStatus.inDrive?
+function getMarkerIcon(vehicleStatus: VehicleCurrentLocation, currentLoggedUserId: number) {
+  const customIcon: google.maps.Icon = vehicleStatus.inDrive ?
     {
-    url: getVehiclePhotoNameBasedOnType(vehicleStatus.type)
-  } : {
-    url: getActiveVehiclePhotoNameBasedOnType(vehicleStatus.type)
-  };
+      url: getVehiclePhotoNameBasedOnType(vehicleStatus.type)
+    } : {
+      url: getActiveVehiclePhotoNameBasedOnType(vehicleStatus.type)
+    };
 
   if (currentLoggedUserId === vehicleStatus?.driverId) {
-    customIcon.anchor = new google.maps.Point(70, 70);
+    customIcon.anchor = new google.maps.Point(35, 30);
     customIcon.scaledSize = new google.maps.Size(70, 70);
-  }
-  else {
-    customIcon.anchor = new google.maps.Point(50, 60);
+  } else {
+    customIcon.anchor = new google.maps.Point(35, 30);
     customIcon.scaledSize = new google.maps.Size(50, 50);
   }
+
+  return customIcon;
+}
+
+export function addCarMarker(map, vehicleStatus: VehicleCurrentLocation, currentLoggedUserId: number): google.maps.Marker {
+
+  const customIcon = getMarkerIcon(vehicleStatus, currentLoggedUserId);
 
   const marker: google.maps.Marker = new google.maps.Marker(
     {
@@ -181,6 +269,7 @@ export function addCarMarker(map, vehicleStatus: VehicleCurrentLocation, current
       title: 'Car',
       icon: customIcon
     });
+
 
   // marker.addListener("click", () => {
   //  let infoWindow = new google.maps.InfoWindow({
@@ -192,24 +281,28 @@ export function addCarMarker(map, vehicleStatus: VehicleCurrentLocation, current
   return marker;
 }
 
-export function addCarMarkers(
+export function updateVehiclePosition(
   map: google.maps.Map,
-  carMarkers: google.maps.Marker[],
-  vehicleCurrentLocation: VehicleCurrentLocation[],
+  marker: google.maps.Marker,
+  vehicleCurrentLocation: VehicleCurrentLocation,
   currentLoggedUserId: number
-): google.maps.Marker[] {
-  if (map !== undefined){
-    console.log(vehicleCurrentLocation);
-    carMarkers.forEach(marker => removeMarker(marker));
-    const markers: google.maps.Marker[] = [];
-    vehicleCurrentLocation.forEach(currentVehicle => {
-        markers.push(addCarMarker(map, currentVehicle, currentLoggedUserId));
-    })
+): google.maps.Marker {
+  if (map !== undefined) {
 
-    return markers;
+    if (vehicleCurrentLocation.inDrive) {
+      marker.setPosition({
+        lat: vehicleCurrentLocation.currentLocation.lat,
+        lng: vehicleCurrentLocation.currentLocation.lon
+      });
+      return marker;
+    }
+
+    marker.setIcon(getMarkerIcon(vehicleCurrentLocation, currentLoggedUserId));
+
+    return marker;
   }
 
-  return carMarkers;
+  return marker;
 }
 
 export function markCurrentPosition(map: google.maps.Map, vehicleCurrentLocation: VehicleCurrentLocation) {

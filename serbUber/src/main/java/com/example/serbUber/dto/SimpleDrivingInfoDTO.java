@@ -14,6 +14,7 @@ public class SimpleDrivingInfoDTO {
     private Long drivingId;
     private boolean active;
     private double cost;
+    private Long vehicleId;
 
     private String drivingStatus;
 
@@ -32,6 +33,7 @@ public class SimpleDrivingInfoDTO {
         this.endLocation = driving.getRoute().getLocations().last().getLocation();
         this.cost = driving.getPrice();
         this.started = driving.getStarted();
+        this.vehicleId = driving.getDriver().getVehicle().getId();
     }
 
     public boolean isActive() {
@@ -96,5 +98,13 @@ public class SimpleDrivingInfoDTO {
 
     public void setStarted(LocalDateTime started) {
         this.started = started;
+    }
+
+    public Long getVehicleId() {
+        return vehicleId;
+    }
+
+    public void setVehicleId(Long vehicleId) {
+        this.vehicleId = vehicleId;
     }
 }
