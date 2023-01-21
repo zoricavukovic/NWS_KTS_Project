@@ -14,6 +14,7 @@ public class DrivingPageDTO{
     private LocalDateTime started;
     private Route route;
     private DrivingStatus drivingStatus;
+    private double price;
     private int pageSize;
     private int pageNumber;
 
@@ -25,6 +26,7 @@ public class DrivingPageDTO{
         this.drivingStatus = driving.getDrivingStatus();
         this.pageSize = pageSize;
         this.pageNumber = pageNumber;
+        this.price = driving.getPrice();
     }
 
     public static List<DrivingPageDTO> fromDrivingsPage(final List<Driving> drivings, final int pageSize, final int pageNumber){
@@ -89,5 +91,13 @@ public class DrivingPageDTO{
 
     public void setDrivingStatus(DrivingStatus drivingStatus) {
         this.drivingStatus = drivingStatus;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 }

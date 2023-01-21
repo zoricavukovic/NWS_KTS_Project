@@ -286,9 +286,11 @@ public class DrivingNotificationService implements IDrivingNotificationService {
                 double minutesToStartDrive = driverService.calculateMinutesToStartDriving(driver, driving);
                 driving.setStarted(LocalDateTime.now().plusMinutes((long) minutesToStartDrive));
                 driving.setDrivingStatus(DrivingStatus.ACCEPTED);
+                driving.setReservation(drivingNotification.isReservation());
                 DrivingDTO drivingDTO = drivingService.save(driving);
                 DrivingStatusNotificationDTO drivingStatusNotificationDTO = new DrivingStatusNotificationDTO(driver.getId(), minutesToStartDrive, DrivingStatus.ACCEPTED, "", drivingDTO.getId(), drivingNotification.getId());
                 webSocketService.sendSuccessfulDriving(drivingStatusNotificationDTO, receiversReviewed);
+                webSocketService.sendNewDrivingNotification(drivingStatusNotificationDTO, driver.getEmail());
             } else {
                 drivingService.removeDriver(driving.getId());
                 webSocketService.sendDrivingStatus(UNSUCCESSFUL_PAYMENT_PATH, UNSUCCESSFUL_PAYMENT_MESSAGE, receiversReviewed);
@@ -297,23 +299,6 @@ public class DrivingNotificationService implements IDrivingNotificationService {
             }
 
         }
-    }
-
-    public int calculateMinutesForStartDriving(final Long driverId, final Route route) throws EntityNotFoundException {
-//        Driver driver = driverService.getDriverById(driverId);
-//        Location userLocation = route.getLocations().first().getLocation();
-//        GHRequest request = new GHRequest(
-//            vehicleService.getLatOfCurrentVehiclePosition(driver.getVehicle()),
-//            vehicleService.getLonOfCurrentVehiclePosition(driver.getVehicle()),
-//            userLocation.getLat(),
-//            userLocation.getLon()
-//        );
-//        request.setProfile("car");
-//        GHResponse routeHopper = hopper.route(request);
-//        System.out.println("vreemeee" + TimeUnit.MILLISECONDS.toMinutes(routeHopper.getBest().getTime()));
-//        System.out.println((routeHopper.getBest().getTime()/1000)/60);
-//        return TimeUnit.MILLISECONDS.toMinutes(routeHopper.getBest().getTime()) + 1;
-        return 5;
     }
 
     private boolean isPaidDriving(

@@ -116,6 +116,13 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
     )
   }
 
+  setView(enterLocations: boolean){
+    if(enterLocations){
+      this.routeChoiceView = true;
+      this.filterVehicleView = false;
+    }
+  }
+
 
   ngOnDestroy(): void {
     removeAllMarkers(this.searchingForm);

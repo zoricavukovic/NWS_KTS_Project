@@ -1,34 +1,41 @@
+<form [formGroup]="rideRequestForm">
 <div *ngIf="driving" id="route-div" class="box mat-elevation-z1">
-  <h1 *ngIf="!canAcceptOrDeclineRide()"><b>Driving</b></h1>
-  <h1 *ngIf="canAcceptOrDeclineRide()"><b>Accept ride</b></h1>
-  <app-driving-details-route
+  <h1 *ngIf="router.url.includes('favourite-route')">Favourite route</h1>
+  <h1 *ngIf="!canAcceptOrDeclineRide() && storedDrivingNotification?.drivingStatus!=='PAYING' && !router.url.includes('favourite-route')"><b>Driving</b></h1>
+  <h1 *ngIf="canAcceptOrDeclineRide() && storedDrivingNotification?.drivingStatus!=='PAYING' && !router.url.includes('favourite-route')"><b>Accept ride</b></h1>
+  <app-driving-details-route *ngIf="storedDrivingNotification?.drivingStatus!=='PAYING'"
     [locations]="driving.route.locations"></app-driving-details-route>
   <br />
   <app-driving-details-actions
-    [favouriteRoute]="favouriteRoute"
-    (setFavouriteRouteEvent)="
-      setFavouriteRoute($event)
-    "></app-driving-details-actions>
-  <br />
-  <vehicle-details [vehicle]="driver?.vehicle"></vehicle-details>
-  <br />
-  <app-driving-details-driver
-    *ngIf="!isDriver"
-    [driver]="driver"
-    [base64Prefix]="base64Prefix"></app-driving-details-driver>
-  <br />
-  <app-driving-details-passengers
-    *ngIf="!isRegularUser"
-    [users]="driving.users"
-    [base64Prefix]="base64Prefix"></app-driving-details-passengers>
-  <div style="float:right;  font-size: 1.7rem;display: flex;flex-direction: row;margin-top:0.2rem;">
-      <b>= {{driving.price}}</b>
-      <mat-icon class="token-icon">payments</mat-icon>
+    (setFilterVehicleViewEvent)="showFilterVehicleView($event)"
+    [driving]="driving" *ngIf="!storedDrivingNotification"
+    ></app-driving-details-actions>
+    <br>
+    <app-filter-vehicle-view *ngIf="filterVehicleView" [requestLater]="requestLater"></app-filter-vehicle-view>
+    <app-waiting-for-accept-ride-container *ngIf="storedDrivingNotification && !storedDrivingNotification?.active && storedDrivingNotification?.drivingStatus==='PAYING'"></app-waiting-for-accept-ride-container>
+  <br/>
+  <div *ngIf="!router.url.includes('favourite-route') && !filterVehicleView">
+    <vehicle-details [vehicle]="driver?.vehicle"></vehicle-details>
+    <br />
+    <app-driving-details-driver
+      *ngIf="!isDriver"
+      [driver]="driver"
+      [base64Prefix]="base64Prefix"></app-driving-details-driver>
+    <br />
+    <app-driving-details-passengers
+      *ngIf="!isRegularUser"
+      [users]="driving.users"
+      [base64Prefix]="base64Prefix"></app-driving-details-passengers>
+    <div style="float:right;  font-size: 1.7rem;display: flex;flex-direction: row;margin-top:0.2rem;">
+        <b>= {{driving.price}}</b>
+        <mat-icon class="token-icon">payments</mat-icon>
+      </div>
+    <div class="spinner-div" *ngIf="storedDrivingNotification && storedDrivingNotification.drivingId===id" style="float:left;">
+      <mat-progress-spinner class="spinner" color='accent' [mode]="'determinate'" [value]="storedDrivingNotification.minutes">
+      </mat-progress-spinner>
+      <h1 style="margin-left:6rem; margin-top: 2rem;" id="minutes">{{storedDrivingNotification.minutes}}min</h1>
     </div>
-  <div class="spinner-div" *ngIf="storedDrivingNotification && storedDrivingNotification.drivingId===id" style="float:left;">
-    <mat-progress-spinner class="spinner" color='accent' [mode]="'determinate'" [value]="storedDrivingNotification.minutes">
-    </mat-progress-spinner>
-    <h1 style="margin-left:6rem; margin-top: 2rem;" id="minutes">{{storedDrivingNotification.minutes}}min</h1>
   </div>
 
 </div>
+</form>

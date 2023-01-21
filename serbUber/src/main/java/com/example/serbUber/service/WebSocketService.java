@@ -124,4 +124,17 @@ public class WebSocketService {
             });
         }
     }
+
+    public void sendReservationReminder(Set<RegularUser> users, int minutes){
+        String message = String.format("Your future ride start in %d minutes. Tap to see details.", minutes);
+        if (users.size() > 0) {
+            users.forEach(user -> {
+                this.messagingTemplate.convertAndSendToUser(user.getEmail(), "/reservation-reminder", message);
+            });
+        }
+    }
+
+    public void sendNewDrivingNotification(DrivingStatusNotificationDTO drivingStatusNotificationDTO, String driverEmail) {
+        this.messagingTemplate.convertAndSendToUser(driverEmail, "/new-driving", drivingStatusNotificationDTO);
+    }
 }

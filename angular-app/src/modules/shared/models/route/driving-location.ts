@@ -4,4 +4,5 @@ export class DrivingLocation {
   index: number;
   location: Location;
   id?: number;
+  routeIndex?: number;
 }

@@ -1,3 +1,4 @@
+import { Driving } from "../models/driving/driving";
 import { SimpleDrivingInfo } from "../models/driving/simple-driving-info";
 import {DrivingNotification} from "../models/notification/driving-notification";
 
@@ -32,5 +33,21 @@ export class AddDrivingNotification {
   export class ClearStore {
     static readonly type = "[DrivingNotification] ClearDriving";
   }
+
+  export class AddDrivings {
+    static readonly type = "[Drivings] AddDrivings";
+
+    constructor(public payload: Driving[]) {}
+  }
+
+export class GetDrivings {
+    static readonly type = "[Drivings] GetDrivings";
+}
+
+export class UpdateDrivings {
+    static readonly type = "[Drivings] UpdateDrivings";
+
+    constructor(public payload: Driving) {}
+}
 
 

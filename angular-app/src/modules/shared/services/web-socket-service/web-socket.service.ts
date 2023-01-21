@@ -18,6 +18,7 @@ import { CreateDrivingNotification } from '../../models/notification/create-driv
 import {
   ClearStore,
   GetDrivingNotification,
+  UpdateDrivings,
   UpdateMinutesStatusDrivingNotification,
   UpdateStatusDrivingNotification
 } from "../../actions/driving-notification.action";
@@ -26,6 +27,7 @@ import {SimpleDrivingInfo} from "../../models/driving/simple-driving-info";
 import {DrivingStatusNotification} from "../../models/notification/driving-status-notification";
 import { Subscription } from 'rxjs';
 import { DrivingNotification } from '../../models/notification/driving-notification';
+import { Driving } from '../../models/driving/driving';
 
 @Injectable({
   providedIn: 'root',
@@ -96,6 +98,8 @@ export class WebSocketService {
         that.successfulCreatedDrivingNotification();
 
         that.passengerAgreementNotification();
+
+        that.newDrivingNotification();
       });
     }
   }
@@ -353,5 +357,19 @@ export class WebSocketService {
       chatRoom: chatRoom,
       notifyAdmin: notifyAdmin,
     };
+  }
+
+  newDrivingNotification(){
+    this.stompClient.subscribe(
+      environment.publisherUrl + localStorage.getItem('email') + '/new-driving',
+      message => {
+        const drivingStatusNotification: DrivingStatusNotification = JSON.parse(message.body);
+        this.drivingService.get(drivingStatusNotification.drivingId).subscribe((response: Driving) => {
+          this.toast.info("You have new ride. Tap to see details.", "New ride.").onTap.subscribe(action => {
+            this.router.navigate(['/serb-uber/user/map-page-view', drivingStatusNotification.drivingId]);
+          });
+          this.store.dispatch(new UpdateDrivings(response));
+        })
+      });
   }
 }

@@ -10,6 +10,7 @@ import {AuthService} from "../../../auth/services/auth-service/auth.service";
 import {RouteService} from "../../services/route-service/route.service";
 import {DriverService} from "../../services/driver-service/driver.service";
 import {Driver} from "../../models/user/driver";
+import {Route as RouteLocation } from "../../models/route/route";
 import {
   drawActiveRide,
   drawAllMarkers,
@@ -20,6 +21,7 @@ import { DrivingNotificationState } from '../../state/driving-notification.state
 import { DrivingNotification } from '../../models/notification/driving-notification';
 import { Select } from '@ngxs/store';
 import { RegularUserService } from '../../services/regular-user-service/regular-user.service';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-driving-details',
@@ -46,6 +48,9 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
   loggedUser: User = null;
   base64Prefix = this.configService.BASE64_PHOTO_PREFIX;
   activeRide: boolean;
+  rideRequestForm: FormGroup;
+  filterVehicleView = false;
+  requestLater = false;
 
   currentUserSubscription: Subscription;
   drivingsSubscription: Subscription;
@@ -63,15 +68,33 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
     private driverService: DriverService,
     private regularUserService: RegularUserService,
     private routeService: RouteService,
-    private router: Router,
+    public router: Router,
+    private formBuilder: FormBuilder
   ) {
     this.activeRide = false;
     this.markers = [];
+    this.rideRequestForm = new FormGroup({
+      searchingRoutesForm: this.formBuilder.array([]),
+      selectedRoute: new FormControl(null),
+      routePathIndex: new FormControl([]),
+      petFriendly: new FormControl(false),
+      babySeat: new FormControl(false),
+      vehicleType: new FormControl(''),
+      price: new FormControl(0),
+      senderEmail: new FormControl(''),
+      selectedPassengers: new FormControl([]),
+      chosenDateTime: new FormControl(null),
+    });
   }
+
+
 
   ngOnInit(): void {
     this.currentDrivingNotification.subscribe(response => {
       this.storedDrivingNotification = response;
+      if(this.storedDrivingNotification?.drivingStatus === 'PAYING'){
+        this.filterVehicleView = false;
+      }
     })
     this.router.events.subscribe((event) => {
       this.ngOnDestroy();
@@ -81,7 +104,12 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
     this.drivingsSubscription = this.drivingService
       .get(this.id)
       .subscribe((driving: Driving) => {
+        console.log(driving);
         this.driving = driving;
+        console.log(this.getRoutePathIndex(driving.route));
+        driving.route.routePathIndex = this.getRoutePathIndex(driving.route);
+        this.rideRequestForm.get('selectedRoute').setValue(driving.route);
+        console.log(this.rideRequestForm);
         this.drivingsSubscription = this.drivingService.getVehicleDetails(driving?.id).subscribe(vehicleCurrentLocation => {
           markCurrentPosition(this.map, vehicleCurrentLocation);
         });
@@ -110,15 +138,26 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
             this.isRegularUser = this.authService.userIsRegular();
             this.isDriver = this.authService.userIsDriver();
           });
+        });
+  }
 
-        this.favouriteRouteSubscription = this.regularUserService
-          .isFavouriteRouteForUser(driving?.route?.id, this.loggedUser?.id)
-          .subscribe(response => {
-            if (response) {
-              this.favouriteRoute = true;
-            }
-          });
-      });
+  showFilterVehicleView(requestLater: boolean) {
+    if(requestLater){
+      this.filterVehicleView = true;
+      this.requestLater = true;
+    }
+    else {
+      this.filterVehicleView = true;
+    }
+  }
+
+  getRoutePathIndex(route: RouteLocation): number[]{
+    let routePathIndex = [];
+    route.locations.forEach(element => {
+      routePathIndex.push(element.routeIndex)
+    });
+
+    return routePathIndex;
   }
 
   setFavouriteRoute(favourite: boolean) {

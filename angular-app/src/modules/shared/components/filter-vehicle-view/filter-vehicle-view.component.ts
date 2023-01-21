@@ -3,20 +3,20 @@ import { ControlContainer, FormControl, FormGroup } from '@angular/forms';
 import { Select, Store } from '@ngxs/store';
 import { ToastrService } from 'ngx-toastr';
 import { map, Observable, startWith, Subscription } from 'rxjs';
-import {Vehicle} from "../../../shared/models/vehicle/vehicle";
-import {DrivingNotificationState} from "../../../shared/state/driving-notification.state";
-import {User} from "../../../shared/models/user/user";
-import {AddDrivingNotification, UpdateStatusDrivingNotification} from "../../../shared/actions/driving-notification.action";
-import {UserService} from "../../../shared/services/user-service/user.service";
-import {RegularUserService} from "../../../shared/services/regular-user-service/regular-user.service";
+import {Vehicle} from "../../models/vehicle/vehicle";
+import {DrivingNotificationState} from "../../state/driving-notification.state";
+import {User} from "../../models/user/user";
+import {AddDrivingNotification, UpdateStatusDrivingNotification} from "../../actions/driving-notification.action";
+import {UserService} from "../../services/user-service/user.service";
+import {RegularUserService} from "../../services/regular-user-service/regular-user.service";
 import {AuthService} from "../../../auth/services/auth-service/auth.service";
-import {DrivingNotification} from "../../../shared/models/notification/driving-notification";
-import {VehicleService} from "../../../shared/services/vehicle-service/vehicle.service";
-import {VehicleTypeInfoService} from "../../../shared/services/vehicle-type-info-service/vehicle-type-info.service";
+import {DrivingNotification} from "../../models/notification/driving-notification";
+import {VehicleService} from "../../services/vehicle-service/vehicle.service";
+import {VehicleTypeInfoService} from "../../services/vehicle-type-info-service/vehicle-type-info.service";
 import {
   DrivingNotificationService
-} from "../../../shared/services/driving-notification-service/driving-notification.service";
-import {Route} from "../../../shared/models/route/route";
+} from "../../services/driving-notification-service/driving-notification.service";
+import {Route} from "../../models/route/route";
 import { DrivingService } from 'src/modules/shared/services/driving-service/driving.service';
 import moment from 'moment';
 
@@ -29,6 +29,7 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
   @Select(DrivingNotificationState.getDrivingNotification)drivingNotification$: Observable<DrivingNotification>;
   @Input() requestLater: boolean;
   @Output() waitingForAcceptDrive = new  EventEmitter<boolean>();
+  @Output() enterLocationsViewEvent = new EventEmitter<boolean>();
   vehiclePassengersView = true;
   vehicle: Vehicle;
 
@@ -42,7 +43,7 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
 
   allRegularUsers: string[] = [];
   filteredRegularUsers: Observable<string[]>;
-  selectedPassengers: string[] = [];
+  selectedPassengers: string[];
   passengers: User[] = [];
 
   passengerCtrl: FormControl = new FormControl();
@@ -69,14 +70,17 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
     private drivingService: DrivingService
   ) {
     this.rideRequestForm = <FormGroup>this.controlContainer.control;
+    this.selectedPassengers = this.rideRequestForm.get('selectedPassengers').value;
 
   }
 
   ngOnInit(): void {
+  
     this.authSubscription = this.authService
       .getSubjectCurrentUser()
       .subscribe(user => {
         this.currentUser = user;
+        this.rideRequestForm.get('senderEmail').setValue(this.currentUser.email);
         this.passengers.push(user);
       });
 
@@ -84,14 +88,16 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
       .getAll()
       .subscribe(regularUsersResponse => {
         for (const user of regularUsersResponse) {
-          if (user.email !== this.currentUser.email) {
-            this.allRegularUsers.push(user.email);
+          console.log(user.email);
+          if(!this.rideRequestForm.get('selectedPassengers').value.includes(user.email) 
+          && user.email !== this.currentUser.email){
+              this.allRegularUsers.push(user.email);
+            }   
           }
-        }
         this.filteredRegularUsers = this.passengerCtrl.valueChanges.pipe(startWith(''),
         map(value => this._filter(value || '')),
       );
-      });
+  });
 
     this.vehicleTypesSubscription = this.vehicleTypeInfoService
       .getAll()
@@ -102,6 +108,10 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
       });
   }
 
+  goToEnterLocations(){
+    this.enterLocationsViewEvent.emit(true);
+  }
+
   addSelectedPassenger(email: string) {
     if (this.rideRequestForm.get('vehicleType').value) {
       if (
@@ -109,6 +119,7 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
         this.selectedPassengers.length + 1
       ) {
         this.selectedPassengers.push(email);
+        this.rideRequestForm.get('selectedPassengers').setValue(this.selectedPassengers);
         this._findPassengerObj(email);
         this.passengerCtrl.setValue(null);
         const index = this.allRegularUsers.indexOf(email);
@@ -134,6 +145,7 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
 
     if (index >= 0) {
       this.selectedPassengers.splice(index, 1);
+      this.rideRequestForm.get('selectedPassengers').setValue(this.selectedPassengers);
       this.passengers.splice(index, 1);
       this.allRegularUsers.push(passenger);
     }
@@ -159,7 +171,6 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
 
   requestRide() {
     this.rideRequestForm.get('selectedPassengers').setValue(this.selectedPassengers);
-    this.rideRequestForm.get('senderEmail').setValue(this.currentUser.email);
     let started = moment().toDate();
     if(this.rideRequestForm.get('chosenDateTime').value !== null){
       started = this.rideRequestForm.get('chosenDateTime').value
