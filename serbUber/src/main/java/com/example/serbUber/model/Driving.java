@@ -27,8 +27,8 @@ public class Driving {
     @Column(name="end_date")
     private LocalDateTime end;
 
-    @Column(name="paying_limit")
-    private LocalDateTime payingLimit;
+    @Column(name="last_reminder")
+    private LocalDateTime lastReminder;
 
     @OneToOne()
     @JoinColumn(name = "route_id", referencedColumnName = "id")
@@ -49,6 +49,9 @@ public class Driving {
     @Column(name="price", nullable = false)
     private double price;
 
+    @Column(name="reservation", nullable = false)
+    private boolean reservation = false;
+
 
     public Driving() {
     }
@@ -57,7 +60,6 @@ public class Driving {
         final int duration,
         final LocalDateTime started,
         final LocalDateTime end,
-        final LocalDateTime payingLimit,
         final Route route,
         final DrivingStatus drivingStatus,
         final Driver driver,
@@ -66,7 +68,6 @@ public class Driving {
         this.duration = duration;
         this.started = started;
         this.end = end;
-        this.payingLimit = payingLimit;
         this.route = route;
         this.drivingStatus = drivingStatus;
         this.driver = driver;
@@ -99,14 +100,6 @@ public class Driving {
 
     public void setStarted(LocalDateTime started) {
         this.started = started;
-    }
-
-    public LocalDateTime getPayingLimit() {
-        return payingLimit;
-    }
-
-    public void setPayingLimit(LocalDateTime payingLimit) {
-        this.payingLimit = payingLimit;
     }
 
     public Route getRoute() {
@@ -161,5 +154,21 @@ public class Driving {
 
     public void setEnd(LocalDateTime end) {
         this.end = end;
+    }
+
+    public LocalDateTime getLastReminder() {
+        return lastReminder;
+    }
+
+    public void setLastReminder(LocalDateTime last_reminder) {
+        this.lastReminder = last_reminder;
+    }
+
+    public boolean isReservation() {
+        return reservation;
+    }
+
+    public void setReservation(boolean reservation) {
+        this.reservation = reservation;
     }
 }

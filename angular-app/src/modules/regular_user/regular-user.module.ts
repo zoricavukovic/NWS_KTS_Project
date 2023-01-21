@@ -9,7 +9,7 @@ import {AcceptingDrivingViewComponent} from "./components/accepting-driving-view
 import {ActiveDriveContainerComponent} from "./components/active-drive-container/active-drive-container.component";
 import {
   WaitingForAcceptRideContainerComponent
-} from "./components/waiting-for-accept-ride-container/waiting-for-accept-ride-container.component";
+} from "../shared/components/waiting-for-accept-ride-container/waiting-for-accept-ride-container.component";
 import {FinancialCardComponent} from "./pages/financial-card/financial-card.component";
 import {BuyTokensComponent} from "./components/payment/buy-tokens/buy-tokens.component";
 import {PaymentStatusComponent} from "./pages/payment-status/payment-status.component";
@@ -20,12 +20,11 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {GoogleMapsModule} from "@angular/google-maps";
 import {GooglePlaceModule} from "ngx-google-places-autocomplete";
 import {ProgressSpinnerModule} from "primeng/progressspinner";
-import {FilterVehicleViewComponent} from "./components/filter-vehicle-view/filter-vehicle-view.component";
 import {RouteRowComponent} from "./components/route-row/route-row.component";
-import { RequestLaterTimeComponent } from './components/request-later-time/request-later-time.component';
 import { DrivingNotificationDetailsComponent } from './components/driving-notification-details/driving-notification-details.component';
 import { FavoriteRoutesDataComponent } from "./components/favorite-routes-data/favorite-routes-data.component";
 import { EnterLocationsComponent } from './components/enter-locations/enter-locations.component';
+import { RateDrivingOrSkipComponent } from './components/rate-driving-or-skip/rate-driving-or-skip.component';
 
 
 @NgModule({
@@ -33,18 +32,16 @@ import { EnterLocationsComponent } from './components/enter-locations/enter-loca
     HomePassangerComponent,
     AcceptingDrivingViewComponent,
     ActiveDriveContainerComponent,
-    WaitingForAcceptRideContainerComponent,
     FinancialCardComponent,
     BuyTokensComponent,
     PaymentStatusComponent,
     ProcessingPaymentComponent,
     TransactionsHistoryComponent,
-    FilterVehicleViewComponent,
     RouteRowComponent,
-    RequestLaterTimeComponent,
     DrivingNotificationDetailsComponent,
     FavoriteRoutesDataComponent,
-    EnterLocationsComponent
+    EnterLocationsComponent,
+    RateDrivingOrSkipComponent
   ],
   imports: [
     CommonModule,

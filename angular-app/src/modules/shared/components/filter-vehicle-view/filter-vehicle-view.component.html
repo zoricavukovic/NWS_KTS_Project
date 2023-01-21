@@ -1,4 +1,5 @@
 <div *ngIf="vehiclePassengersView && rideRequestForm" [formGroup]="rideRequestForm" style="min-width:25rem">
+  <button mat-raised-button (click)="goToEnterLocations()" class="button-back"><mat-icon style="color: var(--deep-blue)">arrow_back</mat-icon></button>
   <driver-vehicle (vehicleTypeEvent)="showPrice()"
     [formGroup] = "rideRequestForm"></driver-vehicle>
   <br />
@@ -8,7 +9,7 @@
     </mat-expansion-panel-header>
     <mat-chip-list aria-label="Passenger selection">
       <mat-chip
-        *ngFor="let user of selectedPassengers"
+        *ngFor="let user of rideRequestForm.get('selectedPassengers').value"
         (removed)="removePassengerFromSelected(user)">
         {{ user }}
         <button matChipRemove>
@@ -51,8 +52,4 @@
     (click)="requestRide()">
     Request ride
   </button>
-</div>
-
-<div id="acceptDriving">
-
 </div>

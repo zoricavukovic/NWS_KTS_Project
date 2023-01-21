@@ -53,6 +53,13 @@ export class DriverVehicleComponent implements OnInit, OnDestroy {
         );
         this.vehicleTypes = vehicleTypes;
         this.styleArray = new Array<boolean>(vehicleTypes.length).fill(false);
+        const selectedIndex = this.getIndexOfSelectedVehicleType();
+        this.styleArray.forEach(
+          (value, index) =>{
+          console.log(value, index);
+          (this.styleArray[index] = selectedIndex === index)
+          }
+        );
         if (this.vehicle){
           this.vehicle.vehicleTypeInfo = this.setAdditionalData(this.vehicle.vehicleTypeInfo, this.vehicle.id - 1);
           this.changeSelectedVehicleType(this.vehicle.vehicleTypeInfo)
@@ -85,6 +92,19 @@ export class DriverVehicleComponent implements OnInit, OnDestroy {
     vehicleType.index = index;
     vehicleType.img = this.getPhoto(vehicleType);
     return vehicleType;
+  }
+  getIndexOfSelectedVehicleType(): number{
+    const vehicleType = this.rideRequestForm.get('vehicleType').value;
+    switch(vehicleType){
+      case 'VAN':
+        return 0;
+      case 'SUV':
+        return 1;
+      case 'CAR':
+        return 2;
+      default:
+        return -1;
+    }
   }
 
   getPhoto(vehicleType: VehicleTypeInfo): string {

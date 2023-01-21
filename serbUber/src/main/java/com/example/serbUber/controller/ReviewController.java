@@ -50,6 +50,7 @@ public class ReviewController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyRole('ROLE_REGULAR_USER')")
     public ReviewDTO create(@Valid @RequestBody ReviewRequest reviewRequest) throws EntityNotFoundException {
         return this.reviewService.create(
             reviewRequest.getVehicleRate(),

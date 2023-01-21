@@ -3,21 +3,26 @@ import { Injectable } from '@angular/core';
 import {DrivingNotification} from "../models/notification/driving-notification";
 import {
   AddDrivingNotification,
+  AddDrivings,
   ClearStore,
   UpdateDrivingNotification,
   UpdateMinutesStatusDrivingNotification, UpdateOnlyMinutesStatus,
+  UpdateDrivings,
   UpdateStatusDrivingNotification
 } from "../actions/driving-notification.action";
 import {Observable} from "rxjs";
+import { Driving } from '../models/driving/driving';
 
 export class DrivingNotificationStateModel {
-    currentDrivingNotification: DrivingNotification
+    currentDrivingNotification: DrivingNotification;
+    activeDrivings: Driving[];
 }
 
 @State<DrivingNotificationStateModel>({
     name: 'currentDrivingNotification',
     defaults: {
-        currentDrivingNotification: null
+        currentDrivingNotification: null,
+        activeDrivings: []
     }
 })
 @Injectable()
@@ -55,11 +60,13 @@ export class DrivingNotificationState {
   @Action(UpdateOnlyMinutesStatus)
   updateOnlyMinutesStatus({getState, setState}: StateContext<DrivingNotificationStateModel>, {payload}: UpdateOnlyMinutesStatus) {
     const state = getState();
+    console.log(payload)
     state.currentDrivingNotification.minutes = payload.minutes;
     setState({
       ...state,
       currentDrivingNotification: state.currentDrivingNotification
     });
+    console.log(state);
   }
 
     @Action(UpdateStatusDrivingNotification)
@@ -120,6 +127,39 @@ export class DrivingNotificationState {
       currentDrivingNotification: null
     });
   }
+
+  @Selector()
+    static getDrivings(state: DrivingNotificationStateModel) {
+        return state.activeDrivings;
+    }
+
+    @Select() drivingsState$: Observable<DrivingNotificationState>;
+
+
+    @Action(AddDrivings)
+    addDrivings({getState, setState}: StateContext<DrivingNotificationStateModel>, {payload}: AddDrivings) {
+        console.log("fdfafs");
+        const state = getState();
+        setState({
+            ...state,
+            activeDrivings: payload
+        });
+        // const state = getState();
+        console.log(state);
+    }
+
+    @Action(UpdateDrivings)
+    updateDrivings({getState, setState}: StateContext<DrivingNotificationStateModel>, {payload}: UpdateDrivings) {
+        console.log(payload);
+        const state = getState();
+        console.log(state);
+        state.activeDrivings.push(payload)
+        console.log(state);
+        setState({
+            ...state,
+            activeDrivings: state.activeDrivings
+        });
+    }
 
 }
 

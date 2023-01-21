@@ -68,8 +68,9 @@ export class MapPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.currentDrivingNotification.subscribe(response => this.storedDrivingNotification = response);
     this.initializeWebSocketConnection();
-    this.router.events.subscribe((event) => {
+    this.router.events.subscribe(() => {
       this.checkIfShouldHideOrVisibleVehicles();
     });
     this.initMap();
@@ -159,8 +160,7 @@ export class MapPageComponent implements OnInit, OnDestroy {
               this.vehiclesCurrentPosition[index] = vehicle;
             }else {
               vehicle.marker = updateVehiclePosition(this.map, vehicle.marker, vehicleCurrentLocation, this.currentUser.id)
-              console.log(this.storedDrivingNotification?.vehicle?.id);
-              if (this.storedDrivingNotification && this.storedDrivingNotification?.vehicle?.id === vehicle.vehicleCurrentLocation.id){
+              if (this.storedDrivingNotification && this.storedDrivingNotification?.vehicleId === vehicle.vehicleCurrentLocation.id){
                 calculateTimeToDestination(vehicle, this.storedDrivingNotification.route, this.directionService);
                 console.log(vehicle);
                 this.store.dispatch(new UpdateOnlyMinutesStatus({minutes: vehicle.vehicleCurrentLocation.timeToDestination})).subscribe()

@@ -136,9 +136,11 @@ export class EnterLocationsComponent implements OnDestroy {
     this.deleteMarker(index);
     this.drawPolylineList = removeAllPolyline(this.drawPolylineList);
     this.possibleRoutesViaPoints = [];
+    console.log(this.searchingForm);
     if(address.formatted_address){
 
       (this.searchingForm).at(index).inputPlace = address.formatted_address;
+      console.log(this.searchingForm);
       const lng: number = address.geometry.location.lng();
       const lat: number = address.geometry.location.lat();
 

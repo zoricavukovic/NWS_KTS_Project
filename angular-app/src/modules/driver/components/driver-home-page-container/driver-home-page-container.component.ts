@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
@@ -7,6 +7,9 @@ import {ConfigService} from "../../../shared/services/config-service/config.serv
 import {Driving} from "../../../shared/models/driving/driving";
 import {DrivingService} from "../../../shared/services/driving-service/driving.service";
 import {RejectDrivingComponent} from "../reject-driving/reject-driving.component";
+import { Select, Store } from '@ngxs/store';
+import { DrivingNotificationState } from 'src/modules/shared/state/driving-notification.state';
+import { AddDrivings } from 'src/modules/shared/actions/driving-notification.action';
 
 @Component({
   selector: 'app-driver-home-container',
@@ -14,6 +17,7 @@ import {RejectDrivingComponent} from "../reject-driving/reject-driving.component
   styleUrls: ['./driver-home-page-container.component.css'],
 })
 export class DriverHomePageContainerComponent implements OnInit, OnDestroy {
+  @Select(DrivingNotificationState.getDrivings) activeDrivings: Observable<Driving[]>;
   @Input() driverId: number;
   drivingSubscription: Subscription;
   nowAndFutureDrivings: Driving[];
@@ -24,17 +28,23 @@ export class DriverHomePageContainerComponent implements OnInit, OnDestroy {
     private drivingService: DrivingService,
     private router: Router,
     private dialog: MatDialog,
-    private toast: ToastrService
+    private toast: ToastrService,
+    private store: Store
   ) {
     this.nowAndFutureDrivings = [];
     this.reasonForRejectingDriving = '';
   }
 
   ngOnInit(): void {
+    this.activeDrivings.subscribe(response => {
+      this.nowAndFutureDrivings = response;
+    })
+    console.log(this.nowAndFutureDrivings);
     this.drivingSubscription = this.drivingService
       .getDrivingsForDriver(this.driverId)
       .subscribe((drivings: Driving[]) => {
-        this.nowAndFutureDrivings = drivings;
+        this.store.dispatch(new AddDrivings(drivings));
+        // this.nowAndFutureDrivings = drivings;
       });
   }
 

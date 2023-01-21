@@ -2,8 +2,10 @@ import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angula
 import {ActivatedRoute, Router} from "@angular/router";
 import { Select } from '@ngxs/store';
 import {Observable, Subscription} from "rxjs";
+import { Driving } from 'src/modules/shared/models/driving/driving';
 import { DrivingNotification } from 'src/modules/shared/models/notification/driving-notification';
 import { User } from 'src/modules/shared/models/user/user';
+import { Vehicle } from 'src/modules/shared/models/vehicle/vehicle';
 import { DrivingNotificationState } from 'src/modules/shared/state/driving-notification.state';
 import {AuthService} from "../../../../auth/services/auth-service/auth.service";
 import {DrivingNotificationService} from "../../../services/driving-notification-service/driving-notification.service";
@@ -17,6 +19,9 @@ export class DrivingDetailsActionsComponent implements OnInit, OnDestroy {
   @Select(DrivingNotificationState.getDrivingNotification) currentDrivingNotification: Observable<DrivingNotification>;
   storedDrivingNotification: DrivingNotification;
   @Input() favouriteRoute: boolean;
+  @Input() driving: Driving;
+  @Input() vehicle: Vehicle;
+  @Output() setFilterVehicleViewEvent = new EventEmitter<boolean>();
   @Output() setFavouriteRouteEvent = new EventEmitter<boolean>();
 
   currentUser: User;
@@ -64,6 +69,57 @@ export class DrivingDetailsActionsComponent implements OnInit, OnDestroy {
       console.log(res);
     });
   }
+
+  requestNow(){
+    this.setFilterVehicleViewEvent.emit(false);
+  }
+
+  requestLater(){
+    this.setFilterVehicleViewEvent.emit(true);
+  }
+
+  // requestNow(){
+  //   const drivingNotification = {
+  //     route: this.driving.route,
+  //     price: this.driving.price,
+  //     senderEmail: this.currentUser.email,
+  //     passengers: [],
+  //     duration: this.driving.duration,
+  //     petFriendly: this.vehicle.petFriendly,
+  //     babySeat: this.vehicle.babySeat,
+  //     vehicleType: this.vehicle.vehicleType,
+  //     minutes: -1,
+  //     drivingStatus: "PAYING",
+  //     active: false,
+  //     chosenDateTime: started,
+  //     reservation: reservation
+  //   };
+  // }
+
+  // requestLater(){
+    
+  // }
+
+  // createDrivingNotification(){
+  //   const drivingNotification = {
+  //     route: this.driving.route,
+  //     price: this.driving.price,
+  //     senderEmail: this.rideRequestForm.get('senderEmail').value,
+  //     passengers: this.rideRequestForm.get('selectedPassengers').value,
+  //     duration: this.driving.duration,
+  //     petFriendly: false,
+  //     babySeat: false,
+  //     vehicleType: this.driving.,
+  //     minutes: -1,
+  //     drivingStatus: "PAYING",
+  //     active: false,
+  //     chosenDateTime: started,
+  //     reservation: reservation
+  //   };
+  // }
+  // requestLater(){
+
+  // }
 
   ngOnDestroy(): void {
     if (this.authSubscription){

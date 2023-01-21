@@ -78,7 +78,7 @@ public class DrivingService implements IDrivingService {
     ) throws EntityNotFoundException {
         Driver driver = userService.getDriverById(driverId);
 
-        Driving driving = drivingRepository.save(new Driving(duration, started, null, payingLimit, route, drivingStatus, driver, price));
+        Driving driving = drivingRepository.save(new Driving(duration, started, null, route, drivingStatus, driver, price));
         users.forEach(user -> {
             List<Driving> drivings = getAllDrivingsForUserEmail(user.getEmail());
             drivings.add(driving);
@@ -128,6 +128,11 @@ public class DrivingService implements IDrivingService {
         Page<Driving> results = getDrivingPage(id, page);
 
         return fromDrivingsPage(results.getContent(), results.getSize(), results.getTotalPages());
+    }
+
+    public List<Driving> getAllReservations(){
+
+        return drivingRepository.getAllReservations();
     }
 
     private Page<Driving> getDrivingPage(final Long id, final Pageable page) throws EntityNotFoundException {
@@ -434,6 +439,7 @@ public class DrivingService implements IDrivingService {
 
         drivingLocationIndexRequestList.add(firstLocation);
         drivingLocationIndexRequestList.add(secondLocation);
+
         double minutes = this.routeService.calculateMinutesForDistance(
             firstLocation.getLocation().getLat(),
             firstLocation.getLocation().getLon(),
@@ -441,7 +447,8 @@ public class DrivingService implements IDrivingService {
             secondLocation.getLocation().getLon()
         );
         Route route = this.routeService.createRoute(drivingLocationIndexRequestList, minutes, routeService.getDistanceInKmFromTime(minutes), List.of(0));
-        Driving driving = new Driving((int) minutes, LocalDateTime.now(), null, null, route, DrivingStatus.ON_WAY_TO_DEPARTURE, driver, 0);
+        Driving driving = new Driving(0, LocalDateTime.now(), null, route, DrivingStatus.ON_WAY_TO_DEPARTURE, driver, 0);
+
         driver.getVehicle().setActiveRoute(driving.getRoute());
         driver.getVehicle().setCurrentLocationIndex(0);
         driver.getVehicle().setCurrentStop(driving.getRoute().getLocations().first().getLocation());

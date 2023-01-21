@@ -1,0 +1,18 @@
+#content{
+position: relative;
+text-align:center;
+}
+
+.text-container {
+margin-right: 2rem;
+margin-top:-0.85rem;
+font-size:1.4rem;
+text-align: center;
+}
+
+.see-details{
+    color: var(--deep-blue);
+    font-size:1.1rem;
+    text-align:center;
+}
+

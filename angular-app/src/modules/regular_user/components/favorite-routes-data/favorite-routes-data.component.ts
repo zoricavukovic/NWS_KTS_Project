@@ -56,7 +56,7 @@ export class FavoriteRoutesDataComponent implements OnInit, OnDestroy {
   goToDetails(routeId: number) {
     this.drivingSubscription = this.drivingService.getDrivingByFavouriteRoute(routeId).subscribe(
       res => {
-        this.router.navigate([`/serb-uber/user/map-page-view/${res}`]);
+        this.router.navigate(["serb-uber/user/favourite-route", res]);
       }
     );
   }

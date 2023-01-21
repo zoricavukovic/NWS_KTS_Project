@@ -21,6 +21,7 @@
       </ngx-stars>
     </div>
   </div>
+  <p *ngIf="error!==''" style="color:red;font-weight: bold;">{{error}}</p>
   <textarea
     matInput
     rows="5"

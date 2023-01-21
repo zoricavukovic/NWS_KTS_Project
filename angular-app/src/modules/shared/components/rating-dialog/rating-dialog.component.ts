@@ -14,6 +14,7 @@ export class RatingDialogComponent implements OnDestroy {
   drivingId: number;
   userId: number;
   message = '';
+  error = '';
 
   reviewSubscription: Subscription;
 
@@ -35,6 +36,11 @@ export class RatingDialogComponent implements OnDestroy {
   }
 
   confirm(): void {
+
+  if(this.ratingDriver === 0 || this.ratingVehicle === 0){
+    this.error = "Rating must be from 1 to 5 stars";
+  }
+  else{
     this.reviewSubscription = this.reviewService
       .create(
         this.reviewService.createRateReview(
@@ -48,6 +54,7 @@ export class RatingDialogComponent implements OnDestroy {
       .subscribe(data => {
         this.dialogRef.close(data);
       });
+    }
   }
 
   ngOnDestroy(): void {

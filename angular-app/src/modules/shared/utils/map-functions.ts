@@ -79,10 +79,8 @@ function calculateMinutesToDestination(
   console.log(source);
   directionService.route(request, (response, status) => {
     if (status === google.maps.DirectionsStatus.OK){
-      console.log(response);
       const distanceInfo = response.routes[0].legs[0];
       vehicle.vehicleCurrentLocation.timeToDestination += distanceInfo.duration.value/60;
-      console.log("vreee");
     }
   });
 }
@@ -103,6 +101,8 @@ export function calculateTimeToDestination(vehicle: CurrentVehiclePosition, rout
       }
     }
   })
+
+  console.log(vehicle);
 }
 
 export function drawActiveRide(

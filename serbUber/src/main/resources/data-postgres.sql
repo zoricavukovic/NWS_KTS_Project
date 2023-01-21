@@ -57,18 +57,18 @@ insert into driving_locations(location_id, index, route_id, route_index) values
       (5,1,1, 0),
       (10,2,1, 0),
       (7,3,1, 0),
-      (14,10,1, -1),
+      (14,10,1, 0),
       (2,1,2, 0),
-      (1,2,2, -1),
+      (1,2,2, 0),
       (4,1,3, 0),
-      (1,2,3, -1),
+      (1,2,3, 0),
       (5, 1,4, 0),
       (15, 2, 4, 0),
-      (3, 3, 4, -1);
+      (3, 3, 4, 0);
 
 
 insert into drivers (id, email, password, name, surname, phone_number, city, profile_picture, role_id, active, blocked, start_shift, end_shift, rate, working_minutes, verified, online, drive, vehicle_id) values
-    (nextval('users_id_gen'), 'mile@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Mile', 'Milic', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('18.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), 4.1, 460, true, false, true, 2);
+    (nextval('users_id_gen'), 'mile@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Mile', 'Milic', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('18.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), 4.1, 460, true, false, false, 2);
 
 insert into drivers (id, email, password, name, surname, phone_number, city, profile_picture, role_id, active, blocked, start_shift, end_shift, rate, working_minutes, verified, online, drive, vehicle_id) values
     (nextval('users_id_gen'), 'milan@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Milan', 'Milanovic', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('18.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), 4, 1, true, false,true, 1);
@@ -76,12 +76,16 @@ insert into drivers (id, email, password, name, surname, phone_number, city, pro
 -- insert into drivers (id, email, password, name, surname, phone_number, city, profile_picture, role_id, active, blocked, start_shift, end_shift, rate, working_minutes, verified, online, drive, vehicle_id) values
 --     (nextval('users_id_gen'), 'eki@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Esad', 'Esadic', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('18.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), 0, 0, true, false, false, 1);
 
-insert into drivings (active, driver_id, driving_status, duration, paying_limit, price, started, end_date, route_id) values
-   (true, 5, 2, 2, null, 3, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), null, 1),
-   (true, 6, 2, 8, null, 3, to_timestamp('19.01.2023. 22:40', 'DD.MM.YYYY HH24:MI'), null, 2),
-   (false, 5, 2, 10, null, 5,to_timestamp('21.01.2023 03:00', 'DD.MM.YYYY HH24:MI'), null, 3);
---    (false, 6, 2, 10, null, 5,to_timestamp('20.01.2023. 01:00', 'DD.MM.YYYY. HH24:MI'), null,4);
+-- insert into drivings (active, driver_id, driving_status, duration, price, started, end_date, route_id) values
+--    (true, 5, 2, 2, 3, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), null, 1),
+--    (true, 6, 2, 8, 3, to_timestamp('19.01.2023. 22:40', 'DD.MM.YYYY HH24:MI'), null, 2),
+--    (false, 5, 2, 10, 5,to_timestamp('21.01.2023 03:00', 'DD.MM.YYYY HH24:MI'), null, 3);
+--    (false, 6, 2, 10, 5,to_timestamp('20.01.2023. 01:00', 'DD.MM.YYYY. HH24:MI'), null,4);
 
+insert into drivings (active, driver_id, driving_status, duration, price, started, end_date, route_id, last_reminder, reservation) values
+       (true, 5, 2, 2, 3, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), null, 1, null, false),
+       (true, 6, 2, 8, 3, to_timestamp('16.01.2023. 22:40', 'DD.MM.YYYY HH24:MI'), null, 2, null, false),
+       (false, 5, 2, 10, 5,to_timestamp('20.01.2023 02:00', 'DD.MM.YYYY HH24:MI'), null,3, null, false);
 
 insert into admins (id, email, password, name, surname, phone_number, city, profile_picture, role_id, verified, online) values
     (nextval('users_id_gen'), 'admin@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Admin', 'Admin', '012345578', 'Novi Sad', 'default-user.png', 1, true, false);
@@ -107,9 +111,8 @@ insert into regular_users (id, email, password, name, surname, phone_number, cit
 
 insert into drivings_users(driving_id, user_id) values
     (1, 2),
-    (1, 3),
     (1, 4),
-    (2, 9),
+    (2, 2),
     (3, 2),
     (2, 10);
 --     (4, 2);
