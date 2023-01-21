@@ -74,13 +74,6 @@ public class DrivingController {
         return drivingService.getDrivingsForUser(id, pageNumber, pageSize, parameter, sortOrder);
     }
 
-//    @GetMapping("/number/{id}")
-//    @ResponseStatus(HttpStatus.OK)
-//    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
-//    public int getNumberOfAllDrivingsForUser(@PathVariable Long id) throws EntityNotFoundException {
-//        return drivingService.getNumberOfAllDrivingsForUser(id);
-//    }
-
     @GetMapping("/now-and-future/{id}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ROLE_DRIVER')")

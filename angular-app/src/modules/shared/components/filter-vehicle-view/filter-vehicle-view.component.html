@@ -1,5 +1,5 @@
 <div *ngIf="vehiclePassengersView && rideRequestForm" [formGroup]="rideRequestForm" style="min-width:25rem">
-  <button mat-raised-button (click)="goToEnterLocations()" class="button-back"><mat-icon style="color: var(--deep-blue)">arrow_back</mat-icon></button>
+  <button mat-raised-button (click)="goToEnterLocations()" class="button-back" *ngIf="!router.url.includes('favourite-route')"><mat-icon style="color: var(--deep-blue)">arrow_back</mat-icon></button>
   <driver-vehicle (vehicleTypeEvent)="showPrice()"
     [formGroup] = "rideRequestForm"></driver-vehicle>
   <br />
@@ -41,7 +41,7 @@
   <app-request-later-time *ngIf="requestLater" [formGroup] = "rideRequestForm"></app-request-later-time>
 
   <div style="float:left;  font-size: 1.7rem;display: flex;flex-direction: row;margin-top:0.2rem;">
-    <b>= {{price}}</b>
+    <b>= {{rideRequestForm.get('price').value}}</b>
     <mat-icon class="token-icon">payments</mat-icon>
   </div>
 
