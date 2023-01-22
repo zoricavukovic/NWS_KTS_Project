@@ -1,10 +1,9 @@
-import {Location} from "../route/location";
+import {Route} from "../route/route";
 
 export interface SimpleDrivingInfo {
   drivingId: number;
   minutes: number;
-  startLocation: Location;
-  endLocation: Location;
+  route: Route;
   active: boolean;
   cost: number;
   drivingStatus: string;

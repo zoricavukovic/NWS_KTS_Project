@@ -12,6 +12,8 @@ import {Route} from "../models/route/route";
 import {PossibleRoutesViaPoints} from "../models/route/possible-routes-via-points";
 import {CurrentVehiclePosition} from "../models/vehicle/current-vehicle-position";
 import {Driver} from "../models/user/driver";
+import {UpdateOnlyMinutesStatus} from "../actions/driving-notification.action";
+import {Store} from "@ngxs/store";
 
 
 export function addMarker(map: google.maps.Map, markerCoordinates: google.maps.LatLng | google.maps.LatLngLiteral)
@@ -58,7 +60,8 @@ function calculateMinutesToDestination(
   vehicle: CurrentVehiclePosition,
   directionService: google.maps.DirectionsService,
   currentLocation: Location,
-  endLocation: Location
+  endLocation: Location,
+  store: Store
 ): void {
   const source = {
     lat: currentLocation.lat,
@@ -81,26 +84,30 @@ function calculateMinutesToDestination(
     if (status === google.maps.DirectionsStatus.OK){
       const distanceInfo = response.routes[0].legs[0];
       vehicle.vehicleCurrentLocation.timeToDestination += distanceInfo.duration.value/60;
+      store.dispatch(new UpdateOnlyMinutesStatus({minutes: vehicle.vehicleCurrentLocation.timeToDestination})).subscribe();
     }
   });
 }
 
-export function calculateTimeToDestination(vehicle: CurrentVehiclePosition, route: Route, directionService: google.maps.DirectionsService) {
-  vehicle.vehicleCurrentLocation.timeToDestination = 0;
-  route?.locations.forEach(location => {
-    if (vehicle.vehicleCurrentLocation.crossedWaypoints < route.locations.length - 1 &&
-      location.index < route?.locations.length
-    ) {
-      if (location.index - 1 === vehicle.vehicleCurrentLocation.crossedWaypoints) {
-        console.log("uslo drugi if");
-        calculateMinutesToDestination(vehicle, directionService, vehicle.vehicleCurrentLocation.currentLocation, location.location);
+export function calculateTimeToDestination(vehicle: CurrentVehiclePosition, route: Route, directionService: google.maps.DirectionsService, store: Store) {
+  calculateMinutesToDestination(vehicle, directionService, vehicle.vehicleCurrentLocation.currentLocation, route.locations.at(route.locations.length - 1).location, store);
 
-      } else if (location.index > vehicle.vehicleCurrentLocation.crossedWaypoints) {
-        console.log("uslo else if");
-        calculateMinutesToDestination(vehicle, directionService, location.location, route?.locations.at(location.index).location);
-      }
-    }
-  })
+  // route?.locations.forEach(location => {
+  //   calculateMinutesToDestination(vehicle, directionService, vehicle.vehicleCurrentLocation.currentLocation, route.locations.at(route.locations.length - 1).location, store);
+
+    // if (vehicle.vehicleCurrentLocation.crossedWaypoints < route.locations.length - 1 &&
+    //   location.index < route?.locations.length
+    // ) {
+    //   if (location.index - 1 === vehicle.vehicleCurrentLocation.crossedWaypoints) {
+    //     console.log("uslo drugi if");
+    //     calculateMinutesToDestination(vehicle, directionService, vehicle.vehicleCurrentLocation.currentLocation, location.location, store);
+    //
+    //   } else if (location.index > vehicle.vehicleCurrentLocation.crossedWaypoints) {
+    //     console.log("uslo else if");
+    //     calculateMinutesToDestination(vehicle, directionService, location.location, route?.locations.at(location.index).location, store);
+    //   }
+    // }
+  // })
 
   console.log(vehicle);
 }
@@ -111,27 +118,25 @@ export function drawActiveRide(
   driver: Driver,
   vehicle: CurrentVehiclePosition,
   index: number,
-  directionService: google.maps.DirectionsService
+  directionService: google.maps.DirectionsService,
+  store: Store
 ): google.maps.Marker[] {
   const markers: google.maps.Marker[] = [];
-  if (vehicle) {
+  if (vehicle && driving.active) {
     visibleMarker(vehicle.marker);
-    calculateTimeToDestination(vehicle, driving?.route, directionService);
+    vehicle.marker
+    calculateTimeToDestination(vehicle, driving?.route, directionService, store);
   }
 
   driving?.route?.locations.forEach(location => {
     const markerCoordinates: google.maps.LatLngLiteral = { lat: location.location.lat, lng: location.location.lon };
     const marker: google.maps.Marker = addMarker(map, markerCoordinates);
-    if (location.index === 1 || location.index === driving?.route?.locations.length){
-      const infowindow = new google.maps.InfoWindow({
-        content: `${location.location?.street} ${location.location?.number}`,
-        ariaLabel: "Uluru",
-      });
-      google.maps.event.addListener(marker, 'click', function() {
-        infowindow.open(map,marker);
-      });
-      infowindow.open(map,marker);
-    }
+    marker.setIcon({
+      url: './assets/images/marker-icon.png',
+      anchor: new google.maps.Point(15,30),
+      scaledSize: new google.maps.Size(30, 30)
+    });
+
     markers.push(marker);
   })
 
@@ -187,18 +192,6 @@ export function removeLine(polyline: google.maps.Polyline): void {
   polyline.setMap(null);
 }
 
-export function drawPolylineOnMapHaveRoute(map: google.maps.Map, route: Route | undefined): google.maps.Polyline | null {
-  if (route){
-    const latLongs: google.maps.LatLngLiteral[] = [];
-    route.locations.forEach(locationIndex =>
-      latLongs.push({lat:locationIndex.location.lat, lng:locationIndex.location.lon})
-    );
-
-    return drawPolylineOnMap(map, latLongs, "#283b50", 9);
-  }
-  return null;
-}
-
 export function drawPolylineWithLngLatArray(map: google.maps.Map, lngLatList: LngLat[]): google.maps.Polyline {
   const latLongs: google.maps.LatLngLiteral[] = [];
   lngLatList.forEach(lngLat =>
@@ -240,6 +233,9 @@ export function getRouteCoordinates(route: PossibleRoute): google.maps.LatLngLit
 }
 
 function getMarkerIcon(vehicleStatus: VehicleCurrentLocation, currentLoggedUserId: number) {
+  if (vehicleStatus.inDrive){
+    console.log("vozi se ");
+  }
   const customIcon: google.maps.Icon = vehicleStatus.inDrive ?
     {
       url: getVehiclePhotoNameBasedOnType(vehicleStatus.type)
@@ -262,23 +258,13 @@ export function addCarMarker(map, vehicleStatus: VehicleCurrentLocation, current
 
   const customIcon = getMarkerIcon(vehicleStatus, currentLoggedUserId);
 
-  const marker: google.maps.Marker = new google.maps.Marker(
+  return new google.maps.Marker(
     {
-      position: {lat:+vehicleStatus?.currentLocation?.lat, lng:+vehicleStatus?.currentLocation?.lon},
+      position: {lat: +vehicleStatus?.currentLocation?.lat, lng: +vehicleStatus?.currentLocation?.lon},
       map: map,
       title: 'Car',
       icon: customIcon
     });
-
-
-  // marker.addListener("click", () => {
-  //  let infoWindow = new google.maps.InfoWindow({
-  //    content: "hellow<b>World</b>"
-  //  });
-  //  infoWindow.open(map-page, marker);
-  // });
-
-  return marker;
 }
 
 export function updateVehiclePosition(
@@ -288,7 +274,9 @@ export function updateVehiclePosition(
   currentLoggedUserId: number
 ): google.maps.Marker {
   if (map !== undefined) {
-
+    if (!marker.getVisible()){
+      marker.setVisible(true);
+    }
     if (vehicleCurrentLocation.inDrive) {
       marker.setPosition({
         lat: vehicleCurrentLocation.currentLocation.lat,
@@ -304,23 +292,6 @@ export function updateVehiclePosition(
 
   return marker;
 }
-
-export function markCurrentPosition(map: google.maps.Map, vehicleCurrentLocation: VehicleCurrentLocation) {
-  const customIcon: google.maps.Icon = {
-      url: "./assets/images/pin_anim.svg",
-      anchor: new google.maps.Point(60, 60),
-      scaledSize: new google.maps.Size(60, 60)
-  }
-
-  const marker: google.maps.Marker = new google.maps.Marker(
-    {
-      position: {lat:vehicleCurrentLocation?.currentLocation?.lat, lng:vehicleCurrentLocation?.currentLocation?.lon},
-      map: map,
-      title: 'Car',
-      icon: customIcon
-    });
-}
-
 
 export function calculateMinutes(routePathIndexList: number[], possibleRoutesViaPoints: PossibleRoutesViaPoints[]): number {
   let minutes = 0;

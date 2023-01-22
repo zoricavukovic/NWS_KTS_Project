@@ -196,9 +196,9 @@ public class DrivingService implements IDrivingService {
     }
 
     public SimpleDrivingInfoDTO checkUserHasActiveDriving(final Long id) {
-        Optional<Driving> optionalDriving = drivingRepository.getActiveDrivingForUser(id, LocalDateTime.now().plusMinutes(30));
+       List<Driving> optionalDriving = drivingRepository.getActiveDrivingForUser(id, LocalDateTime.now().plusMinutes(30));
 
-        return optionalDriving.map(SimpleDrivingInfoDTO::new).orElse(null);
+        return optionalDriving.size() > 0 ? new SimpleDrivingInfoDTO(optionalDriving.get(0)): null;
     }
 
     public int getNumberOfAllDrivingsForUser(final Long id) throws EntityNotFoundException {
@@ -277,6 +277,7 @@ public class DrivingService implements IDrivingService {
         if (drivingShouldNotStartYet(driving)) {
             throw new DrivingShouldNotStartYetException();
         }
+
         driving.setStarted(LocalDateTime.now());
         driving.setActive(true);
         driving.getDriver().getVehicle().setActiveRoute(driving.getRoute());
@@ -314,7 +315,7 @@ public class DrivingService implements IDrivingService {
 
         Driving nextDriving = driverHasFutureDriving(driving.getDriver().getId());
         if (nextDriving != null) {
-            createDrivingToDeparture(driving.getDriver(), driving.getRoute().getLocations().last().getLocation(), nextDriving.getRoute());
+            createDrivingToDeparture(driving.getDriver(), driving.getDriver().getVehicle().getCurrentStop(), nextDriving.getRoute());
         } else {
             webSocketService.sendVehicleCurrentLocation(
                 new VehicleCurrentLocationDTO(new VehicleWithDriverId(driving.getDriver().getVehicle(), driving.getDriver().getVehicle().getId(), driving.getDriver().isActive()))
@@ -399,7 +400,7 @@ public class DrivingService implements IDrivingService {
                 return driving.getRoute().getDistance();
             }
             default -> {
-                return ONE_DRIVING;    //kao jedan driving za broj drivinga
+                return ONE_DRIVING; //kao jedan driving za broj drivinga
             }
         }
     }
@@ -418,19 +419,18 @@ public class DrivingService implements IDrivingService {
         return date.equals(started.toLocalDate());
     }
 
-    private Driving driverHasFutureDriving(final Long id) {
+    public Driving driverHasFutureDriving(final Long id) {
 
         List<Driving> drivings = drivingRepository.driverHasFutureDriving(id);
         return drivings.size() > 0 ?
                 drivings.get(0) : null;
     }
 
-    private DrivingDTO createDrivingToDeparture(Driver driver, Location currentStop, Route nextRoute) {
+    public DrivingDTO createDrivingToDeparture(Driver driver, Location currentStop, Route nextRoute) {
 
         List<DrivingLocationIndexRequest> drivingLocationIndexRequestList = new LinkedList<>();
         DrivingLocationIndexRequest firstLocation = new DrivingLocationIndexRequest(
-                new LocationRequest(currentStop.getCity(), currentStop.getStreet(), currentStop.getNumber(), currentStop.getZipCode(), currentStop.getLon(), currentStop.getLat()), 1
-        );
+                new LocationRequest(currentStop.getLon(), currentStop.getLat()), 1);
 
         Location nextLocation = nextRoute.getLocations().first().getLocation();
         DrivingLocationIndexRequest secondLocation = new DrivingLocationIndexRequest(
@@ -447,11 +447,13 @@ public class DrivingService implements IDrivingService {
             secondLocation.getLocation().getLon()
         );
         Route route = this.routeService.createRoute(drivingLocationIndexRequestList, minutes, routeService.getDistanceInKmFromTime(minutes), List.of(0));
-        Driving driving = new Driving(0, LocalDateTime.now(), null, route, DrivingStatus.ON_WAY_TO_DEPARTURE, driver, 0);
+        Driving driving = new Driving((int) minutes, LocalDateTime.now(), LocalDateTime.now().plusMinutes((long) minutes), route, DrivingStatus.ON_WAY_TO_DEPARTURE, driver, 0);
 
         driver.getVehicle().setActiveRoute(driving.getRoute());
         driver.getVehicle().setCurrentLocationIndex(0);
+        driver.getVehicle().setCrossedWaypoints(0);
         driver.getVehicle().setCurrentStop(driving.getRoute().getLocations().first().getLocation());
+        driver.setDrive(true);
 
         return new DrivingDTO(drivingRepository.save(driving));
     }

@@ -47,7 +47,8 @@ export class DrivingNotificationState {
 
     @Action(UpdateMinutesStatusDrivingNotification)
     updateMinutesDrivingNotification({getState, setState}: StateContext<DrivingNotificationStateModel>, {payload}: UpdateMinutesStatusDrivingNotification) {
-        const state = getState();
+      console.log("updateMinutesDrivingNotification");
+      const state = getState();
         state.currentDrivingNotification.minutes = payload.minutes;
         state.currentDrivingNotification.drivingStatus = payload.drivingStatus;
         state.currentDrivingNotification.drivingId = payload.drivingId;
@@ -59,7 +60,8 @@ export class DrivingNotificationState {
 
   @Action(UpdateOnlyMinutesStatus)
   updateOnlyMinutesStatus({getState, setState}: StateContext<DrivingNotificationStateModel>, {payload}: UpdateOnlyMinutesStatus) {
-    const state = getState();
+    console.log("updateOnlyMinutesStatus");
+      const state = getState();
     console.log(payload)
     state.currentDrivingNotification.minutes = payload.minutes;
     setState({
@@ -72,6 +74,7 @@ export class DrivingNotificationState {
     @Action(UpdateStatusDrivingNotification)
     updateStatusDrivingNotification({getState, setState}: StateContext<DrivingNotificationStateModel>, {payload}: UpdateStatusDrivingNotification) {
       try {
+        console.log("updateStatusDrivingNotification");
         console.log(payload);
         const state = getState();
         console.log("blafd");
@@ -90,7 +93,7 @@ export class DrivingNotificationState {
     @Action(UpdateDrivingNotification)
     updateDrivingNotification({getState, setState}: StateContext<DrivingNotificationStateModel>, {payload}: UpdateDrivingNotification) {
       const state = getState();
-
+      console.log("updateDrivingNotification");
       if (state.currentDrivingNotification){
         state.currentDrivingNotification.drivingId = payload.drivingId;
         state.currentDrivingNotification.minutes = payload.minutes;
@@ -98,6 +101,7 @@ export class DrivingNotificationState {
         state.currentDrivingNotification.price = payload.cost;
         state.currentDrivingNotification.active = payload.active;
         state.currentDrivingNotification.vehicleId= payload.vehicleId;
+        state.currentDrivingNotification.route = payload.route;
         setState({
             ...state,
             currentDrivingNotification: state.currentDrivingNotification
@@ -112,7 +116,7 @@ export class DrivingNotificationState {
             price: payload.cost,
             active: payload.active,
             vehicleId: payload.vehicleId,
-            route: null,
+            route: payload.route,
             senderEmail: null
           }
         })

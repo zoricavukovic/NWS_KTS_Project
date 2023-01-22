@@ -29,7 +29,7 @@ public class VehicleCurrentLocationForLocustDTO {
             );
         }
         this.inDrive = vehicleWithDriverId.getVehicle().hasRoute();
-       this.currentIndexOfLocation = vehicleWithDriverId.getVehicle().getCurrentLocationIndex();
+        this.currentIndexOfLocation = vehicleWithDriverId.getVehicle().getCurrentLocationIndex();
     }
 
     public static List<VehicleCurrentLocationForLocustDTO> fromVehiclesToVehicleCurrentLocationForLocustDTO(

@@ -99,7 +99,6 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.currentDrivingNotification.subscribe(response => {
-      console.log(response);
       this.storedDrivingNotification = response;
       this.routeChoiceView = true;
       if (!response?.active) {
@@ -107,14 +106,16 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.drivingSubscription = this.drivingService.checkIfUserHasActiveDriving(this.currentUser.id).subscribe(
-      res => {
-        this.activeRide = res;
-        if(res){
-          this.store.dispatch(new UpdateDrivingNotification(res)).subscribe()
+    if (this.currentUser){
+      this.drivingSubscription = this.drivingService.checkIfUserHasActiveDriving(this.currentUser.id).subscribe(
+        res => {
+          this.activeRide = res;
+          if(res){
+            this.store.dispatch(new UpdateDrivingNotification(res)).subscribe()
+          }
         }
-      }
-    )
+      )
+    }
   }
 
   setView(enterLocations: boolean){

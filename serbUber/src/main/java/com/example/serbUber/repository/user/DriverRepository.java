@@ -60,4 +60,7 @@ public interface DriverRepository extends JpaRepository<Driver, Long> {
 
     @Query("select d from Driver d left join fetch d.vehicle v where d.email=?1")
     Optional<Driver> getDriverByEmail(String email);
+
+    @Query("select distinct d from Driver d left join fetch d.drivings dr where d.active=true")
+    List<Driver> getActiveDrivers();
 }

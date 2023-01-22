@@ -44,6 +44,11 @@ public class LocationRequest {
         this.lat = lat;
     }
 
+    public LocationRequest(double lon, double lat) {
+        this.lon = lon;
+        this.lat = lat;
+    }
+
     public String getCity() {
         return city;
     }

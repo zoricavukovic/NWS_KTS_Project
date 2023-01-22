@@ -5,7 +5,7 @@ import {Options} from "ngx-google-places-autocomplete/objects/options/options";
 import {
   addMarker, calculateDistance, calculateMinutes,
   drawPolylineOnMap,
-  getRouteCoordinates, removeAllMarkers,
+  getRouteCoordinates,
   removeAllPolyline, removeLine,
   removeMarker
 } from "../../../shared/utils/map-functions";

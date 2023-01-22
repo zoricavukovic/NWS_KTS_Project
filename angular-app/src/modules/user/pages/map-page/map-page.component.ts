@@ -10,7 +10,7 @@ import {
 } from "../../../regular_user/components/driving-notification-details/driving-notification-details.component";
 import {CurrentVehiclePosition} from "../../../shared/models/vehicle/current-vehicle-position";
 import {
-  addCarMarker, calculateTimeToDestination,
+  addCarMarker,
   hideMarker,
   removeMarker,
   updateVehiclePosition,
@@ -27,9 +27,7 @@ import {Observable, Subscription} from "rxjs";
 import {Select, Store} from "@ngxs/store";
 import {DrivingNotificationState} from "../../../shared/state/driving-notification.state";
 import {DrivingNotification} from "../../../shared/models/notification/driving-notification";
-import { UpdateOnlyMinutesStatus} from "../../../shared/actions/driving-notification.action";
-import {DriverService} from "../../../shared/services/driver-service/driver.service";
-
+import {updateTime} from "../../../shared/utils/time";
 
 @Component({
   selector: 'map-page',
@@ -50,20 +48,19 @@ export class MapPageComponent implements OnInit, OnDestroy {
   vehiclesCurrentPosition: CurrentVehiclePosition[];
   stompClient;
   currentUser: User;
-
   authSubscription: Subscription;
-  driverSubscription: Subscription;
+  iterator: number;
 
   constructor(
     public router: Router,
     public actRoute: ActivatedRoute,
     private vehicleService: VehicleService,
     private authService: AuthService,
-    private store: Store,
-    private driverService: DriverService
+    private store: Store
   ) {
     this.vehiclesCurrentPosition = [];
     this.currentUser = null;
+    this.iterator = 0;
     this.directionService = new google.maps.DirectionsService();
   }
 
@@ -120,7 +117,7 @@ export class MapPageComponent implements OnInit, OnDestroy {
         vehicleCurrentLocations.forEach(vehicle => {
           const newVehicle: CurrentVehiclePosition = {
             vehicleCurrentLocation: vehicle,
-            marker: addCarMarker(this.map, vehicle, this.currentUser.id)
+            marker: addCarMarker(this.map, vehicle, this.currentUser?.id)
           }
           this.vehiclesCurrentPosition.push(newVehicle);
         });
@@ -153,20 +150,15 @@ export class MapPageComponent implements OnInit, OnDestroy {
           const vehicle: CurrentVehiclePosition = this.vehiclesCurrentPosition.find(v => {
             return v.vehicleCurrentLocation.id === vehicleCurrentLocation.id
           })
+          this.iterator += 1;
           const index: number = this.vehiclesCurrentPosition.indexOf(vehicle);
           if (vehicle) {
             if (!vehicleCurrentLocation.activeDriver){
               vehicle.marker.setVisible(false);
               this.vehiclesCurrentPosition[index] = vehicle;
             }else {
-              vehicle.marker = updateVehiclePosition(this.map, vehicle.marker, vehicleCurrentLocation, this.currentUser.id)
-              if (this.storedDrivingNotification && this.storedDrivingNotification?.vehicleId === vehicle.vehicleCurrentLocation.id){
-                calculateTimeToDestination(vehicle, this.storedDrivingNotification.route, this.directionService);
-                console.log(vehicle);
-                this.store.dispatch(new UpdateOnlyMinutesStatus({minutes: vehicle.vehicleCurrentLocation.timeToDestination})).subscribe()
-                console.log("iiiii");
-                console.log(vehicle);
-              }
+              vehicle.marker = updateVehiclePosition(this.map, vehicle.marker, vehicleCurrentLocation, this.currentUser?.id)
+              this.iterator = updateTime(this.storedDrivingNotification, vehicle, this.directionService, this.store, this.iterator);
               vehicle.vehicleCurrentLocation = vehicleCurrentLocation;
               this.vehiclesCurrentPosition[index] = vehicle;
             }
@@ -176,8 +168,9 @@ export class MapPageComponent implements OnInit, OnDestroy {
             if (vehicleCurrentLocation.activeDriver){
               const newVehicle: CurrentVehiclePosition = {
                 vehicleCurrentLocation: vehicleCurrentLocation,
-                marker: addCarMarker(this.map, vehicleCurrentLocation, this.currentUser.id)
+                marker: addCarMarker(this.map, vehicleCurrentLocation, this.currentUser?.id)
               }
+              this.iterator = updateTime(this.storedDrivingNotification, vehicle, this.directionService, this.store, this.iterator);
               this.vehiclesCurrentPosition.push(newVehicle);
             }
           }
@@ -191,7 +184,6 @@ export class MapPageComponent implements OnInit, OnDestroy {
     if (this.actRoute.snapshot.paramMap.get('id') !== '-1'){
       this.vehiclesCurrentPosition.forEach(vehicle=>hideMarker(vehicle.marker));
     }else{
-      console.log("vidi");
       this.vehiclesCurrentPosition.forEach(vehicle=>visibleMarker(vehicle.marker));
     }
   }

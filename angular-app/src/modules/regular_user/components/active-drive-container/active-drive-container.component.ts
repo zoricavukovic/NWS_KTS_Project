@@ -7,6 +7,7 @@ import {UpdateDrivingNotification} from "../../../shared/actions/driving-notific
 import {Select, Store} from "@ngxs/store";
 import { DrivingNotification } from 'src/modules/shared/models/notification/driving-notification';
 import { DrivingNotificationState } from 'src/modules/shared/state/driving-notification.state';
+import {getTime} from "../../../shared/utils/time";
 
 @Component({
   selector: 'app-active-drive-container',
@@ -40,5 +41,9 @@ export class ActiveDriveContainerComponent implements OnInit {
         }
       }
     )
+  }
+
+  getTime(): string {
+    return getTime(this.storedDrivingNotification);
   }
 }

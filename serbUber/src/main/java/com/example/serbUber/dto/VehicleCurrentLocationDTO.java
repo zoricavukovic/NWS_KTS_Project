@@ -13,6 +13,7 @@ public class VehicleCurrentLocationDTO {
     private long driverId;
     private boolean activeDriver;
     private int crossedWaypoints;
+    private double timeToDestination;
 
     public VehicleCurrentLocationDTO(final VehicleWithDriverId vehicleWithDriverId) {
         this.id = vehicleWithDriverId.getVehicle().getId();
@@ -28,6 +29,7 @@ public class VehicleCurrentLocationDTO {
             this.inDrive = false;
         }
         this.currentLocation = vehicleWithDriverId.getVehicle().getCurrentStop();
+        this.timeToDestination = 0;
     }
 
     public static List<VehicleCurrentLocationDTO> fromVehiclesToVehicleCurrentLocationDTO(
@@ -92,5 +94,13 @@ public class VehicleCurrentLocationDTO {
 
     public void setCrossedWaypoints(int crossedWaypoints) {
         this.crossedWaypoints = crossedWaypoints;
+    }
+
+    public double getTimeToDestination() {
+        return timeToDestination;
+    }
+
+    public void setTimeToDestination(double timeToDestination) {
+        this.timeToDestination = timeToDestination;
     }
 }

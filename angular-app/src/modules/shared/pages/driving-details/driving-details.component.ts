@@ -13,16 +13,17 @@ import {Driver} from "../../models/user/driver";
 import {Route as RouteLocation } from "../../models/route/route";
 import {
   drawActiveRide,
-  drawPolylineWithLngLatArray, hideMarker, markCurrentPosition,
+  drawPolylineWithLngLatArray, hideMarker,
   removeAllMarkersFromList, removeLine, visibleMarker
 } from "../../utils/map-functions";
 import { DrivingNotificationState } from '../../state/driving-notification.state';
 import { DrivingNotification } from '../../models/notification/driving-notification';
-import { Select } from '@ngxs/store';
+import {Select, Store} from '@ngxs/store';
 import { RegularUserService } from '../../services/regular-user-service/regular-user.service';
 
 import {CurrentVehiclePosition} from "../../models/vehicle/current-vehicle-position";
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import {getTime} from "../../utils/time";
 
 @Component({
   selector: 'app-driving-details',
@@ -72,7 +73,8 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
     private regularUserService: RegularUserService,
     private routeService: RouteService,
     public router: Router,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private store: Store
   ) {
     this.activeRide = false;
     this.markers = [];
@@ -98,7 +100,7 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
         this.filterVehicleView = false;
       }
     })
-    this.router.events.subscribe((event) => {
+    this.router.events.subscribe(() => {
       this.ngOnDestroy();
     });
     this.id = +this.route.snapshot.paramMap.get('id');
@@ -111,9 +113,9 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
         driving.route.routePathIndex = this.getRoutePathIndex(driving.route);
         this.rideRequestForm.get('selectedRoute').setValue(driving.route);
         console.log(this.rideRequestForm);
-        this.drivingsSubscription = this.drivingService.getVehicleDetails(driving?.id).subscribe(vehicleCurrentLocation => {
-          markCurrentPosition(this.map, vehicleCurrentLocation);
-        });
+        // this.drivingsSubscription = this.drivingService.getVehicleDetails(driving?.id).subscribe(vehicleCurrentLocation => {
+        //   markCurrentPosition(this.map, vehicleCurrentLocation);
+        // });
 
         if (this.map){
           this.routeSubscription = this.routeService.getRoutePath(driving?.route?.id).subscribe(path => {
@@ -130,7 +132,7 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
               return v.vehicleCurrentLocation.id === driver.vehicle.id
             })
             this.indexOfVehicleForDriving = this.vehiclesCurrentPosition.indexOf(vehicle);
-            this.markers = drawActiveRide(this.map, driving, driver, vehicle, this.indexOfVehicleForDriving, this.directionService);
+            this.markers = drawActiveRide(this.map, driving, driver, vehicle, this.indexOfVehicleForDriving, this.directionService, this.store);
           });
 
         this.currentUserSubscription = this.authService
@@ -154,7 +156,7 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
   }
 
   getRoutePathIndex(route: RouteLocation): number[]{
-    let routePathIndex = [];
+    const routePathIndex = [];
     route.locations.forEach(element => {
       routePathIndex.push(element.routeIndex)
     });
@@ -226,23 +228,8 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  moreThanMinute(): boolean {
-
-    return this.storedDrivingNotification.minutes > 0;
-  }
-
   getTime(): string {
-    let value = '0min';
-    if (this.storedDrivingNotification){
-      if (this.moreThanMinute()){
-        value = (this.storedDrivingNotification.minutes)
-          ?.toFixed(1);
-        return `${value}min`;
-      }
-      value = (this.storedDrivingNotification.minutes*60)
-        ?.toFixed(1);
-    }
-
-    return `${value}sec`;
+    
+    return getTime(this.storedDrivingNotification);
   }
 }

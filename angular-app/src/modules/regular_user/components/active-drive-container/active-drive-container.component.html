@@ -11,7 +11,10 @@
   <div class="spinner-div">
     <mat-progress-spinner class="spinner" color='accent' [mode]="'determinate'" [value]="storedDrivingNotification?.minutes">
     </mat-progress-spinner>
-    <h2 style="margin-left:6rem; margin-top: 2rem;">{{storedDrivingNotification?.minutes}}min</h2>
+
+    <mat-progress-spinner class="spinner" color='accent' [mode]="'determinate'" [value]="storedDrivingNotification?.minutes">
+    </mat-progress-spinner>
+    <h2 style="margin-left:6rem; margin-top: 2rem;">{{getTime()}}</h2>
   </div>
   <div style="display: flex; margin-top:3rem">
     <div class="flex-div">

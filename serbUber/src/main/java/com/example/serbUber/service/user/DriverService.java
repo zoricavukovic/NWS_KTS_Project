@@ -95,6 +95,11 @@ public class DriverService implements IDriverService{
                 .orElseThrow(() -> new EntityNotFoundException(email, EntityType.USER));
     }
 
+    public List<Driver> getActiveDrivers() {
+
+        return driverRepository.getActiveDrivers();
+    }
+
     public Driver getDriverByIdWithoutDrivings(final Long id) throws EntityNotFoundException {
 
         return driverRepository.getDriverByIdWithoutDrivings(id)

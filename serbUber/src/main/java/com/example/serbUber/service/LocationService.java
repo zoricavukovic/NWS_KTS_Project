@@ -62,7 +62,8 @@ public class LocationService implements ILocationService {
     }
 
     public Location tryToFindLocation(double lon, double lat) {
+        List<Location> locations = locationRepository.findByLonAndLat(lon, lat);
 
-        return locationRepository.findByLonAndLat(lon, lat).orElse(null);
+        return locations.size() > 0 ? locations.get(0) : null;
     }
 }
