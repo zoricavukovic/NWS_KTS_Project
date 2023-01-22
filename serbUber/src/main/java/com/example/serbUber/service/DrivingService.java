@@ -460,8 +460,7 @@ public class DrivingService implements IDrivingService {
     }
 
     public Driving getTimeToDepartureDriving(final Long driverId) throws EntityNotFoundException {
-        return drivingRepository.getOnWayToDepartureDriving(driverId)
-                .orElseThrow(() -> new EntityNotFoundException(driverId, EntityType.DRIVING));
+        return drivingRepository.getOnWayToDepartureDriving(driverId);
     }
 
     public DrivingDTO createDrivingToDeparture(Driver driver, Location currentStop, Route nextRoute, Set<RegularUser> users) {

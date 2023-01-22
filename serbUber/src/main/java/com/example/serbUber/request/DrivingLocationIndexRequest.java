@@ -14,6 +14,8 @@ public class DrivingLocationIndexRequest {
         this.index = index;
     }
 
+    public DrivingLocationIndexRequest(){}
+
     public LocationRequest getLocation() {
         return location;
     }

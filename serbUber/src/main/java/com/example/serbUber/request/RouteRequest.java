@@ -42,6 +42,8 @@ public class RouteRequest {
         this.routePathIndex = routePathIndex;
     }
 
+    public RouteRequest(){}
+
     public double getTimeInMin() {
         return timeInMin;
     }

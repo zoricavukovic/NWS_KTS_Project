@@ -71,5 +71,5 @@ public interface DrivingRepository extends JpaRepository<Driving, Long> {
     List<Driving> getAllReservations();
 
     @Query("select d from Driving d left join fetch d.driver driver where d.drivingStatus=5 and driver.id=?1 and d.active=true")
-    Optional<Driving> getOnWayToDepartureDriving(Long driverId);
+    Driving getOnWayToDepartureDriving(Long driverId);
 }

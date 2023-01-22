@@ -1,13 +1,17 @@
-.content{
-    text-align: center;
-    justify-content: center;
-    align-items: center;
+.content {
+  text-align: center;
+  justify-content: center;
+  align-items: center;
 }
 
 .stars-content {
-    margin-bottom: 1rem;
+  margin-bottom: 1rem;
 }
 
 .stars-content > div {
-    display: flex;
+  display: flex;
+}
+
+textarea {
+  font-family: Arial, 'Helvetica', sans-serif;
 }

@@ -83,9 +83,10 @@ insert into drivers (id, email, password, name, surname, phone_number, city, pro
 --    (false, 6, 2, 10, 5,to_timestamp('20.01.2023. 01:00', 'DD.MM.YYYY. HH24:MI'), null,4);
 
 insert into drivings (active, driver_id, driving_status, duration, price, started, end_date, route_id, last_reminder, reservation) values
-       (false, 5, 3, 2, 3, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), 1, null, false),
+       (false, 5, 3, 2, 3, to_timestamp('20.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('20.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), 1, null, false),
        (false, 6, 3, 8, 3, to_timestamp('16.01.2023. 22:40', 'DD.MM.YYYY HH24:MI'), to_timestamp('16.01.2023. 22:40', 'DD.MM.YYYY HH24:MI'), 2, null, false),
-       (true, 5, 2, 10, 5,to_timestamp('22.01.2023 13:50', 'DD.MM.YYYY HH24:MI'), to_timestamp('22.01.2023 14:20', 'DD.MM.YYYY HH24:MI'), 3, null, false);
+       (true, 5, 2, 10, 5,to_timestamp('22.01.2023 13:50', 'DD.MM.YYYY HH24:MI'), to_timestamp('22.01.2023 14:20', 'DD.MM.YYYY HH24:MI'), 3, null, false),
+       (false, 5, 3, 10, 5,to_timestamp('22.01.2023 13:50', 'DD.MM.YYYY HH24:MI'), to_timestamp('22.01.2023 14:20', 'DD.MM.YYYY HH24:MI'), 3, null, false);
 
 insert into admins (id, email, password, name, surname, phone_number, city, profile_picture, role_id, verified, online) values
     (nextval('users_id_gen'), 'admin@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Admin', 'Admin', '012345578', 'Novi Sad', 'default-user.png', 1, true, false);
@@ -113,7 +114,8 @@ insert into drivings_users(driving_id, user_id) values
     (1, 2),
     (1, 4),
     (3, 2),
-    (2, 10);
+    (2, 10),
+    (4, 2);
 --     (4, 2);
 --     (5, 2),
 --     (5, 4),

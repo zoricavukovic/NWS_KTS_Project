@@ -32,7 +32,7 @@ public class ScheduleVehicleArriveNotification {
         List<Driver> activeDrivers = driverService.getActiveDrivers();
         for (Driver driver : activeDrivers) {
             Driving onWayToDepartureDriving = drivingService.getTimeToDepartureDriving(driver.getId());
-            if(isVehicleArriveOnDeparture(driver.getVehicle().getCurrentStop(), onWayToDepartureDriving.getRoute().getLocations().first().getLocation())){
+            if(onWayToDepartureDriving != null && isVehicleArriveOnDeparture(driver.getVehicle().getCurrentStop(), onWayToDepartureDriving.getRoute().getLocations().first().getLocation())){
                 webSocketService.sendVehicleArriveNotification(onWayToDepartureDriving.getUsers());
             }
         }

@@ -254,6 +254,7 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
       chosenDateTime: started,
       reservation: this.rideRequestForm.get('chosenDateTime').value != null,
     };
+    console.log(drivingNotification);
     this.store
       .dispatch(new AddDrivingNotification(drivingNotification))
       .subscribe(response => {

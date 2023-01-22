@@ -59,7 +59,7 @@ public class ReviewService implements IReviewService {
             driving,
             regularUser
         )));
-        updateRate(driving, vehicleRate, driverRate);
+        updateRate(driving);
 
         return new ReviewDTO(review);
     }
@@ -90,28 +90,36 @@ public class ReviewService implements IReviewService {
         reviewRepository.deleteById(id);
     }
 
-    private void updateRate(Driving driving, double vehicleRate, double driverRate)
+    private void updateRate(final Driving driving)
             throws EntityNotFoundException
     {
         DriverDTO driverDTO = driverService.get(driving.getDriver().getId());
-        List<ReviewDTO> reviews = getAllForDriver(driving.getId());
-        int numberOfReviewsBeforeUpdate = getNumberOfReviewsBeforeUpdate(reviews);
-        calculateRateDriver(driverDTO, numberOfReviewsBeforeUpdate, driverRate);
-        calculateRateVehicle(vehicleRate, driverDTO, numberOfReviewsBeforeUpdate);
+        List<ReviewDTO> reviews = getAllForDriver(driving.getDriver().getId());
+        double totalRateDriver = 0;
+        double totalRateVehicle = 0;
+        for(ReviewDTO reviewDTO : reviews){
+            totalRateDriver += reviewDTO.getDriverRate();
+            totalRateVehicle += reviewDTO.getVehicleRate();
+        }
+        calculateRateDriver(driverDTO, reviews.size(), totalRateDriver);
+        calculateRateVehicle(driverDTO, reviews.size(), totalRateVehicle);
     }
 
-    private void calculateRateVehicle(double vehicleRate, DriverDTO driverDTO, int numberOfReviewsBeforeUpdate)
+    private void calculateRateVehicle(
+            final DriverDTO driverDTO,
+            final int numberOfReviews,
+            final double vehicleRate
+    )
             throws EntityNotFoundException
     {
-        double updatedRateVehicle = Math.round(
-            (driverDTO.getVehicle().getRate() * numberOfReviewsBeforeUpdate + vehicleRate)*100.0)/100.0;
+        double updatedRateVehicle = vehicleRate/numberOfReviews;
         vehicleService.updateRate(driverDTO.getVehicle().getId(), updatedRateVehicle);
     }
 
     private void calculateRateDriver(DriverDTO driverDTO, int numberOfReviews, double driverRate)
             throws EntityNotFoundException
     {
-        double updatedRateDriver = Math.round((driverDTO.getRate() * numberOfReviews + driverRate)*100.0)/100.0;
+        double updatedRateDriver = driverRate/numberOfReviews;
         driverService.updateRate(driverDTO.getId(), updatedRateDriver);
     }
 
