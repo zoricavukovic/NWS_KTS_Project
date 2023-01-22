@@ -3,9 +3,11 @@ import { MatDialog } from '@angular/material/dialog';
 import {ActivatedRoute, Router} from "@angular/router";
 import { Select } from '@ngxs/store';
 import {Observable, Subscription} from "rxjs";
+import { Driving } from 'src/modules/shared/models/driving/driving';
 import { DrivingNotification } from 'src/modules/shared/models/notification/driving-notification';
 import { Driver } from 'src/modules/shared/models/user/driver';
 import { User } from 'src/modules/shared/models/user/user';
+import { Vehicle } from 'src/modules/shared/models/vehicle/vehicle';
 import { DrivingNotificationState } from 'src/modules/shared/state/driving-notification.state';
 import {AuthService} from "../../../../auth/services/auth-service/auth.service";
 import {DrivingNotificationService} from "../../../services/driving-notification-service/driving-notification.service";
@@ -22,6 +24,9 @@ export class DrivingDetailsActionsComponent implements OnInit, OnDestroy {
   storedDrivingNotification: DrivingNotification;
   @Input() favouriteRoute: boolean;
   @Input() driver: Driver
+  @Input() driving: Driving;
+  @Input() vehicle: Vehicle;
+  @Output() setFilterVehicleViewEvent = new EventEmitter<boolean>();
   @Output() setFavouriteRouteEvent = new EventEmitter<boolean>();
 
   currentUser: User;
@@ -77,6 +82,14 @@ export class DrivingDetailsActionsComponent implements OnInit, OnDestroy {
         data: {currentUser: this.currentUser, driver: this.driver, userToReport: null},
       });
     }
+  }
+
+  requestNow(){
+    this.setFilterVehicleViewEvent.emit(false);
+  }
+
+  requestLater(){
+    this.setFilterVehicleViewEvent.emit(true);
   }
 
   ngOnDestroy(): void {

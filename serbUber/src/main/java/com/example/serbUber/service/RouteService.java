@@ -13,8 +13,6 @@ import com.example.serbUber.request.DrivingLocationIndexRequest;
 import com.example.serbUber.request.LocationsForRoutesRequest;
 import com.example.serbUber.request.LongLatRequest;
 import com.example.serbUber.service.interfaces.IRouteService;
-import com.graphhopper.ResponsePath;
-import okhttp3.*;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -26,13 +24,9 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.IntStream;
-
-import static com.example.serbUber.SerbUberApplication.hopper;
 import static com.example.serbUber.dto.RouteDTO.fromRoutes;
 import static com.example.serbUber.exception.EntityType.ROUTE;
-import static com.example.serbUber.util.Constants.START_LIST_INDEX;
-import static com.example.serbUber.util.Constants.getBeforeLastIndexOfList;
-import static com.example.serbUber.util.GraphHopperUtil.routing;
+import static com.example.serbUber.util.Constants.*;
 
 @Component
 @Qualifier("routeServiceConfiguration")
@@ -61,28 +55,13 @@ public class RouteService implements IRouteService {
     }
 
     public Route get(Long id) throws EntityNotFoundException {
-        Optional<Route> route = routeRepository.findById(id)
-                ;
+        Optional<Route> route = routeRepository.findById(id);
         if(route.isPresent()){
             return route.get();
         }
         throw new EntityNotFoundException(id, ROUTE);
     }
 
-    public RouteDTO createDTO(
-            final SortedSet<DrivingLocationIndex> locations,
-            final double distance,
-            final double time
-    ) {
-
-        Route route = routeRepository.save(new Route(
-                locations,
-                distance,
-                time
-        ));
-
-        return new RouteDTO(route);
-    }
 
     public Route create(
             final SortedSet<DrivingLocationIndex> locations,
@@ -138,6 +117,7 @@ public class RouteService implements IRouteService {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                    assert path != null;
                     points.addAll(path.getPointList());
                 });
 
@@ -154,12 +134,13 @@ public class RouteService implements IRouteService {
         locations.forEach(locationIndex -> {
             Location location = locationService.tryToFindLocation(locationIndex.getLocation().getLon(), locationIndex.getLocation().getLat());
             if (location == null){
-                location = locationService.create( locationIndex.getLocation().getCity(),
-                        locationIndex.getLocation().getStreet(),
-                        locationIndex.getLocation().getNumber(),
-                        locationIndex.getLocation().getZipCode(),
-                        locationIndex.getLocation().getLon(),
-                        locationIndex.getLocation().getLat()
+                location = locationService.create(
+                    locationIndex.getLocation().getCity(),
+                    locationIndex.getLocation().getStreet(),
+                    locationIndex.getLocation().getNumber(),
+                    locationIndex.getLocation().getZipCode(),
+                    locationIndex.getLocation().getLon(),
+                    locationIndex.getLocation().getLat()
                 );
             }
             DrivingLocationIndex drivingLocationIndex = drivingLocationIndexService.create(
@@ -173,6 +154,17 @@ public class RouteService implements IRouteService {
 
         return create(drivingLocations, distance, time);
     }
+
+    public double getTimeFromDistance(final double distance) {
+
+        return distance == ZERO_DISTANCE ? ZERO_MINUTES :  Math.ceil((distance/AVERAGE_CAR_SPEED_IN_M_H)*MINUTES_FOR_ONE_HOUR + 0.5);
+    }
+
+    public double getDistanceInKmFromTime(final double minutes) {
+
+        return minutes == ZERO_MINUTES ? ZERO_DISTANCE : AVERAGE_CAR_SPEED_IN_KM_H*(minutes/MINUTES_FOR_ONE_HOUR);
+    }
+
     private boolean isDestination(int indexOfLocation, int numOfLocations){
 
         return indexOfLocation == numOfLocations - 1;
@@ -197,33 +189,43 @@ public class RouteService implements IRouteService {
             final double secondPointLat,
             final double secondPointLng
     ) throws IOException {
-        List<PossibleRouteDTO> possibleRouteDTOs = new LinkedList<>();
 
+        return fromOSMResponse(getOSMResult(firstPointLat, firstPointLng, secondPointLat, secondPointLng));
+    }
+
+    private String getOSMResult(
+            final double firstPointLat,
+            final double firstPointLng,
+            final double secondPointLat,
+            final double secondPointLng
+    ){
         RestTemplate restTemplate = new RestTemplate();
-
         HttpHeaders headers = new HttpHeaders();
-//        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-
         HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
         ResponseEntity<?> result =
-            restTemplate.exchange("https://routing.openstreetmap.de/routed-car/route/v1/driving/" + firstPointLng + "," + firstPointLat + ";" + secondPointLng+ "," + secondPointLat+ " ?geometries=geojson&overview=false&alternatives=true&steps=true",
-                HttpMethod.GET, entity, Object.class);
-        return fromOSMResponse(Objects.requireNonNull(result.getBody()).toString());
+                restTemplate.exchange("https://routing.openstreetmap.de/routed-car/route/v1/driving/" + firstPointLng + "," + firstPointLat + ";" + secondPointLng+ "," + secondPointLat+ " ?geometries=geojson&overview=false&alternatives=true&steps=true",
+                        HttpMethod.GET, entity, Object.class);
 
-//        List<ResponsePath> responsePaths = routing(
-//            hopper,
-//            firstPointLat,
-//            firstPointLng,
-//            secondPointLat,
-//            secondPointLng
-//        );
-//
-//        responsePaths.forEach( responsePath -> possibleRouteDTOs.add(
-//            new PossibleRouteDTO(responsePath.getDistance(), responsePath.getTime(), getPointsDTO(responsePath))
-//        ));
-
-//        return possibleRouteDTOs;
+        return Objects.requireNonNull(result.getBody()).toString();
     }
+
+    public double calculateMinutesForDistance(
+            final double firstPointLat,
+            final double firstPointLng,
+            final double secondPointLat,
+            final double secondPointLng
+    ){
+        double minutes = 0;
+        String result = getOSMResult(firstPointLat, firstPointLng, secondPointLat, secondPointLng);
+        List<String> legs = Arrays.stream(result.split("legs=")).toList();
+        if(legs.size() > 1){
+            double distance = getDistance(Arrays.stream(legs.get(1).split("distance=")).toList());
+            minutes = getTimeFromDistance(distance);
+        }
+
+        return minutes;
+    }
+
 
     private List<PossibleRouteDTO> fromOSMResponse(String object) {
 
@@ -244,7 +246,8 @@ public class RouteService implements IRouteService {
             List<String> steps = Arrays.stream(leg.split("steps=")).toList();
             fromSteps(locations, steps);
             double distance = getDistance(Arrays.stream(leg.split("distance=")).toList());
-            possibleRouteDTOs.add(new PossibleRouteDTO(distance, locations));
+            double minutes = getTimeFromDistance(distance);
+            possibleRouteDTOs.add(new PossibleRouteDTO(distance, locations, minutes));
         }
     }
 
@@ -297,16 +300,5 @@ public class RouteService implements IRouteService {
             locations.add(new double[]{Double.parseDouble(lat), Double.parseDouble(lng)});
 
         }
-    }
-
-    private List<double[]> getPointsDTO(ResponsePath responsePath) {
-        List<double[]> points = new LinkedList<>();
-//        for (int i=0; i< responsePath.getPoints().getLat())
-        IntStream.range(START_LIST_INDEX, responsePath.getPoints().size())
-                .forEach(index ->
-                        points.add(new double[]{responsePath.getPoints().getLat(index), responsePath.getPoints().getLon(index)})
-                );
-
-        return points;
     }
 }

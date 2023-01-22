@@ -129,13 +129,8 @@
       </p-carousel>
       <mat-divider></mat-divider>
     </div>
-  </div>
-
-
-  <!--  <app-routes-option *ngIf="possibleRoutesViaPoints.length > 0" [map-page]="map-page" [searchingRoutesForm]="searchingRoutesForm" [possibleRoutesViaPoints]="possibleRoutesViaPoints"></app-routes-option>-->
-
-  <br />
-  <div
+    <br>
+    <div
     class="continue-buttons"
     *ngIf="currentUser && possibleRoutesViaPoints.length > 0">
     <button mat-raised-button (click)="chooseVehicleAndPassengers()">
@@ -145,5 +140,8 @@
       <strong>Schedule for later</strong>
     </button>
   </div>
+  </div>
+
+
 
 </div>

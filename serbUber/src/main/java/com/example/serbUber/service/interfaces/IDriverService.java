@@ -40,4 +40,6 @@ public interface IDriverService {
 
     boolean approveDriverChanges(final DriverUpdateApproval driverUpdateApproval) throws EntityNotFoundException;
     Driver getDriverByEmail(final String email) throws EntityNotFoundException;
+
+    List<Driver> getActiveDrivers();
 }

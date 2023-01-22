@@ -36,3 +36,7 @@ p {
   float: right;
   margin-right: 5%;
 }
+
+.icon{
+  transform: scale(1.7);
+}

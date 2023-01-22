@@ -7,6 +7,7 @@ import com.example.serbUber.dto.VehicleDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.request.LocationsForRoutesRequest;
 import com.example.serbUber.request.LongLatRequest;
+import com.example.serbUber.request.VehicleCurrentPositionRequest;
 import com.example.serbUber.request.VehicleRequest;
 import com.example.serbUber.service.VehicleService;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -44,29 +45,34 @@ public class VehicleController {
         return vehicleService.getAllVehiclesForActiveDriver();
     }
 
-    @GetMapping("/active/locust")
+    @GetMapping("/locust")
     @ResponseStatus(HttpStatus.OK)
     public List<VehicleCurrentLocationForLocustDTO> getAllActiveVehiclesForLocust() throws EntityNotFoundException {
 
-        return vehicleService.getAllVehicleCurrentLocationForLocustDTOForActiveDriver();
+        return vehicleService.getAllVehicleCurrentLocationForLocustDTO();
     }
 
-
-//    @PutMapping("/update-current-location")
-//    @ResponseStatus(HttpStatus.OK)
-//    public List<VehicleCurrentLocationDTO> updateCurrentVehiclesLocation() throws EntityNotFoundException {
-//
-//        return vehicleService.updateCurrentVehiclesLocation();
-//    }
-
     @PutMapping(value = "update-current-location/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     public VehicleCurrentLocationForLocustDTO updateCurrentPosition(
         @Valid @NotNull(message = MISSING_ID) @PathVariable final long id,
-        @Valid @RequestBody LongLatRequest longLatRequest
+        @Valid @RequestBody VehicleCurrentPositionRequest vehicleCurrentPositionRequest
         ) throws EntityNotFoundException {
 
-        return this.vehicleService.updateCurrentPosition(id, longLatRequest.getLon(), longLatRequest.getLat());
+        return this.vehicleService.updateCurrentPosition(
+            id, vehicleCurrentPositionRequest.getLongLatRequest().getLon(),
+            vehicleCurrentPositionRequest.getLongLatRequest().getLat(),
+            vehicleCurrentPositionRequest.getCrossedWaypoint()
+        );
+    }
+
+    @GetMapping(value = "check-vehicle-activity/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public VehicleCurrentLocationForLocustDTO checkStateOfVehicle(
+        @Valid @NotNull(message = MISSING_ID) @PathVariable final long id
+    ) throws EntityNotFoundException {
+
+        return this.vehicleService.checkStateOfVehicle(id);
     }
 
     @DeleteMapping(value = "/{id}")

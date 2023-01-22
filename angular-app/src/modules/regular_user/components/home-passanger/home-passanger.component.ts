@@ -11,7 +11,8 @@ import {RouteService} from "../../../shared/services/route-service/route.service
 import {VehicleService} from "../../../shared/services/vehicle-service/vehicle.service";
 import {SearchingRoutesForm} from "../../../shared/models/route/searching-routes-form";
 import {Route} from "../../../shared/models/route/route";
-import {removeAllMarkers, removeAllPolyline,
+import {
+  hideAllMarkers, removeAllPolyline,
 } from "../../../shared/utils/map-functions";
 import { DrivingNotificationState } from 'src/modules/shared/state/driving-notification.state';
 import { Select, Store } from '@ngxs/store';
@@ -98,7 +99,6 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.currentDrivingNotification.subscribe(response => {
-      console.log(response);
       this.storedDrivingNotification = response;
       this.routeChoiceView = true;
       if (!response?.active) {
@@ -106,19 +106,28 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.drivingSubscription = this.drivingService.checkIfUserHasActiveDriving(this.currentUser.id).subscribe(
-      res => {
-        this.activeRide = res;
-        if(res){
-          this.store.dispatch(new UpdateDrivingNotification(res)).subscribe()
+    if (this.currentUser){
+      this.drivingSubscription = this.drivingService.checkIfUserHasActiveDriving(this.currentUser.id).subscribe(
+        res => {
+          this.activeRide = res;
+          if(res){
+            this.store.dispatch(new UpdateDrivingNotification(res)).subscribe()
+          }
         }
-      }
-    )
+      )
+    }
+  }
+
+  setView(enterLocations: boolean){
+    if(enterLocations){
+      this.routeChoiceView = true;
+      this.filterVehicleView = false;
+    }
   }
 
 
   ngOnDestroy(): void {
-    removeAllMarkers(this.searchingForm);
+    hideAllMarkers(this.searchingForm);
 
     this.drawPolylineList = removeAllPolyline(this.drawPolylineList);
     if (this.authSubscription) {
@@ -132,9 +141,9 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
     }
   }
 
-  loadingView(loadingViewv:boolean) {
-    this.loadingViewVar =loadingViewv;
-    if (loadingViewv){
+  loadingView(loadingView:boolean): void {
+    this.loadingViewVar = loadingView;
+    if (loadingView){
       this.filterVehicleView = false;
     }
   }

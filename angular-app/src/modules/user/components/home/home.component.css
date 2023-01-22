@@ -13,11 +13,6 @@
   margin-top: 16px;
 }
 
-.viewport {
-  max-height: 9rem;
-  overflow-y: auto !important;
-}
-
 .stepper-possible-routes {
   background-color: var(--gray);
 }
@@ -43,6 +38,7 @@ mat-error {
   float: right;
   background-color: var(--gray);
   color: var(--deep-blue);
+  border-radius: 15px;
 }
 
 .options-button:hover {
@@ -60,8 +56,9 @@ mat-error {
 }
 
 #route-div{
-  /* overflow: auto; */
+  overflow: auto;
   max-height: 46rem;
-  position: fixed;
+  padding-bottom: 0.5rem;
+  /* position: fixed; */
   top: 4rem;
 }

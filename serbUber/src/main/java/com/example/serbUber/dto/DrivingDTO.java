@@ -30,7 +30,6 @@ public class DrivingDTO {
         this.active = driving.isActive();
         this.duration = driving.getDuration();
         this.started = driving.getStarted();
-        this.payingLimit = driving.getPayingLimit();
         this.route = driving.getRoute();
         this.drivingStatus = driving.getDrivingStatus();
         if(driving.getDriver() == null){

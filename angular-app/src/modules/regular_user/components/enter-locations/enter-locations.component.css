@@ -9,4 +9,11 @@
 .continue-buttons {
   display: flex;
   flex-direction: row;
+  padding-bottom: 1rem;
 }
+
+.viewport{
+  max-height: 9rem;
+}
+
+

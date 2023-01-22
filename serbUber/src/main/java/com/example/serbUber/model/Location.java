@@ -9,10 +9,10 @@ public class Location {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="city", nullable = false)
+    @Column(name="city")
     private String city;
 
-    @Column(name="street", nullable = false)
+    @Column(name="street")
     private String street;
 
     @Column(name="number")

@@ -41,7 +41,7 @@ public interface DriverRepository extends JpaRepository<Driver, Long> {
         "and d.drive = true and dr.active = false and dr.started < ?1")
     List<Driver> getBusyDriversNow(LocalDateTime start, VehicleType vehicleType);
 
-    @Query("select distinct d from Driver d left join fetch d.drivings dr left join fetch d.vehicle v left join fetch v.vehicleTypeInfo typeInfo " +
+    @Query("select distinct d from Driver d left join fetch d.drivings dr inner join dr.route route on route.id=dr.route.id  left join fetch d.vehicle v left join fetch v.vehicleTypeInfo typeInfo " +
         "where d.active=true and typeInfo.vehicleType=?1")
     List<Driver> getActiveDriversWhichVehicleMatchParams(final VehicleType vehicleType);
 
@@ -60,4 +60,7 @@ public interface DriverRepository extends JpaRepository<Driver, Long> {
 
     @Query("select d from Driver d left join fetch d.vehicle v where d.email=?1")
     Optional<Driver> getDriverByEmail(String email);
+
+    @Query("select distinct d from Driver d left join fetch d.drivings dr where d.active=true")
+    List<Driver> getActiveDrivers();
 }

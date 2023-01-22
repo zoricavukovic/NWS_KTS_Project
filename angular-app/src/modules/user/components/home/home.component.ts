@@ -1,11 +1,12 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import {Subscription} from 'rxjs';
 import {User} from "../../../shared/models/user/user";
 import {AuthService} from "../../../auth/services/auth-service/auth.service";
-import {addCarMarkers, removeMarker} from "../../../shared/utils/map-functions";
+import {removeMarker} from "../../../shared/utils/map-functions";
 import {RouteService} from "../../../shared/services/route-service/route.service";
 import {VehicleService} from "../../../shared/services/vehicle-service/vehicle.service";
 import {Router} from "@angular/router";
+import {CurrentVehiclePosition} from "../../../shared/models/vehicle/current-vehicle-position";
 
 @Component({
   selector: 'app-home',
@@ -14,13 +15,12 @@ import {Router} from "@angular/router";
 })
 export class HomeComponent implements OnInit, OnDestroy {
   @Input() map: google.maps.Map;
-  currentUser: User;
+  @Input() currentUser: User;
+  @Input() vehiclesCurrentPosition: CurrentVehiclePosition[];
+
   isDriver: boolean;
   isRegular: boolean;
   isAdmin: boolean;
-  carMarkers: google.maps.Marker[];
-
-  authSubscription: Subscription;
 
   constructor(
     private routeService: RouteService,
@@ -28,42 +28,23 @@ export class HomeComponent implements OnInit, OnDestroy {
     private vehicleService: VehicleService,
     private router: Router
   ) {
-    this.currentUser = null;
     this.isDriver = false;
     this.isRegular = false;
     this.isAdmin = false;
-    this.carMarkers = [];
   }
 
   ngOnInit(): void {
-    this.router.events.subscribe((event) => {
+    this.isDriver = this.authService.userIsDriver();
+    this.isRegular = this.authService.userIsRegular();
+    this.isAdmin = this.authService.userIsAdmin();
+    this.router.events.subscribe(() => {
       this.ngOnDestroy();
     });
-    this.authSubscription = this.authService
-      .getSubjectCurrentUser()
-      .subscribe(user => {
-        if(user){
-          this.currentUser = user;
-          this.isDriver = this.authService.userIsDriver();
-          this.isRegular = this.authService.userIsRegular();
-          this.isAdmin = this.authService.userIsAdmin();
-          this.vehicleService.getAllVehicle().subscribe(vehicleCurrentLocation => {
-            this.carMarkers = addCarMarkers(
-              this.map,
-              this.carMarkers,
-              vehicleCurrentLocation,
-              user.id
-            );
-          });
-      }
-      });
   }
 
   ngOnDestroy(): void {
-    this.carMarkers.forEach(marker => removeMarker(marker));
-
-    if (this.authSubscription){
-      this.authSubscription.unsubscribe();
-    }
+    // if (this.vehiclesCurrentPosition && this.vehiclesCurrentPosition.length > 0){
+    //   this.vehiclesCurrentPosition.forEach(vehicleCurrentPosition => removeMarker(vehicleCurrentPosition.marker));
+    // }
   }
 }

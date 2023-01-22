@@ -14,6 +14,7 @@ import com.example.serbUber.service.interfaces.IDrivingNotificationService;
 import com.example.serbUber.service.payment.TokenBankService;
 import com.example.serbUber.service.user.DriverService;
 import com.example.serbUber.service.user.RegularUserService;
+import com.google.maps.errors.NotFoundException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
@@ -108,7 +109,7 @@ public class DrivingNotificationService implements IDrivingNotificationService {
             final String vehicleType,
             final LocalDateTime chosenDateTime,
             final boolean isReservation
-    ) throws EntityNotFoundException, ExcessiveNumOfPassengersException, PassengerNotHaveTokensException, InvalidChosenTimeForReservationException {
+    ) throws EntityNotFoundException, ExcessiveNumOfPassengersException, PassengerNotHaveTokensException, InvalidChosenTimeForReservationException, NotFoundException {
         RegularUser sender = regularUserService.getRegularByEmail(senderEmail);
 
         Map<RegularUser, Integer> receiversReviewed = new HashMap<>();
@@ -163,21 +164,21 @@ public class DrivingNotificationService implements IDrivingNotificationService {
     }
 
     private LocalDateTime getStartedDate(final LocalDateTime chosenDateTime, final boolean isReservation)
-        throws InvalidChosenTimeForReservationException
-    {
+            throws InvalidChosenTimeForReservationException, NotFoundException {
 
         return isReservation? getStartedDateForReservation(chosenDateTime) : LocalDateTime.now();
     }
 
-    private LocalDateTime getStartedDateForReservation(LocalDateTime chosenDateTime) throws InvalidChosenTimeForReservationException {
+    private LocalDateTime getStartedDateForReservation(LocalDateTime chosenDateTime) throws InvalidChosenTimeForReservationException, NotFoundException {
 
         if (LocalDateTime.now().plusHours(5).isBefore(chosenDateTime)){
             throw new InvalidChosenTimeForReservationException(INVALID_CHOSEN_TIME_AFTER_FOR_RESERVATION_MESSAGE);
         }
 
-//        if (chosenDateTime.plusMinutes(HALF_AN_HOUR).isBefore(LocalDateTime.now())){
-//            throw new InvalidChosenTimeForReservationException(INVALID_CHOSEN_TIME_BEFORE_FOR_RESERVATION_MESSAGE);
-//        }
+        if (chosenDateTime.isBefore(LocalDateTime.now().plusMinutes(HALF_AN_HOUR))){
+
+            throw new InvalidChosenTimeForReservationException(INVALID_CHOSEN_TIME_BEFORE_FOR_RESERVATION_MESSAGE);
+        }
 
         return chosenDateTime;
     }
@@ -282,12 +283,17 @@ public class DrivingNotificationService implements IDrivingNotificationService {
                 drivingNotification.getPrice());
             passengers.remove(drivingNotification.getSender());
             if (isPaidDriving(driving.getPrice(), passengers, drivingNotification.getSender())) {
-                int minutesToStartDrive = calculateMinutesForStartDriving(driver.getId(), drivingNotification.getRoute());
-                driving.setStarted(LocalDateTime.now().plusMinutes(minutesToStartDrive));
+                double minutesToStartDrive = driverService.calculateMinutesToStartDriving(driver, driving);
+                driving.setStarted(LocalDateTime.now().plusMinutes((long) minutesToStartDrive));
                 driving.setDrivingStatus(DrivingStatus.ACCEPTED);
+                driving.setReservation(drivingNotification.isReservation());
                 DrivingDTO drivingDTO = drivingService.save(driving);
-                DrivingStatusNotificationDTO drivingStatusNotificationDTO = new DrivingStatusNotificationDTO(driver.getId(), minutesToStartDrive, DrivingStatus.ACCEPTED, "", drivingDTO.getId(), drivingNotification.getId());
+                DrivingStatusNotificationDTO drivingStatusNotificationDTO = new DrivingStatusNotificationDTO(
+                    driver.getId(), minutesToStartDrive, DrivingStatus.ACCEPTED, "",
+                    drivingDTO.getId(), drivingNotification.getId(), driver.getVehicle().getId()
+                );
                 webSocketService.sendSuccessfulDriving(drivingStatusNotificationDTO, receiversReviewed);
+                webSocketService.sendNewDrivingNotification(drivingStatusNotificationDTO, driver.getEmail());
             } else {
                 drivingService.removeDriver(driving.getId());
                 webSocketService.sendDrivingStatus(UNSUCCESSFUL_PAYMENT_PATH, UNSUCCESSFUL_PAYMENT_MESSAGE, receiversReviewed);
@@ -296,23 +302,6 @@ public class DrivingNotificationService implements IDrivingNotificationService {
             }
 
         }
-    }
-
-    public int calculateMinutesForStartDriving(final Long driverId, final Route route) throws EntityNotFoundException {
-//        Driver driver = driverService.getDriverById(driverId);
-//        Location userLocation = route.getLocations().first().getLocation();
-//        GHRequest request = new GHRequest(
-//            vehicleService.getLatOfCurrentVehiclePosition(driver.getVehicle()),
-//            vehicleService.getLonOfCurrentVehiclePosition(driver.getVehicle()),
-//            userLocation.getLat(),
-//            userLocation.getLon()
-//        );
-//        request.setProfile("car");
-//        GHResponse routeHopper = hopper.route(request);
-//        System.out.println("vreemeee" + TimeUnit.MILLISECONDS.toMinutes(routeHopper.getBest().getTime()));
-//        System.out.println((routeHopper.getBest().getTime()/1000)/60);
-//        return TimeUnit.MILLISECONDS.toMinutes(routeHopper.getBest().getTime()) + 1;
-        return 5;
     }
 
     private boolean isPaidDriving(

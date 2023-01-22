@@ -5,4 +5,5 @@ export interface DrivingStatusNotification {
   reason: string;
   paid: boolean;
   drivingId: number;
+  vehicleId: number;
 }

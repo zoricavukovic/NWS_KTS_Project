@@ -9,16 +9,25 @@ public class DrivingStatusNotificationDTO {
     private DrivingStatus drivingStatus;
     private String reason;
     private Long drivingId;
-
+    private Long vehicleId;
     private Long notificationId;
 
-    public DrivingStatusNotificationDTO(Long driverId, double minutes, DrivingStatus drivingStatus, String reason, Long drivingId, Long notificationId) {
+    public DrivingStatusNotificationDTO(
+        final Long driverId,
+        final double minutes,
+        final DrivingStatus drivingStatus,
+        final String reason,
+        final Long drivingId,
+        final Long notificationId,
+        final Long vehicleId
+    ) {
         this.driverId = driverId;
         this.minutes = minutes;
         this.drivingStatus = drivingStatus;
         this.reason = reason;
         this.drivingId = drivingId;
         this.notificationId = notificationId;
+        this.vehicleId = vehicleId;
     }
 
     public Long getDriverId() {
@@ -71,5 +80,13 @@ public class DrivingStatusNotificationDTO {
 
     public void setNotificationId(Long notificationId) {
         this.notificationId = notificationId;
+    }
+
+    public Long getVehicleId() {
+        return vehicleId;
+    }
+
+    public void setVehicleId(Long vehicleId) {
+        this.vehicleId = vehicleId;
     }
 }

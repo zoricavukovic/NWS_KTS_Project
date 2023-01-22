@@ -25,7 +25,7 @@ export class ErrorCatchingInterceptor implements HttpInterceptor {
             console.log('This is client side error');
             errorMsg = `Error: ${error.error.message}`;
           } else {
-            this._toast.error(error.error);
+            // this._toast.error(error.error);
             console.log('This is server side error');
             errorMsg = `Error Code: ${error.status},  Message: ${error.message}`;
           }

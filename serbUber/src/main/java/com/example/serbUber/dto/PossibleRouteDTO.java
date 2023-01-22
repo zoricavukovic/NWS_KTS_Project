@@ -11,14 +11,10 @@ public class PossibleRouteDTO {
     public PossibleRouteDTO() {
     }
 
-    public PossibleRouteDTO(final double distance, final List<double[]> locations) {
+    public PossibleRouteDTO(final double distance, final List<double[]> locations, final double minutes) {
         this.distance = distance;
-        this.timeInMin = getTimeFromDistance(distance);
+        this.timeInMin = minutes;
         this.locations = locations;
-    }
-
-    private double getTimeFromDistance(final double distance) {
-        return distance == 0 ? 0.0 :  Math.ceil((distance/50000L)*60 + 0.5);
     }
 
     public double getDistance() {

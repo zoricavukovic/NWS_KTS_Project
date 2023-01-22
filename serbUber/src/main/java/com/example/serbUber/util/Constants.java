@@ -15,9 +15,7 @@ public class Constants {
 
     public static final String PHOTOS_FILE_PATH = "src/main/resources/static/images/";
     public static final String TARGET_PHOTO_FILE_PATH = "./src/main/resources/static/images/";
-    public static final double STARTING_RATE = 0.0;
     public static final double EMPTY_BANK_ACCOUNT = 0.0;
-    public static final int ZERO_TOKENS = 0;
     public static final int MAX_LENGTH_OF_MESSAGE = 100;
     public static final int MIN_RATE = 0;
     public static final int MAX_RATE = 5;
@@ -65,6 +63,11 @@ public class Constants {
     public static final double ONE_DRIVING = 1.0;
     public static final double NOT_BY_SPECIFIC_USER = -1;
     public static final boolean SHOULD_REDIRECT = true;
+    public static final double AVERAGE_CAR_SPEED_IN_KM_H = 50;
+    public static final double AVERAGE_CAR_SPEED_IN_M_H = 50000;
+    public static final double MINUTES_FOR_ONE_HOUR = 60;
+    public static final double ZERO_DISTANCE = 0;
+    public static final double ZERO_MINUTES = 0;
 
     public static int generateSecurityCode() {
         return (int)(Math.random() * (Constants.MAX_SECURITY_NUM - Constants.MIN_SECURITY_NUM + 1) + Constants.MIN_SECURITY_NUM);

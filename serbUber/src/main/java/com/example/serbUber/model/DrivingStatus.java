@@ -6,5 +6,5 @@ public enum DrivingStatus {
     ACCEPTED,
     FINISHED,
     REJECTED,
-    ON_WAY_TO_DEPARTURE,
+    ON_WAY_TO_DEPARTURE
 }

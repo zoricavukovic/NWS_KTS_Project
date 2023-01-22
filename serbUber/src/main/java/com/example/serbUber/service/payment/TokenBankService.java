@@ -74,7 +74,7 @@ public class TokenBankService implements ITokenBankService {
         return new TokenBankDTO(
                 tokenBankRepository.save(new TokenBank(
                 regularUser,
-                ZERO_TOKENS,
+                WITHOUT_TOKENS,
                 EMPTY_BANK_ACCOUNT,
                 EMPTY_BANK_ACCOUNT,
                 payingInfoService.getDefaultPayingInfo()))

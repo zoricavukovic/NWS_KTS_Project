@@ -20,6 +20,9 @@ public interface DrivingRepository extends JpaRepository<Driving, Long> {
    @Query(value = "select * from drivings d, drivings_users du where d.id = du.driving_id and du.user_id=?1 and (d.driving_status=3 or d.driving_status=4)", nativeQuery = true)
     Page<Driving> findByUserId(Long id, Pageable pageable);
 
+   @Query(value="select * from drivings d, drivings_users du where d.id = du.driving_id and du.user_id=?1 and (d.driving_status=3 or d.driving_status=4)", nativeQuery = true)
+   List<Driving> getDrivingsForUserId(Long id);
+
 //    @Query(value = "select d from Driving d left join fetch d.route r left join fetch r.locations dest left join fetch d.usersPaid up left join fetch d.users u where d.driverId = ?1 order by dest.id")
     @Query(value = "select * from drivings d where d.driver_id=?1 and (d.driving_status=3 or d.driving_status=4)", nativeQuery = true)
     Page<Driving> findByDriverId(Long id, Pageable pageable);
@@ -40,8 +43,8 @@ public interface DrivingRepository extends JpaRepository<Driving, Long> {
     @Query("select d from Driving d left join fetch d.driver driver where driver.id=?1 and d.active = true")
     Optional<Driving> getActiveDrivingForDriver(Long driverId);
 
-    @Query("select distinct d from Driving d left join fetch d.driver driver inner join d.users user where user.id=?1 and (d.active = true or (d.drivingStatus=2 and d.end is null)) and driver.id is not null")
-    Optional<Driving> getActiveDrivingForUser(Long userId, LocalDateTime limitDateTime);
+    @Query("select distinct d from Driving d left join fetch d.driver driver inner join d.users user where user.id=?1 and (d.active = true or (d.drivingStatus=2 and d.end is null)) and driver.id is not null order by d.started asc")
+    List<Driving> getActiveDrivingForUser(Long userId, LocalDateTime limitDateTime);
 
     @Query(value = "select distinct d from Driving d left join fetch d.driver driver left join fetch d.route r left join fetch r.locations dest left join fetch d.users u " +
         "where driver.id=?1 and d.drivingStatus = 2 and d.started > current_timestamp order by d.started asc")
@@ -62,4 +65,7 @@ public interface DrivingRepository extends JpaRepository<Driving, Long> {
 
     @Query("select d from Driving d where d.drivingStatus=3")
     List<Driving> getAllDrivings();
+
+    @Query("select d from Driving d where d.reservation=true")
+    List<Driving> getAllReservations();
 }

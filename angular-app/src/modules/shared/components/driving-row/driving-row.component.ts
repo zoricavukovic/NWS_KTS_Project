@@ -6,6 +6,8 @@ import { ToastrService } from 'ngx-toastr';
 import {Driving} from "../../models/driving/driving";
 import {User} from "../../models/user/user";
 import {RatingDialogComponent} from "../rating-dialog/rating-dialog.component";
+import { RegularUserService } from '../../services/regular-user-service/regular-user.service';
+import { AuthService } from 'src/modules/auth/services/auth-service/auth.service';
 
 @Component({
   selector: 'driving-row',
@@ -16,21 +18,58 @@ export class DrivingRowComponent implements OnInit, OnDestroy {
   @Input() driving: Driving;
   @Input() user: User;
   isRegularUser = true;
+  favouriteRoute = false;
 
   reviewSubscription: Subscription;
+  favouriteRouteSubscription: Subscription;
 
   constructor(
     private router: Router,
     private dialog: MatDialog,
     private toast: ToastrService,
+    private regularUserService: RegularUserService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
     this.isRegularUser = this.user?.role.name === "ROLE_DRIVER";
+    this.favouriteRouteSubscription = this.regularUserService
+          .isFavouriteRouteForUser(this.driving.route.id, this.user.id)
+          .subscribe(response => {
+            if (response) {
+              this.favouriteRoute = true;
+            }
+          });
   }
 
   goToDetailsPage(id: number) {
     this.router.navigate([`/serb-uber/user/map-page-view/${id}`]);
+  }
+
+  setFavouriteRoute(favourite: boolean) {
+    if (favourite) {
+      this.regularUserService
+        .updateFavouriteRoutes(
+          this.regularUserService.createFavouriteRequest(
+            this.authService.getCurrentUserId,
+            this.driving.route.id
+          )
+        )
+        .subscribe(res => {
+          this.favouriteRoute = false;
+        });
+    } else {
+      this.regularUserService
+        .addToFavouriteRoutes(
+          this.regularUserService.createFavouriteRequest(
+            this.authService.getCurrentUserId,
+            this.driving.route.id
+          )
+        )
+        .subscribe(res => {
+          this.favouriteRoute = true;
+        });
+    }
   }
 
   isDisabledBtnRate(date): boolean {
@@ -78,6 +117,9 @@ export class DrivingRowComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.reviewSubscription) {
       this.reviewSubscription.unsubscribe();
+    }
+    if(this.favouriteRouteSubscription){
+      this.favouriteRouteSubscription.unsubscribe();
     }
   }
 }

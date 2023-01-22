@@ -11,21 +11,6 @@
                     <col span="1" style="width: 5%;">
                 </colgroup>
                 <th>
-                    {{i+1}}.
-                </th>
-                <th>
-                    {{route.locations.at(0).location.street}}, {{route.locations.at(0).location.number}}
-                </th>
-                <th class="aligner">
-                    <mat-icon>arrow_right_alt</mat-icon>
-                </th>
-                <th>
-                    {{route.locations.at(route.locations.length - 1).location.street}}, {{route.locations.at(route.locations.length - 1).location.number}}
-                </th>
-                <th>
-                    {{route.distance}}km
-                </th>
-                <th>
                     <button
                         mat-icon-button
                         color="warn"
@@ -34,11 +19,21 @@
                             <mat-icon
                             matTooltip="Remove from favourite routes"
                             matTooltipClass="tooltip"
-                            matTooltipHideDelay="500"
+                            matTooltipHideDelay="500" style="transform: scale(1.5)"
                             >favorite
                             </mat-icon>
                     </button>
                 </th>
+                <th style="font-size:1.3rem;">
+                    {{route.locations.at(0).location.street}} {{route.locations.at(0).location.number}}
+                </th>
+                <th class="aligner">
+                    <mat-icon style="transform: scale(1.8);margin-right:0.5rem;">arrow_right_alt</mat-icon>
+                </th>
+                <th style="font-size:1.3rem;">
+                    {{route.locations.at(route.locations.length - 1).location.street}} {{route.locations.at(route.locations.length - 1).location.number}}
+                </th>
+                
             </table>
         </div>
     </div>

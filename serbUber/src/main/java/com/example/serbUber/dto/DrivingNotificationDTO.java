@@ -13,22 +13,21 @@ import static com.example.serbUber.model.DrivingNotification.getListOfUsers;
 public class DrivingNotificationDTO {
 
     private Route route;
-    private String senderEmail;
     private DrivingNotificationType drivingNotificationType;
     private LocalDateTime started;
     private int duration;
     private VehicleTypeInfo vehicleTypeInfo;
-    private Set<RegularUser> receivers;
+    private Set<RegularUser> passengers;
     private double price;
-
     private LocalDateTime chosenDateTime;
 
     public DrivingNotificationDTO(final DrivingNotification drivingNotification) {
         this.route = drivingNotification.getRoute();
         this.price = drivingNotification.getPrice();
-        this.senderEmail = drivingNotification.getSender().getEmail();
         this.vehicleTypeInfo = drivingNotification.getVehicleTypeInfo();
-        this.receivers = getListOfUsers(drivingNotification.getReceiversReviewed());
+        Set<RegularUser> passengers = getListOfUsers(drivingNotification.getReceiversReviewed());
+        passengers.add(drivingNotification.getSender());
+        this.passengers = passengers;
     }
 
     public static List<DrivingNotificationDTO> fromDrivingNotifications(List<DrivingNotification> notifications) {
@@ -45,14 +44,6 @@ public class DrivingNotificationDTO {
 
     public void setPrice(double price) {
         this.price = price;
-    }
-
-    public String getSenderEmail() {
-        return senderEmail;
-    }
-
-    public void setSenderEmail(String senderEmail) {
-        this.senderEmail = senderEmail;
     }
 
     public DrivingNotificationType getDrivingNotificationType() {
@@ -87,12 +78,12 @@ public class DrivingNotificationDTO {
         this.vehicleTypeInfo = vehicleTypeInfo;
     }
 
-    public Set<RegularUser> getReceivers() {
-        return receivers;
+    public Set<RegularUser> getPassengers() {
+        return passengers;
     }
 
-    public void setReceivers(Set<RegularUser> receivers) {
-        this.receivers = receivers;
+    public void setPassengers(Set<RegularUser> passengers) {
+        this.passengers = passengers;
     }
 
     public Route getRoute() {

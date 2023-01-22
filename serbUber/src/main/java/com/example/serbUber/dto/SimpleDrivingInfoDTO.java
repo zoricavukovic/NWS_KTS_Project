@@ -3,17 +3,18 @@ package com.example.serbUber.dto;
 import com.example.serbUber.model.Driving;
 import com.example.serbUber.model.DrivingStatus;
 import com.example.serbUber.model.Location;
+import com.example.serbUber.model.Route;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 public class SimpleDrivingInfoDTO {
     private double minutes;
-    private Location startLocation;
-    private Location endLocation;
+    private Route route;
     private Long drivingId;
     private boolean active;
     private double cost;
+    private Long vehicleId;
 
     private String drivingStatus;
 
@@ -28,10 +29,10 @@ public class SimpleDrivingInfoDTO {
         }else {
             this.minutes = ChronoUnit.MINUTES.between(driving.getEnd(), driving.getStarted());
         }
-        this.startLocation = driving.getRoute().getLocations().first().getLocation();
-        this.endLocation = driving.getRoute().getLocations().last().getLocation();
+        this.route = driving.getRoute();
         this.cost = driving.getPrice();
         this.started = driving.getStarted();
+        this.vehicleId = driving.getDriver().getVehicle().getId();
     }
 
     public boolean isActive() {
@@ -50,20 +51,12 @@ public class SimpleDrivingInfoDTO {
         this.minutes = minutes;
     }
 
-    public Location getStartLocation() {
-        return startLocation;
+    public Route getRoute() {
+        return route;
     }
 
-    public void setStartLocation(Location startLocation) {
-        this.startLocation = startLocation;
-    }
-
-    public Location getEndLocation() {
-        return endLocation;
-    }
-
-    public void setEndLocation(Location endLocation) {
-        this.endLocation = endLocation;
+    public void setRoute(Route route) {
+        this.route = route;
     }
 
     public Long getDrivingId() {
@@ -96,5 +89,13 @@ public class SimpleDrivingInfoDTO {
 
     public void setStarted(LocalDateTime started) {
         this.started = started;
+    }
+
+    public Long getVehicleId() {
+        return vehicleId;
+    }
+
+    public void setVehicleId(Long vehicleId) {
+        this.vehicleId = vehicleId;
     }
 }

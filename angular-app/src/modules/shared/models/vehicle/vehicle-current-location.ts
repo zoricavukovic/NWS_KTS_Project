@@ -6,4 +6,7 @@ export interface VehicleCurrentLocation {
   inDrive: boolean;
   type: string;
   driverId: number;
+  activeDriver:boolean;
+  crossedWaypoints: number;
+  timeToDestination: number;
 }

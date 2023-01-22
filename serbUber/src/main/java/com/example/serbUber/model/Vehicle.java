@@ -28,7 +28,10 @@ public class Vehicle {
     @Column(name="current_location_index")
     private int currentLocationIndex = -1;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @Column(name="crossed_waypoints")
+    private int crossedWaypoints = 0;
+
+    @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinColumn(name="current_stop_location_id")
     private Location currentStop = null;
 
@@ -51,6 +54,7 @@ public class Vehicle {
         this.babySeat = babySeat;
         this.vehicleTypeInfo = vehicleTypeInfo;
         this.rate = rate;
+        this.crossedWaypoints = 0;
     }
 
     public Vehicle(
@@ -67,6 +71,7 @@ public class Vehicle {
         this.vehicleTypeInfo = vehicleTypeInfo;
         this.rate = rate;
         this.currentLocationIndex = currentLocationIndex;
+        this.crossedWaypoints = 0;
     }
 
     public Vehicle(
@@ -82,6 +87,15 @@ public class Vehicle {
         this.rate = rate;
         this.currentLocationIndex = 0;
         this.currentStop = location;
+        this.crossedWaypoints = 0;
+    }
+
+    public int getCrossedWaypoints() {
+        return crossedWaypoints;
+    }
+
+    public void setCrossedWaypoints(int crossedWaypoints) {
+        this.crossedWaypoints = crossedWaypoints;
     }
 
     public boolean hasRoute(){

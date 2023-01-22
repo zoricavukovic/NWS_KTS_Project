@@ -6,8 +6,8 @@ import com.example.serbUber.dto.VehicleDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.EntityType;
 import com.example.serbUber.model.*;
+import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.service.interfaces.IVehicleService;
-import com.example.serbUber.util.Constants;
 import com.example.serbUber.repository.VehicleRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -18,6 +18,7 @@ import java.util.List;
 import static com.example.serbUber.dto.VehicleCurrentLocationDTO.fromVehiclesToVehicleCurrentLocationDTO;
 import static com.example.serbUber.dto.VehicleCurrentLocationForLocustDTO.fromVehiclesToVehicleCurrentLocationForLocustDTO;
 import static com.example.serbUber.dto.VehicleDTO.fromVehicles;
+import static com.example.serbUber.util.Constants.START_RATE;
 import static com.example.serbUber.util.Constants.TAXI_START_LOCATION_ID;
 
 @Component
@@ -55,7 +56,7 @@ public class VehicleService implements IVehicleService {
                 petFriendly,
                 babySeat,
                 vehicleTypeInfoService.get(vehicleType),
-                Constants.STARTING_RATE,
+                START_RATE,
                 stopLocation
         ));
     }
@@ -92,50 +93,20 @@ public class VehicleService implements IVehicleService {
 
         List<Vehicle> vehicles = vehicleRepository.getAllVehiclesForActiveDriver();
         List<VehicleWithDriverId> withDriverIds = new LinkedList<>();
-//        List<List<double[]>> listOfVehiclesRoutes = new LinkedList<>();
         for (Vehicle vehicle : vehicles) {
-//            if (vehicle.hasRoute()){
-//                List<double[]> coordinatesList = routeService.getRoutePath(vehicle.getActiveRoute().getId());
-//                listOfVehiclesRoutes.add(coordinatesList);
-//            }
-//            else {
-//                List<double[]> coordinatesList = List.of(new double[]{vehicle.getCurrentStop().getLon(), vehicle.getCurrentStop().getLat()});
-//                listOfVehiclesRoutes.add(coordinatesList);
-//            }
-//
-            withDriverIds.add(new VehicleWithDriverId(vehicle, getDriverIdByVehicleId(vehicle.getId())));
+            Driver driver = getDriverByVehicleId(vehicle.getId());
+            withDriverIds.add(new VehicleWithDriverId(vehicle, driver.getId(), driver.isActive()));
         }
 
         return fromVehiclesToVehicleCurrentLocationDTO(withDriverIds);
     }
 
-    private Long getDriverIdByVehicleId(final Long vehicleId) throws EntityNotFoundException {
+    public Driver getDriverByVehicleId(final Long vehicleId) throws EntityNotFoundException {
 
-        return vehicleRepository.getDriverIdByVehicleId(vehicleId)
+        return vehicleRepository.getDriverByVehicleId(vehicleId)
             .orElseThrow(() -> new EntityNotFoundException(vehicleId, EntityType.VEHICLE));
     }
 
-//    public List<VehicleCurrentLocationDTO> updateCurrentVehiclesLocation() throws EntityNotFoundException {
-//        List<Vehicle> vehicles = vehicleRepository.getAllVehiclesForActiveDriver();
-//        List<VehicleWithDriverId> withDriverIds = new LinkedList<>();
-//        List<List<double[]>> listOfVehiclesRoutes = new LinkedList<>();
-//        for (Vehicle vehicle : vehicles) {
-//            List<double[]> coordinatesList;
-//            if (vehicle.hasRoute()){
-//                coordinatesList = routeService.getRoutePath(vehicle.getActiveRoute().getId());
-//            }
-//            else {
-//                coordinatesList = List.of(new double[]{vehicle.getCurrentStop().getLon(), vehicle.getCurrentStop().getLat()});
-//            }
-//            listOfVehiclesRoutes.add(coordinatesList);
-//            saveCurrentVehicleLocation(vehicle, coordinatesList);
-//            withDriverIds.add(new VehicleWithDriverId(vehicle, getDriverIdByVehicleId(vehicle.getId())));
-//        }
-//        List<VehicleCurrentLocationDTO> vehicleCurrentLocationDTOs = fromVehiclesToVehicleCurrentLocationDTO(withDriverIds, listOfVehiclesRoutes);
-//        webSocketService.sendVehicleCurrentLocation(vehicleCurrentLocationDTOs);
-//
-//        return vehicleCurrentLocationDTOs;
-//    }
 
     private void saveCurrentVehicleLocation(Vehicle vehicle, List<double[]> vehicleRoutePath) {
         int currentLocationIndex = vehicle.getCurrentLocationIndex();
@@ -176,14 +147,15 @@ public class VehicleService implements IVehicleService {
 
     }
 
-    public List<VehicleCurrentLocationForLocustDTO> getAllVehicleCurrentLocationForLocustDTOForActiveDriver()
+    public List<VehicleCurrentLocationForLocustDTO> getAllVehicleCurrentLocationForLocustDTO()
         throws EntityNotFoundException
     {
-        List<Vehicle> vehicles = vehicleRepository.getAllVehiclesForActiveDriver();
+        List<Vehicle> vehicles = vehicleRepository.getAllVehicles();
         List<VehicleWithDriverId> withDriverIds = new LinkedList<>();
 
         for (Vehicle vehicle : vehicles) {
-            withDriverIds.add(new VehicleWithDriverId(vehicle, getDriverIdByVehicleId(vehicle.getId())));
+            Driver driver = getDriverByVehicleId(vehicle.getId());
+            withDriverIds.add(new VehicleWithDriverId(vehicle, driver.getId(), driver.isActive()));
         }
 
         return fromVehiclesToVehicleCurrentLocationForLocustDTO(withDriverIds);
@@ -198,16 +170,34 @@ public class VehicleService implements IVehicleService {
     public VehicleCurrentLocationForLocustDTO updateCurrentPosition(
         final Long id,
         final double lng,
-        final double lat
+        final double lat,
+        final int crossedWaypoints
     ) throws EntityNotFoundException {
         Vehicle vehicle = getVehicleById(id);
+        Location location = vehicle.getCurrentStop();
+        location.setLat(lat);
+        location.setLon(lng);
+        vehicle.setCurrentStop(location);
+        if (vehicle.getCurrentLocationIndex() <= 0){
+            vehicle.setCurrentStop(new Location(lat, lng));
+        }
+        vehicle.setCrossedWaypoints(crossedWaypoints);
         vehicle.setCurrentLocationIndex(vehicle.getCurrentLocationIndex() + 1);
-        vehicle.setCurrentStop(new Location(lat, lng));
+        Driver driver = getDriverByVehicleId(vehicle.getId());
         vehicleRepository.save(vehicle);
-        webSocketService.sendVehicleCurrentLocation(
-            new VehicleCurrentLocationDTO(new VehicleWithDriverId(vehicle, getDriverIdByVehicleId(vehicle.getId())))
-        );
-        return null;
+        VehicleWithDriverId vehicleWithDriverId = new VehicleWithDriverId(vehicle, driver.getId(), driver.isActive());
+        webSocketService.sendVehicleCurrentLocation(new VehicleCurrentLocationDTO(vehicleWithDriverId));
+
+        return new VehicleCurrentLocationForLocustDTO(vehicleWithDriverId);
+    }
+
+    public VehicleCurrentLocationForLocustDTO checkStateOfVehicle(final Long id) throws EntityNotFoundException {
+        Vehicle vehicle = getVehicleById(id);
+        Driver driver = getDriverByVehicleId(vehicle.getId());
+        VehicleWithDriverId vehicleWithDriverId = new VehicleWithDriverId(vehicle, driver.getId(), driver.isActive());
+        webSocketService.sendVehicleCurrentLocation(new VehicleCurrentLocationDTO(vehicleWithDriverId));
+
+        return new VehicleCurrentLocationForLocustDTO(vehicleWithDriverId);
     }
 
     public VehicleTypeInfo driverUpdateApprovalVehicle(final VehicleType vehicleType) throws EntityNotFoundException {

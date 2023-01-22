@@ -78,7 +78,7 @@ public class DrivingService implements IDrivingService {
     ) throws EntityNotFoundException {
         Driver driver = userService.getDriverById(driverId);
 
-        Driving driving = drivingRepository.save(new Driving(duration, started, null, payingLimit, route, drivingStatus, driver, price));
+        Driving driving = drivingRepository.save(new Driving(duration, started, null, route, drivingStatus, driver, price));
         users.forEach(user -> {
             List<Driving> drivings = getAllDrivingsForUserEmail(user.getEmail());
             drivings.add(driving);
@@ -119,15 +119,51 @@ public class DrivingService implements IDrivingService {
 
     public List<DrivingPageDTO> getDrivingsForUser(
             final Long id,
-            final int pageNumber,
-            final int pageSize,
+            int pageNumber,
+            int pageSize,
             final String parameter,
             final String sortOrder
     ) throws EntityNotFoundException {
-        Pageable page = PageRequest.of(pageNumber, pageSize, Sort.by(getSortOrder(sortOrder), getSortBy(parameter)));
-        Page<Driving> results = getDrivingPage(id, page);
 
-        return fromDrivingsPage(results.getContent(), results.getSize(), results.getTotalPages());
+        if(parameter.equals("Price") || parameter.equals("Date")) {
+            Pageable page = PageRequest.of(pageNumber, pageSize, Sort.by(getSortOrder(sortOrder), getSortBy(parameter)));
+            Page<Driving> results = getDrivingPage(id, page);
+            return fromDrivingsPage(results.getContent(), results.getSize(), results.getTotalPages());
+        }
+        else{
+            List<Driving> drivings = drivingRepository.getDrivingsForUserId(id);
+            if (parameter.equals("Departure")) {
+                if(sortOrder.equals("Ascending")){
+                    Collections.sort(drivings, compareByDeparture);
+                }
+                else{
+                    Collections.sort(drivings, compareByDeparture.reversed());
+                }
+            } else {
+                if(sortOrder.equals("Ascending")) {
+                    Collections.sort(drivings, compareByDestination);
+                }
+                else{
+                    Collections.sort(drivings, compareByDestination.reversed());
+                }
+            }
+            if(pageNumber > 0){
+                pageNumber = pageSize * pageNumber;
+                pageSize = pageNumber + pageNumber;
+                if(pageSize > drivings.size()){
+                    pageSize = drivings.size();
+                }
+            }
+            //0,1,2
+            //3
+            //6,7,8 -> 6-9
+            return fromDrivingsPage(drivings.subList(pageNumber, pageSize), pageSize, drivings.size());
+        }
+    }
+
+    public List<Driving> getAllReservations(){
+
+        return drivingRepository.getAllReservations();
     }
 
     private Page<Driving> getDrivingPage(final Long id, final Pageable page) throws EntityNotFoundException {
@@ -138,12 +174,9 @@ public class DrivingService implements IDrivingService {
                 drivingRepository.findByUserId(id, page);
     }
 
-
     private String getSortBy(final String sortBy) {
         Dictionary<String, String> sortByDict = new Hashtable<>();
         sortByDict.put("Date", "started");
-        sortByDict.put("Departure", "route.startPoint");
-        sortByDict.put("Destination", "route.locations"); //ne znam ovo kako da pristupi??
         sortByDict.put("Price", "price");
 
         return sortByDict.get(sortBy);
@@ -192,9 +225,9 @@ public class DrivingService implements IDrivingService {
     }
 
     public SimpleDrivingInfoDTO checkUserHasActiveDriving(final Long id) {
-        Optional<Driving> optionalDriving = drivingRepository.getActiveDrivingForUser(id, LocalDateTime.now().plusMinutes(30));
+       List<Driving> optionalDriving = drivingRepository.getActiveDrivingForUser(id, LocalDateTime.now().plusMinutes(30));
 
-        return optionalDriving.map(SimpleDrivingInfoDTO::new).orElse(null);
+        return optionalDriving.size() > 0 ? new SimpleDrivingInfoDTO(optionalDriving.get(0)): null;
     }
 
     public int getNumberOfAllDrivingsForUser(final Long id) throws EntityNotFoundException {
@@ -228,7 +261,7 @@ public class DrivingService implements IDrivingService {
         Driver driver = driving.getDriver();
         Vehicle vehicle = driver.getVehicle();
 
-        VehicleWithDriverId withDriverIds = new VehicleWithDriverId(vehicle, driving.getDriver().getId());
+        VehicleWithDriverId withDriverIds = new VehicleWithDriverId(vehicle, driving.getDriver().getId(), driving.getDriver().isActive());
 
         VehicleCurrentLocationDTO vehicleCurrentLocationDTO = new VehicleCurrentLocationDTO(withDriverIds);
         webSocketService.sendVehicleCurrentLocation(vehicleCurrentLocationDTO, driver.getEmail(), driving.getUsers());
@@ -252,7 +285,7 @@ public class DrivingService implements IDrivingService {
                 busyPassengers = false;
                 break;
             }
-            if(ChronoUnit.MINUTES.between(activeDriving.getStarted(), started.plusHours(1)) > 30){
+            if(ChronoUnit.MINUTES.between(activeDriving.getStarted(), started) > 30){
                 busyPassengers = false;
                 break;
             }
@@ -273,17 +306,25 @@ public class DrivingService implements IDrivingService {
         if (drivingShouldNotStartYet(driving)) {
             throw new DrivingShouldNotStartYetException();
         }
+
         driving.setStarted(LocalDateTime.now());
         driving.setActive(true);
         driving.getDriver().getVehicle().setActiveRoute(driving.getRoute());
         driving.getDriver().getVehicle().setCurrentLocationIndex(0);
+        driving.getDriver().getVehicle().setCrossedWaypoints(0);
         driving.getDriver().getVehicle().setCurrentStop(driving.getRoute().getLocations().first().getLocation());
         driving.getDriver().setDrive(true);
         driving.setDrivingStatus(DrivingStatus.ACCEPTED);
         drivingRepository.save(driving);
 
         webSocketService.startDrivingNotification(new SimpleDrivingInfoDTO(driving), driving.getUsers());
-//        this.vehicleService.updateCurrentVehiclesLocation();
+        webSocketService.sendVehicleCurrentLocation(new VehicleCurrentLocationDTO(
+            new VehicleWithDriverId(
+                driving.getDriver().getVehicle(),
+                driving.getDriver().getId(),
+                driving.getDriver().isActive())
+            )
+        );
 
         return new DrivingDTO(driving);
     }
@@ -295,15 +336,21 @@ public class DrivingService implements IDrivingService {
         driving.setEnd(LocalDateTime.now());
         driving.getDriver().getVehicle().setCurrentLocationIndex(-1);
         driving.getDriver().getVehicle().setActiveRoute(null);
+        driving.getDriver().getVehicle().setCrossedWaypoints(0);
         driving.getDriver().setDrive(false);
         drivingRepository.save(driving);
 
         webSocketService.finishDrivingNotification(new SimpleDrivingInfoDTO(driving), driving.getUsers());
-//        this.vehicleService.updateCurrentVehiclesLocation();
+
         Driving nextDriving = driverHasFutureDriving(driving.getDriver().getId());
         if (nextDriving != null) {
-            createDrivingToDeparture(driving.getDriver(), driving.getRoute().getLocations().last().getLocation(), nextDriving.getRoute());
+            createDrivingToDeparture(driving.getDriver(), driving.getDriver().getVehicle().getCurrentStop(), nextDriving.getRoute());
+        } else {
+            webSocketService.sendVehicleCurrentLocation(
+                new VehicleCurrentLocationDTO(new VehicleWithDriverId(driving.getDriver().getVehicle(), driving.getDriver().getVehicle().getId(), driving.getDriver().isActive()))
+            );
         }
+
         return new DrivingDTO(driving);
     }
 
@@ -387,7 +434,7 @@ public class DrivingService implements IDrivingService {
                 return driving.getRoute().getDistance();
             }
             default -> {
-                return ONE_DRIVING;    //kao jedan driving za broj drivinga
+                return ONE_DRIVING; //kao jedan driving za broj drivinga
             }
         }
     }
@@ -406,19 +453,18 @@ public class DrivingService implements IDrivingService {
         return date.equals(started.toLocalDate());
     }
 
-    private Driving driverHasFutureDriving(final Long id) {
+    public Driving driverHasFutureDriving(final Long id) {
 
         List<Driving> drivings = drivingRepository.driverHasFutureDriving(id);
         return drivings.size() > 0 ?
                 drivings.get(0) : null;
     }
 
-    private DrivingDTO createDrivingToDeparture(Driver driver, Location currentStop, Route nextRoute) {
+    public DrivingDTO createDrivingToDeparture(Driver driver, Location currentStop, Route nextRoute) {
 
         List<DrivingLocationIndexRequest> drivingLocationIndexRequestList = new LinkedList<>();
         DrivingLocationIndexRequest firstLocation = new DrivingLocationIndexRequest(
-                new LocationRequest(currentStop.getCity(), currentStop.getStreet(), currentStop.getNumber(), currentStop.getZipCode(), currentStop.getLon(), currentStop.getLat()), 1
-        );
+                new LocationRequest(currentStop.getLon(), currentStop.getLat()), 1);
 
         Location nextLocation = nextRoute.getLocations().first().getLocation();
         DrivingLocationIndexRequest secondLocation = new DrivingLocationIndexRequest(
@@ -427,11 +473,21 @@ public class DrivingService implements IDrivingService {
 
         drivingLocationIndexRequestList.add(firstLocation);
         drivingLocationIndexRequestList.add(secondLocation);
-        Route route = this.routeService.createRoute(drivingLocationIndexRequestList, 0, 0, List.of(0));
-        Driving driving = new Driving(0, LocalDateTime.now(), null, null, route, DrivingStatus.ON_WAY_TO_DEPARTURE, driver, 0);
+
+        double minutes = this.routeService.calculateMinutesForDistance(
+            firstLocation.getLocation().getLat(),
+            firstLocation.getLocation().getLon(),
+            secondLocation.getLocation().getLat(),
+            secondLocation.getLocation().getLon()
+        );
+        Route route = this.routeService.createRoute(drivingLocationIndexRequestList, minutes, routeService.getDistanceInKmFromTime(minutes), List.of(0));
+        Driving driving = new Driving((int) minutes, LocalDateTime.now(), LocalDateTime.now().plusMinutes((long) minutes), route, DrivingStatus.ON_WAY_TO_DEPARTURE, driver, 0);
+
         driver.getVehicle().setActiveRoute(driving.getRoute());
         driver.getVehicle().setCurrentLocationIndex(0);
+        driver.getVehicle().setCrossedWaypoints(0);
         driver.getVehicle().setCurrentStop(driving.getRoute().getLocations().first().getLocation());
+        driver.setDrive(true);
 
         return new DrivingDTO(drivingRepository.save(driving));
     }
@@ -445,4 +501,19 @@ public class DrivingService implements IDrivingService {
 
         return drivingRepository.getActiveDrivingForDriver(driverId).isPresent();
     }
+
+    Comparator<Driving> compareByDeparture = new Comparator<Driving>() {
+        @Override
+        public int compare(Driving d1, Driving d2) {
+            return d1.getRoute().getLocations().first().getLocation().getStreet().compareTo(d2.getRoute().getLocations().first().getLocation().getStreet());
+        }
+    };
+
+    Comparator<Driving> compareByDestination = new Comparator<Driving>() {
+        @Override
+        public int compare(Driving d1, Driving d2) {
+            return d1.getRoute().getLocations().last().getLocation().getStreet().compareTo(d2.getRoute().getLocations().last().getLocation().getStreet());
+        }
+    };
+
 }

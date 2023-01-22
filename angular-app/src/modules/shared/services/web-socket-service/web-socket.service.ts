@@ -18,6 +18,7 @@ import { CreateDrivingNotification } from '../../models/notification/create-driv
 import {
   ClearStore,
   GetDrivingNotification,
+  UpdateDrivings,
   UpdateMinutesStatusDrivingNotification,
   UpdateStatusDrivingNotification
 } from "../../actions/driving-notification.action";
@@ -25,9 +26,9 @@ import {Store} from "@ngxs/store";
 import {SimpleDrivingInfo} from "../../models/driving/simple-driving-info";
 import {DrivingStatusNotification} from "../../models/notification/driving-status-notification";
 import { Subscription } from 'rxjs';
-import { DrivingNotification } from '../../models/notification/driving-notification';
 import { BellNotification } from '../../models/notification/bell-notification';
 import { BellNotificationsService } from '../bell-notifications-service/bell-notifications.service';
+import { Driving } from '../../models/driving/driving';
 
 @Injectable({
   providedIn: 'root',
@@ -101,6 +102,7 @@ export class WebSocketService {
         that.passengerAgreementNotification();
 
         that.bellNotificationsUpdate();
+        that.newDrivingNotification();
       });
     }
   }
@@ -137,6 +139,7 @@ export class WebSocketService {
       environment.publisherUrl + localStorage.getItem('email') + '/driver-not-found',
       message => {
         this.toast.info(message.body);
+        this.store.dispatch(new ClearStore());
       }
     );
   }
@@ -150,7 +153,8 @@ export class WebSocketService {
         const updatedDriving = {
           minutes: drivingStatusNotification.minutes,
           drivingStatus: drivingStatusNotification.drivingStatus,
-          drivingId: drivingStatusNotification.drivingId
+          drivingId: drivingStatusNotification.drivingId,
+          vehicleId: drivingStatusNotification.vehicleId
         }
 
       this.store.dispatch(new GetDrivingNotification());
@@ -194,8 +198,6 @@ export class WebSocketService {
         .onTap.subscribe(action => {
         this.router.navigate(['/serb-uber/user/map-page-view', drivingNotificationDetails.drivingId]);
       });
-      // this.aClickedEvent.emit();
-
     });
   }
 
@@ -205,6 +207,7 @@ export class WebSocketService {
       environment.publisherUrl + localStorage.getItem('email') + '/reject-driving',
       message => {
         this.toast.info(message.body);
+        this.store.dispatch(new ClearStore());
       }
     );
   }
@@ -294,30 +297,29 @@ export class WebSocketService {
   }
 
   globalConnect() {
-    if (!this.initializedGlobal) {
-      this.initializedGlobal = true;
-      const serverUrl = environment.webSocketUrl;
-      const ws = new SockJS(serverUrl);
-      this.globalStompClient = Stomp.over(ws);
-
-      const that = this;
-
-      this.globalStompClient.connect({}, function (frame) {
-        that.globalStompClient.subscribe(
-          environment.publisherUrl + 'global/connect',
-          message => {
-            if (
-              (message !== null && message !== undefined) ||
-              message?.body !== null
-            ) {
-              const vehicleCurrentLocation: VehicleCurrentLocation[] =
-                JSON.parse(message.body);
-              that.vehicleService.addVehicle(vehicleCurrentLocation);
-            }
-          }
-        );
-      });
-    }
+    // if (!this.initializedGlobal) {
+    //   this.initializedGlobal = true;
+      // const serverUrl = environment.webSocketUrl;
+      // const ws = new SockJS(serverUrl);
+      // this.globalStompClient = Stomp.over(ws);
+      //
+      // const that = this;
+      //
+      // this.globalStompClient.connect({}, function (frame) {
+      //   that.globalStompClient.subscribe(
+      //     environment.publisherUrl + 'global/connect',
+      //     message => {
+      //       if (
+      //         (message !== null && message !== undefined) ||
+      //         message?.body !== null
+      //       ) {
+      //         const vehicleCurrentLocation: VehicleCurrentLocation = JSON.parse(message.body);
+      //         that.vehicleService.updateVehiclePosition(vehicleCurrentLocation);
+      //       }
+      //     }
+      //   );
+      // });
+    // }
   }
 
   private isBlockingNotification(message: string): boolean {
@@ -373,5 +375,19 @@ export class WebSocketService {
       chatRoom: chatRoom,
       notifyAdmin: notifyAdmin,
     };
+  }
+
+  newDrivingNotification(){
+    this.stompClient.subscribe(
+      environment.publisherUrl + localStorage.getItem('email') + '/new-driving',
+      message => {
+        const drivingStatusNotification: DrivingStatusNotification = JSON.parse(message.body);
+        this.drivingService.get(drivingStatusNotification.drivingId).subscribe((response: Driving) => {
+          this.toast.info("You have new ride. Tap to see details.", "New ride.").onTap.subscribe(action => {
+            this.router.navigate(['/serb-uber/user/map-page-view', drivingStatusNotification.drivingId]);
+          });
+          this.store.dispatch(new UpdateDrivings(response));
+        })
+      });
   }
 }

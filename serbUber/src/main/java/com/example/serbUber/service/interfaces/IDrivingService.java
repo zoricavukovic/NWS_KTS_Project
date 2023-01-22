@@ -8,10 +8,8 @@ import com.example.serbUber.dto.chart.ChartDataDTO;
 import com.example.serbUber.exception.DriverAlreadyHasStartedDrivingException;
 import com.example.serbUber.exception.DrivingShouldNotStartYetException;
 import com.example.serbUber.exception.EntityNotFoundException;
-import com.example.serbUber.model.ChartType;
-import com.example.serbUber.model.Driving;
-import com.example.serbUber.model.DrivingStatus;
-import com.example.serbUber.model.Route;
+import com.example.serbUber.model.*;
+import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.model.user.RegularUser;
 
 import java.time.LocalDate;
@@ -60,7 +58,6 @@ public interface IDrivingService {
     Driving getDriving(final Long id) throws EntityNotFoundException;
     List<DrivingDTO> getAllNowAndFutureDrivings(final Long id);
 
-
     DrivingDTO rejectDriving(final Long id, String reason) throws EntityNotFoundException;
 
     DrivingDTO startDriving(final Long id) throws EntityNotFoundException, DriverAlreadyHasStartedDrivingException, DrivingShouldNotStartYetException;
@@ -68,6 +65,8 @@ public interface IDrivingService {
     DrivingDTO paidDriving(final Long id) throws EntityNotFoundException;
 
     DrivingDTO removeDriver(final Long id) throws EntityNotFoundException;
+
+    DrivingDTO createDrivingToDeparture(Driver driver, Location currentStop, Route nextRoute);
 
     SimpleDrivingInfoDTO checkUserHasActiveDriving(final Long userId);
     VehicleCurrentLocationDTO getVehicleCurrentLocation(final Long id) throws EntityNotFoundException;

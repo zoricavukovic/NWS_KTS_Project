@@ -1,7 +1,5 @@
 package com.example.serbUber;
 
-import com.example.serbUber.service.UpdateCarPositionTask;
-import com.github.myzhan.locust4j.Locust;
 import com.graphhopper.GraphHopper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

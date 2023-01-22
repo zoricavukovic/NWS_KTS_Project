@@ -27,16 +27,18 @@
     </p></mat-card-subtitle
   >
   <mat-card-content class="price"
-    >Price: {{ driving.price }}</mat-card-content
-  >
+    ><div style="float:right;  font-size: 1.7rem;display: flex;flex-direction: row;margin-top:0.2rem;">
+      <b>{{driving.price}}</b>
+      <mat-icon style="margin-left:0.3rem;">payments</mat-icon>
+    </div>
+  </mat-card-content>
   <br />
   <br />
   <mat-card-actions>
     <button mat-raised-button (click)="goToDetailsPage(driving.id)">
       Details
     </button>
-    <button
-      class="btn"
+    <button style="margin-left:2rem;"
       *ngIf="
         user.role.name === 'ROLE_REGULAR_USER' &&
         isDisabledBtnRate(driving.started) &&
@@ -45,6 +47,25 @@
       mat-raised-button
       (click)="openDialog(driving.id)">
       Rate
+    </button>
+
+    <button mat-icon-button color="warn" (click)="setFavouriteRoute(favouriteRoute)" style="float:right;">
+      <mat-icon
+        *ngIf="!favouriteRoute"
+        matTooltip="Add to favourite routes"
+        matTooltipClass="tooltip"
+        matTooltipHideDelay="1000"
+        class="icon"
+        >favorite_border</mat-icon
+      >
+      <mat-icon
+        *ngIf="favouriteRoute"
+        matTooltip="Remove from favourite routes"
+        matTooltipClass="tooltip"
+        matTooltipHideDelay="1000"
+        class="icon"
+        >favorite</mat-icon
+      >
     </button>
   </mat-card-actions>
 </mat-card>
