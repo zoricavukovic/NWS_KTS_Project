@@ -119,15 +119,46 @@ public class DrivingService implements IDrivingService {
 
     public List<DrivingPageDTO> getDrivingsForUser(
             final Long id,
-            final int pageNumber,
-            final int pageSize,
+            int pageNumber,
+            int pageSize,
             final String parameter,
             final String sortOrder
     ) throws EntityNotFoundException {
-        Pageable page = PageRequest.of(pageNumber, pageSize, Sort.by(getSortOrder(sortOrder), getSortBy(parameter)));
-        Page<Driving> results = getDrivingPage(id, page);
 
-        return fromDrivingsPage(results.getContent(), results.getSize(), results.getTotalPages());
+        if(parameter.equals("Price") || parameter.equals("Date")) {
+            Pageable page = PageRequest.of(pageNumber, pageSize, Sort.by(getSortOrder(sortOrder), getSortBy(parameter)));
+            Page<Driving> results = getDrivingPage(id, page);
+            return fromDrivingsPage(results.getContent(), results.getSize(), results.getTotalPages());
+        }
+        else{
+            List<Driving> drivings = drivingRepository.getDrivingsForUserId(id);
+            if (parameter.equals("Departure")) {
+                if(sortOrder.equals("Ascending")){
+                    Collections.sort(drivings, compareByDeparture);
+                }
+                else{
+                    Collections.sort(drivings, compareByDeparture.reversed());
+                }
+            } else {
+                if(sortOrder.equals("Ascending")) {
+                    Collections.sort(drivings, compareByDestination);
+                }
+                else{
+                    Collections.sort(drivings, compareByDestination.reversed());
+                }
+            }
+            if(pageNumber > 0){
+                pageNumber = pageSize * pageNumber;
+                pageSize = pageNumber + pageNumber;
+                if(pageSize > drivings.size()){
+                    pageSize = drivings.size();
+                }
+            }
+            //0,1,2
+            //3
+            //6,7,8 -> 6-9
+            return fromDrivingsPage(drivings.subList(pageNumber, pageSize), pageSize, drivings.size());
+        }
     }
 
     public List<Driving> getAllReservations(){
@@ -146,8 +177,6 @@ public class DrivingService implements IDrivingService {
     private String getSortBy(final String sortBy) {
         Dictionary<String, String> sortByDict = new Hashtable<>();
         sortByDict.put("Date", "started");
-        sortByDict.put("Departure", "route.startPoint");
-        sortByDict.put("Destination", "route.locations"); //ne znam ovo kako da pristupi??
         sortByDict.put("Price", "price");
 
         return sortByDict.get(sortBy);
@@ -467,4 +496,19 @@ public class DrivingService implements IDrivingService {
 
         return drivingRepository.getActiveDrivingForDriver(driverId).isPresent();
     }
+
+    Comparator<Driving> compareByDeparture = new Comparator<Driving>() {
+        @Override
+        public int compare(Driving d1, Driving d2) {
+            return d1.getRoute().getLocations().first().getLocation().getStreet().compareTo(d2.getRoute().getLocations().first().getLocation().getStreet());
+        }
+    };
+
+    Comparator<Driving> compareByDestination = new Comparator<Driving>() {
+        @Override
+        public int compare(Driving d1, Driving d2) {
+            return d1.getRoute().getLocations().last().getLocation().getStreet().compareTo(d2.getRoute().getLocations().last().getLocation().getStreet());
+        }
+    };
+
 }

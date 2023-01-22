@@ -113,8 +113,8 @@ insert into drivings_users(driving_id, user_id) values
     (1, 2),
     (1, 4),
     (3, 2),
-    (2, 10);
---     (4, 2);
+    (2, 10),
+    (4, 2);
 --     (5, 2),
 --     (5, 4),
 --     (5, 3);

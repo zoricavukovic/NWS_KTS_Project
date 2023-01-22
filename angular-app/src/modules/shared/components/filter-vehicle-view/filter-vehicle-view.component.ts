@@ -19,6 +19,7 @@ import {
 import {Route} from "../../models/route/route";
 import { DrivingService } from 'src/modules/shared/services/driving-service/driving.service';
 import moment from 'moment';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-filter-vehicle-view',
@@ -67,7 +68,8 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
     private toast: ToastrService,
     private controlContainer: ControlContainer,
     private store: Store,
-    private drivingService: DrivingService
+    private drivingService: DrivingService,
+    public router: Router
   ) {
     this.rideRequestForm = <FormGroup>this.controlContainer.control;
     this.selectedPassengers = this.rideRequestForm.get('selectedPassengers').value;
@@ -124,6 +126,9 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
         this.passengerCtrl.setValue(null);
         const index = this.allRegularUsers.indexOf(email);
         this.allRegularUsers.splice(index, 1);
+        this.filteredRegularUsers = this.passengerCtrl.valueChanges.pipe(startWith(''),
+        map(value => this._filter(value || '')),
+      );
       } else {
         this.passengerCtrl.setValue(null);
         this.toast.error(
