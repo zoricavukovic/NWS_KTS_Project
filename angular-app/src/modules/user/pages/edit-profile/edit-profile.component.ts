@@ -105,6 +105,7 @@ export class EditProfileComponent implements OnInit, OnDestroy {
       this.vehicleSubscription = this.vehicleService.getVehicleByDriver(this.user.id.toString()).subscribe(
         res => {
           this.vehicle = res;
+          console.log(this.vehicle);
           this.checkFormRequirements();
         }
       );

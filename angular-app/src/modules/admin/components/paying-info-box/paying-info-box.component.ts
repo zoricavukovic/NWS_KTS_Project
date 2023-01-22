@@ -25,6 +25,7 @@ export class PayingInfoBoxComponent implements OnDestroy {
       ]),
       maxNumOfTokensPerTransaction: new FormControl('', [
         Validators.required,
+        Validators.pattern('[1-9][0-9]*'),
         Validators.min(1)
       ])
   });
