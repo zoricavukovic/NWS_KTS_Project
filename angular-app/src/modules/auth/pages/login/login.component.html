@@ -38,6 +38,9 @@
         ">
         Password should contains at least 8 characters
       </mat-error>
+      <mat-error *ngIf="loginForm.get('password').hasError('required')">
+        Password is <strong>required</strong>
+      </mat-error>
     </mat-form-field>
     <a [routerLink]="['/serb-uber/auth/forgot-password']" class="link">Forgot password?</a>
 

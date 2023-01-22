@@ -2,6 +2,7 @@ import {DrivingNotification} from "../models/notification/driving-notification";
 import {calculateTimeToDestination} from "./map-functions";
 import {CurrentVehiclePosition} from "../models/vehicle/current-vehicle-position";
 import {Store} from "@ngxs/store";
+import {User} from "../models/user/user";
 
 function moreThanMinute(storedDrivingNotification: DrivingNotification): boolean {
 
@@ -28,14 +29,15 @@ export function updateTime(
   vehicle: CurrentVehiclePosition,
   directionService: google.maps.DirectionsService,
   store: Store,
-  iterator: number
+  iterator: number,
+  isAdmin: boolean
 ): number {
-  if (storedDrivingNotification && storedDrivingNotification?.vehicleId === vehicle.vehicleCurrentLocation.id){
+  if (storedDrivingNotification && storedDrivingNotification?.vehicleId === vehicle.vehicleCurrentLocation.id && !isAdmin){
     if (vehicle.vehicleCurrentLocation.inDrive) {
       if (iterator >= 10) {
         calculateTimeToDestination(vehicle, storedDrivingNotification.route, directionService, store);
         iterator = 0;
-      } else if (this.iterator === 0) {
+      } else if (iterator === 0) {
         calculateTimeToDestination(vehicle, storedDrivingNotification.route, directionService, store);
       }
     }

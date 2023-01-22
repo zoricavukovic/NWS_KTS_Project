@@ -58,14 +58,14 @@ button.btn-verify {
     font-size: 1.5rem;
 }
 
-button#btn-link {
+button.btn-link {
     background: none !important;
     border: none;
     padding: 0 !important;
     font-family: arial, sans-serif;
     text-decoration: underline;
     cursor: pointer;
-    color: var(--blue);
+    color: var(--deep-blue);
     font-size: 1.2rem;
 }
 

@@ -79,7 +79,7 @@ insert into drivers (id, email, password, name, surname, phone_number, city, pro
 insert into drivings (active, driver_id, driving_status, duration, price, started, end_date, route_id, last_reminder, reservation) values
        (true, 5, 2, 2, 3, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), null, 1, null, false),
        (true, 6, 2, 8, 3, to_timestamp('16.01.2023. 22:40', 'DD.MM.YYYY HH24:MI'), null, 2, null, false),
-       (false, 5, 2, 10, 5,to_timestamp('22.01.2023 08:27', 'DD.MM.YYYY HH24:MI'), null, 3, null, false);
+       (false, 5, 2, 10, 5,to_timestamp('22.01.2023 14:31', 'DD.MM.YYYY HH24:MI'), null, 3, null, false);
 
 insert into admins (id, email, password, name, surname, phone_number, city, profile_picture, role_id, verified, online) values
     (nextval('users_id_gen'), 'admin@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Admin', 'Admin', '012345578', 'Novi Sad', 'default-user.png', 1, true, false);
@@ -120,7 +120,7 @@ insert into chat_rooms(client_id, admin_id, resolved) values
 insert into chat_rooms(client_id, admin_id, resolved) values
     (3,1, false);
 insert into chat_rooms(client_id, admin_id, resolved) values
-    (6,8, false);
+    (6,7, false);
 
 
 insert into messages(message, time_stamp, admin_response, chat_room_id, seen) values

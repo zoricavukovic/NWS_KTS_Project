@@ -119,13 +119,15 @@ export function drawActiveRide(
   vehicle: CurrentVehiclePosition,
   index: number,
   directionService: google.maps.DirectionsService,
-  store: Store
+  store: Store,
+  isAdmin: boolean
 ): google.maps.Marker[] {
   const markers: google.maps.Marker[] = [];
   if (vehicle && driving.active) {
     visibleMarker(vehicle.marker);
-    vehicle.marker
-    calculateTimeToDestination(vehicle, driving?.route, directionService, store);
+    if (!isAdmin){
+      calculateTimeToDestination(vehicle, driving?.route, directionService, store);
+    }
   }
 
   driving?.route?.locations.forEach(location => {
@@ -233,9 +235,7 @@ export function getRouteCoordinates(route: PossibleRoute): google.maps.LatLngLit
 }
 
 function getMarkerIcon(vehicleStatus: VehicleCurrentLocation, currentLoggedUserId: number) {
-  if (vehicleStatus.inDrive){
-    console.log("vozi se ");
-  }
+
   const customIcon: google.maps.Icon = vehicleStatus.inDrive ?
     {
       url: getVehiclePhotoNameBasedOnType(vehicleStatus.type)
@@ -271,12 +271,16 @@ export function updateVehiclePosition(
   map: google.maps.Map,
   marker: google.maps.Marker,
   vehicleCurrentLocation: VehicleCurrentLocation,
-  currentLoggedUserId: number
+  currentLoggedUserId: number,
+  isHomePage: boolean
 ): google.maps.Marker {
   if (map !== undefined) {
-    if (!marker.getVisible()){
+    if (!marker.getVisible() && isHomePage){
       marker.setVisible(true);
     }
+
+    marker.setIcon(getMarkerIcon(vehicleCurrentLocation, currentLoggedUserId));
+
     if (vehicleCurrentLocation.inDrive) {
       marker.setPosition({
         lat: vehicleCurrentLocation.currentLocation.lat,
@@ -284,8 +288,6 @@ export function updateVehiclePosition(
       });
       return marker;
     }
-
-    marker.setIcon(getMarkerIcon(vehicleCurrentLocation, currentLoggedUserId));
 
     return marker;
   }

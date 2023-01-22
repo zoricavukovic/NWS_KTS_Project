@@ -25,31 +25,33 @@ export class ApprovalDialogComponent implements OnDestroy {
   approveChanges() {
     this.updateApprovalSubscription = this.driverUpdateApprovalService.approve(this.request.id).subscribe(
       res => {
+        console.log("cao");
         this.toast.success("Request is approved!", "Success")
       },
       err => {
         this.toast.error(
-          err.error,          
+          err.error,
           'Error happened!'
         )
       }
     );
   }
 
-  rejectCahnges() {
+  rejectChanges() {
     this.updateApprovalSubscription = this.driverUpdateApprovalService.reject(this.request.id).subscribe(
       res => {
+        console.log("reject");
         this.toast.success("Request is rejected!", "Rejected")
       },
       err => {
         this.toast.error(
-          err.error,          
+          err.error,
           'Error happened!'
         )
       }
     );
   }
-  
+
   ngOnDestroy(): void {
     if (this.updateApprovalSubscription) {
       this.updateApprovalSubscription.unsubscribe();

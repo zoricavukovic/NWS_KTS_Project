@@ -114,11 +114,7 @@ export class ChatRoomService {
       this.toast
         .info(
           'New message received!',
-          `You have new message from ${
-            chatRoomWithNotify.chatRoom.client.name +
-            '' +
-            chatRoomWithNotify.chatRoom.client.surname
-          }.`
+          `You have new message from ${chatRoomWithNotify.chatRoom.client.name} ${chatRoomWithNotify.chatRoom.client.surname}.`
         )
         .onTap.subscribe(res => {
           this.router.navigate(['/serb-uber/admin/messages']);

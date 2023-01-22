@@ -63,7 +63,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   );
 
   matcher = new MyErrorStateMatcher();
-  cities: string[] = ['Belgrade', 'Novi Sad', 'Kraljevo', 'Sabac'];
+  cities: string[] = ['Beograd', 'Novi Sad', 'Kraljevo', 'Kragujevac', 'Jagodina', 'Mladenovac', 'Subotica', 'Ruma', 'Priboj', 'Sabac', 'Leskovac', 'Vranje', 'Smederevo', 'Pozarevac', 'Zrenjanin', 'Sombor'];
   registrationSubscription: Subscription;
 
   submitted = false;

@@ -44,7 +44,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = EntityAlreadyExistsException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String entityAlreadyExistsException(EntityAlreadyExistsException entityAlreadyExists) {
 
         return entityAlreadyExists.getMessage();

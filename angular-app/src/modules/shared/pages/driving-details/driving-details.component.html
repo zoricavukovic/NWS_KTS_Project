@@ -32,7 +32,7 @@
       <b>= {{driving.price}}</b>
       <mat-icon class="token-icon">payments</mat-icon>
     </div>
-    <div class="spinner-div" *ngIf="storedDrivingNotification && storedDrivingNotification.drivingId===id" style="float:left;">
+    <div class="spinner-div" *ngIf="storedDrivingNotification && storedDrivingNotification?.drivingId===id && storedDrivingNotification?.drivingStatus==='ACCEPTED'" style="float:left;">
       <mat-progress-spinner class="spinner" color='accent' [mode]="'determinate'" [value]="storedDrivingNotification.minutes">
       </mat-progress-spinner>
 

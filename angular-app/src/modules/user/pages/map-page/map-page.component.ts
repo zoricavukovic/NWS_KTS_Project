@@ -10,7 +10,7 @@ import {
 } from "../../../regular_user/components/driving-notification-details/driving-notification-details.component";
 import {CurrentVehiclePosition} from "../../../shared/models/vehicle/current-vehicle-position";
 import {
-  addCarMarker,
+  addCarMarker, calculateTimeToDestination,
   hideMarker,
   removeMarker,
   updateVehiclePosition,
@@ -112,7 +112,6 @@ export class MapPageComponent implements OnInit, OnDestroy {
   }
 
   private initVehicles() {
-    if (this.vehiclesCurrentPosition){
       this.vehicleService.getAllVehicle().subscribe(vehicleCurrentLocations => {
         vehicleCurrentLocations.forEach(vehicle => {
           const newVehicle: CurrentVehiclePosition = {
@@ -127,7 +126,7 @@ export class MapPageComponent implements OnInit, OnDestroy {
           }
         }
       })
-    }
+
   }
 
   private initializeWebSocketConnection() {
@@ -157,8 +156,8 @@ export class MapPageComponent implements OnInit, OnDestroy {
               vehicle.marker.setVisible(false);
               this.vehiclesCurrentPosition[index] = vehicle;
             }else {
-              vehicle.marker = updateVehiclePosition(this.map, vehicle.marker, vehicleCurrentLocation, this.currentUser?.id)
-              this.iterator = updateTime(this.storedDrivingNotification, vehicle, this.directionService, this.store, this.iterator);
+              vehicle.marker = updateVehiclePosition(this.map, vehicle.marker, vehicleCurrentLocation, this.currentUser?.id, this.router.url.includes('-1'))
+              this.iterator = updateTime(this.storedDrivingNotification, vehicle, this.directionService, this.store, this.iterator, this.authService.userIsAdmin());
               vehicle.vehicleCurrentLocation = vehicleCurrentLocation;
               this.vehiclesCurrentPosition[index] = vehicle;
             }
@@ -170,7 +169,7 @@ export class MapPageComponent implements OnInit, OnDestroy {
                 vehicleCurrentLocation: vehicleCurrentLocation,
                 marker: addCarMarker(this.map, vehicleCurrentLocation, this.currentUser?.id)
               }
-              this.iterator = updateTime(this.storedDrivingNotification, vehicle, this.directionService, this.store, this.iterator);
+              this.iterator = updateTime(this.storedDrivingNotification, vehicle, this.directionService, this.store, this.iterator, this.authService.userIsAdmin());
               this.vehiclesCurrentPosition.push(newVehicle);
             }
           }

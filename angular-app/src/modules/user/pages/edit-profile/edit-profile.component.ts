@@ -48,7 +48,7 @@ export class EditProfileComponent implements OnInit, OnDestroy {
   });
 
   matcher = new MyErrorStateMatcher();
-  cities: string[] = ['Belgrade', 'Novi Sad', 'Kraljevo', 'Sabac'];
+  cities: string[];
   filteredCities: Observable<string[]>;
 
   constructor(
@@ -69,6 +69,7 @@ export class EditProfileComponent implements OnInit, OnDestroy {
     this.user = null;
     this.isDriver = false;
     this.vehicle = null;
+    this.cities = ['Beograd', 'Novi Sad', 'Kraljevo', 'Kragujevac', 'Jagodina', 'Mladenovac', 'Subotica', 'Ruma', 'Priboj', 'Sabac', 'Leskovac', 'Vranje', 'Smederevo', 'Pozarevac', 'Zrenjanin', 'Sombor'];
   }
 
   ngOnInit(): void {

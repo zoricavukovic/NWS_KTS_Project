@@ -111,4 +111,7 @@ export class VerifyComponent implements OnInit, OnDestroy {
       this.sendCodeAgainSubscription.unsubscribe();
   }
 
+  goToLoginPage(){
+    this.router.navigate(["/serb-uber/auth/login"]);
+  }
 }

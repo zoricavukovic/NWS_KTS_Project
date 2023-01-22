@@ -100,6 +100,13 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
         this.filterVehicleView = false;
       }
     })
+    if (this.route.snapshot.paramMap.get('id') !== '-1'){
+      console.log("bla")
+      this.vehiclesCurrentPosition.forEach(vehicle=>hideMarker(vehicle.marker));
+    }else{
+
+      this.vehiclesCurrentPosition.forEach(vehicle=>visibleMarker(vehicle.marker));
+    }
     this.router.events.subscribe(() => {
       this.ngOnDestroy();
     });
@@ -132,7 +139,7 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
               return v.vehicleCurrentLocation.id === driver.vehicle.id
             })
             this.indexOfVehicleForDriving = this.vehiclesCurrentPosition.indexOf(vehicle);
-            this.markers = drawActiveRide(this.map, driving, driver, vehicle, this.indexOfVehicleForDriving, this.directionService, this.store);
+            this.markers = drawActiveRide(this.map, driving, driver, vehicle, this.indexOfVehicleForDriving, this.directionService, this.store, this.authService.userIsAdmin());
           });
 
         this.currentUserSubscription = this.authService
@@ -229,7 +236,7 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
   }
 
   getTime(): string {
-    
+
     return getTime(this.storedDrivingNotification);
   }
 }

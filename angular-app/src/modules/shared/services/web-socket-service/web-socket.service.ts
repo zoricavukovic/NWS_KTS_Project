@@ -292,7 +292,7 @@ export class WebSocketService {
   logOutUser(): void {
     this.disconnect();
     localStorage.clear();
-    this.router.navigate(['/login']);
+    this.router.navigate(['/serb-uber/auth/login']);
     window.location.reload();
   }
 

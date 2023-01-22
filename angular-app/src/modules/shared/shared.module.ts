@@ -47,7 +47,6 @@ import {AvatarGroupModule} from "primeng/avatargroup";
 import { VehicleRateDataComponent } from './components/vehicle/vehicle-rate-data/vehicle-rate-data.component';
 import { ReviewRowComponent } from './components/review-row/review-row.component';
 import { UserProfileInfoComponent } from "./components/user-profile-info/user-profile-info.component";
-import {ErrorCatchingInterceptor} from "./interceptors/errors/error-catching.interceptor";
 import { ReportsPageComponent } from './pages/reports-page/reports-page.component';
 import { ReportStatisticsComponent } from './components/reports/report-statistics/report-statistics.component';
 import { ReportGraphComponent } from './components/reports/report-graph/report-graph.component';
@@ -112,7 +111,6 @@ import { WaitingForAcceptRideContainerComponent } from "./components/waiting-for
     ],
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: CustomInterceptor, multi: true },
-        { provide: HTTP_INTERCEPTORS, useClass: ErrorCatchingInterceptor, multi: true },
         DatePipe
     ],
     imports: [

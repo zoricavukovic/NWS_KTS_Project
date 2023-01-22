@@ -2,9 +2,9 @@ import { DatePipe } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { map, Observable, Subscription } from 'rxjs';
+import { map, Observable, startWith, Subscription } from 'rxjs';
 import { AuthService } from 'src/modules/auth/services/auth-service/auth.service';
-import { ChartData, ChartSumData } from 'src/modules/shared/models/chart/chart-data';
+import { ChartData } from 'src/modules/shared/models/chart/chart-data';
 import { User } from 'src/modules/shared/models/user/user';
 import { ConfigService } from 'src/modules/shared/services/config-service/config.service';
 import { DrivingService } from 'src/modules/shared/services/driving-service/driving.service';
@@ -37,6 +37,8 @@ export class ReportTabComponent implements OnInit, OnDestroy {
   chartData: ChartData;
   allUsersObj: User[];
   tempListOfUserEmails: string[];
+  filteredRegularUsers: Observable<string[]>;
+  userCtrl: FormControl = new FormControl();
   selectedUserId: number;
 
   dates = new FormGroup({
@@ -51,7 +53,7 @@ export class ReportTabComponent implements OnInit, OnDestroy {
     private datePipe: DatePipe,
     private toast: ToastrService,
     private userService: UserService
-  ) { 
+  ) {
     this.selectedReport = '';
     this.loggedUser = null;
     this.startDate = '';
@@ -64,7 +66,7 @@ export class ReportTabComponent implements OnInit, OnDestroy {
     this.tempListOfUserEmails = ['All users'];
     this.selectedUserId = -1;
   }
-  
+
   ngOnInit(): void {
     this.authSubscription = this.authService.getSubjectCurrentUser().subscribe(
       user => {
@@ -127,6 +129,11 @@ export class ReportTabComponent implements OnInit, OnDestroy {
           this.tempListOfUserEmails.push(user.email);
           this.allUsersObj.push(user);
         }
+        console.log(this.tempListOfUserEmails);
+
+        this.filteredRegularUsers = this.userCtrl.valueChanges.pipe(startWith(''),
+          map(value => this._filter(value || '')),
+        );
       }
     );
   }
@@ -142,7 +149,13 @@ export class ReportTabComponent implements OnInit, OnDestroy {
       }
     }
   }
-  
+
+  _filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+
+    return this.tempListOfUserEmails.filter(option => option.toLowerCase().includes(filterValue));
+  }
+
   ngOnDestroy(): void {
     if (this.authSubscription) {
       this.authSubscription.unsubscribe();
@@ -158,4 +171,3 @@ export class ReportTabComponent implements OnInit, OnDestroy {
   }
 
 }
-
