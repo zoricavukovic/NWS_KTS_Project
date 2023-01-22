@@ -102,6 +102,10 @@ export class VerifyComponent implements OnInit, OnDestroy {
     }
   }
 
+  goToHomePage(){
+    this.router.navigate(["/serb-uber/user/map-page-view/-1"]);
+  }
+
   ngOnDestroy(): void {
     if (this.verifySubscription) {
       this.verifySubscription.unsubscribe();

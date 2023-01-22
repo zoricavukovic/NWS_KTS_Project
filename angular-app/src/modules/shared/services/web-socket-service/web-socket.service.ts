@@ -103,6 +103,8 @@ export class WebSocketService {
 
         that.bellNotificationsUpdate();
         that.newDrivingNotification();
+
+        that.vehicleArriveNotification();
       });
     }
   }
@@ -388,6 +390,20 @@ export class WebSocketService {
           });
           this.store.dispatch(new UpdateDrivings(response));
         })
+      });
+  }
+
+  vehicleArriveNotification(){
+    this.stompClient.subscribe(
+      environment.publisherUrl + localStorage.getItem('email') + '/vehicle-arrive',
+      message => {
+        const drivingStatusNotification: DrivingStatusNotification = JSON.parse(message.body);
+        if(this.router.url.includes("/map-page-view/-1")){
+          this.toast.info(`${message}`, "Vehicle arrive");
+        }
+        else{
+          this.toast.info(`${message} Tap to redirect to home page and follow your ride.`, "Vehicle arrive");
+        }
       });
   }
 }

@@ -193,6 +193,12 @@ public class DriverService implements IDriverService{
             : null;
     }
 
+    public boolean isTimeToGoToDeparture(Driver driver, Driving nextDriving){
+        int minutesToStartDriving = (int) ChronoUnit.MINUTES.between(LocalDateTime.now(), nextDriving.getStarted());
+        int minutesFromCurrentLocationToStartDriving = (int) calculateMinutesToStartDriving(driver, nextDriving);
+        return minutesFromCurrentLocationToStartDriving + 2 <= minutesToStartDriving;
+    }
+
     private Driver findMatchesDriver(
         final List<Driver> drivers,
         final double lonStart,

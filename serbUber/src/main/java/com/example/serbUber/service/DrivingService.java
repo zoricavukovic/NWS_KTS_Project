@@ -13,6 +13,7 @@ import com.example.serbUber.repository.DrivingRepository;
 import com.example.serbUber.request.DrivingLocationIndexRequest;
 import com.example.serbUber.request.LocationRequest;
 import com.example.serbUber.service.interfaces.IDrivingService;
+import com.example.serbUber.service.user.DriverService;
 import com.example.serbUber.service.user.UserService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -41,6 +42,8 @@ public class DrivingService implements IDrivingService {
 
     private final DrivingRepository drivingRepository;
     private final UserService userService;
+
+    private final DriverService driverService;
     private final WebSocketService webSocketService;
     private final DrivingStatusNotificationService drivingStatusNotificationService;
     private final VehicleService vehicleService;
@@ -54,7 +57,8 @@ public class DrivingService implements IDrivingService {
             final DrivingStatusNotificationService drivingStatusNotificationService,
             final VehicleService vehicleService,
             final RouteService routeService,
-            final DrivingWithVehicleService drivingWithVehicleService
+            final DrivingWithVehicleService drivingWithVehicleService,
+            final DriverService driverService
     ) {
         this.drivingRepository = drivingRepository;
         this.userService = userService;
@@ -63,6 +67,7 @@ public class DrivingService implements IDrivingService {
         this.vehicleService = vehicleService;
         this.routeService = routeService;
         this.drivingWithVehicleService = drivingWithVehicleService;
+        this.driverService = driverService;
     }
 
     public Driving create(
@@ -154,9 +159,6 @@ public class DrivingService implements IDrivingService {
                     pageSize = drivings.size();
                 }
             }
-            //0,1,2
-            //3
-            //6,7,8 -> 6-9
             return fromDrivingsPage(drivings.subList(pageNumber, pageSize), pageSize, drivings.size());
         }
     }
@@ -344,7 +346,9 @@ public class DrivingService implements IDrivingService {
 
         Driving nextDriving = driverHasFutureDriving(driving.getDriver().getId());
         if (nextDriving != null) {
-            createDrivingToDeparture(driving.getDriver(), driving.getDriver().getVehicle().getCurrentStop(), nextDriving.getRoute());
+            if(driverService.isTimeToGoToDeparture(driving.getDriver(), nextDriving)){
+                createDrivingToDeparture(driving.getDriver(), driving.getDriver().getVehicle().getCurrentStop(), nextDriving.getRoute(), nextDriving.getUsers());
+            }
         } else {
             webSocketService.sendVehicleCurrentLocation(
                 new VehicleCurrentLocationDTO(new VehicleWithDriverId(driving.getDriver().getVehicle(), driving.getDriver().getVehicle().getId(), driving.getDriver().isActive()))
@@ -460,7 +464,11 @@ public class DrivingService implements IDrivingService {
                 drivings.get(0) : null;
     }
 
-    public DrivingDTO createDrivingToDeparture(Driver driver, Location currentStop, Route nextRoute) {
+    public Driving getTimeToDepartureDriving(final Long driverId) throws EntityNotFoundException {
+        return drivingRepository.getOnWayToDepartureDriving(driverId);
+    }
+
+    public DrivingDTO createDrivingToDeparture(Driver driver, Location currentStop, Route nextRoute, Set<RegularUser> users) {
 
         List<DrivingLocationIndexRequest> drivingLocationIndexRequestList = new LinkedList<>();
         DrivingLocationIndexRequest firstLocation = new DrivingLocationIndexRequest(
@@ -482,7 +490,13 @@ public class DrivingService implements IDrivingService {
         );
         Route route = this.routeService.createRoute(drivingLocationIndexRequestList, minutes, routeService.getDistanceInKmFromTime(minutes), List.of(0));
         Driving driving = new Driving((int) minutes, LocalDateTime.now(), LocalDateTime.now().plusMinutes((long) minutes), route, DrivingStatus.ON_WAY_TO_DEPARTURE, driver, 0);
-
+        driving.setActive(true); //ovo treba prilikom kreiranja, on ce tada krenuti kao
+        users.forEach(user -> {
+            List<Driving> drivings = getAllDrivingsForUserEmail(user.getEmail());
+            drivings.add(driving);
+            user.setDrivings(drivings);
+            userService.saveUser(user);
+        });
         driver.getVehicle().setActiveRoute(driving.getRoute());
         driver.getVehicle().setCurrentLocationIndex(0);
         driver.getVehicle().setCrossedWaypoints(0);

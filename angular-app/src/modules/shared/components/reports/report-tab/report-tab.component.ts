@@ -10,14 +10,12 @@ import { ConfigService } from 'src/modules/shared/services/config-service/config
 import { DrivingService } from 'src/modules/shared/services/driving-service/driving.service';
 import { UserService } from 'src/modules/shared/services/user-service/user.service';
 
-
 @Component({
   selector: 'app-report-tab',
   templateUrl: './report-tab.component.html',
-  styleUrls: ['./report-tab.component.css']
+  styleUrls: ['./report-tab.component.css'],
 })
 export class ReportTabComponent implements OnInit, OnDestroy {
-
   @Input() selectedReport: string;
 
   loggedUser: User;
@@ -42,8 +40,12 @@ export class ReportTabComponent implements OnInit, OnDestroy {
   selectedUserId: number;
 
   dates = new FormGroup({
-    starting: new FormControl(new Date(this.configService.YEAR, this.configService.MONTH, 1)),
-    ending: new FormControl(new Date(this.configService.YEAR, this.configService.MONTH, 25)),
+    starting: new FormControl(
+      new Date(this.configService.YEAR, this.configService.MONTH, 1)
+    ),
+    ending: new FormControl(
+      new Date(this.configService.YEAR, this.configService.MONTH, 25)
+    ),
   });
 
   constructor(
@@ -68,13 +70,17 @@ export class ReportTabComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.authSubscription = this.authService.getSubjectCurrentUser().subscribe(
-      user => {
+    this.authSubscription = this.authService
+      .getSubjectCurrentUser()
+      .subscribe(user => {
         if (user) {
           this.loggedUser = user;
-          this.isSpending = this.selectedReport === this.configService.SELECTED_SPENDING_REPORT;
-          this.isDistance = this.selectedReport === this.configService.SELECTED_DISTANCE_REPORT;
-          this.isRide = this.selectedReport === this.configService.SELECTED_RIDES_REPORT;
+          this.isSpending =
+            this.selectedReport === this.configService.SELECTED_SPENDING_REPORT;
+          this.isDistance =
+            this.selectedReport === this.configService.SELECTED_DISTANCE_REPORT;
+          this.isRide =
+            this.selectedReport === this.configService.SELECTED_RIDES_REPORT;
           this.isAdmin = this.authService.userIsAdmin();
           this.isRegular = this.authService.userIsRegular();
           this.loadData();
@@ -82,60 +88,90 @@ export class ReportTabComponent implements OnInit, OnDestroy {
             this.loadAllUsers();
           }
         }
-      }
-    );
+      });
   }
 
   loadData(): void {
-    this.startDate = this.datePipe.transform(this.dates.get("starting").value, 'yyyy-MM-dd');
-    this.endDate = this.datePipe.transform(this.dates.get("ending").value, 'yyyy-MM-dd');
+    this.startDate = this.datePipe.transform(
+      this.dates.get('starting').value,
+      'yyyy-MM-dd'
+    );
+    this.endDate = this.datePipe.transform(
+      this.dates.get('ending').value,
+      'yyyy-MM-dd'
+    );
     this.dateRange = this.getDateRange();
 
     if (!this.isAdmin) {
-      this.drivingSubscription = this.drivingService.getChartData(
-        this.drivingService.createChartRequest(this.loggedUser.id, this.selectedReport, this.startDate, this.endDate)
-      ).subscribe(
-        res => {
-          this.chartData = res;
-        },
-        err => {
-          this.toast.error("Chart cannot be shown right now, please try later.","Error happened!");
-        }
-      );
+      this.drivingSubscription = this.drivingService
+        .getChartData(
+          this.drivingService.createChartRequest(
+            this.loggedUser.id,
+            this.selectedReport,
+            this.startDate,
+            this.endDate
+          )
+        )
+        .subscribe(
+          res => {
+            this.chartData = res;
+          },
+          err => {
+            this.toast.error(
+              'Chart cannot be shown right now, please try later.',
+              'Error happened!'
+            );
+          }
+        );
     } else {
-      this.drivingSubscription = this.drivingService.getAdminChartData(
-        this.drivingService.createChartRequest(this.selectedUserId, this.selectedReport, this.startDate, this.endDate)
-      ).subscribe(
-        res => {
-          this.chartData = res;
-        },
-        err => {
-          this.toast.error("Chart cannot be shown right now, please try later.","Error happened!");
-        }
-      );
+      this.drivingSubscription = this.drivingService
+        .getAdminChartData(
+          this.drivingService.createChartRequest(
+            this.selectedUserId,
+            this.selectedReport,
+            this.startDate,
+            this.endDate
+          )
+        )
+        .subscribe(
+          res => {
+            this.chartData = res;
+          },
+          err => {
+            this.toast.error(
+              'Chart cannot be shown right now, please try later.',
+              'Error happened!'
+            );
+          }
+        );
     }
   }
 
   private getDateRange(): string {
-    const startDate = this.datePipe.transform(this.dates.get("starting").value, 'dd.MM.yyyy.');
-    const endDate = this.datePipe.transform(this.dates.get("ending").value, 'dd.MM.yyyy.');
+    const startDate = this.datePipe.transform(
+      this.dates.get('starting').value,
+      'dd.MM.yyyy.'
+    );
+    const endDate = this.datePipe.transform(
+      this.dates.get('ending').value,
+      'dd.MM.yyyy.'
+    );
     return `${startDate} to ${endDate}`;
   }
 
   loadAllUsers() {
-    this.userSubscription = this.userService.getAllVerified().subscribe(
-      res => {
-        for (let user of res) {
-          this.tempListOfUserEmails.push(user.email);
-          this.allUsersObj.push(user);
-        }
-        console.log(this.tempListOfUserEmails);
-
-        this.filteredRegularUsers = this.userCtrl.valueChanges.pipe(startWith(''),
-          map(value => this._filter(value || '')),
-        );
+    this.userSubscription = this.userService.getAllVerified().subscribe(res => {
+      for (let user of res) {
+        this.tempListOfUserEmails.push(user.email);
+        this.allUsersObj.push(user);
       }
-    );
+      console.log(this.tempListOfUserEmails);
+
+      this.filteredRegularUsers = this.userCtrl.valueChanges.pipe(
+        startWith(''),
+        map(value => this._filter(value || ''))
+      );
+    });
   }
 
   showBySpecificUser(email: string) {
@@ -153,7 +189,9 @@ export class ReportTabComponent implements OnInit, OnDestroy {
   _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
 
-    return this.tempListOfUserEmails.filter(option => option.toLowerCase().includes(filterValue));
+    return this.tempListOfUserEmails.filter(option =>
+      option.toLowerCase().includes(filterValue)
+    );
   }
 
   ngOnDestroy(): void {
@@ -169,5 +207,4 @@ export class ReportTabComponent implements OnInit, OnDestroy {
       this.userSubscription.unsubscribe();
     }
   }
-
 }

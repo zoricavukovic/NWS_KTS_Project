@@ -17,5 +17,5 @@ export interface DrivingNotification {
   chosenDateTime?: Date;
   vehicleId?: number;
   reservation?: boolean;
+  duration?: number;
 }
-

@@ -2,15 +2,15 @@
   <div class="date-range-field">
     <mat-form-field class="w-100" appearance="fill">
       <mat-label>Select date range</mat-label>
-      <mat-date-range-input  [formGroup]="dates" [rangePicker]="picker">
-        <input matStartDate formControlName="starting" placeholder="From">
-        <input matEndDate formControlName="ending" placeholder="To">
+      <mat-date-range-input [formGroup]="dates" [rangePicker]="picker">
+        <input matStartDate formControlName="starting" placeholder="From" />
+        <input matEndDate formControlName="ending" placeholder="To" />
       </mat-date-range-input>
       <mat-hint>MM/dd/YYYY – MM/dd/YYYY</mat-hint>
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-date-range-picker #picker></mat-date-range-picker>
     </mat-form-field>
-    <mat-form-field appearance="fill" *ngIf="isAdmin" style="margin-left: 2rem;">
+    <mat-form-field appearance="fill" *ngIf="isAdmin" style="margin-left: 2rem">
       <mat-label>User</mat-label>
       <input
         type="text"
@@ -22,23 +22,27 @@
       <mat-autocomplete
         #auto="matAutocomplete"
         (optionSelected)="showBySpecificUser($event.option.value)">
-        <mat-option *ngFor="let email of filteredRegularUsers | async" [value]="email">
+        <mat-option
+          *ngFor="let email of filteredRegularUsers | async"
+          [value]="email">
           <span>{{ email }}</span>
         </mat-option>
       </mat-autocomplete>
     </mat-form-field>
-    <button
-      mat-raised-button
-      (click)="loadData()">
-      Show
-    </button>
+    <button mat-raised-button (click)="loadData()">Show</button>
   </div>
-  <div style="display: flex;" *ngIf="chartData && selectedReport">
+  <div style="display: flex" *ngIf="chartData && selectedReport">
     <div>
-      <app-report-statistics [sum]="chartData.chartSumData.sum" [average]="chartData.chartSumData.average"></app-report-statistics>
-    </div>
-    <div style="min-height: 20rem; min-width: 50rem; margin-left: 2rem;">
-      <app-report-graph [chartItems]="chartData.chartData" [isRegular]="isRegular" [chartType]="selectedReport" [dateRange]="dateRange"></app-report-graph>
+      <app-report-statistics
+        [sum]="chartData.chartSumData.sum"
+        [average]="chartData.chartSumData.average"></app-report-statistics>
+      <div style="min-height: 20rem; min-width: 50rem; margin-left: 2rem">
+        <app-report-graph
+          [chartItems]="chartData.chartData"
+          [isRegular]="isRegular"
+          [chartType]="selectedReport"
+          [dateRange]="dateRange"></app-report-graph>
+      </div>
     </div>
   </div>
 </div>
