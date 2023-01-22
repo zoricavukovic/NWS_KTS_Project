@@ -124,6 +124,11 @@ public class RouteService implements IRouteService {
         return points;
     }
 
+    public SortedSet<DrivingLocationIndex> getLocationsForRoute(Long id) {
+
+        return routeRepository.getLocationsForRoute(id);
+    }
+
     public Route createRoute(
             final List<DrivingLocationIndexRequest> locations,
             final double time,

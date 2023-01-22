@@ -12,7 +12,7 @@ public class Route {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(fetch=FetchType.EAGER)
     @JoinColumn(name="route_id", referencedColumnName = "id")
     @SortNatural
     private SortedSet<DrivingLocationIndex> locations;

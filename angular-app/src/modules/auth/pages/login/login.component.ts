@@ -45,7 +45,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     const chatService = this.chatService;
     this.authService.authState.subscribe(user => {
       const authService = this.social;
-      if (user){
+      if (user && user.provider !== 'FACEBOOK'){
         authService.loginWithGoogle(user.idToken).subscribe({
           next(loggedUser: LoginResponse): void {
             authService.setLocalStorage(loggedUser);
@@ -63,27 +63,6 @@ export class LoginComponent implements OnInit, OnDestroy {
   refreshToken(): void {
     this.authService.refreshAuthToken(GoogleLoginProvider.PROVIDER_ID);
   }
-
-  // signInWithGoogle(): void {
-  //   console.log("google mail");
-  //   const router = this.router;
-  //   const toast = this.toast;
-  //   const chatService = this.chatService;
-  //   this.authService.authState.subscribe(user => {
-  //     const authService = this.social;
-  //     authService.loginWithGoogle(user.idToken).subscribe({
-  //       next(loggedUser: LoginResponse): void {
-  //         authService.setLocalStorage(loggedUser);
-  //         chatService.connect();
-  //         router.navigate(['/serb-uber/user/map-page-view/-1']);
-  //       },
-  //       error(): void {
-  //         toast.error('Email or password is not correct!', 'Login failed');
-  //       },
-  //     });
-  //   });
-  // }
-
   signInWithFB(): void {
     const router = this.router;
     const toast = this.toast;

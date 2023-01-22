@@ -85,7 +85,7 @@ public class AuthenticationController {
     @PostMapping(path="/login/facebook", consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    private LoginDTO loginWithFacebook(@Valid @RequestBody final TokenRequest tokenRequest) throws EntityNotFoundException {
+    public LoginDTO loginWithFacebook(@Valid @RequestBody final TokenRequest tokenRequest) throws EntityNotFoundException {
         Facebook facebook = new FacebookTemplate(tokenRequest.getToken());
         String [] data = {"email"};
         User user = facebook.fetchObject("me", User.class,data);

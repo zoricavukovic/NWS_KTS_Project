@@ -26,4 +26,6 @@ public interface IRouteService {
     );
 
     List<double[]> getRoutePath(final Long id) throws EntityNotFoundException;
+
+    SortedSet<DrivingLocationIndex> getLocationsForRoute(final Long id);
 }

@@ -323,10 +323,10 @@ public class DriverService implements IDriverService{
     private List<Driving> getFutureDrivings(final Driver driver, final LocalDateTime startDate, final LocalDateTime endDate){
         List<Driving> futureDrivings = new LinkedList<>();
         for (Driving driving: driver.getDrivings()) {
-            if (driving.getDrivingStatus().equals(DrivingStatus.ACCEPTED) && !driving.isActive()) {
-                if (startDate.isAfter(driving.getStarted().plusMinutes(driving.getDuration())) || endDate.isBefore(driving.getStarted())) {
-                    futureDrivings.add(driving);
-                }
+            if (driving.getDrivingStatus().equals(DrivingStatus.ACCEPTED) && !driving.isActive() && driving.getStarted().isAfter(LocalDateTime.now())) {
+//                if (startDate.isAfter(driving.getStarted().plusMinutes(driving.getDuration())) || endDate.isBefore(driving.getStarted())) {
+                futureDrivings.add(driving);
+//                }
             }
         }
 
@@ -347,7 +347,6 @@ public class DriverService implements IDriverService{
         }
         else return !babySeat && !petFriendly;
     }
-
 
     private boolean checkIfDriverIsFree(
             final Driver driver,
@@ -434,8 +433,7 @@ public class DriverService implements IDriverService{
 
 
     private Driver findNearestDriver(List<Driver> activeAndFreeDrivers, double lonStart, double latStart) throws EntityNotFoundException {
-//        double latEnd = vehicleService.getLatOfCurrentVehiclePosition(activeAndFreeDrivers.get(0).getVehicle());
-//        double lonEnd = vehicleService.getLonOfCurrentVehiclePosition(activeAndFreeDrivers.get(0).getVehicle());
+
         double lon = activeAndFreeDrivers.get(0).getVehicle().getCurrentStop().getLon();
         double lat = activeAndFreeDrivers.get(0).getVehicle().getCurrentStop().getLat();
         double minDistance = getDistance(lonStart, latStart, lon, lat);

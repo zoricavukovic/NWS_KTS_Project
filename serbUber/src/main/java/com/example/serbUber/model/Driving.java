@@ -30,7 +30,7 @@ public class Driving {
     @Column(name="last_reminder")
     private LocalDateTime lastReminder;
 
-    @OneToOne()
+    @OneToOne(fetch=FetchType.EAGER)
     @JoinColumn(name = "route_id", referencedColumnName = "id")
     private Route route;
 
