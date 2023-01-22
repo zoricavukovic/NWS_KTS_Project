@@ -1,4 +1,7 @@
 <div class="form-container mat-elevation-z1">
+    <button mat-raised-button (click)="goToHomePage()" style="background-color: transparent;" matTooltip="Go to Serb Uber home page"
+    matTooltipClass="tooltip"
+    matTooltipHideDelay="10"><mat-icon style="color: var(--deep-blue)">arrow_back</mat-icon></button>
     <div id="wrapper">
         <div *ngIf="showForm; else check_mail_page">
             <h3>Please enter the 4-digit verification code we sent via email:</h3>

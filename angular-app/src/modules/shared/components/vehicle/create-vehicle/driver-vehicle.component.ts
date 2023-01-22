@@ -9,9 +9,9 @@ import {
 import { ControlContainer, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { Vehicle } from 'src/modules/shared/models/vehicle/vehicle';
-import {VehicleTypeInfo} from "../../../models/vehicle/vehicle-type-info";
-import {VehicleService} from "../../../services/vehicle-service/vehicle.service";
-import {VehicleTypeInfoService} from "../../../services/vehicle-type-info-service/vehicle-type-info.service";
+import { VehicleTypeInfo } from '../../../models/vehicle/vehicle-type-info';
+import { VehicleService } from '../../../services/vehicle-service/vehicle.service';
+import { VehicleTypeInfoService } from '../../../services/vehicle-type-info-service/vehicle-type-info.service';
 
 @Component({
   selector: 'driver-vehicle',
@@ -54,16 +54,12 @@ export class DriverVehicleComponent implements OnInit, OnDestroy {
         this.vehicleTypes = vehicleTypes;
         this.styleArray = new Array<boolean>(vehicleTypes.length).fill(false);
         const selectedIndex = this.getIndexOfSelectedVehicleType();
-        this.styleArray.forEach(
-          (value, index) =>{
+        console.log(selectedIndex);
+        console.log(this.styleArray);
+        this.styleArray.forEach((value, index) => {
           console.log(value, index);
-          (this.styleArray[index] = selectedIndex === index)
-          }
-        );
-        if (this.vehicle){
-          this.vehicle.vehicleTypeInfo = this.setAdditionalData(this.vehicle.vehicleTypeInfo, this.vehicle.id - 1);
-          this.changeSelectedVehicleType(this.vehicle.vehicleTypeInfo)
-        }
+          this.styleArray[index] = selectedIndex === index;
+        });
       });
 
     this.responsiveOptions = [
@@ -93,9 +89,14 @@ export class DriverVehicleComponent implements OnInit, OnDestroy {
     vehicleType.img = this.getPhoto(vehicleType);
     return vehicleType;
   }
-  getIndexOfSelectedVehicleType(): number{
-    const vehicleType = this.rideRequestForm.get('vehicleType').value;
-    switch(vehicleType){
+  getIndexOfSelectedVehicleType(): number {
+    let vehicleType = this.rideRequestForm.get('vehicleType').value;
+    console.log(this.vehicle);
+    if (this.vehicle !== null) {
+      vehicleType = this.vehicle.vehicleTypeInfo.vehicleType;
+      console.log(vehicleType);
+    }
+    switch (vehicleType) {
       case 'VAN':
         return 0;
       case 'SUV':
@@ -117,7 +118,6 @@ export class DriverVehicleComponent implements OnInit, OnDestroy {
         return '/car.png';
     }
   }
-
 
   changeSelectedVehicleType(selectedVehicleType: VehicleTypeInfo) {
     this.selectedVehicleType = selectedVehicleType.vehicleType;

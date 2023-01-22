@@ -17,11 +17,12 @@
               matInput
               aria-label="State"
               [matAutocomplete]="auto"
+              [formControl]="userCtrl"
               placeholder="Enter user's email" />
             <mat-autocomplete
                 #auto="matAutocomplete"
                 (optionSelected)="showBySpecificUser($event.option.value)">
-                <mat-option *ngFor="let email of tempListOfUserEmails" [value]="email">
+                <mat-option *ngFor="let email of filteredRegularUsers | async" [value]="email">
                     <span>{{ email }}</span>
                 </mat-option>
             </mat-autocomplete>

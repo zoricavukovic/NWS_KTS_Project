@@ -137,4 +137,12 @@ public class WebSocketService {
     public void sendNewDrivingNotification(DrivingStatusNotificationDTO drivingStatusNotificationDTO, String driverEmail) {
         this.messagingTemplate.convertAndSendToUser(driverEmail, "/new-driving", drivingStatusNotificationDTO);
     }
+
+    public void sendVehicleArriveNotification(Set<RegularUser> passengers){
+        String message = "Vehicle has arrived on departure.";
+        passengers.forEach((passenger) -> {
+            this.messagingTemplate.convertAndSendToUser(passenger.getEmail(), "/vehicle-arrive", message);
+        });
+
+    }
 }

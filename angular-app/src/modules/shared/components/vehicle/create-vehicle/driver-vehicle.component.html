@@ -10,8 +10,8 @@
         </mat-checkbox>
     </div>
 
-    <p-carousel [value]="vehicleTypes" [numVisible]="3" [numScroll]="1" [circular]="true" [responsiveOptions]="responsiveOptions" selectedItem="1">
-        <ng-template let-vehicleType pTemplate="item" [selected]="true">
+    <p-carousel [value]="vehicleTypes" [numVisible]="3" [numScroll]="1" [circular]="true" [responsiveOptions]="responsiveOptions">
+        <ng-template let-vehicleType pTemplate="item">
             <div class="product-item">
                 <div class="product-item-content" [style.borderColor]="styleArray[vehicleType.index] ? '#b73e3e':'#2c4b61'" (click)="changeSelectedVehicleType(vehicleType)">
                     <div style="position: relative;">

@@ -66,7 +66,7 @@ public interface IDrivingService {
 
     DrivingDTO removeDriver(final Long id) throws EntityNotFoundException;
 
-    DrivingDTO createDrivingToDeparture(Driver driver, Location currentStop, Route nextRoute);
+    DrivingDTO createDrivingToDeparture(Driver driver, Location currentStop, Route nextRoute, Set<RegularUser> users);
 
     SimpleDrivingInfoDTO checkUserHasActiveDriving(final Long userId);
     VehicleCurrentLocationDTO getVehicleCurrentLocation(final Long id) throws EntityNotFoundException;

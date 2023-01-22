@@ -82,3 +82,7 @@ mat-icon.mail-icon {
     transform: scale(4);
     margin-bottom: 5%;
 }
+
+.button-back{
+    background-color: transparent;
+  }

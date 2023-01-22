@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import org.springframework.data.domain.Pageable;
 
+import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -68,4 +69,7 @@ public interface DrivingRepository extends JpaRepository<Driving, Long> {
 
     @Query("select d from Driving d where d.reservation=true")
     List<Driving> getAllReservations();
+
+    @Query("select d from Driving d left join fetch d.driver driver where d.drivingStatus=5 and driver.id=?1 and d.active=true")
+    Optional<Driving> getOnWayToDepartureDriving(Long driverId);
 }
