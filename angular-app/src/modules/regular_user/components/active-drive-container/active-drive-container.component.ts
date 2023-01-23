@@ -46,4 +46,27 @@ export class ActiveDriveContainerComponent implements OnInit {
   getTime(): string {
     return getTime(this.storedDrivingNotification);
   }
+
+  checkIfDrivingIsOnDepartureType(): boolean {
+
+    return this.storedDrivingNotification?.active &&
+      this.storedDrivingNotification.drivingStatus === 'ON_WAY_TO_DEPARTURE';
+  }
+
+  checkIfVehicleArrive(): boolean {
+    return !this.storedDrivingNotification?.active &&
+      this.storedDrivingNotification.drivingStatus === 'ON_WAY_TO_DEPARTURE';
+  }
+
+  checkIfDrivingIsActive(): boolean {
+
+    return this.storedDrivingNotification?.active &&
+      this.storedDrivingNotification.drivingStatus === 'ACCEPTED';
+  }
+
+  checkIfDrivingIsFuture(): boolean {
+
+    return !this.storedDrivingNotification?.active &&
+      this.storedDrivingNotification.drivingStatus === 'ACCEPTED';
+  }
 }

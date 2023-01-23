@@ -54,7 +54,7 @@ public class DriverService implements IDriverService{
             final WebSocketService webSocketService,
             final EmailService emailService,
             final RouteService routeService
-            ) {
+    ) {
         this.driverRepository = driverRepository;
         this.vehicleService = vehicleService;
         this.verifyService = verifyService;
@@ -63,7 +63,6 @@ public class DriverService implements IDriverService{
         this.emailService = emailService;
         this.routeService = routeService;
     }
-
 
     public List<DriverDTO> getAll() {
         List<Driver> drivers = driverRepository.findAllVerified();
@@ -177,7 +176,7 @@ public class DriverService implements IDriverService{
         LocalDateTime endDate = drivingNotification.getStarted().plusMinutes(drivingNotification.getDuration());
         Location startLocation = drivingNotification.getRoute().getLocations().first().getLocation();
 
-        List<Driver> drivers = driverRepository.getActiveDriversWhichVehicleMatchParams(drivingNotification.getVehicleTypeInfo().getVehicleType());
+        List<Driver> drivers = driverRepository.getActiveDriversWhichVehicleMatchParams1(drivingNotification.getVehicleTypeInfo().getVehicleType());
 
         return drivers.size() > 0 ?
             findMatchesDriver(
@@ -193,10 +192,14 @@ public class DriverService implements IDriverService{
             : null;
     }
 
+    @Transactional
     public boolean isTimeToGoToDeparture(Driver driver, Driving nextDriving){
         int minutesToStartDriving = (int) ChronoUnit.MINUTES.between(LocalDateTime.now(), nextDriving.getStarted());
         int minutesFromCurrentLocationToStartDriving = (int) calculateMinutesToStartDriving(driver, nextDriving);
-        return minutesFromCurrentLocationToStartDriving + 2 <= minutesToStartDriving;
+
+        return minutesFromCurrentLocationToStartDriving + 2 == minutesToStartDriving ||
+            minutesFromCurrentLocationToStartDriving + 1 == minutesToStartDriving ||
+            minutesFromCurrentLocationToStartDriving == minutesToStartDriving;
     }
 
     private Driver findMatchesDriver(
@@ -252,7 +255,7 @@ public class DriverService implements IDriverService{
                 double minutesToArrival = calculateMinutesToArrivalForBusyDriversWithoutFutureDrivings(driver, startLat, startLng);
                 if(minutesToArrival > 0){
                     LocalDateTime endOfDriving = start.plusMinutes((long) (duration + minutesToArrival));
-                    if (isSoonEndShiftForDriver(endOfDriving, driver.getWorkingMinutes())) {
+                    if (isNotSoonEndShiftForDriver(endOfDriving, driver.getWorkingMinutes())) {
                         busyDriversWithoutFutureDrivings.add(driver);
                     }
                 }
@@ -312,7 +315,7 @@ public class DriverService implements IDriverService{
     private boolean hasFutureDrivings(Driver driver){
         boolean driverHasFutureDrivings = false;
         for (Driving driving: driver.getDrivings()){
-            if (driving.getDrivingStatus().equals(DrivingStatus.ACCEPTED) && !driving.isActive()){
+            if (driving.getDrivingStatus().equals(DrivingStatus.ACCEPTED) && !driving.isActive() && driving.getStarted().isAfter(LocalDateTime.now())){
                 driverHasFutureDrivings = true;
                 break;
             }
@@ -320,13 +323,11 @@ public class DriverService implements IDriverService{
         return driverHasFutureDrivings;
     }
 
-    private List<Driving> getFutureDrivings(final Driver driver, final LocalDateTime startDate, final LocalDateTime endDate){
+    private List<Driving> getFutureDrivings(final Driver driver){
         List<Driving> futureDrivings = new LinkedList<>();
         for (Driving driving: driver.getDrivings()) {
             if (driving.getDrivingStatus().equals(DrivingStatus.ACCEPTED) && !driving.isActive() && driving.getStarted().isAfter(LocalDateTime.now())) {
-//                if (startDate.isAfter(driving.getStarted().plusMinutes(driving.getDuration())) || endDate.isBefore(driving.getStarted())) {
                 futureDrivings.add(driving);
-//                }
             }
         }
 
@@ -376,13 +377,13 @@ public class DriverService implements IDriverService{
             if(matches && futureDrivings.size() > 0){
                 double minutesToArrival = calculateMinutesToArrivalForFreeDriversWithFutureDrivings(startLat, startLng, futureDrivings, start);
                 LocalDateTime endOfDriving = start.plusMinutes((long) (duration + minutesToArrival));
-                matches = isSoonEndShiftForDriver(endOfDriving, driver.getWorkingMinutes());
+                matches = isNotSoonEndShiftForDriver(endOfDriving, driver.getWorkingMinutes());
 
             }
             else if(matches){
                 double minutesToArrival = calculateMinutesToArrivalForFreeDriversWithoutFutureDrivings(driver, startLat, startLng);
                 LocalDateTime endOfDriving = start.plusMinutes((long) (duration + minutesToArrival));
-                matches = isSoonEndShiftForDriver(endOfDriving, driver.getWorkingMinutes());
+                matches = isNotSoonEndShiftForDriver(endOfDriving, driver.getWorkingMinutes());
             }
             return matches;
         }
@@ -414,7 +415,8 @@ public class DriverService implements IDriverService{
     private double calculateMinutesToArrivalForBusyDriversWithoutFutureDrivings(
             final Driver driver,
             final double startLat,
-            final double startLng){
+            final double startLng
+    ){
         Location driverLocation = driver.getVehicle().getCurrentStop();
         Driving activeDriving = getActiveDriving(driver.getDrivings());
         double minutes = 0;
@@ -467,7 +469,7 @@ public class DriverService implements IDriverService{
             return calculateMinutesToArrivalForFreeDriversWithoutFutureDrivings(driver, drivingLocation.getLat(), drivingLocation.getLon());
         }
         else if(!driver.isDrive() && hasFutureDrivings(driver)){
-            return calculateMinutesToArrivalForFreeDriversWithFutureDrivings(drivingLocation.getLat(), drivingLocation.getLon(), getFutureDrivings(driver, driving.getStarted(), driving.getStarted().plusMinutes(driving.getDuration())), driving.getStarted());
+            return calculateMinutesToArrivalForFreeDriversWithFutureDrivings(drivingLocation.getLat(), drivingLocation.getLon(), getFutureDrivings(driver), driving.getStarted());
         }
         else{
             return calculateMinutesToArrivalForBusyDriversWithoutFutureDrivings(driver, drivingLocation.getLat(), drivingLocation.getLon());
@@ -479,39 +481,12 @@ public class DriverService implements IDriverService{
     //1. slobodnog driver-a bez buducih voznji - started+duration+minDolaska
     //2. slobodan driver sa buducim voznjama - started+duration+minDolaskaOdPoslednjeVoznjeKojaJePreNase
     //3. driver trenutno zauzet - started+duration+vremeDoKrajaVoznje+minDolaska
-    private boolean isSoonEndShiftForDriver(LocalDateTime endOfDriving, int currentWorkingMinutes){
+    private boolean isNotSoonEndShiftForDriver(LocalDateTime endOfDriving, int currentWorkingMinutes){
         long minutes = ChronoUnit.MINUTES.between(LocalDateTime.now(), endOfDriving);
 
-        if(currentWorkingMinutes + minutes < 480){
-            return true;
-        }
-
-        return false;
+        return currentWorkingMinutes + minutes < MAX_WORKING_MINUTES;
     }
 
-
-    private List<Driver> getFutureFreeDrivers(LocalDateTime startDate, LocalDateTime endDate, VehicleType vehicleType){
-        List<Driver> busyDriversNow = driverRepository.getBusyDriversNow(startDate, vehicleType);
-        List<Driver> futureFreeDrivers = new LinkedList<>();
-        busyDriversNow.forEach(driver -> {
-            driver.getDrivings().forEach(driving -> {
-                if(driving.isActive() && driving.getEnd().isBefore(startDate.plusMinutes(3))){
-                    futureFreeDrivers.add(driver);
-                }
-            });
-        });
-       return futureFreeDrivers;
-    }
-
-    private List<Driver> getActiveAndFreeDrivers(
-        final LocalDateTime startDate,
-        final LocalDateTime endDate,
-        final VehicleType vehicleType,
-        final boolean babySeat,
-        final boolean petFriendly
-    ) {
-        return driverRepository.getActiveAndFreeDrivers(startDate,endDate,vehicleType, babySeat, petFriendly);
-    }
 
     public List<DriverPageDTO> getDriversWithPagination(int pageNumber, int pageSize) {
         Pageable page = PageRequest.of(pageNumber, pageSize);

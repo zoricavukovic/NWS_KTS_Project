@@ -85,6 +85,7 @@ export class DrivingNotificationState {
             ...state,
             currentDrivingNotification: state.currentDrivingNotification
         });
+        console.log(state);
       } catch (error) {
         console.log("eroor se javio");
       }
