@@ -25,7 +25,7 @@ public class BellNotificationController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('ROLE_REGULAR_USER')")
+    @PreAuthorize("hasAnyRole('ROLE_REGULAR_USER', 'ROLE_DRIVER', 'ROLE_ADMIN')")
     public List<BellNotificationDTO> getBellNotificationsForUser(
             @Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable Long id
     ){
@@ -35,7 +35,7 @@ public class BellNotificationController {
 
     @PutMapping("/seen/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('ROLE_REGULAR_USER')")
+    @PreAuthorize("hasAnyRole('ROLE_REGULAR_USER', 'ROLE_DRIVER', 'ROLE_ADMIN')")
     public boolean setAllAsSeen(
             @Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable Long userId
     ){
@@ -45,7 +45,7 @@ public class BellNotificationController {
 
     @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('ROLE_REGULAR_USER')")
+    @PreAuthorize("hasAnyRole('ROLE_REGULAR_USER', 'ROLE_DRIVER', 'ROLE_ADMIN')")
     public boolean deleteAllSeen(
             @Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable Long userId
     ){

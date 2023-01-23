@@ -10,8 +10,13 @@
     [favouriteRoute]="favouriteRoute"
     [driver]="driver"
     (setFilterVehicleViewEvent)="showFilterVehicleView($event)"
-    [driving]="driving" *ngIf="!storedDrivingNotification"
+    [driving]="driving" *ngIf="!storedDrivingNotification; else reportActionBlock"
     ></app-driving-details-actions>
+  <ng-template #reportActionBlock>
+    <div *ngIf="driving && driving.active && isRegularUser">
+      <button mat-raised-button (click)="reportDriveBehaviour()">Report</button>
+    </div>
+  </ng-template>  
   <br>
   <app-filter-vehicle-view *ngIf="filterVehicleView" [requestLater]="requestLater"></app-filter-vehicle-view>
   <app-waiting-for-accept-ride-container *ngIf="storedDrivingNotification && !storedDrivingNotification?.active && storedDrivingNotification?.drivingStatus==='PAYING'"></app-waiting-for-accept-ride-container>

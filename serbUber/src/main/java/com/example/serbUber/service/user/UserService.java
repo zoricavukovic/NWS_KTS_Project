@@ -216,11 +216,7 @@ public class UserService implements IUserService {
         return new UserDTO(user);
     }
 
-    public User findFirstAdmin() throws EntityNotFoundException {
 
-        return userRepository.getFirstAdmin()
-                .orElseThrow(() -> new EntityNotFoundException(ROLE_ADMIN, EntityType.USER));
-    }
 
     public UserDTO setOnlineStatus(final String email) throws EntityNotFoundException {
         User user = getUserByEmail(email);
@@ -241,9 +237,21 @@ public class UserService implements IUserService {
     }
 
     public User findOnlineAdmin() throws NoAvailableAdminException {
+        List<User> admins = userRepository.findOnlineAdmin();
+        if (admins.size() == 0) {
+            throw  new NoAvailableAdminException();
+        }
 
-        return userRepository.findOnlineAdmin()
-                .orElseThrow(NoAvailableAdminException::new);
+        return admins.get(0);
+    }
+
+    public User findAdminForReportHandling() {
+        List<User> admins = this.userRepository.findOnlineAdmin();
+        if (admins.size() == 0) {
+            admins = this.userRepository.getAdmin();
+        }
+
+        return admins.size() > 0 ? admins.get(0) : null;
     }
 
     public UserDTO saveUser(User user) {

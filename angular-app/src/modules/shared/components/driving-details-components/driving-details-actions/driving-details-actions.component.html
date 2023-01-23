@@ -2,7 +2,6 @@
   <div style="float: left;" *ngIf="!storedDrivingNotification">
     <button mat-raised-button (click)="requestNow()" style="margin-right:2.8rem;">Request now</button>
     <button mat-raised-button (click)="requestLater()">Request later</button>
-    <button mat-raised-button (click)="reportDriveBehaviour()">Report</button>
   </div>
 </div>
 <div *ngIf="canAcceptOrDeclineRide()" class="button-container">

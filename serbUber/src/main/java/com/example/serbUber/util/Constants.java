@@ -1,6 +1,7 @@
 package com.example.serbUber.util;
 
 import com.example.serbUber.dto.PossibleRoutesViaPointsDTO;
+import com.example.serbUber.model.user.User;
 import com.example.serbUber.request.LongLatRequest;
 
 import java.text.DateFormat;
@@ -53,6 +54,8 @@ public class Constants {
     public static final String UNSUCCESSFUL_PAYMENT_MESSAGE = "Ride is rejected because payment was not successful. Please, check your tokens!";
     public static final String DELETED_DRIVING_MESSAGE = "Ride is rejected because not all linked passengers reviewed invitation.";
     public static final String SUCCESSFUL_DRIVING_CREATION = "Driving is successfully created!";
+    public static final String DRIVER_DATA_UPDATE_APPROVAL = "Admin approved your profile data changes.";
+    public static final String DRIVER_DATA_UPDATE_REJECTION = "Admin rejected your profile data changes.";
     public static final String UNSUCCESSFUL_PAYMENT_PATH = "/unsuccessful-payment";
     public static final String DRIVER_NOT_FOUND_PATH = "/driver-not-found";
     public static final double WITHOUT_TOKENS = 0.0;
@@ -81,6 +84,17 @@ public class Constants {
     public static String getDrivingNotificationPath(String id) {
 
         return String.format("serb-uber/user/driving-notification/%s", id);
+    }
+
+    public static String getReportMessage(User sender, User receiver) {
+
+        return String.format("%s %s reported %s %s! Click to see report.",
+                sender.getName(), sender.getSurname(), receiver.getName(), receiver.getSurname());
+    }
+
+    public static String getUserProfilePath(String id) {
+
+        return String.format("serb-uber/user/user-profile/%s", id);
     }
 
     public static String getDrivingCreationPath(String id) {

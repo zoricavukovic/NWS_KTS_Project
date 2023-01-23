@@ -157,7 +157,7 @@ insert into token_transactions(time_stamp, num_of_bought_tokens, total_price, to
                              ('2022-12-03 15:00', 8, 8, 2);
 
 insert into bell_notifications(message, redirect_id, seen, should_redirect, time_stamp, user_id) values
-    ('Driver has declined driving.', null, false, false, '2022-01-01 14:03', 2),
-    ('Driver accepted driving.', null, false, false, '2022-01-01 14:05', 2),
-    ('Driver accepted driving.', null, false, false, '2022-12-01 14:03', 3);
+    ('Driver has declined driving.', null, false, false, '2022-01-01 14:03', 3),
+    ('Driver accepted driving.', null, false, false, '2022-01-01 14:05', 3),
+    ('Driver accepted driving.', null, false, false, '2022-12-01 14:03', 4);
 
