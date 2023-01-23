@@ -1,5 +1,4 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import {ActivatedRoute, Router} from "@angular/router";
 import { Select } from '@ngxs/store';
 import {Observable, Subscription} from "rxjs";
@@ -11,8 +10,6 @@ import { Vehicle } from 'src/modules/shared/models/vehicle/vehicle';
 import { DrivingNotificationState } from 'src/modules/shared/state/driving-notification.state';
 import {AuthService} from "../../../../auth/services/auth-service/auth.service";
 import {DrivingNotificationService} from "../../../services/driving-notification-service/driving-notification.service";
-import { BehaviourReportDialogComponent } from '../../behaviour-report-dialog/behaviour-report-dialog.component';
-
 
 @Component({
   selector: 'app-driving-details-actions',
@@ -37,8 +34,7 @@ export class DrivingDetailsActionsComponent implements OnInit, OnDestroy {
     private _authService: AuthService,
     private _activeRoute: ActivatedRoute,
     private _router: Router,
-    private _drivingNotificationService: DrivingNotificationService,
-    private _dialogRef: MatDialog,
+    private _drivingNotificationService: DrivingNotificationService
   ) {
     this.drivingId = -1;
   }
@@ -74,14 +70,6 @@ export class DrivingDetailsActionsComponent implements OnInit, OnDestroy {
     this._drivingNotificationService.updateRideStatus(this.drivingId, false, this.currentUser.email).subscribe(res => {
       console.log(res);
     });
-  }
-
-  reportDriveBehaviour() {
-    if (this.currentUser) {
-      const dialogRef = this._dialogRef.open(BehaviourReportDialogComponent, {
-        data: {currentUser: this.currentUser, driver: this.driver, userToReport: null},
-      });
-    }
   }
 
   requestNow(){

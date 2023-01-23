@@ -4,9 +4,11 @@ import com.example.serbUber.dto.ReportDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.ReportCannotBeCreatedException;
 import com.example.serbUber.model.Report;
+import com.example.serbUber.model.user.Admin;
 import com.example.serbUber.model.user.User;
 import com.example.serbUber.repository.ReportRepository;
 import com.example.serbUber.service.interfaces.IReportService;
+import com.example.serbUber.service.user.AdminService;
 import com.example.serbUber.service.user.UserService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 import static com.example.serbUber.dto.ReportDTO.fromReports;
+import static com.example.serbUber.util.Constants.getReportMessage;
 
 @Component
 @Qualifier("reportServiceConfiguration")
@@ -25,14 +28,18 @@ public class ReportService implements IReportService {
 
     private final UserService userService;
 
+    private final WebSocketService webSocketService;
+
     public ReportService(
             final ReportRepository reportRepository,
             final DrivingService drivingService,
-            final UserService userService
+            final UserService userService,
+            final WebSocketService webSocketService
     ) {
         this.reportRepository = reportRepository;
         this.drivingService = drivingService;
         this.userService = userService;
+        this.webSocketService = webSocketService;
     }
 
     public List<ReportDTO> getAllForUser(Long id) {
@@ -57,7 +64,17 @@ public class ReportService implements IReportService {
                 false
         ));
 
+        User admin = findAdminForReportHandling();
+        if (admin != null) {
+            this.webSocketService.sendReportNotification(admin.getId(), admin.getEmail(), getReportMessage(sender, receiver), receiver.getId());
+        }
+
         return true;
+    }
+
+    private User findAdminForReportHandling() {
+
+       return this.userService.findAdminForReportHandling();
     }
 
     private void checkIfReportCreationValid(final User sender, final User receiver) throws ReportCannotBeCreatedException {

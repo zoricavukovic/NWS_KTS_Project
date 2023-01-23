@@ -70,8 +70,8 @@ export class MessagesBoxComponent implements OnDestroy {
           },
           error =>
             this.toast.error(
-              'Chat room cannot be resolved!',
-              'You cannot resolve resolved chat rooms.'
+              error.error,
+              'Chat room cannot be resolved!'
             )
         );
     }

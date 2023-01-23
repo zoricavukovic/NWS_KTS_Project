@@ -32,17 +32,15 @@
     <button mat-raised-button (click)="loadData()">Show</button>
   </div>
   <div style="display: flex" *ngIf="chartData && selectedReport">
-    <div>
-      <app-report-statistics
-        [sum]="chartData.chartSumData.sum"
-        [average]="chartData.chartSumData.average"></app-report-statistics>
-      <div style="min-height: 20rem; min-width: 50rem; margin-left: 2rem">
-        <app-report-graph
-          [chartItems]="chartData.chartData"
-          [isRegular]="isRegular"
-          [chartType]="selectedReport"
-          [dateRange]="dateRange"></app-report-graph>
-      </div>
+    <app-report-statistics
+      [sum]="chartData.chartSumData.sum"
+      [average]="chartData.chartSumData.average"></app-report-statistics>
+    <div style="min-height: 20rem; min-width: 50rem; margin-left: 2rem">
+      <app-report-graph
+        [chartItems]="chartData.chartData"
+        [isRegular]="isRegular"
+        [chartType]="selectedReport"
+        [dateRange]="dateRange"></app-report-graph>
     </div>
   </div>
 </div>

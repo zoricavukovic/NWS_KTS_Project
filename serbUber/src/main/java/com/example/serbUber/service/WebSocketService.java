@@ -36,6 +36,37 @@ public class WebSocketService {
         this.bellNotificationService = bellNotificationService;
     }
 
+    public void sendDriverUpdateApprovalNotification(
+            final Long driverId,
+            final String email,
+            final String message
+    ) {
+        BellNotificationDTO bellNotificationDTO = this.bellNotificationService.saveBellNotification(
+                message,
+                SHOULD_REDIRECT,
+                getUserProfilePath(driverId.toString()),
+                driverId
+        );
+
+        this.messagingTemplate.convertAndSendToUser(email, "/bell-notification", bellNotificationDTO);
+    }
+
+    public void sendReportNotification(
+            final Long adminId,
+            final String email,
+            final String message,
+            final Long destinationId
+    ) {
+        BellNotificationDTO bellNotificationDTO = this.bellNotificationService.saveBellNotification(
+                message,
+                SHOULD_REDIRECT,
+                getUserProfilePath(destinationId.toString()),
+                adminId
+        );
+
+        this.messagingTemplate.convertAndSendToUser(email, "/bell-notification", bellNotificationDTO);
+    }
+
     public void sendVehicleCurrentLocation(VehicleCurrentLocationDTO vehicleDTO) {
         this.messagingTemplate.convertAndSend("/user/global/connect", vehicleDTO);
     }

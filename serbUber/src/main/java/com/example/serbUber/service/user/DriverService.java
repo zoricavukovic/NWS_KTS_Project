@@ -492,7 +492,7 @@ public class DriverService implements IDriverService{
         return fromDriversPage(results.getContent(), results.getSize(), results.getTotalPages());
     }
 
-    public boolean approveDriverChanges(final DriverUpdateApproval driverUpdateApproval)
+    public DriverDTO approveDriverChanges(final DriverUpdateApproval driverUpdateApproval)
             throws EntityNotFoundException
     {
         Driver driver = getDriverByEmail(driverUpdateApproval.getUserEmail());
@@ -506,7 +506,7 @@ public class DriverService implements IDriverService{
         driver.getVehicle().setVehicleTypeInfo(this.vehicleService.driverUpdateApprovalVehicle(driverUpdateApproval.getVehicleType()));
         this.driverRepository.save(driver);
 
-        return true;
+        return new DriverDTO(driver);
     }
 
     public Page<Driver> getDriverPage(Pageable page){

@@ -18,10 +18,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> getVerifiedUser(String email);
 
     @Query("select u from User u left join fetch u.role r where u.role.name='ROLE_ADMIN'")
-    Optional<User> getFirstAdmin();
+    List<User> getAdmin();
 
     @Query("select u from User u left join fetch u.role r where u.role.name='ROLE_ADMIN' and u.online = true")
-    Optional<User> findOnlineAdmin();
+    List<User> findOnlineAdmin();
 
     @Query("select u from User u left join fetch u.role r where u.role.name='ROLE_DRIVER' and u.id=?1")
     Optional<Object> getDriverById(long id);

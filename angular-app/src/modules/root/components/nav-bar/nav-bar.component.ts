@@ -66,7 +66,7 @@ export class NavBarComponent implements OnInit, OnDestroy {
         } else {
           this.driverService.resetGlobalDriver();
         }
-        if (this.loggedUser && this.isRegular) {
+        if (this.loggedUser) {
           this.loadBellNotifications();
         }
       });
@@ -104,7 +104,6 @@ export class NavBarComponent implements OnInit, OnDestroy {
   }
 
   notificationRedirect(bellNotification: BellNotification): void {
-    console.log(bellNotification.shouldRedirect)
     if (bellNotification.shouldRedirect) {
       this.router.navigate([bellNotification.redirectId]);
     }
@@ -166,14 +165,12 @@ export class NavBarComponent implements OnInit, OnDestroy {
   }
 
   bellNotificationsDelete(user: User) {
-    if (user.role.name === this.configService.ROLE_REGULAR_USER) {
-      this.bellNotificationsService.resetBell();
-      this.bellNotificationsSubscription = this.bellNotificationsService.delete(user.id).subscribe(
-        res => {
-          console.log(res);
-        }
-      );
-    }
+    this.bellNotificationsService.resetBell();
+    this.bellNotificationsSubscription = this.bellNotificationsService.delete(user.id).subscribe(
+      res => {
+        console.log(res);
+      }
+    );
   }
 
   logOut() {
