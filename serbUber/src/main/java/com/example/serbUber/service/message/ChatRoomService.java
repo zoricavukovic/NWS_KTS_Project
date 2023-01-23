@@ -1,10 +1,7 @@
 package com.example.serbUber.service.message;
 
 import com.example.serbUber.dto.message.ChatRoomDTO;
-import com.example.serbUber.exception.AddingMessageToResolvedChatRoom;
-import com.example.serbUber.exception.EntityNotFoundException;
-import com.example.serbUber.exception.EntityType;
-import com.example.serbUber.exception.NoAvailableAdminException;
+import com.example.serbUber.exception.*;
 import com.example.serbUber.model.ChatRoom;
 import com.example.serbUber.model.Message;
 import com.example.serbUber.model.user.User;
@@ -72,11 +69,27 @@ public class ChatRoomService implements IChatRoomService {
                 : addMessageToExisting(chatId, message, senderEmail, receiverEmail, adminResponse);
     }
 
-    public ChatRoomDTO resolve(final Long id) throws EntityNotFoundException {
+    public ChatRoomDTO resolve(final Long id)
+            throws EntityNotFoundException, EntityUpdateException
+    {
         ChatRoom chatRoom = getActiveChatRoomById(id);
+        if (checkIfMessagesNotSeen(chatRoom.getMessages())){
+            throw new EntityUpdateException("Chat room cannot be resolved, user didn't saw latest messages!");
+        }
+
         chatRoom.setResolved(true);
 
         return new ChatRoomDTO(chatRoomRepository.save(chatRoom));
+    }
+
+    private boolean checkIfMessagesNotSeen(final List<Message> messages) {
+        for (Message message : messages) {
+            if (!message.isSeen()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private ChatRoomDTO addMessageToExisting(Long chatId, String message, String senderEmail, String receiverEmail, boolean adminResponse)

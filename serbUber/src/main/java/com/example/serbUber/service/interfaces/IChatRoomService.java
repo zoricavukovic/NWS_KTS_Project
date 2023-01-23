@@ -2,6 +2,7 @@ package com.example.serbUber.service.interfaces;
 
 import com.example.serbUber.dto.message.ChatRoomDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
+import com.example.serbUber.exception.EntityUpdateException;
 import com.example.serbUber.exception.NoAvailableAdminException;
 import com.example.serbUber.model.ChatRoom;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,6 @@ public interface IChatRoomService {
             final String receiverEmail,
             final boolean adminResponse
     ) throws NoAvailableAdminException, EntityNotFoundException;
-    ChatRoomDTO resolve(final Long id) throws EntityNotFoundException;
+    ChatRoomDTO resolve(final Long id) throws EntityNotFoundException, EntityUpdateException;
     ChatRoomDTO setMessagesToSeen(final Long chatRoomId, final boolean adminLogged) throws EntityNotFoundException;
 }

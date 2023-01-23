@@ -50,8 +50,8 @@ export class PoupupLiveChatComponent implements OnInit, OnDestroy {
       .subscribe(res => {
         this.chatRoom = res;
         if (this.chatRoom) {
-          this.checkIfResolved();
           this.setMessagesAsSeen();
+          this.checkIfResolved();
         }
       });
   }
@@ -60,11 +60,7 @@ export class PoupupLiveChatComponent implements OnInit, OnDestroy {
   checkIfResolved() {
     if (this.chatRoom.resolved) {
       this.toast.success('Problem solved!', 'Thank you for using live chat.');
-      this.chatRoomSubscription = this.chatRoomService
-        .getUserChatRoom(this.loggedUser.email)
-        .subscribe(res => {
-          this.chatRoom = res;
-        });
+      this.chatRoomService.resetDataRegularAndDriver();
     }
   }
 
@@ -77,7 +73,7 @@ export class PoupupLiveChatComponent implements OnInit, OnDestroy {
       }
     }
 
-    if (changed) {
+    if (changed && !this.chatRoom.resolved) {
       this.updateMessagesSeenOnServer();
     }
   }
