@@ -5,9 +5,9 @@
     *ngIf="routeChoiceView"
     [currentUser]="currentUser"
     [map]="map"
-    (clickedChooseVehicleAndPassengers)="onRequestNow()"
+    (clickedChooseVehicleAndPassengers)="onRequestNow($event)"
     (clickedChooseVehicleAndPassengersForLater)="
-      onRequestLater()
+      onRequestLater($event)
     "></app-enter-locations>
 
   <app-filter-vehicle-view

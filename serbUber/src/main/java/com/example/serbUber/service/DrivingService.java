@@ -69,14 +69,12 @@ public class DrivingService implements IDrivingService {
     }
 
     public Driving create(
-            final int duration,
+            final double duration,
             final LocalDateTime started,
-            final LocalDateTime payingLimit,
             final Route route,
             final DrivingStatus drivingStatus,
             final Long driverId,
             final Set<RegularUser> users,
-            final HashMap<Long, Boolean> usersPaid,
             final double price
     ) throws EntityNotFoundException {
         Driver driver = userService.getDriverById(driverId);
@@ -93,16 +91,14 @@ public class DrivingService implements IDrivingService {
         return driving;
     }
 
-    public DrivingDTO createDTO(final int duration,
+    public DrivingDTO createDTO(final double duration,
                                 final LocalDateTime started,
-                                final LocalDateTime payingLimit,
                                 final Route route,
                                 final DrivingStatus drivingStatus,
                                 final Long driverId,
                                 final Set<RegularUser> users,
-                                final HashMap<Long, Boolean> usersPaid,
                                 final double price) throws EntityNotFoundException {
-        return new DrivingDTO(create(duration, started, payingLimit, route, drivingStatus, driverId, users, usersPaid, price));
+        return new DrivingDTO(create(duration, started, route, drivingStatus, driverId, users, price));
     }
 
     public DrivingDTO save(Driving driving){

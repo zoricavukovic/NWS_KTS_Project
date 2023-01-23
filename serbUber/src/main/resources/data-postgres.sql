@@ -71,6 +71,7 @@ insert into drivings (active, driver_id, driving_status, duration, price, starte
                    (true, 14, 2, 8, 3, to_timestamp('23.01.2023. 08:40', 'DD.MM.YYYY HH24:MI'), null, 2, null, false),
                    (false, 18, 2, 10, 5, to_timestamp('23.01.2023 9:43', 'DD.MM.YYYY HH24:MI'), null, 3, null, false);
 
+
 insert into driving_locations(location_id, index, route_id, route_index) values
       (5, 1, 1, 0),
       (10, 2, 1, 0),

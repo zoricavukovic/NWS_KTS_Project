@@ -22,6 +22,7 @@ import { DrivingNotificationDetailsComponent } from './components/driving-notifi
 import { FavoriteRoutesDataComponent } from './components/favorite-routes-data/favorite-routes-data.component';
 import { EnterLocationsComponent } from './components/enter-locations/enter-locations.component';
 import { RateDrivingOrSkipComponent } from './components/rate-driving-or-skip/rate-driving-or-skip.component';
+import { KnobModule } from 'primeng/knob';
 
 @NgModule({
   declarations: [
@@ -50,6 +51,7 @@ import { RateDrivingOrSkipComponent } from './components/rate-driving-or-skip/ra
     GoogleMapsModule,
     GooglePlaceModule,
     ProgressSpinnerModule,
+    KnobModule,
   ],
   exports: [
     HomePassangerComponent,

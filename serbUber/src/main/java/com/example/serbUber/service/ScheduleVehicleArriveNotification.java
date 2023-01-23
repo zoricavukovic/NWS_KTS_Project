@@ -1,5 +1,6 @@
 package com.example.serbUber.service;
 
+import com.example.serbUber.dto.SimpleDrivingInfoDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.model.Location;
 import com.example.serbUber.model.user.Driver;
@@ -28,16 +29,17 @@ public class ScheduleVehicleArriveNotification {
         this.webSocketService = webSocketService;
     }
 
-    @Scheduled(cron = "*/30 * * * * *")
+    @Scheduled(cron = "*/10 * * * * *")
     @Transactional
     public void createVehicleArriveNotification() {
         List<Driver> activeDrivers = driverService.getActiveDrivers();
         for (Driver driver : activeDrivers) {
             Driving onWayToDepartureDriving = drivingService.getTimeToDepartureDriving(driver.getId());
+            Driving futureDriving = drivingService.driverHasFutureDriving(driver.getId());
             if(onWayToDepartureDriving != null && isVehicleArriveOnDeparture(driver.getVehicle().getCurrentStop(), onWayToDepartureDriving.getRoute().getLocations().last().getLocation())){
-                webSocketService.sendVehicleArriveNotification(onWayToDepartureDriving.getUsers());
                 onWayToDepartureDriving.setActive(false);
                 drivingService.save(onWayToDepartureDriving);
+                webSocketService.sendVehicleArriveNotification(new SimpleDrivingInfoDTO(futureDriving), onWayToDepartureDriving.getUsers(), driver.getEmail());
             }
         }
     }

@@ -1,3 +1,4 @@
+import { Route } from '../models/route/route';
 import { Driving } from '../models/driving/driving';
 import { SimpleDrivingInfo } from '../models/driving/simple-driving-info';
 import { DrivingNotification } from '../models/notification/driving-notification';
@@ -36,6 +37,22 @@ export class UpdateDrivingNotification {
   constructor(public payload: SimpleDrivingInfo) {}
 }
 
+export class SimpleUpdateDrivingNotification {
+  static readonly type = '[DrivingNotification] SimpleUpdateDriving';
+
+  constructor(
+    public payload: {
+      route: Route;
+      vehicleType: string;
+      drivingStatus: string;
+      active: boolean;
+      vehicleId: number;
+      drivingId: number;
+      minutes: number;
+    }
+  ) {}
+}
+
 export class UpdateStatusDrivingNotification {
   static readonly type = '[DrivingNotification] UpdateStatus';
 
@@ -46,21 +63,28 @@ export class ClearStore {
   static readonly type = '[DrivingNotification] ClearDriving';
 }
 
-  export class UpdateIdDrivingNotification {
-    static readonly type = "[DrivingNotification] UpdateIdDrivingNotification";
+export class UpdateIdDrivingNotification {
+  static readonly type = '[DrivingNotification] UpdateIdDrivingNotification';
 
-    constructor(public payload: {drivingId: number}) {}
-  }
+  constructor(public payload: { drivingId: number }) {}
+}
 
-  export class ResetVehicleInDrivingNotification {
-    static readonly type = "[DrivingNotification] ResetVehicleInDrivingNotification";
-  }
+export class UpdateDurationDrivingNotification {
+  static readonly type =
+    '[DrivingNotification] UpdateDurationDrivingNotification';
+
+  constructor(public payload: { duration: number }) {}
+}
+
+export class ResetVehicleInDrivingNotification {
+  static readonly type =
+    '[DrivingNotification] ResetVehicleInDrivingNotification';
+}
 
 export class RemoveDriving {
   static readonly type = '[Drivings] RemoveDriving';
   constructor(public payload: number) {}
 }
-
 
 export class AddDrivings {
   static readonly type = '[Drivings] AddDrivings';

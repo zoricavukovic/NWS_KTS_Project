@@ -1,4 +1,4 @@
-import {Route} from "../route/route";
+import { Route } from '../route/route';
 
 export interface SimpleDrivingInfo {
   drivingId: number;
@@ -8,4 +8,5 @@ export interface SimpleDrivingInfo {
   cost: number;
   drivingStatus: string;
   vehicleId: number;
+  vehicleType?: string;
 }

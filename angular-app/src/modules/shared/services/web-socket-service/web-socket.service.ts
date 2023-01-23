@@ -16,11 +16,16 @@ import { BlockNotification } from '../../models/notification/block-notification'
 import { DriverService } from '../driver-service/driver.service';
 import { CreateDrivingNotification } from '../../models/notification/create-driving-notification';
 import {
-  ClearStore, ResetVehicleInDrivingNotification, UpdateIdDrivingNotification,
+  ClearStore,
+  ResetVehicleInDrivingNotification,
+  UpdateIdDrivingNotification,
   GetDrivingNotification,
   UpdateDrivings,
   UpdateMinutesStatusDrivingNotification,
-  UpdateStatusDrivingNotification, RemoveDriving,
+  UpdateStatusDrivingNotification,
+  RemoveDriving,
+  SimpleUpdateDrivingNotification,
+  UpdateDurationDrivingNotification,
 } from '../../actions/driving-notification.action';
 import { Store } from '@ngxs/store';
 import { SimpleDrivingInfo } from '../../models/driving/simple-driving-info';
@@ -28,6 +33,7 @@ import { DrivingStatusNotification } from '../../models/notification/driving-sta
 import { BellNotification } from '../../models/notification/bell-notification';
 import { BellNotificationsService } from '../bell-notifications-service/bell-notifications.service';
 import { Driving } from '../../models/driving/driving';
+import { User } from '../../models/user/user';
 
 @Injectable({
   providedIn: 'root',
@@ -195,7 +201,12 @@ export class WebSocketService {
         localStorage.getItem('email') +
         '/on-way-to-departure',
       message => {
-        this.toast.info(message.body);
+        this.toast.info('Driver is on way to departure.');
+        this.store.dispatch(
+          new UpdateDurationDrivingNotification({
+            duration: message.body,
+          })
+        );
         this.store.dispatch(
           new UpdateStatusDrivingNotification({
             active: true,
@@ -212,13 +223,23 @@ export class WebSocketService {
         localStorage.getItem('email') +
         '/start-driving',
       (message: { body: string }) => {
-        const drivingNotificationDetails: SimpleDrivingInfo =  JSON.parse(message.body);
-        this.store.dispatch(new UpdateStatusDrivingNotification(
-          {active: true, drivingStatus: "ACCEPTED"})
+        const drivingNotificationDetails: SimpleDrivingInfo = JSON.parse(
+          message.body
+        );
+        this.store.dispatch(
+          new UpdateStatusDrivingNotification({
+            active: true,
+            drivingStatus: 'ACCEPTED',
+          })
         );
         console.log(drivingNotificationDetails);
-        this.store.dispatch(new UpdateIdDrivingNotification({drivingId: drivingNotificationDetails.drivingId}))
-        this.toast.info('Ride started.Tap to follow ride!')
+        this.store.dispatch(
+          new UpdateIdDrivingNotification({
+            drivingId: drivingNotificationDetails.drivingId,
+          })
+        );
+        this.toast
+          .info('Ride started.Tap to follow ride!')
           .onTap.subscribe(action => {
             this.router.navigate([
               '/serb-uber/user/map-page-view',
@@ -235,15 +256,35 @@ export class WebSocketService {
         localStorage.getItem('email') +
         '/finish-driving',
       (message: { body: string }) => {
-      const drivingNotificationDetails: SimpleDrivingInfo =  JSON.parse(message.body);
-      this.store.dispatch(new UpdateStatusDrivingNotification({active: false, drivingStatus: "FINISHED"})).subscribe();
-      this.store.dispatch(new UpdateIdDrivingNotification({drivingId: drivingNotificationDetails.drivingId}))
-      this.store.dispatch(new ResetVehicleInDrivingNotification()).subscribe();
-      this.toast.info('Driving is finished.Tap to see details!')
-        .onTap.subscribe(action => {
-        this.router.navigate(['/serb-uber/user/map-page-view', drivingNotificationDetails.drivingId]);
-      });
-    });
+        const drivingNotificationDetails: SimpleDrivingInfo = JSON.parse(
+          message.body
+        );
+        this.store
+          .dispatch(
+            new UpdateStatusDrivingNotification({
+              active: false,
+              drivingStatus: 'FINISHED',
+            })
+          )
+          .subscribe();
+        this.store.dispatch(
+          new UpdateIdDrivingNotification({
+            drivingId: drivingNotificationDetails.drivingId,
+          })
+        );
+        this.store
+          .dispatch(new ResetVehicleInDrivingNotification())
+          .subscribe();
+        this.toast
+          .info('Driving is finished.Tap to see details!')
+          .onTap.subscribe(action => {
+            this.router.navigate([
+              '/serb-uber/user/map-page-view',
+              drivingNotificationDetails.drivingId,
+            ]);
+          });
+      }
+    );
   }
 
   //ovo treba
@@ -464,18 +505,27 @@ export class WebSocketService {
         localStorage.getItem('email') +
         '/vehicle-arrive',
       message => {
-        if (this.router.url.includes('/map-page-view/-1')) {
-          this.toast.info(`${message.body}`, 'Vehicle arrive');
-        } else {
-          this.toast.info(
-            `${message.body} Tap to redirect to home page and follow your ride.`,
-            'Vehicle arrive'
-          );
+        const driving: SimpleDrivingInfo = JSON.parse(message.body);
+        const user: User = JSON.parse(localStorage.getItem('user'));
+        if (user.role.name === 'ROLE_REGULAR_USER') {
+          if (this.router.url.includes('/map-page-view/-1')) {
+            this.toast.info('Vehicle arrive on departure', 'Vehicle arrive');
+          } else {
+            this.toast.info(
+              `Vehicle arrive on departure. Tap to redirect to home page and follow your ride.`,
+              'Vehicle arrive'
+            );
+          }
         }
         this.store.dispatch(
-          new UpdateStatusDrivingNotification({
+          new SimpleUpdateDrivingNotification({
             active: false,
             drivingStatus: 'ON_WAY_TO_DEPARTURE',
+            vehicleId: driving.vehicleId,
+            vehicleType: driving.vehicleType,
+            drivingId: driving.drivingId,
+            route: driving.route,
+            minutes: driving.minutes,
           })
         );
       }

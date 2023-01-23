@@ -13,7 +13,7 @@ public class DrivingDTO {
 
     private Long id;
     private boolean active;
-    private int duration;
+    private double duration;
     private LocalDateTime started;
     private LocalDateTime payingLimit;
     private Route route;
@@ -62,7 +62,7 @@ public class DrivingDTO {
         return active;
     }
 
-    public int getDuration() {
+    public double getDuration() {
         return duration;
     }
 

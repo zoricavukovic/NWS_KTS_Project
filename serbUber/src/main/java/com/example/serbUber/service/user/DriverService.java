@@ -173,7 +173,7 @@ public class DriverService implements IDriverService{
 
     public Driver getDriverForDriving(final DrivingNotification drivingNotification) throws EntityNotFoundException {
         LocalDateTime startDate = drivingNotification.getStarted();
-        LocalDateTime endDate = drivingNotification.getStarted().plusMinutes(drivingNotification.getDuration());
+        LocalDateTime endDate = drivingNotification.getStarted().plusMinutes((int) drivingNotification.getDuration());
         Location startLocation = drivingNotification.getRoute().getLocations().first().getLocation();
 
         List<Driver> drivers = driverRepository.getActiveDriversWhichVehicleMatchParams1(drivingNotification.getVehicleTypeInfo().getVehicleType());
@@ -300,7 +300,7 @@ public class DriverService implements IDriverService{
 
     private double getMinToEndOfRide(Driving activeDriving) {
 
-        return ChronoUnit.MINUTES.between(LocalDateTime.now(), activeDriving.getStarted().plusMinutes(activeDriving.getDuration()));
+        return ChronoUnit.MINUTES.between(LocalDateTime.now(), activeDriving.getStarted().plusMinutes((int) activeDriving.getDuration()));
     }
 
     private boolean driverHasActiveAndFutureRide(Driver driver) {
@@ -362,7 +362,7 @@ public class DriverService implements IDriverService{
             for (Driving driving: driver.getDrivings()) {
                 if (driving.getDrivingStatus().equals(DrivingStatus.ACCEPTED) && !driving.isActive()) {
                     //ako se preklapaju datumi, onda se taj vozac ne moze izabrati
-                    if (!(start.isAfter(driving.getStarted().plusMinutes(driving.getDuration())) || end.isBefore(driving.getStarted()))){
+                    if (!(start.isAfter(driving.getStarted().plusMinutes((int) driving.getDuration())) || end.isBefore(driving.getStarted()))){
                         matches = false;
                         break;
                     }
@@ -397,9 +397,9 @@ public class DriverService implements IDriverService{
 
     private double calculateMinutesToArrivalForFreeDriversWithFutureDrivings(final double startLat, final double startLng, List<Driving> futureDrivings, LocalDateTime start){
         Driving lastDrivingBeforeOurDriving = futureDrivings.get(0);
-        LocalDateTime minDateTime = lastDrivingBeforeOurDriving.getStarted().plusMinutes(lastDrivingBeforeOurDriving.getDuration());
+        LocalDateTime minDateTime = lastDrivingBeforeOurDriving.getStarted().plusMinutes((int) lastDrivingBeforeOurDriving.getDuration());
         for(Driving futureDriving : futureDrivings){
-            LocalDateTime endDateOfFutureDriving = futureDriving.getStarted().plusMinutes(futureDriving.getDuration());
+            LocalDateTime endDateOfFutureDriving = futureDriving.getStarted().plusMinutes((int) futureDriving.getDuration());
             if(endDateOfFutureDriving.isBefore(start) && endDateOfFutureDriving.isAfter(minDateTime)){
                 minDateTime = endDateOfFutureDriving;
                 lastDrivingBeforeOurDriving = futureDriving;

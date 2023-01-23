@@ -45,7 +45,7 @@ public class DrivingNotificationController {
             drivingNotificationRequest.getSenderEmail(),
             drivingNotificationRequest.getPrice(),
             drivingNotificationRequest.getPassengers(),
-            drivingNotificationRequest.getDuration(),
+            drivingNotificationRequest.getRoute().getTimeInMin(),
             drivingNotificationRequest.isBabySeat(),
             drivingNotificationRequest.isPetFriendly(),
             drivingNotificationRequest.getVehicleType(),

@@ -21,7 +21,7 @@ public interface IDrivingNotificationService {
        final String senderEmail,
        final double price,
        final List<String> passengers,
-       final int duration,
+       final double duration,
        final boolean babySeat,
        final boolean petFriendly,
        final String vehicleType,

@@ -123,6 +123,10 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
           this.vehicleTypesSeats[type.vehicleType] = type.numOfSeats;
         }
       });
+
+    if (this.rideRequestForm.get('price').value !== 0) {
+      this.showPrice();
+    }
   }
 
   goToEnterLocations() {
@@ -244,7 +248,6 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
       price: this.rideRequestForm.get('price').value,
       senderEmail: this.rideRequestForm.get('senderEmail').value,
       passengers: this.rideRequestForm.get('selectedPassengers').value,
-      duration: 5,
       petFriendly: this.rideRequestForm.get('petFriendly').value,
       babySeat: this.rideRequestForm.get('babySeat').value,
       vehicleType: this.rideRequestForm.get('vehicleType').value,

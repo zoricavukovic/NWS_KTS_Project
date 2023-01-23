@@ -20,26 +20,22 @@ import java.util.Set;
 
 public interface IDrivingService {
     DrivingDTO createDTO(
-        final int duration,
+        final double duration,
         final LocalDateTime started,
-        final LocalDateTime payingLimit,
         final Route route,
         final DrivingStatus drivingStatus,
         final Long driverId,
         final Set<RegularUser> users,
-        final HashMap<Long, Boolean> usersPaid,
         final double price
     ) throws EntityNotFoundException;
 
     Driving create(
-            final int duration,
+            final double duration,
             final LocalDateTime started,
-            final LocalDateTime payingLimit,
             final Route route,
             final DrivingStatus drivingStatus,
             final Long driverId,
             final Set<RegularUser> users,
-            final HashMap<Long, Boolean> usersPaid,
             final double price
     ) throws EntityNotFoundException;
 

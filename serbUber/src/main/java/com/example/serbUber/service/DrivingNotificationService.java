@@ -103,7 +103,7 @@ public class DrivingNotificationService implements IDrivingNotificationService {
             final String senderEmail,
             final double price,
             final List<String> passengers,
-            final int duration,
+            final double duration,
             final boolean babySeat,
             final boolean petFriendly,
             final String vehicleType,
@@ -272,14 +272,12 @@ public class DrivingNotificationService implements IDrivingNotificationService {
         } else if (driver != null) {
             Set<RegularUser> passengers = getListOfUsers(receiversReviewed);
             Driving driving = drivingService.create(
-                drivingNotification.getDuration(),
+                drivingNotification.getRoute().getTimeInMin(),
                 drivingNotification.getStarted(),
-                drivingNotification.getStarted().plusMinutes(2),
                 drivingNotification.getRoute(),
                 DrivingStatus.PAYING,
                 driver.getId(),
                 passengers,
-                new HashMap<>(),
                 drivingNotification.getPrice());
             passengers.remove(drivingNotification.getSender());
             if (isPaidDriving(driving.getPrice(), passengers, drivingNotification.getSender())) {
@@ -382,7 +380,7 @@ public class DrivingNotificationService implements IDrivingNotificationService {
         final Map<RegularUser, Integer> receiversReviewed,
         final RegularUser sender,
         final LocalDateTime started,
-        final int duration,
+        final double duration,
         final boolean babySeat,
         final boolean petFriendly,
         final VehicleTypeInfo vehicleTypeInfo,

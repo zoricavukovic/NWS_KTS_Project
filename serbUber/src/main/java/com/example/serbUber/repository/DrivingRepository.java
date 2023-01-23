@@ -35,7 +35,7 @@ public interface DrivingRepository extends JpaRepository<Driving, Long> {
     @Query("select d from Driving d left join fetch d.driver driver where driver.id=?1 and d.active = true")
     Optional<Driving> getActiveDrivingForDriver(final Long driverId);
 
-    @Query("select distinct d from Driving d left join fetch d.driver driver inner join d.users user where user.id=?1 and ((d.active = true or (d.drivingStatus=2 and d.end is null)) or (d.active = false and d.drivingStatus=5)) and driver.id is not null order by d.started asc")
+    @Query("select distinct d from Driving d left join fetch d.driver driver inner join d.users user where user.id=?1 and ((d.active = true or (d.drivingStatus=2 and d.end is null)) or (d.active = true and d.drivingStatus=5)) and driver.id is not null order by d.started asc")
     List<Driving> getActiveDrivingForUser(final Long userId, final LocalDateTime limitDateTime);
 
     @Query(value = "select distinct d from Driving d left join fetch d.driver driver left join fetch d.route r left join fetch r.locations dest left join fetch d.users u " +

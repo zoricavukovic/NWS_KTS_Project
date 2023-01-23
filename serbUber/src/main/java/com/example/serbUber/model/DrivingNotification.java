@@ -32,7 +32,7 @@ public class DrivingNotification {
     private LocalDateTime started;
 
     @Column(name="duration")
-    private int duration;
+    private double duration;
 
     @Column(name="baby_seat")
     private boolean babySeat;
@@ -55,7 +55,7 @@ public class DrivingNotification {
             final double price,
             final RegularUser sender,
             final LocalDateTime started,
-            final int duration,
+            final double duration,
             final boolean babySeat,
             final boolean petFriendly,
             final VehicleTypeInfo vehicleTypeInfo,
@@ -112,11 +112,11 @@ public class DrivingNotification {
         this.started = started;
     }
 
-    public int getDuration() {
+    public double getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(double duration) {
         this.duration = duration;
     }
 

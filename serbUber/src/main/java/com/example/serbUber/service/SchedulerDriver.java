@@ -1,5 +1,6 @@
 package com.example.serbUber.service;
 
+import com.example.serbUber.dto.DrivingDTO;
 import com.example.serbUber.model.Driving;
 import com.example.serbUber.model.Route;
 import com.example.serbUber.model.user.Driver;
@@ -37,8 +38,8 @@ public class SchedulerDriver {
 
                 continue;
             } else if (nextDriving != null && driverService.isTimeToGoToDeparture(driver, nextDriving)) {
-                drivingService.createDrivingToDeparture(driver, driver.getVehicle().getCurrentStop(), nextDriving.getRoute(), nextDriving.getUsers());
-                webSocketService.startDrivingToDeparture(nextDriving.getUsers(), driver);
+                DrivingDTO drivingDTO = drivingService.createDrivingToDeparture(driver, driver.getVehicle().getCurrentStop(), nextDriving.getRoute(), nextDriving.getUsers());
+                webSocketService.startDrivingToDeparture(nextDriving.getUsers(), drivingDTO.getDuration());
             }
         }
     }

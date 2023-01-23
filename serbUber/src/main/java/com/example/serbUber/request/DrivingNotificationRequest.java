@@ -21,8 +21,6 @@ public class DrivingNotificationRequest {
     private String senderEmail;
     private List<String> passengers;
 
-    @Positive(message = "Duration of driving must be positive")
-    private int duration;
     private boolean babySeat;
     private boolean petFriendly;
     private String vehicleType;
@@ -32,12 +30,11 @@ public class DrivingNotificationRequest {
     public DrivingNotificationRequest() {
     }
 
-    public DrivingNotificationRequest(RouteRequest routeRequest, double price, String senderEmail, List<String> passengers, boolean babySeat, boolean petFriendly, String vehicleType, Timestamp chosenDateTime, int duration) {
+    public DrivingNotificationRequest(RouteRequest routeRequest, double price, String senderEmail, List<String> passengers, boolean babySeat, boolean petFriendly, String vehicleType, Timestamp chosenDateTime) {
         this.route = routeRequest;
         this.price = price;
         this.senderEmail = senderEmail;
         this.passengers = passengers;
-        this.duration = duration;
         this.babySeat = babySeat;
         this.petFriendly = petFriendly;
         this.vehicleType = vehicleType;
@@ -116,11 +113,4 @@ public class DrivingNotificationRequest {
         this.reservation = reservation;
     }
 
-    public int getDuration() {
-        return duration;
-    }
-
-    public void setDuration(int duration) {
-        this.duration = duration;
-    }
 }

@@ -44,10 +44,11 @@
       class="spinner"
       color="accent"
       [mode]="'determinate'"
-      [value]="storedDrivingNotification?.minutes">
+      [value]="100">
     </mat-progress-spinner>
     <h2 style="margin-left: 6rem; margin-top: 2rem">{{ getTime() }}</h2>
   </div>
+
   <div style="display: flex; margin-top: 3rem" *ngIf="!checkIfVehicleArrive()">
     <div class="flex-div">
       <div>

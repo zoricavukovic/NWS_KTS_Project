@@ -10,7 +10,7 @@ import java.util.*;
 public class DrivingPageDTO{
 
     private Long id;
-    private int duration;
+    private double duration;
     private LocalDateTime started;
     private Route route;
     private DrivingStatus drivingStatus;
@@ -61,11 +61,11 @@ public class DrivingPageDTO{
         this.id = id;
     }
 
-    public int getDuration() {
+    public double getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(double duration) {
         this.duration = duration;
     }
 

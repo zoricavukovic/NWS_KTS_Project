@@ -19,7 +19,7 @@ public class Driving {
     private boolean active = false;
 
     @Column(name="duration", nullable = false)
-    private int duration;
+    private double duration;
 
     @Column(name="started")
     private LocalDateTime started;
@@ -57,7 +57,7 @@ public class Driving {
     }
 
     public Driving(
-        final int duration,
+        final double duration,
         final LocalDateTime started,
         final LocalDateTime end,
         final Route route,
@@ -86,11 +86,11 @@ public class Driving {
         this.active = active;
     }
 
-    public int getDuration() {
+    public double getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(double duration) {
         this.duration = duration;
     }
 

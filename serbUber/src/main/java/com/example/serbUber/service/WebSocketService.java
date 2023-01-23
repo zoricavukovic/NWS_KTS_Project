@@ -2,16 +2,10 @@ package com.example.serbUber.service;
 
 import com.example.serbUber.dto.*;
 import com.example.serbUber.dto.bell.BellNotificationDTO;
-import com.example.serbUber.exception.EntityNotFoundException;
-import com.example.serbUber.model.DrivingNotification;
-import com.example.serbUber.model.DrivingNotificationType;
-import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.model.user.RegularUser;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -72,8 +66,8 @@ public class WebSocketService {
     }
 
     public void sendDeletedDrivingNotification(
-        final DrivingNotificationWebSocketDTO drivingNotificationDTO,
-        final Map<RegularUser, Integer> users
+            final DrivingNotificationWebSocketDTO drivingNotificationDTO,
+            final Map<RegularUser, Integer> users
     ) {
         users.forEach((key, value) -> {
             this.messagingTemplate.convertAndSendToUser(key.getEmail(), "/delete-driving", DELETED_DRIVING_MESSAGE);
@@ -90,8 +84,8 @@ public class WebSocketService {
     }
 
 
-    public void sendPassengerAgreementNotification( final DrivingNotificationWebSocketDTO drivingNotificationDTO,
-                                                    final Map<RegularUser, Integer> users){
+    public void sendPassengerAgreementNotification(final DrivingNotificationWebSocketDTO drivingNotificationDTO,
+                                                   final Map<RegularUser, Integer> users) {
         users.forEach((key, value) -> {
             this.messagingTemplate.convertAndSendToUser(key.getEmail(), "/agreement-passenger", drivingNotificationDTO);
             BellNotificationDTO bellNotificationDTO = this.bellNotificationService.saveBellNotification(
@@ -106,10 +100,10 @@ public class WebSocketService {
     }
 
     public void passengerNotAcceptDrivingNotification(Set<RegularUser> regularUsers, String userEmail, String senderEmail) {
-        String messageForPassengers =  String.format("Passenger %s not accept ride. Ride is rejected.", userEmail);
+        String messageForPassengers = String.format("Passenger %s not accept ride. Ride is rejected.", userEmail);
         if (regularUsers.size() > 0) {
             regularUsers.forEach(user -> {
-                if(!user.getEmail().equals(userEmail)) {
+                if (!user.getEmail().equals(userEmail)) {
                     this.messagingTemplate.convertAndSendToUser(user.getEmail(), "/passenger-not-accept-driving", messageForPassengers);
                     BellNotificationDTO bellNotificationDTO = this.bellNotificationService.saveBellNotification(
                             messageForPassengers,
@@ -125,7 +119,6 @@ public class WebSocketService {
         String messageForSender = String.format("Your ride is rejected. Passenger %s is not accept ride.", userEmail);
         this.messagingTemplate.convertAndSendToUser(senderEmail, "/passenger-not-accept-driving-creator", messageForSender);
     }
-
 
 
     public void sendActivityResetNotification(DriverActivityResetNotificationDTO dto) {
@@ -148,7 +141,7 @@ public class WebSocketService {
         }
     }
 
-    public void sendSuccessfulDriving(DrivingStatusNotificationDTO dto,  Map<RegularUser, Integer> receiversReviewed){
+    public void sendSuccessfulDriving(DrivingStatusNotificationDTO dto, Map<RegularUser, Integer> receiversReviewed) {
         if (receiversReviewed.size() > 0) {
             receiversReviewed.forEach((key, value) -> {
                 this.messagingTemplate.convertAndSendToUser(key.getEmail(), "/successful-driving", dto);
@@ -210,7 +203,7 @@ public class WebSocketService {
         }
     }
 
-    public void sendReservationReminder(Set<RegularUser> users, int minutes){
+    public void sendReservationReminder(Set<RegularUser> users, int minutes) {
         String message = String.format("Your future ride start in %d minutes. Tap to see details.", minutes);
         if (users.size() > 0) {
             users.forEach(user -> {
@@ -223,17 +216,16 @@ public class WebSocketService {
         this.messagingTemplate.convertAndSendToUser(driverEmail, "/new-driving", drivingStatusNotificationDTO);
     }
 
-    public void sendVehicleArriveNotification(Set<RegularUser> passengers){
-        String message = "Vehicle has arrived on departure.";
+    public void sendVehicleArriveNotification(SimpleDrivingInfoDTO dto, Set<RegularUser> passengers, String driverEmail) {
         passengers.forEach((passenger) -> {
-            this.messagingTemplate.convertAndSendToUser(passenger.getEmail(), "/vehicle-arrive", message);
+            this.messagingTemplate.convertAndSendToUser(passenger.getEmail(), "/vehicle-arrive", dto);
         });
+        this.messagingTemplate.convertAndSendToUser(driverEmail, "/vehicle-arrive", dto);
     }
 
-    public void startDrivingToDeparture(final Set<RegularUser> passengers, final Driver driver) {
-        String message = String.format("Driver: %s is on way to departure.", driver.getEmail());
+    public void startDrivingToDeparture(final Set<RegularUser> passengers, final double duration) {
         passengers.forEach((passenger) -> {
-            this.messagingTemplate.convertAndSendToUser(passenger.getEmail(), "/on-way-to-departure", message);
+            this.messagingTemplate.convertAndSendToUser(passenger.getEmail(), "/on-way-to-departure", duration);
         });
     }
 

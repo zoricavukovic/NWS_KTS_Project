@@ -15,7 +15,7 @@ public class DrivingNotificationDTO {
     private Route route;
     private DrivingNotificationType drivingNotificationType;
     private LocalDateTime started;
-    private int duration;
+    private double duration;
     private VehicleTypeInfo vehicleTypeInfo;
     private Set<RegularUser> passengers;
     private double price;
@@ -62,11 +62,11 @@ public class DrivingNotificationDTO {
         this.started = started;
     }
 
-    public int getDuration() {
+    public double getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(double duration) {
         this.duration = duration;
     }
 
