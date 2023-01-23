@@ -61,6 +61,9 @@ public interface DrivingRepository extends JpaRepository<Driving, Long> {
     @Query("select d from Driving d where d.reservation=true")
     List<Driving> getAllReservations();
 
+    @Query("select d from Driving d where d.drivingStatus=2 and d.active=false")
+    List<Driving> getAcceptedNotActiveDrivings();
+
     @Query("select d from Driving d left join fetch d.route r left join fetch d.driver driver where d.drivingStatus=5 and driver.id=?1 and d.active=true")
     Driving getOnWayToDepartureDriving(Long driverId);
 }

@@ -197,9 +197,7 @@ public class DriverService implements IDriverService{
         int minutesToStartDriving = (int) ChronoUnit.MINUTES.between(LocalDateTime.now(), nextDriving.getStarted());
         int minutesFromCurrentLocationToStartDriving = (int) calculateMinutesToStartDriving(driver, nextDriving);
 
-        return minutesFromCurrentLocationToStartDriving + 2 == minutesToStartDriving ||
-            minutesFromCurrentLocationToStartDriving + 1 == minutesToStartDriving ||
-            minutesFromCurrentLocationToStartDriving == minutesToStartDriving;
+        return minutesToStartDriving - minutesFromCurrentLocationToStartDriving <= 2;
     }
 
     private Driver findMatchesDriver(

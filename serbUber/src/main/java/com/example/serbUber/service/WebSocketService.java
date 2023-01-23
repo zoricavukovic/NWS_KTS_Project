@@ -205,4 +205,11 @@ public class WebSocketService {
             this.messagingTemplate.convertAndSendToUser(passenger.getEmail(), "/on-way-to-departure", message);
         });
     }
+
+    public void sendRejectedOutdatedDriving(Set<RegularUser> passengers, String driverEmail, Long drivingId) {
+        passengers.forEach((passenger) -> {
+            this.messagingTemplate.convertAndSendToUser(passenger.getEmail(), "/reject-outdated-driving", drivingId);
+        });
+        this.messagingTemplate.convertAndSendToUser(driverEmail, "/reject-outdated-driving", drivingId);
+    }
 }
