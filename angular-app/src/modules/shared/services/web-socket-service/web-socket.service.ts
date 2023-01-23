@@ -25,7 +25,6 @@ import {
 import {Store} from "@ngxs/store";
 import {SimpleDrivingInfo} from "../../models/driving/simple-driving-info";
 import {DrivingStatusNotification} from "../../models/notification/driving-status-notification";
-import { Subscription } from 'rxjs';
 import { BellNotification } from '../../models/notification/bell-notification';
 import { BellNotificationsService } from '../bell-notifications-service/bell-notifications.service';
 import { Driving } from '../../models/driving/driving';
@@ -39,8 +38,6 @@ export class WebSocketService {
   initialized = false;
   initializedGlobal = false;
   @Output() aClickedEvent = new EventEmitter()
-
-  currentDrivingSubscription: Subscription;
 
   constructor(
     private chatRoomService: ChatRoomService,
@@ -101,7 +98,10 @@ export class WebSocketService {
 
         that.passengerAgreementNotification();
 
+        that.onWayToDepartureNotification();
+
         that.bellNotificationsUpdate();
+
         that.newDrivingNotification();
 
         that.vehicleArriveNotification();
@@ -173,6 +173,16 @@ export class WebSocketService {
       message => {
         this.toast.info(message.body);
         this.store.dispatch(new ClearStore());
+      }
+    );
+  }
+
+  onWayToDepartureNotification(){
+    this.stompClient.subscribe(
+      environment.publisherUrl + localStorage.getItem('email') + '/on-way-to-departure',
+      message => {
+        this.toast.info(message.body);
+        this.store.dispatch(new UpdateStatusDrivingNotification({active: true, drivingStatus: "ON_WAY_TO_DEPARTURE"}));
       }
     );
   }
@@ -397,13 +407,13 @@ export class WebSocketService {
     this.stompClient.subscribe(
       environment.publisherUrl + localStorage.getItem('email') + '/vehicle-arrive',
       message => {
-        const drivingStatusNotification: DrivingStatusNotification = JSON.parse(message.body);
         if(this.router.url.includes("/map-page-view/-1")){
-          this.toast.info(`${message}`, "Vehicle arrive");
+          this.toast.info(`${message.body}`, "Vehicle arrive");
         }
         else{
-          this.toast.info(`${message} Tap to redirect to home page and follow your ride.`, "Vehicle arrive");
+          this.toast.info(`${message.body} Tap to redirect to home page and follow your ride.`, "Vehicle arrive");
         }
+        this.store.dispatch(new UpdateStatusDrivingNotification({active: false, drivingStatus: "ON_WAY_TO_DEPARTURE"}))
       });
   }
 }

@@ -21,18 +21,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.chrono.ChronoLocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import static com.example.serbUber.dto.DrivingDTO.fromDrivings;
 import static com.example.serbUber.dto.DrivingPageDTO.fromDrivingsPage;
-import static com.example.serbUber.model.ChartType.DISTANCE;
-import static com.example.serbUber.model.ChartType.SPENDING;
 import static com.example.serbUber.model.DrivingStatus.FINISHED;
 import static com.example.serbUber.util.Constants.*;
 
@@ -117,6 +115,7 @@ public class DrivingService implements IDrivingService {
         return fromDrivings(drivings);
     }
 
+    @Transactional
     public List<Driving> getAllDrivingsForUserEmail(final String email) {
 
         return drivingRepository.getAllDrivingsForUserEmail(email);
@@ -232,12 +231,6 @@ public class DrivingService implements IDrivingService {
         return optionalDriving.size() > 0 ? new SimpleDrivingInfoDTO(optionalDriving.get(0)): null;
     }
 
-    public int getNumberOfAllDrivingsForUser(final Long id) throws EntityNotFoundException {
-        User user = userService.getUserById(id);
-        return user.getRole().isDriver() ?
-                drivingRepository.getNumberOfAllDrivingsForDriver(id).size() :
-                drivingRepository.getNumberOfAllDrivingsForRegularUser(id).size();
-    }
 
     public DrivingDTO rejectDriving(final Long id, final String reason) throws EntityNotFoundException {
         Driving driving = getDriving(id);
@@ -344,16 +337,16 @@ public class DrivingService implements IDrivingService {
 
         webSocketService.finishDrivingNotification(new SimpleDrivingInfoDTO(driving), driving.getUsers());
 
-        Driving nextDriving = driverHasFutureDriving(driving.getDriver().getId());
-        if (nextDriving != null) {
-            if(driverService.isTimeToGoToDeparture(driving.getDriver(), nextDriving)){
-                createDrivingToDeparture(driving.getDriver(), driving.getDriver().getVehicle().getCurrentStop(), nextDriving.getRoute(), nextDriving.getUsers());
-            }
-        } else {
-            webSocketService.sendVehicleCurrentLocation(
-                new VehicleCurrentLocationDTO(new VehicleWithDriverId(driving.getDriver().getVehicle(), driving.getDriver().getVehicle().getId(), driving.getDriver().isActive()))
-            );
-        }
+//        Driving nextDriving = driverHasFutureDriving(driving.getDriver().getId());
+//        if (nextDriving != null) {
+//            if(driverService.isTimeToGoToDeparture(driving.getDriver(), nextDriving)){
+//                createDrivingToDeparture(driving.getDriver(), driving.getDriver().getVehicle().getCurrentStop(), nextDriving.getRoute(), nextDriving.getUsers());
+//            }
+//        } else {
+//            webSocketService.sendVehicleCurrentLocation(
+//                new VehicleCurrentLocationDTO(new VehicleWithDriverId(driving.getDriver().getVehicle(), driving.getDriver().getVehicle().getId(), driving.getDriver().isActive()))
+//            );
+//        }
 
         return new DrivingDTO(driving);
     }
@@ -367,8 +360,8 @@ public class DrivingService implements IDrivingService {
         User user = this.userService.getUserById(id);
 
         return user.getRole().isDriver()
-                ? this.calculateChartData(this.drivingRepository.getDrivingsForDriver(id), chartType, startDate, endDate)
-                : this.calculateChartData(this.drivingRepository.getDrivingsForRegular(id), chartType, startDate, endDate);
+                ? this.calculateChartData(this.drivingRepository.getFinishedDrivingsForDriver(id), chartType, startDate, endDate)
+                : this.calculateChartData(this.drivingRepository.getFinishedDrivingsForRegular(id), chartType, startDate, endDate);
     }
 
     private ChartDataDTO calculateChartData(
@@ -409,8 +402,8 @@ public class DrivingService implements IDrivingService {
             user = this.userService.getUserById(id);
         }
 
-        return (id != NOT_BY_SPECIFIC_USER) ? calculateChartData(user.getRole().isRegularUser() ? this.drivingRepository.getDrivingsForRegular(id)
-                : this.drivingRepository.getDrivingsForDriver(id), chartType, startDate, endDate)
+        return (id != NOT_BY_SPECIFIC_USER) ? calculateChartData(user.getRole().isRegularUser() ? this.drivingRepository.getFinishedDrivingsForRegular(id)
+                : this.drivingRepository.getFinishedDrivingsForDriver(id), chartType, startDate, endDate)
                 : calculateForAllUsers(chartType, startDate, endDate);
     }
 
@@ -425,7 +418,7 @@ public class DrivingService implements IDrivingService {
             final LocalDate endDate
     ) {
 
-        return calculateChartData(this.drivingRepository.getAllDrivings(), chartType, startDate, endDate);
+        return calculateChartData(this.drivingRepository.getAllFinishedDrivings(), chartType, startDate, endDate);
     }
 
     private double getTotalPerDay(final Driving driving, final ChartType chartType) {
@@ -464,7 +457,8 @@ public class DrivingService implements IDrivingService {
                 drivings.get(0) : null;
     }
 
-    public Driving getTimeToDepartureDriving(final Long driverId) throws EntityNotFoundException {
+    public Driving getTimeToDepartureDriving(final Long driverId) {
+
         return drivingRepository.getOnWayToDepartureDriving(driverId);
     }
 
@@ -491,9 +485,11 @@ public class DrivingService implements IDrivingService {
         Route route = this.routeService.createRoute(drivingLocationIndexRequestList, minutes, routeService.getDistanceInKmFromTime(minutes), List.of(0));
         Driving driving = new Driving((int) minutes, LocalDateTime.now(), LocalDateTime.now().plusMinutes((long) minutes), route, DrivingStatus.ON_WAY_TO_DEPARTURE, driver, 0);
         driving.setActive(true); //ovo treba prilikom kreiranja, on ce tada krenuti kao
+
+        Driving createdDriving = drivingRepository.save(driving);
         users.forEach(user -> {
             List<Driving> drivings = getAllDrivingsForUserEmail(user.getEmail());
-            drivings.add(driving);
+            drivings.add(createdDriving);
             user.setDrivings(drivings);
             userService.saveUser(user);
         });
@@ -502,8 +498,7 @@ public class DrivingService implements IDrivingService {
         driver.getVehicle().setCrossedWaypoints(0);
         driver.getVehicle().setCurrentStop(driving.getRoute().getLocations().first().getLocation());
         driver.setDrive(true);
-
-        return new DrivingDTO(drivingRepository.save(driving));
+        return new DrivingDTO(createdDriving);
     }
 
     private boolean drivingShouldNotStartYet(Driving driving) {

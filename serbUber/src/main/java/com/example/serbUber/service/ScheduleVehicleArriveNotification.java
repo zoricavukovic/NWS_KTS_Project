@@ -7,6 +7,7 @@ import com.example.serbUber.model.Driving;
 import com.example.serbUber.service.user.DriverService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -28,12 +29,15 @@ public class ScheduleVehicleArriveNotification {
     }
 
     @Scheduled(cron = "*/30 * * * * *")
-    public void createVehicleArriveNotification() throws EntityNotFoundException {
+    @Transactional
+    public void createVehicleArriveNotification() {
         List<Driver> activeDrivers = driverService.getActiveDrivers();
         for (Driver driver : activeDrivers) {
             Driving onWayToDepartureDriving = drivingService.getTimeToDepartureDriving(driver.getId());
-            if(onWayToDepartureDriving != null && isVehicleArriveOnDeparture(driver.getVehicle().getCurrentStop(), onWayToDepartureDriving.getRoute().getLocations().first().getLocation())){
+            if(onWayToDepartureDriving != null && isVehicleArriveOnDeparture(driver.getVehicle().getCurrentStop(), onWayToDepartureDriving.getRoute().getLocations().last().getLocation())){
                 webSocketService.sendVehicleArriveNotification(onWayToDepartureDriving.getUsers());
+                onWayToDepartureDriving.setActive(false);
+                drivingService.save(onWayToDepartureDriving);
             }
         }
     }

@@ -5,6 +5,7 @@ import com.example.serbUber.dto.bell.BellNotificationDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.model.DrivingNotification;
 import com.example.serbUber.model.DrivingNotificationType;
+import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.model.user.RegularUser;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -196,6 +197,12 @@ public class WebSocketService {
         passengers.forEach((passenger) -> {
             this.messagingTemplate.convertAndSendToUser(passenger.getEmail(), "/vehicle-arrive", message);
         });
+    }
 
+    public void startDrivingToDeparture(final Set<RegularUser> passengers, final Driver driver) {
+        String message = String.format("Driver: %s is on way to departure.", driver.getEmail());
+        passengers.forEach((passenger) -> {
+            this.messagingTemplate.convertAndSendToUser(passenger.getEmail(), "/on-way-to-departure", message);
+        });
     }
 }

@@ -39,7 +39,7 @@ class QuickStartUser(HttpUser):
         second_point = vehicle["waypoints"][vehicle["crossedWaypoints"] + 1]  # izabere lokaciju iz waypoints + 1
         # print(first_point)
         # print("\n")
-        # print(second_point)
+        print(second_point)
         response = requests.get(
                 f'https://routing.openstreetmap.de/routed-car/route/v1/driving/{first_point["lng"]},{first_point["lat"]};{second_point["lng"]},{second_point["lat"]}?geometries=geojson&overview=false&alternatives=true&steps=true')
         # print("\n============ISPIST=========\n\n")
@@ -57,6 +57,14 @@ class QuickStartUser(HttpUser):
 
         for step in routeGeoJSON['routes'][0]['legs'][chosenRouteIdx]['steps']:
             coordinates += [*step['geometry']['coordinates']]
+        # print(coordinates)
+        # print("--------------------         ---------------------")
+        # print(len(coordinates))
+        # print(second_point["lng"])
+        coordinates += [[second_point["lng"], second_point["lat"]]]
+        # print(coordinates)
+        # print("--------------------     kkk    ---------------------")
+        # print(len(coordinates))
         self.vehicles_dict_with_coordinates[vehicle["vehicleId"]] = coordinates
 
     @task
@@ -67,18 +75,18 @@ class QuickStartUser(HttpUser):
             responseCheck = self.client.get(f"/vehicles/check-vehicle-activity/{vehicle['vehicleId']}")
 
             responseCheckStatusJSON = responseCheck.json()
-            if not self.listsAreSame(vehicle["waypoints"], responseCheckStatusJSON["waypoints"]):
-                print("nisu iste")
-            # print(responseCheckStatusJSON["waypoints"])
+            # if not self.listsAreSame(vehicle["waypoints"], responseCheckStatusJSON["waypoints"]):
+            #     print("nisu iste")
+
             if vehicle["activeDriver"] != responseCheckStatusJSON["activeDriver"] or vehicle["inDrive"] != responseCheckStatusJSON["inDrive"] \
                     or not vehicle["activeDriver"] or not vehicle["inDrive"] or not self.listsAreSame(vehicle["waypoints"], responseCheckStatusJSON["waypoints"]):
-                print("nije aktivan ili u voznji")
+                # print("nije aktivan ili u voznji")
 
                 # print(vehicle["waypoints"])
                 # response = self.client.get(f"/vehicles/check-vehicle-activity/{vehicle['vehicleId']}")
 
                 # responseJSON = response.json()
-                print(vehicle)
+                # print(vehicle)
                 vehicle["activeDriver"] = responseCheckStatusJSON["activeDriver"]
                 vehicle["inDrive"] = responseCheckStatusJSON["inDrive"]
                 vehicle["waypoints"] = responseCheckStatusJSON["waypoints"]
@@ -88,8 +96,8 @@ class QuickStartUser(HttpUser):
                 vehicle["crossedWaypoints"] = responseCheckStatusJSON["crossedWaypoints"]
                 # if not self.listsAreSame(vehicle["waypoints"], responseJSON["waypoints"]):
                 #     vehicle["waypoints"] = responseJSON["waypoints"]
-                print("nakon============\n\n")
-                print(vehicle)
+                # print("nakon============\n\n")
+                # print(vehicle)
                 self.get_coordinates(vehicle)
             # if not self.listsAreSame(vehicle["waypoints"], responseCheckStatusJSON["waypoints"]):
             #     vehicle["waypoints"] = responseCheckStatusJSON["waypoints"]
@@ -101,7 +109,9 @@ class QuickStartUser(HttpUser):
             #     self.get_coordinates(vehicle)
 
             if vehicle["vehicleId"] in self.vehicles_dict_with_coordinates and len(self.vehicles_dict_with_coordinates[vehicle["vehicleId"]]) > 0: #ima jos koordinata na tom waypointu
+
                 new_coordinate = self.vehicles_dict_with_coordinates[vehicle["vehicleId"]].pop(0)
+
                 response = self.client.put(f"/vehicles/update-current-location/{vehicle['vehicleId']}", json={
                     'longLatRequest': {
                         'lat': new_coordinate[1],

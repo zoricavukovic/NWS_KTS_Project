@@ -30,7 +30,7 @@ public class Driving {
     @Column(name="last_reminder")
     private LocalDateTime lastReminder;
 
-    @OneToOne(fetch=FetchType.EAGER)
+    @OneToOne()
     @JoinColumn(name = "route_id", referencedColumnName = "id")
     private Route route;
 
@@ -42,7 +42,7 @@ public class Driving {
     @JsonIgnore
     private Driver driver;
 
-    @ManyToMany(mappedBy = "drivings")
+    @ManyToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "drivings")
     @JsonIgnore
     private Set<RegularUser> users;
 
