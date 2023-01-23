@@ -8,7 +8,7 @@ import {
   UpdateDrivingNotification,
   UpdateMinutesStatusDrivingNotification, UpdateOnlyMinutesStatus,
   UpdateDrivings,
-  UpdateStatusDrivingNotification
+  UpdateStatusDrivingNotification, ResetVehicleInDrivingNotification, UpdateIdDrivingNotification
 } from "../actions/driving-notification.action";
 import {Observable} from "rxjs";
 import { Driving } from '../models/driving/driving';
@@ -58,43 +58,36 @@ export class DrivingNotificationState {
         });
     }
 
-  @Action(UpdateOnlyMinutesStatus)
-  updateOnlyMinutesStatus({getState, setState}: StateContext<DrivingNotificationStateModel>, {payload}: UpdateOnlyMinutesStatus) {
-    console.log("updateOnlyMinutesStatus");
+    @Action(UpdateOnlyMinutesStatus)
+    updateOnlyMinutesStatus({getState, setState}: StateContext<DrivingNotificationStateModel>, {payload}: UpdateOnlyMinutesStatus) {
       const state = getState();
-    console.log(payload)
-    state.currentDrivingNotification.minutes = payload.minutes;
-    setState({
-      ...state,
-      currentDrivingNotification: state.currentDrivingNotification
-    });
-    console.log(state);
-  }
+      state.currentDrivingNotification.minutes = payload.minutes;
+      setState({
+        ...state,
+        currentDrivingNotification: state.currentDrivingNotification
+      });
+    }
 
     @Action(UpdateStatusDrivingNotification)
     updateStatusDrivingNotification({getState, setState}: StateContext<DrivingNotificationStateModel>, {payload}: UpdateStatusDrivingNotification) {
       try {
-        console.log("updateStatusDrivingNotification");
-        console.log(payload);
         const state = getState();
-        console.log("blafd");
-        console.log(state);
         state.currentDrivingNotification.active = payload.active;
         state.currentDrivingNotification.drivingStatus = payload.drivingStatus;
+
         setState({
             ...state,
             currentDrivingNotification: state.currentDrivingNotification
         });
         console.log(state);
       } catch (error) {
-        console.log("eroor se javio");
+        console.log("Error");
       }
     }
 
     @Action(UpdateDrivingNotification)
     updateDrivingNotification({getState, setState}: StateContext<DrivingNotificationStateModel>, {payload}: UpdateDrivingNotification) {
       const state = getState();
-      console.log("updateDrivingNotification");
       if (state.currentDrivingNotification){
         state.currentDrivingNotification.drivingId = payload.drivingId;
         state.currentDrivingNotification.minutes = payload.minutes;
@@ -133,6 +126,28 @@ export class DrivingNotificationState {
     });
   }
 
+  @Action(ResetVehicleInDrivingNotification)
+  resetVehicleInDrivingNotification({getState, setState}: StateContext<DrivingNotificationStateModel>) {
+    const state = getState();
+    state.currentDrivingNotification.vehicleId = -1;
+    setState({
+      ...state,
+      currentDrivingNotification: state.currentDrivingNotification
+    });
+  }
+
+  @Action(UpdateIdDrivingNotification)
+  updateIdDrivingNotification({getState, setState}: StateContext<DrivingNotificationStateModel>, {payload}: UpdateIdDrivingNotification) {
+    const state = getState();
+    state.currentDrivingNotification.drivingId = payload.drivingId;
+    setState({
+      ...state,
+      currentDrivingNotification: state.currentDrivingNotification
+    });
+
+    console.log(state);
+  }
+
   @Selector()
     static getDrivings(state: DrivingNotificationStateModel) {
         return state.activeDrivings;
@@ -143,7 +158,7 @@ export class DrivingNotificationState {
 
     @Action(AddDrivings)
     addDrivings({getState, setState}: StateContext<DrivingNotificationStateModel>, {payload}: AddDrivings) {
-        console.log("fdfafs");
+
         const state = getState();
         setState({
             ...state,

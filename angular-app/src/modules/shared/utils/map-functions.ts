@@ -2,7 +2,7 @@ import {LngLat, Location} from "../models/route/location";
 import {PossibleRoute} from "../models/route/possible-routes";
 import {DrivingLocation} from "../models/route/driving-location";
 import {
-  getActiveVehiclePhotoNameBasedOnType,
+  getActiveVehiclePhotoNameBasedOnType, getMyVehicle,
   getVehiclePhotoNameBasedOnType
 } from "../models/vehicle/vehicle-type-info";
 import {Driving} from "../models/driving/driving";
@@ -14,6 +14,7 @@ import {CurrentVehiclePosition} from "../models/vehicle/current-vehicle-position
 import {Driver} from "../models/user/driver";
 import {UpdateOnlyMinutesStatus} from "../actions/driving-notification.action";
 import {Store} from "@ngxs/store";
+import {DrivingNotification} from "../models/notification/driving-notification";
 
 
 export function addMarker(map: google.maps.Map, markerCoordinates: google.maps.LatLng | google.maps.LatLngLiteral)
@@ -234,12 +235,15 @@ export function getRouteCoordinates(route: PossibleRoute): google.maps.LatLngLit
   return routeCoordinates;
 }
 
-function getMarkerIcon(vehicleStatus: VehicleCurrentLocation, currentLoggedUserId: number) {
+function getMarkerIcon(vehicleStatus: VehicleCurrentLocation, currentLoggedUserId: number, storeDriving: DrivingNotification) {
 
-  const customIcon: google.maps.Icon = vehicleStatus.inDrive ?
+  const customIcon: google.maps.Icon = (vehicleStatus.id === storeDriving?.vehicleId && (storeDriving?.drivingStatus === 'ON_WAY_TO_DEPARTURE'
+    || (storeDriving?.drivingStatus === 'ACCEPTED' && storeDriving?.active))) ?
     {
+      url: getMyVehicle(vehicleStatus.type)
+    } : (vehicleStatus.inDrive)? {
       url: getVehiclePhotoNameBasedOnType(vehicleStatus.type)
-    } : {
+    }:{
       url: getActiveVehiclePhotoNameBasedOnType(vehicleStatus.type)
     };
 
@@ -254,9 +258,9 @@ function getMarkerIcon(vehicleStatus: VehicleCurrentLocation, currentLoggedUserI
   return customIcon;
 }
 
-export function addCarMarker(map, vehicleStatus: VehicleCurrentLocation, currentLoggedUserId: number): google.maps.Marker {
+export function addCarMarker(map, vehicleStatus: VehicleCurrentLocation, currentLoggedUserId: number, storeDriving: DrivingNotification): google.maps.Marker {
 
-  const customIcon = getMarkerIcon(vehicleStatus, currentLoggedUserId);
+  const customIcon = getMarkerIcon(vehicleStatus, currentLoggedUserId, storeDriving);
 
   return new google.maps.Marker(
     {
@@ -267,7 +271,14 @@ export function addCarMarker(map, vehicleStatus: VehicleCurrentLocation, current
     });
 }
 
+function getTitle(vehicleCurrentLocation: VehicleCurrentLocation, storedDriving: DrivingNotification) {
+
+  return vehicleCurrentLocation.id === storedDriving?.vehicleId && (storedDriving?.drivingStatus === 'ON_WAY_TO_DEPARTURE'
+        || (storedDriving?.drivingStatus === 'ACCEPTED' && storedDriving?.active)) ? 'My driver' : 'Car';
+}
+
 export function updateVehiclePosition(
+  storeDriving: DrivingNotification,
   map: google.maps.Map,
   marker: google.maps.Marker,
   vehicleCurrentLocation: VehicleCurrentLocation,
@@ -279,7 +290,8 @@ export function updateVehiclePosition(
       marker.setVisible(true);
     }
 
-    marker.setIcon(getMarkerIcon(vehicleCurrentLocation, currentLoggedUserId));
+    marker.setIcon(getMarkerIcon(vehicleCurrentLocation, currentLoggedUserId, storeDriving));
+    marker.setTitle(getTitle(vehicleCurrentLocation, storeDriving))
 
     if (vehicleCurrentLocation.inDrive) {
       marker.setPosition({

@@ -70,7 +70,7 @@ insert into drivings (active, driver_id, driving_status, duration, price, starte
                     (true, 18, 2, 2, 3, to_timestamp('23.01.2023. 09:20', 'DD.MM.YYYY HH24:MI'), null, 1, null, false),
                    (true, 14, 2, 8, 3, to_timestamp('23.01.2023. 08:40', 'DD.MM.YYYY HH24:MI'), null, 2, null, false),
                    (false, 18, 2, 10, 5, to_timestamp('23.01.2023 9:43', 'DD.MM.YYYY HH24:MI'), null, 3, null, false),
-                    (false, 17, 2, 10, 5, to_timestamp('23.01.2023 12:55', 'DD.MM.YYYY HH24:MI'), null, 4, null, true);
+                    (false, 17, 2, 10, 5, to_timestamp('23.01.2023 14:55', 'DD.MM.YYYY HH24:MI'), null, 4, null, true);
 
 
 insert into driving_locations(location_id, index, route_id, route_index) values

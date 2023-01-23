@@ -17,6 +17,17 @@ export function getVehiclePhotoNameBasedOnType(vehicleType: string): string {
   }
 }
 
+export function getMyVehicle(vehicleType: string): string {
+  switch (vehicleType) {
+    case 'VAN':
+      return '/assets/images/my_location_van.svg'
+    case 'SUV':
+      return '/assets/images/my_location_suv.svg';
+    default:
+      return '/assets/images/my_location_car.svg';
+  }
+}
+
 export function getActiveVehiclePhotoNameBasedOnType(vehicleType: string): string {
   switch (vehicleType) {
     case 'VAN':

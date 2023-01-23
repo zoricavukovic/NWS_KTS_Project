@@ -36,6 +36,16 @@ import {DrivingNotification} from "../models/notification/driving-notification";
     constructor(public payload: {active: boolean, drivingStatus: string}) {}
   }
 
+  export class UpdateIdDrivingNotification {
+    static readonly type = "[DrivingNotification] UpdateIdDrivingNotification";
+
+    constructor(public payload: {drivingId: number}) {}
+  }
+
+  export class ResetVehicleInDrivingNotification {
+    static readonly type = "[DrivingNotification] ResetVehicleInDrivingNotification";
+  }
+
   export class ClearStore {
     static readonly type = "[DrivingNotification] ClearDriving";
   }

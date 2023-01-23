@@ -17,8 +17,8 @@ import {DriverService} from "../driver-service/driver.service";
 import { CreateDrivingNotification } from '../../models/notification/create-driving-notification';
 import {
   ClearStore,
-  GetDrivingNotification,
-  UpdateDrivings,
+  GetDrivingNotification, ResetVehicleInDrivingNotification,
+  UpdateDrivings, UpdateIdDrivingNotification,
   UpdateMinutesStatusDrivingNotification,
   UpdateStatusDrivingNotification
 } from "../../actions/driving-notification.action";
@@ -34,9 +34,7 @@ import { Driving } from '../../models/driving/driving';
 })
 export class WebSocketService {
   private stompClient = null;
-  private globalStompClient = null;
   initialized = false;
-  initializedGlobal = false;
   @Output() aClickedEvent = new EventEmitter()
 
   constructor(
@@ -53,11 +51,6 @@ export class WebSocketService {
     if (!this.stompClient) {
       this.initialized = false;
       this.connect();
-    }
-
-    if (!this.globalStompClient) {
-      this.initializedGlobal = false;
-      this.globalConnect();
     }
   }
 
@@ -192,7 +185,11 @@ export class WebSocketService {
       environment.publisherUrl + localStorage.getItem('email') + '/start-driving',
       (message: { body: string }) => {
         const drivingNotificationDetails: SimpleDrivingInfo =  JSON.parse(message.body);
-        this.store.dispatch(new UpdateStatusDrivingNotification({active: true, drivingStatus: "ACCEPTED"}));
+        this.store.dispatch(new UpdateStatusDrivingNotification(
+          {active: true, drivingStatus: "ACCEPTED"})
+        );
+        console.log(drivingNotificationDetails);
+        this.store.dispatch(new UpdateIdDrivingNotification({drivingId: drivingNotificationDetails.drivingId}))
         this.toast.info('Ride started.Tap to follow ride!')
           .onTap.subscribe(action => {
           this.router.navigate(['/serb-uber/user/map-page-view', drivingNotificationDetails.drivingId])
@@ -206,6 +203,8 @@ export class WebSocketService {
       (message: { body: string }) => {
       const drivingNotificationDetails: SimpleDrivingInfo =  JSON.parse(message.body);
       this.store.dispatch(new UpdateStatusDrivingNotification({active: false, drivingStatus: "FINISHED"})).subscribe();
+      this.store.dispatch(new UpdateIdDrivingNotification({drivingId: drivingNotificationDetails.drivingId}))
+      this.store.dispatch(new ResetVehicleInDrivingNotification()).subscribe();
       this.toast.info('Driving is finished.Tap to see details!')
         .onTap.subscribe(action => {
         this.router.navigate(['/serb-uber/user/map-page-view', drivingNotificationDetails.drivingId]);
@@ -306,32 +305,6 @@ export class WebSocketService {
     localStorage.clear();
     this.router.navigate(['/serb-uber/auth/login']);
     window.location.reload();
-  }
-
-  globalConnect() {
-    // if (!this.initializedGlobal) {
-    //   this.initializedGlobal = true;
-      // const serverUrl = environment.webSocketUrl;
-      // const ws = new SockJS(serverUrl);
-      // this.globalStompClient = Stomp.over(ws);
-      //
-      // const that = this;
-      //
-      // this.globalStompClient.connect({}, function (frame) {
-      //   that.globalStompClient.subscribe(
-      //     environment.publisherUrl + 'global/connect',
-      //     message => {
-      //       if (
-      //         (message !== null && message !== undefined) ||
-      //         message?.body !== null
-      //       ) {
-      //         const vehicleCurrentLocation: VehicleCurrentLocation = JSON.parse(message.body);
-      //         that.vehicleService.updateVehiclePosition(vehicleCurrentLocation);
-      //       }
-      //     }
-      //   );
-      // });
-    // }
   }
 
   private isBlockingNotification(message: string): boolean {
