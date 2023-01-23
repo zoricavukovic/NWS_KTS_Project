@@ -167,6 +167,10 @@ public class DrivingService implements IDrivingService {
         return drivingRepository.getAllReservations();
     }
 
+    public List<Driving> getAcceptedNotActiveDrivings(){
+        return drivingRepository.getAcceptedNotActiveDrivings();
+    }
+
     private Page<Driving> getDrivingPage(final Long id, final Pageable page) throws EntityNotFoundException {
         User user = userService.getUserById(id);
 

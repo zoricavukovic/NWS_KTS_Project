@@ -2,6 +2,7 @@ package com.example.serbUber.controller.message;
 
 import com.example.serbUber.dto.message.ChatRoomDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
+import com.example.serbUber.exception.EntityUpdateException;
 import com.example.serbUber.exception.NoAvailableAdminException;
 import com.example.serbUber.request.message.MessageRequest;
 import com.example.serbUber.request.message.MessageSeenRequest;
@@ -54,8 +55,7 @@ public class ChatRoomController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ChatRoomDTO resolve(@Valid @NotNull(message = "Id cannot be empty.") @RequestBody Long id)
-            throws EntityNotFoundException
-    {
+            throws EntityNotFoundException, EntityUpdateException {
 
         return chatRoomService.resolve(id);
     }

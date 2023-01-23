@@ -66,6 +66,6 @@ export const UserRoutes: Routes = [
     pathMatch: "full",
     component: BasicUserProfileComponent,
     canActivate: [RoleGuard],
-    data: {expectedRoles: "ROLE_ADMIN|ROLE_REGULAR_USER|ROLE_DRIVER"}
+    data: {expectedRoles: "ROLE_DRIVER"}
   }
 ]

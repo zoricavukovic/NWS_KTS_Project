@@ -38,7 +38,7 @@ public interface IDriverService {
     boolean getIsBlocked(Long id);
     List<DriverPageDTO> getDriversWithPagination(int pageNumber, int pageSize);
 
-    boolean approveDriverChanges(final DriverUpdateApproval driverUpdateApproval) throws EntityNotFoundException;
+    DriverDTO approveDriverChanges(final DriverUpdateApproval driverUpdateApproval) throws EntityNotFoundException;
     Driver getDriverByEmail(final String email) throws EntityNotFoundException;
 
     List<Driver> getActiveDrivers();

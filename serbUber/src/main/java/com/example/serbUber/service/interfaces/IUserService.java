@@ -75,4 +75,5 @@ public interface IUserService {
     ) throws PasswordsDoNotMatchException, EntityAlreadyExistsException, MailCannotBeSentException, EntityNotFoundException;
 
     Driver getDriverById(final long driverId) throws EntityNotFoundException;
+    User findAdminForReportHandling();
 }

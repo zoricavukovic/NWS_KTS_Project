@@ -1,15 +1,37 @@
-<form [formGroup]="rideRequestForm" *ngIf="!storedDrivingNotification?.active && (!storedDrivingNotification)">
+<form
+  [formGroup]="rideRequestForm"
+  *ngIf="!storedDrivingNotification?.active && !storedDrivingNotification">
   <app-enter-locations
     *ngIf="routeChoiceView"
     [currentUser]="currentUser"
     [map]="map"
     (clickedChooseVehicleAndPassengers)="onRequestNow()"
-    (clickedChooseVehicleAndPassengersForLater)="onRequestLater()"
-  ></app-enter-locations>
+    (clickedChooseVehicleAndPassengersForLater)="
+      onRequestLater()
+    "></app-enter-locations>
 
-  <app-filter-vehicle-view *ngIf="filterVehicleView" [requestLater]="requestLater" (waitingForAcceptDrive)="loadingView($event)" (enterLocationsViewEvent)="setView($event)"></app-filter-vehicle-view>
-
+  <app-filter-vehicle-view
+    *ngIf="filterVehicleView"
+    [requestLater]="requestLater"
+    (waitingForAcceptDrive)="loadingView($event)"
+    (enterLocationsViewEvent)="setView($event)"></app-filter-vehicle-view>
 </form>
-<app-waiting-for-accept-ride-container *ngIf="storedDrivingNotification && !storedDrivingNotification?.active && storedDrivingNotification?.drivingStatus==='PAYING'"></app-waiting-for-accept-ride-container>
-<app-active-drive-container [currentUserId]="currentUser.id" *ngIf="storedDrivingNotification && (storedDrivingNotification?.active || storedDrivingNotification?.drivingStatus === 'ACCEPTED')"></app-active-drive-container>
-<app-rate-driving-or-skip [currentUser]="currentUser" *ngIf="storedDrivingNotification?.drivingStatus === 'FINISHED'"></app-rate-driving-or-skip>
+<app-waiting-for-accept-ride-container
+  *ngIf="
+    storedDrivingNotification &&
+    !storedDrivingNotification?.active &&
+    storedDrivingNotification?.drivingStatus === 'PAYING'
+  "></app-waiting-for-accept-ride-container>
+<app-active-drive-container
+  [currentUserId]="currentUser.id"
+  *ngIf="
+    storedDrivingNotification &&
+    (storedDrivingNotification?.active ||
+      storedDrivingNotification?.drivingStatus === 'ACCEPTED' ||
+      storedDrivingNotification?.drivingStatus === 'ON_WAY_TO_DEPARTURE')
+  "></app-active-drive-container>
+<app-rate-driving-or-skip
+  [currentUser]="currentUser"
+  *ngIf="
+    storedDrivingNotification?.drivingStatus === 'FINISHED'
+  "></app-rate-driving-or-skip>

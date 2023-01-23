@@ -69,9 +69,7 @@ insert into drivers (id, email, password, name, surname, phone_number, city, pro
 insert into drivings (active, driver_id, driving_status, duration, price, started, end_date, route_id, last_reminder, reservation) values
                     (true, 18, 2, 2, 3, to_timestamp('23.01.2023. 09:20', 'DD.MM.YYYY HH24:MI'), null, 1, null, false),
                    (true, 14, 2, 8, 3, to_timestamp('23.01.2023. 08:40', 'DD.MM.YYYY HH24:MI'), null, 2, null, false),
-                   (false, 18, 2, 10, 5, to_timestamp('23.01.2023 9:43', 'DD.MM.YYYY HH24:MI'), null, 3, null, false),
-                    (false, 17, 2, 10, 5, to_timestamp('23.01.2023 14:55', 'DD.MM.YYYY HH24:MI'), null, 4, null, true);
-
+                   (false, 18, 2, 10, 5, to_timestamp('23.01.2023 9:43', 'DD.MM.YYYY HH24:MI'), null, 3, null, false);
 
 insert into driving_locations(location_id, index, route_id, route_index) values
       (5, 1, 1, 0),
@@ -90,9 +88,7 @@ insert into drivings_users(driving_id, user_id) values
     (1, 8),
     (1, 9),
     (2, 10),
-    (3, 7),
-    (4, 11),
-    (4, 6);
+    (3, 7);
 
 insert into chat_rooms(client_id, admin_id, resolved) values
     (3, 1, true);
@@ -157,7 +153,7 @@ insert into token_transactions(time_stamp, num_of_bought_tokens, total_price, to
                              ('2022-12-03 15:00', 8, 8, 2);
 
 insert into bell_notifications(message, redirect_id, seen, should_redirect, time_stamp, user_id) values
-    ('Driver has declined driving.', null, false, false, '2022-01-01 14:03', 2),
-    ('Driver accepted driving.', null, false, false, '2022-01-01 14:05', 2),
-    ('Driver accepted driving.', null, false, false, '2022-12-01 14:03', 3);
+    ('Driver has declined driving.', null, false, false, '2022-01-01 14:03', 3),
+    ('Driver accepted driving.', null, false, false, '2022-01-01 14:05', 3),
+    ('Driver accepted driving.', null, false, false, '2022-12-01 14:03', 4);
 

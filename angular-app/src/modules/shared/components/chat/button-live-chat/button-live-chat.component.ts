@@ -4,6 +4,8 @@ import {User} from "../../../models/user/user";
 import {ChatRoom} from "../../../models/message/chat-room";
 import {AuthService} from "../../../../auth/services/auth-service/auth.service";
 import {ChatRoomService} from "../../../services/chat-room-service/chat-room.service";
+import { ToastrService } from 'ngx-toastr';
+
 
 @Component({
   selector: 'app-button-live-chat',
@@ -22,7 +24,8 @@ export class ButtonLiveChatComponent implements OnInit, OnDestroy {
 
   constructor(
     public authService: AuthService,
-    private chatRoomService: ChatRoomService
+    private chatRoomService: ChatRoomService,
+    private toast: ToastrService
   ) {
     this.showChatPoupup = false;
     this.isAdmin = false;
@@ -44,9 +47,15 @@ export class ButtonLiveChatComponent implements OnInit, OnDestroy {
     this.chatRoomSubscription = this.chatRoomService
         .getUserChatRoom(this.loggedUser?.email)
         .subscribe(res => {
-          this.chatRoom = res;
-          if (!this.showChatPoupup && this.chatRoom) {
-            this.updateNotifications();
+          if (res) {
+            this.chatRoom = res;
+            if (this.chatRoom.resolved && this.showChatPoupup) {
+              this.toast.success('Problem solved!', 'Thank you for using live chat.');
+              this.showChatPoupup = false;
+            }
+            else if (!this.showChatPoupup) {
+              this.updateNotifications();
+            }
           }
         });
   }
@@ -56,11 +65,13 @@ export class ButtonLiveChatComponent implements OnInit, OnDestroy {
   }
 
   updateNotifications(): number {
-    if (this.isLoggedInRegularOrDriver()){
-      // if (this.authService.getCurrentUser.email !== this.loggedUserEmail){
-      //   this.loadChatRoom();
-      // }
+    if (this.chatRoom && this.chatRoom.resolved) {
+      this.numOfNotifications = 0;
+      
+      return this.numOfNotifications;
+    }
 
+    if (this.isLoggedInRegularOrDriver()){
       this.numOfNotifications =  this.chatRoomService.getNumOfNotSeenMessages(
         this.chatRoom,
         this.isAdmin

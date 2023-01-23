@@ -1,36 +1,77 @@
 <div id="content">
-
-  <mat-icon (click)="goToDrivingDetails()" *ngIf="!checkIfVehicleArrive()" color=primary id="icon-details"
-            matTooltip="Follow ride"
-            matTooltipClass="tooltip"
-            matTooltipHideDelay="1000"
-  >chevron_right_outline</mat-icon>
-  <br/>
-  <div class="text-container" *ngIf="checkIfDrivingIsOnDepartureType()"><b>On way to departure</b></div>
-  <div class="text-container" *ngIf="checkIfVehicleArrive()"><b>Vehicle arrive on departure</b></div>
-  <div class="text-container" *ngIf="checkIfDrivingIsActive()"><b>Your active ride</b></div>
-  <div class="text-container" *ngIf="checkIfDrivingIsFuture()"><b>Your future ride</b></div>
-  <div class="spinner-div" *ngIf="!checkIfVehicleArrive()">
-<!--    <mat-progress-spinner class="spinner" color='accent' [mode]="'determinate'" [value]="storedDrivingNotification?.minutes">-->
-<!--    </mat-progress-spinner>-->
-
-    <mat-progress-spinner class="spinner" color='accent' [mode]="'determinate'" [value]="storedDrivingNotification?.minutes">
-    </mat-progress-spinner>
-    <h2 style="margin-left:6rem; margin-top: 2rem;">{{getTime()}}</h2>
+  <mat-icon
+    (click)="goToDrivingDetails()"
+    *ngIf="!checkIfVehicleArrive()"
+    color="primary"
+    id="icon-details"
+    matTooltip="Follow ride"
+    matTooltipClass="tooltip"
+    matTooltipHideDelay="1000"
+    >chevron_right_outline</mat-icon
+  >
+  <br />
+  <div class="text-container" *ngIf="checkIfDrivingIsOnDepartureType()">
+    <b>On way to departure</b>
   </div>
-  <div style="display: flex; margin-top:3rem" *ngIf="!checkIfVehicleArrive()">
+  <div class="text-container" *ngIf="checkIfVehicleArrive()">
+    <b>Vehicle arrive on departure</b>
+  </div>
+  <div class="text-container" *ngIf="checkIfDrivingIsActive()">
+    <b>Your active ride</b>
+  </div>
+  <div class="text-container" *ngIf="checkIfDrivingIsFuture()">
+    <b>Your future ride</b>
+  </div>
+  <div *ngIf="checkIfVehicleArrive()">
+    <img
+      style="height: 10rem; width: 10rem; float: left"
+      src="../../../../assets/images/{{
+        storedDrivingNotification?.vehicleType.toLowerCase()
+      }}.png" />
+    <p style="float: right; width: 10rem; margin-top: 3rem; font-size: 1.1rem">
+      Driver has arrived on address
+      <b
+        >{{ storedDrivingNotification?.route.locations.at(0).location.street }}
+        {{
+          storedDrivingNotification?.route.locations.at(0).location.number
+        }}</b
+      >.
+    </p>
+  </div>
+
+  <div class="spinner-div" *ngIf="!checkIfVehicleArrive()">
+    <mat-progress-spinner
+      class="spinner"
+      color="accent"
+      [mode]="'determinate'"
+      [value]="storedDrivingNotification?.minutes">
+    </mat-progress-spinner>
+    <h2 style="margin-left: 6rem; margin-top: 2rem">{{ getTime() }}</h2>
+  </div>
+  <div style="display: flex; margin-top: 3rem" *ngIf="!checkIfVehicleArrive()">
     <div class="flex-div">
       <div>
-        <div class="text-container" style="font-size:1.1rem; color:var(--white)">Ride number</div>
-        <div style="margin-top:0.5rem;" class="center text-container"><b>{{storedDrivingNotification?.drivingId}}</b></div>
+        <div
+          class="text-container"
+          style="font-size: 1.1rem; color: var(--white)">
+          Ride number
+        </div>
+        <div style="margin-top: 0.5rem" class="center text-container">
+          <b>{{ storedDrivingNotification?.drivingId }}</b>
+        </div>
       </div>
     </div>
-    <div class="flex-div" style="margin-left:2rem">
+    <div class="flex-div" style="margin-left: 2rem">
       <div>
-        <div class="text-container" style="font-size:1.1rem; color:var(--white)">Price</div>
-        <div style="margin-top:0.5rem;" class="center text-container"><b>{{storedDrivingNotification?.price}}</b></div>
+        <div
+          class="text-container"
+          style="font-size: 1.1rem; color: var(--white)">
+          Price
+        </div>
+        <div style="margin-top: 0.5rem" class="center text-container">
+          <b>{{ storedDrivingNotification?.price }}</b>
+        </div>
       </div>
     </div>
   </div>
-
 </div>

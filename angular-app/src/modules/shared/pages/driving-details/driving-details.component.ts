@@ -24,6 +24,9 @@ import { RegularUserService } from '../../services/regular-user-service/regular-
 import {CurrentVehiclePosition} from "../../models/vehicle/current-vehicle-position";
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import {getTime} from "../../utils/time";
+import { BehaviourReportDialogComponent } from '../../components/behaviour-report-dialog/behaviour-report-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+
 
 @Component({
   selector: 'app-driving-details',
@@ -74,7 +77,8 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
     private routeService: RouteService,
     public router: Router,
     private formBuilder: FormBuilder,
-    private store: Store
+    private store: Store,
+    private _dialogRef: MatDialog,
   ) {
     this.activeRide = false;
     this.markers = [];
@@ -150,6 +154,14 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
             this.isDriver = this.authService.userIsDriver();
           });
         });
+  }
+
+  reportDriveBehaviour() {
+    if (this.loggedUser) {
+      const dialogRef = this._dialogRef.open(BehaviourReportDialogComponent, {
+        data: {currentUser: this.loggedUser, driver: this.driver, userToReport: null},
+      });
+    }
   }
 
   showFilterVehicleView(requestLater: boolean) {

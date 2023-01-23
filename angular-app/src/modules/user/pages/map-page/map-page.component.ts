@@ -80,20 +80,6 @@ export class MapPageComponent implements OnInit, OnDestroy {
       })
   }
 
-  ngOnDestroy(): void {
-    if (this.vehiclesCurrentPosition && this.vehiclesCurrentPosition.length > 0){
-      this.vehiclesCurrentPosition.forEach(vehicleCurrentPosition => removeMarker(vehicleCurrentPosition.marker));
-    }
-
-    if (this.map !== undefined) {
-      this.map = null;
-    }
-
-    if (this.authSubscription){
-      this.authSubscription.unsubscribe();
-    }
-  }
-
   private initMap(): void {
     this.map = new google.maps.Map(document.getElementById("map") as HTMLElement, {
       center: this.center,
@@ -127,6 +113,7 @@ export class MapPageComponent implements OnInit, OnDestroy {
         }
       })
   }
+
 
   private initializeWebSocketConnection() {
     const serverUrl = environment.webSocketUrl;
@@ -176,6 +163,21 @@ export class MapPageComponent implements OnInit, OnDestroy {
         }
       }
     );
+  }
+
+  ngOnDestroy(): void {
+    if (this.vehiclesCurrentPosition && this.vehiclesCurrentPosition.length > 0){
+      this.vehiclesCurrentPosition.forEach(vehicleCurrentPosition => removeMarker(vehicleCurrentPosition.marker));
+    }
+
+    if (this.map !== undefined) {
+      this.map = null;
+      window.location.reload();
+    }
+
+    if (this.authSubscription){
+      this.authSubscription.unsubscribe();
+    }
   }
 
   private checkIfShouldHideOrVisibleVehicles() {
