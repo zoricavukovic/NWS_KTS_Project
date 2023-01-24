@@ -9,7 +9,7 @@ public class Constants {
     public static final String EXISTING_PASSWORD = "sifra123@";
     public static final String NOT_EXISTING_USER_EMAIL = "notexist@gmail.com";
     public static final String NOT_VALID_PASSWORD = "notVALID123@";
-    public static final String EXISTING_EMAIL_AND_FACEBOOK = "serbubernwtkts@gmail.com";
+    public static final String EXISTING_EMAIL_FACEBOOK = "serbubernwtkts@gmail.com";
     public static final String EXISTING_EMAIL_GOOGLE= "serbuber2@gmail.com";
     public static final String EXISTING_PASSWORD_GOOGLE_AND_FACEBOOK = "Nvtkts2022";
 }

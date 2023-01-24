@@ -1,9 +1,6 @@
 package com.example.serbUber.selenium.tests;
 
-import com.example.serbUber.selenium.pages.GoogleLoginPage;
-import com.example.serbUber.selenium.pages.HomePage;
-import com.example.serbUber.selenium.pages.LoginPage;
-import com.example.serbUber.selenium.pages.UserProfilePage;
+import com.example.serbUber.selenium.pages.*;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -14,6 +11,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import static com.example.serbUber.selenium.helper.Constants.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -97,6 +95,41 @@ public class LoginTest extends TestBase {
 
         UserProfilePage userProfilePage = new UserProfilePage(driver);
         assertTrue(userProfilePage.isProfileOfSpecificUser(EXISTING_EMAIL_GOOGLE));
+    }
+
+    @Test
+    @DisplayName("T4-Success login with Facebook")
+    public void facebookLoginSuccessfulTest() throws InterruptedException {
+        HomePage homePage = new HomePage(driver);
+        assertTrue(homePage.isPageLoaded());
+        homePage.clickOnLoginButton();
+
+        LoginPage loginPage = new LoginPage(driver);
+        assertTrue(loginPage.isPageLoaded());
+
+        FacebookLoginPage facebookLoginPage = new FacebookLoginPage(driver);
+        facebookLoginPage.clickOnSignInButton();
+
+        Set<String> windows = driver.getWindowHandles();
+        Iterator<String> iterator = windows.iterator();
+        String onePage = iterator.next();
+        String secondPage = iterator.next();
+
+        driver.switchTo().window(secondPage);
+
+        facebookLoginPage.setEmail(EXISTING_EMAIL_FACEBOOK);
+        facebookLoginPage.setPassword(EXISTING_PASSWORD_GOOGLE_AND_FACEBOOK);
+        facebookLoginPage.clickOnLoginButton();
+
+        facebookLoginPage.isFacebookPageLoaded();
+        driver.switchTo().window(onePage);
+        facebookLoginPage.clickOnSignInButton();    //mora ponovo za facebook
+
+        homePage.clickOnProfileIconMenuButton();
+        homePage.clickOnMyProfileMenuOption();
+
+        UserProfilePage userProfilePage = new UserProfilePage(driver);
+        assertTrue(userProfilePage.isProfileOfSpecificUser(EXISTING_EMAIL_FACEBOOK));
     }
 
 
