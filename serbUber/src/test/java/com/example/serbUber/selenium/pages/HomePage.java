@@ -46,7 +46,7 @@ public class HomePage {
     }
 
     public void clickOnProfileIconMenuButton(){
-        new WebDriverWait(driver, Duration.ofSeconds(2))
+        new WebDriverWait(driver, Duration.ofSeconds(5))
             .until(ExpectedConditions.elementToBeClickable(profileIconMenuButton));
         profileIconMenuButton.click();
     }

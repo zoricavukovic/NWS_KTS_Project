@@ -56,7 +56,7 @@ insert into regular_users (id, email, password, name, surname, phone_number, cit
     (nextval('users_id_gen'), 'zokili@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Zorica', 'Zoric', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false),
     (nextval('users_id_gen'), 'jana@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Jana', 'Janic', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false),
     (nextval('users_id_gen'), 'anastasijas12@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Ana', 'Ancic', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false),
-    (nextval('users_id_gen'), 'samcovic73@open.telekom.rs', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Ana', 'Ancic', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false);
+    (nextval('users_id_gen'), 'serbuber2@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Ana', 'Ancic', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false);
 
 insert into drivers (id, email, password, name, surname, phone_number, city, profile_picture, role_id, active, blocked, start_shift, end_shift, rate, working_minutes, verified, online, drive, vehicle_id) values
     (nextval('users_id_gen'), 'mile@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Mile', 'Milic', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('18.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), 0, 20, true, true, false, 1),
@@ -68,8 +68,8 @@ insert into drivers (id, email, password, name, surname, phone_number, city, pro
 
 insert into drivings (active, driver_id, driving_status, duration, price, started, end_date, route_id, last_reminder, reservation) values
                     (true, 18, 2, 2, 3, to_timestamp('23.01.2023. 09:20', 'DD.MM.YYYY HH24:MI'), null, 1, null, false),
-                   (true, 14, 2, 8, 3, to_timestamp('23.01.2023. 08:40', 'DD.MM.YYYY HH24:MI'), null, 2, null, false),
-                   (false, 18, 2, 10, 5, to_timestamp('23.01.2023 9:43', 'DD.MM.YYYY HH24:MI'), null, 3, null, false);
+                   (true, 14, 2, 8, 3, to_timestamp('24.01.2023. 16:40', 'DD.MM.YYYY HH24:MI'), null, 2, null, false),
+                   (false, 18, 2, 10, 5, to_timestamp('24.01.2023 15:43', 'DD.MM.YYYY HH24:MI'), null, 3, null, false);
 
 
 insert into driving_locations(location_id, index, route_id, route_index) values

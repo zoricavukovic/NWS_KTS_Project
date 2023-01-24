@@ -58,6 +58,7 @@
       alt="no photo"
       (click)="showOnMapDriving(driving)" />
     <button
+      id="finish-btn"
       mat-button
       (click)="onFinishDriving()"
       class="finish-button">
@@ -66,6 +67,7 @@
   </div>
   <div *ngIf="!driving.active && driving.drivingStatus === 'ACCEPTED'">
     <button
+      id="start-btn"
       *ngIf="index === 0"
       mat-button
       (click)="onStartDriving()"

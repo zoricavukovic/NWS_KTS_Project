@@ -14,7 +14,8 @@ public class TestBase {
         System.setProperty("webdriver.chrome.driver", "chromedriver");
 
         driver = new ChromeDriver();
-        driver.manage().window().maximize();
+        driver.manage().deleteAllCookies();
+        driver.manage().window();
     }
 
     @AfterEach
