@@ -26,14 +26,14 @@
     <img
       style="height: 10rem; width: 10rem; float: left"
       src="../../../../assets/images/{{
-        storedDrivingNotification?.vehicleType.toLowerCase()
+        storedDrivingNotification?.vehicleType?.toLowerCase()
       }}.png" />
     <p style="float: right; width: 10rem; margin-top: 3rem; font-size: 1.1rem">
       Driver has arrived on address
       <b
-        >{{ storedDrivingNotification?.route.locations.at(0).location.street }}
+        >{{ storedDrivingNotification?.route?.locations.at(0).location.street }}
         {{
-          storedDrivingNotification?.route.locations.at(0).location.number
+          storedDrivingNotification?.route?.locations.at(0).location.number
         }}</b
       >.
     </p>

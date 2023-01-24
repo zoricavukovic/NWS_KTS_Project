@@ -108,7 +108,6 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
       }
     });
     if (this.route.snapshot.paramMap.get('id') !== '-1') {
-      console.log('bla');
       this.vehiclesCurrentPosition.forEach(vehicle =>
         hideMarker(vehicle.marker)
       );
@@ -125,14 +124,9 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
     this.drivingsSubscription = this.drivingService
       .get(this.id)
       .subscribe((driving: Driving) => {
-        console.log(driving);
         this.driving = driving;
         driving.route.routePathIndex = this.getRoutePathIndex(driving.route);
         this.rideRequestForm.get('selectedRoute').setValue(driving.route);
-        console.log(this.rideRequestForm);
-        // this.drivingsSubscription = this.drivingService.getVehicleDetails(driving?.id).subscribe(vehicleCurrentLocation => {
-        //   markCurrentPosition(this.map, vehicleCurrentLocation);
-        // });
 
         if (this.map) {
           this.routeSubscription = this.routeService

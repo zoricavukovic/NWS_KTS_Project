@@ -228,10 +228,7 @@ export class DrivingNotificationState {
   }
 
   @Action(UpdateDrivings)
-  updateDrivings(
-    { getState, setState }: StateContext<DrivingNotificationStateModel>,
-    { payload }: UpdateDrivings
-  ) {
+  updateDrivings({ getState, setState }: StateContext<DrivingNotificationStateModel>, { payload }: UpdateDrivings) {
     console.log(payload);
     const state = getState();
     console.log(state);

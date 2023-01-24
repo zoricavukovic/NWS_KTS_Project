@@ -10,6 +10,7 @@
         matInput
         placeholder="email@domain.com"
         formControlName="email"
+        name="email"
         required />
       <mat-error *ngIf="loginForm.invalid">
         {{ getErrorMessage() }}
@@ -22,6 +23,7 @@
         matInput
         [type]="hide ? 'password' : 'text'"
         formControlName="password"
+        name="password"
         placeholder="Enter password" />
       <button
         mat-icon-button
@@ -45,7 +47,7 @@
     <a [routerLink]="['/serb-uber/auth/forgot-password']" class="link">Forgot password?</a>
 
     <div class="center margin-top">
-      <button mat-raised-button (click)="logIn()" class="login-button">
+      <button mat-raised-button (click)="logIn()" class="login-button" id="submit-login">
         Log in
       </button>
     </div>

@@ -178,7 +178,7 @@ public class VehicleService implements IVehicleService {
         location.setLat(lat);
         location.setLon(lng);
         vehicle.setCurrentStop(location);
-        if (vehicle.getCurrentLocationIndex() <= 0){
+        if (vehicle.getCurrentLocationIndex() == 0){
             vehicle.setCurrentStop(new Location(lat, lng));
         }
         vehicle.setCrossedWaypoints(crossedWaypoints);
