@@ -27,6 +27,9 @@ public class HomePage {
     @FindBy(how = How.XPATH, using = "//button/span[contains(text(), 'My profile')]")
     private WebElement myProfileMenuOption;
 
+    @FindBy(how = How.XPATH, using="//div[contains(@class, 'title')]")
+    private WebElement regularUserFinishedRideTitle;
+
     public HomePage(WebDriver driver) {
         this.driver = driver;
         this.driver.get(PAGE_URL);
@@ -55,5 +58,10 @@ public class HomePage {
         new WebDriverWait(driver, Duration.ofSeconds(2))
             .until(ExpectedConditions.elementToBeClickable(myProfileMenuOption));
         myProfileMenuOption.click();
+    }
+
+    public boolean isFinishedRide(){
+        return new WebDriverWait(driver, Duration.ofSeconds(3))
+                .until(ExpectedConditions.textToBePresentInElement(regularUserFinishedRideTitle, "Your ride is finished"));
     }
 }
