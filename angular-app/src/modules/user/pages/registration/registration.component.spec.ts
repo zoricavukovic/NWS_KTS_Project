@@ -11,6 +11,10 @@ import { RegistrationResponse } from 'src/modules/shared/models/user/registratio
 import { ToastrService } from 'ngx-toastr';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { RegularUser } from 'src/modules/shared/models/user/regular-user';
+import { Driver } from 'src/modules/shared/models/user/driver';
+import { User } from 'src/modules/shared/models/user/user';
+import { Role } from 'src/modules/shared/models/user/role';
+import { Vehicle } from 'src/modules/shared/models/vehicle/vehicle';
 
 describe('RegistrationComponent', () => {
   let componentForRegistration: RegistrationComponent;
@@ -31,6 +35,7 @@ describe('RegistrationComponent', () => {
 
   const userServiceMock = jasmine.createSpyObj('UserService', [
     'registerRegularUser',
+    'registerDriver',
   ]);
 
   authServiceSpy.getSubjectCurrentUser.and.returnValue(
@@ -251,6 +256,7 @@ describe('RegistrationComponent', () => {
   }));
 
   it('should register regular user success', fakeAsync(() => {
+    componentForRegistration.ngOnInit();
     toastrServiceMock.error.calls.reset();
     componentForRegistration.registrationForm.patchValue({
       emailFormControl: 'ana@gmail.com',

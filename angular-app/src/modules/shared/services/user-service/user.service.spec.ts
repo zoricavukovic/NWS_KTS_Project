@@ -8,6 +8,10 @@ import { ConfigService } from '../config-service/config.service';
 import { UserService } from './user.service';
 import { RegistrationResponse } from '../../models/user/registration-response';
 import { RegularUser } from '../../models/user/regular-user';
+import { Vehicle } from '../../models/vehicle/vehicle';
+import { Driver } from '../../models/user/driver';
+import { Role } from '../../models/user/role';
+import { User } from '../../models/user/user';
 
 describe('UserService', () => {
   let injector;
@@ -84,7 +88,7 @@ describe('UserService', () => {
     };
 
     const mockErrorResponse: HttpErrorResponse = new HttpErrorResponse({
-      error: 'User with ana@gmail.com already exists.',
+      error: 'User with email ana@gmail.com already exists.',
       status: 400,
     });
 
@@ -102,7 +106,7 @@ describe('UserService', () => {
 
     expect(mockErrorResponse).toBeDefined();
     expect(mockErrorResponse.error).toBe(
-      'User with ana@gmail.com already exists.'
+      'User with email ana@gmail.com already exists.'
     );
     expect(mockErrorResponse.status).toBe(400);
   }));
