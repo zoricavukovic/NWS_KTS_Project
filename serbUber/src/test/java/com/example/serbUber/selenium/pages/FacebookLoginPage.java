@@ -1,6 +1,6 @@
 package com.example.serbUber.selenium.pages;
 
-import com.example.serbUber.selenium.tests.TestBase;
+import com.example.serbUber.selenium.tests.bases.TestBase;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -40,13 +40,13 @@ public class FacebookLoginPage extends TestBase {
 
     public void clickOnSignInButton(){
         new WebDriverWait(driver, Duration.ofSeconds(3))
-                .until(ExpectedConditions.elementToBeClickable(facebookButton));
+            .until(ExpectedConditions.elementToBeClickable(facebookButton));
         facebookButton.click();
     }
 
     public void setEmail(String email) {
         new WebDriverWait(driver, Duration.ofSeconds(5))
-                .until(ExpectedConditions.visibilityOf(emailInput));
+            .until(ExpectedConditions.visibilityOf(emailInput));
         emailInput.clear();
         emailInput.sendKeys(email);
     }
@@ -58,17 +58,16 @@ public class FacebookLoginPage extends TestBase {
 
     public void clickOnLoginButton(){
         new WebDriverWait(driver, Duration.ofSeconds(2))
-                .until(ExpectedConditions.elementToBeClickable(loginButton));
+            .until(ExpectedConditions.elementToBeClickable(loginButton));
         loginButton.click();
     }
 
     public boolean isFacebookPageLoaded(String facebookWelcomeMessage){
-        WebElement visibleBanner = new WebDriverWait(driver, Duration.ofSeconds(3))
-                .until(ExpectedConditions.visibilityOf(driver.findElement(
-                    By.xpath(String.format("//span[contains(text(), '%s')]", facebookWelcomeMessage)))
-                ));
+        WebElement visibleBanner = new WebDriverWait(driver, Duration.ofSeconds(5))
+            .until(ExpectedConditions.visibilityOf(driver.findElement(
+                By.xpath(String.format("//span[contains(text(), '%s')]", facebookWelcomeMessage)))
+            ));
 
         return visibleBanner != null;
     }
-
 }

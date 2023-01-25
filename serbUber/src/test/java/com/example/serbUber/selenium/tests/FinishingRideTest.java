@@ -3,6 +3,7 @@ package com.example.serbUber.selenium.tests;
 import com.example.serbUber.selenium.pages.DriverActiveRidesPage;
 import com.example.serbUber.selenium.pages.HomePage;
 import com.example.serbUber.selenium.pages.LoginPage;
+import com.example.serbUber.selenium.tests.bases.CrossBrowsersTestBase;
 import org.junit.jupiter.api.*;
 
 import static com.example.serbUber.selenium.helper.Constants.*;

@@ -1,4 +1,4 @@
-package com.example.serbUber.selenium.tests;
+package com.example.serbUber.selenium.tests.bases;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,12 +12,12 @@ public class CrossBrowsersTestBase {
 
     @BeforeEach
     public void setup() {
-        System.setProperty("webdriver.chrome.driver", "srdjanchromedriver");
+        System.setProperty("webdriver.chrome.driver", "chromedriver");
 
         chromeDriver = new ChromeDriver();
         chromeDriver.manage().window().maximize();
 
-        System.setProperty("webdriver.edge.driver", "srdjanedgedriver.exe");
+        System.setProperty("webdriver.edge.driver", "msedgedriver");
         edgeDriver = new EdgeDriver();
     }
 

@@ -49,7 +49,7 @@ public class HomePage {
     }
 
     public void clickOnProfileIconMenuButton(){
-        new WebDriverWait(driver, Duration.ofSeconds(5))
+        new WebDriverWait(driver, Duration.ofSeconds(10))
             .until(ExpectedConditions.elementToBeClickable(profileIconMenuButton));
         profileIconMenuButton.click();
     }
@@ -62,6 +62,6 @@ public class HomePage {
 
     public boolean isFinishedRide(String finishedRideTitle){
         return new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.textToBePresentInElement(regularUserFinishedRideTitle, finishedRideTitle));
+            .until(ExpectedConditions.textToBePresentInElement(regularUserFinishedRideTitle, finishedRideTitle));
     }
 }

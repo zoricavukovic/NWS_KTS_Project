@@ -38,7 +38,7 @@ public class GoogleLoginPage {
     }
 
     public void clickOnSignInButton(){
-        new WebDriverWait(driver, Duration.ofSeconds(2))
+        new WebDriverWait(driver, Duration.ofSeconds(5))
             .until(ExpectedConditions.elementToBeClickable(signInButton));
         signInButton.click();
     }
@@ -52,7 +52,7 @@ public class GoogleLoginPage {
     }
 
     public void setPassword(String password) {
-        new WebDriverWait(driver, Duration.ofSeconds(13))
+        new WebDriverWait(driver, Duration.ofSeconds(10))
             .until(ExpectedConditions.visibilityOf(passwordInput));
         passwordInput.clear();
         passwordInput.sendKeys(password);
@@ -60,7 +60,7 @@ public class GoogleLoginPage {
     }
 
     public void clickOnNextButton(){
-        new WebDriverWait(driver, Duration.ofSeconds(2))
+        new WebDriverWait(driver, Duration.ofSeconds(5))
             .until(ExpectedConditions.elementToBeClickable(nextButton));
         actions.click(nextButton).perform();
     }

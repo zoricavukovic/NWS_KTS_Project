@@ -18,4 +18,7 @@ public class Constants {
     public static final String FACEBOOK_TITLE = "Welcome to Facebook";
     public static final String STARTING_RIDE_TILE = "Start";
     public static final String NO_ACTIVE_OR_FUTURE_MESSAGE = "No active or future drivings.";
+    public static final String EMAIL_IS_REQUIRED_MESSAGE = "Email is required";
+    public static final String PASSWORD_IS_REQUIRED_MESSAGE = "Password is required";
+    public static final String EMPTY_FIELD = "";
 }
