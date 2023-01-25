@@ -318,8 +318,8 @@ public class DrivingService implements IDrivingService {
             new VehicleWithDriverId(
                 driving.getDriver().getVehicle(),
                 driving.getDriver().getId(),
-                driving.getDriver().isActive())
-            )
+                driving.getDriver().isActive()),
+            driving.getRoute().getLocations().first().getRouteIndex())
         );
 
         return new DrivingDTO(driving);

@@ -217,8 +217,10 @@ export class MapPageComponent implements OnInit, OnDestroy {
     ).routeIndex;
     console.log(correctRouteIndex);
     console.log(vehicleCurrentLocation.chosenRouteIdx);
+    console.log(vehicleCurrentLocation.id)
     if (
       correctRouteIndex !== vehicleCurrentLocation.chosenRouteIdx &&
+      this.storedDrivingNotification.vehicleId === vehicleCurrentLocation.id &&
       !this.storedDrivingNotification.wrongRoute
     ) {
       console.log('trueee');

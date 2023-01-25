@@ -62,18 +62,19 @@ public class VehicleController {
         return this.vehicleService.updateCurrentPosition(
             id, vehicleCurrentPositionRequest.getLongLatRequest().getLon(),
             vehicleCurrentPositionRequest.getLongLatRequest().getLat(),
-            vehicleCurrentPositionRequest.getCrossedWaypoint(),
+            vehicleCurrentPositionRequest.getCrossedWaypoints(),
             vehicleCurrentPositionRequest.getChosenRouteIdx()
         );
     }
 
-    @GetMapping(value = "check-vehicle-activity/{id}")
+    @GetMapping(value = "check-vehicle-activity/{id}/{chosenRouteIdx}")
     @ResponseStatus(HttpStatus.OK)
     public VehicleCurrentLocationForLocustDTO checkStateOfVehicle(
-        @Valid @NotNull(message = MISSING_ID) @PathVariable final long id
-    ) throws EntityNotFoundException {
+        @Valid @NotNull(message = MISSING_ID) @PathVariable final long id,
+        @Valid @NotNull(message = "Chosen route index cannot be null") @PathVariable final int chosenRouteIdx
+        ) throws EntityNotFoundException {
 
-        return this.vehicleService.checkStateOfVehicle(id);
+        return this.vehicleService.checkStateOfVehicle(id, chosenRouteIdx);
     }
 
     @DeleteMapping(value = "/{id}")
