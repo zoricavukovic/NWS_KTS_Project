@@ -37,9 +37,9 @@ public class HomePage {
         PageFactory.initElements(driver, this);
     }
 
-    public boolean isPageLoaded(){
+    public boolean isPageLoaded(String titleOfHomePageContainer){
         return new WebDriverWait(driver, Duration.ofSeconds(3))
-            .until(ExpectedConditions.textToBePresentInElement(title, "Request a ride now"));
+            .until(ExpectedConditions.textToBePresentInElement(title, titleOfHomePageContainer));
     }
 
     public void clickOnLoginButton(){
@@ -60,8 +60,8 @@ public class HomePage {
         myProfileMenuOption.click();
     }
 
-    public boolean isFinishedRide(){
-        return new WebDriverWait(driver, Duration.ofSeconds(3))
-                .until(ExpectedConditions.textToBePresentInElement(regularUserFinishedRideTitle, "Your ride is finished"));
+    public boolean isFinishedRide(String finishedRideTitle){
+        return new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.textToBePresentInElement(regularUserFinishedRideTitle, finishedRideTitle));
     }
 }

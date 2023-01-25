@@ -34,13 +34,13 @@ public class DriverActiveRidesPage {
         finishRideButton.click();
     }
 
-    public boolean isDriverDoesntHaveActiveOrFutureRides(){
+    public boolean isDriverDoesntHaveActiveOrFutureRides(String noActiveOrFutureDrivingMessage){
         return new WebDriverWait(driver, Duration.ofSeconds(2))
-            .until(ExpectedConditions.textToBePresentInElement(titleNoActiveOrFutureRides, "No active or future drivings."));
+            .until(ExpectedConditions.textToBePresentInElement(titleNoActiveOrFutureRides, noActiveOrFutureDrivingMessage));
     }
 
-    public boolean isStartButtonPresent(){
+    public boolean isStartButtonPresent(String startDriveTitle){
         return new WebDriverWait(driver, Duration.ofSeconds(4))
-            .until(ExpectedConditions.textToBePresentInElement(startRideButton, "Start"));
+            .until(ExpectedConditions.textToBePresentInElement(startRideButton, startDriveTitle));
     }
 }

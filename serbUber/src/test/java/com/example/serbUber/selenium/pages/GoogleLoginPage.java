@@ -63,8 +63,5 @@ public class GoogleLoginPage {
         new WebDriverWait(driver, Duration.ofSeconds(2))
             .until(ExpectedConditions.elementToBeClickable(nextButton));
         actions.click(nextButton).perform();
-//        nextButton.click();
     }
-
-
 }

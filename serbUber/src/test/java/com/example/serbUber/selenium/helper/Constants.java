@@ -12,4 +12,10 @@ public class Constants {
     public static final String EXISTING_EMAIL_FACEBOOK = "serbubernwtkts@gmail.com";
     public static final String EXISTING_EMAIL_GOOGLE= "serbuber2@gmail.com";
     public static final String EXISTING_PASSWORD_GOOGLE_AND_FACEBOOK = "Nvtkts2022";
+    public static final String TITLE_OF_HOME_PAGE_CONTAINER = "Request a ride now";
+    public static final String FINISHED_RIDE_TITLE = "Your ride is finished";
+    public static final String TITLE_OF_LOGIN_PAGE = "SerbUber";
+    public static final String FACEBOOK_TITLE = "Welcome to Facebook";
+    public static final String STARTING_RIDE_TILE = "Start";
+    public static final String NO_ACTIVE_OR_FUTURE_MESSAGE = "No active or future drivings.";
 }

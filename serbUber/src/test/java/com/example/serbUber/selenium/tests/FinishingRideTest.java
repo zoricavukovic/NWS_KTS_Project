@@ -17,22 +17,22 @@ public class FinishingRideTest extends CrossBrowsersTestBase {
     public void finishingRideNotHavingNextRideSuccessfulTest() {
         //driver login on chrome driver
         HomePage homePageChrome = new HomePage(chromeDriver);
-        assertTrue(homePageChrome.isPageLoaded());
+        assertTrue(homePageChrome.isPageLoaded(TITLE_OF_HOME_PAGE_CONTAINER));
         homePageChrome.clickOnLoginButton();
 
         //user with active driving login on edge driver
         HomePage homePageEdge = new HomePage(edgeDriver);
-        assertTrue(homePageEdge.isPageLoaded());
+        assertTrue(homePageEdge.isPageLoaded(TITLE_OF_HOME_PAGE_CONTAINER));
         homePageEdge.clickOnLoginButton();
 
         LoginPage loginPageChrome = new LoginPage(chromeDriver);
-        assertTrue(loginPageChrome.isPageLoaded());
+        assertTrue(loginPageChrome.isPageLoaded(TITLE_OF_LOGIN_PAGE));
         loginPageChrome.setEmail(DRIVER_EMAIL_HAS_CURRENT_NOT_NEXT_RIDE);
         loginPageChrome.setPassword(EXISTING_PASSWORD);
         loginPageChrome.clickOnLoginButton();
 
         LoginPage loginPageEdge = new LoginPage(edgeDriver);
-        assertTrue(loginPageEdge.isPageLoaded());
+        assertTrue(loginPageEdge.isPageLoaded(TITLE_OF_LOGIN_PAGE));
         loginPageEdge.setEmail(EXISTING_REGULAR_USER_EMAIL);
         loginPageEdge.setPassword(EXISTING_PASSWORD);
         loginPageEdge.clickOnLoginButton();
@@ -40,10 +40,10 @@ public class FinishingRideTest extends CrossBrowsersTestBase {
         //driver finished ride on chrome driver
         DriverActiveRidesPage driverActiveRidesPage = new DriverActiveRidesPage(chromeDriver);
         driverActiveRidesPage.clickOnFinishRideButton();
-        assertTrue(driverActiveRidesPage.isDriverDoesntHaveActiveOrFutureRides());
+        assertTrue(driverActiveRidesPage.isDriverDoesntHaveActiveOrFutureRides(NO_ACTIVE_OR_FUTURE_MESSAGE));
 
         //now, user doesn't have active ride on edge driver
-        assertTrue(homePageEdge.isFinishedRide());
+        assertTrue(homePageEdge.isFinishedRide(FINISHED_RIDE_TITLE));
     }
 
     @Test
@@ -51,22 +51,22 @@ public class FinishingRideTest extends CrossBrowsersTestBase {
     public void finishingRideDriverHasNextRideSuccessfulTest() {
         //driver login on chrome driver
         HomePage homePageChrome = new HomePage(chromeDriver);
-        assertTrue(homePageChrome.isPageLoaded());
+        assertTrue(homePageChrome.isPageLoaded(TITLE_OF_HOME_PAGE_CONTAINER));
         homePageChrome.clickOnLoginButton();
 
         //user with active driving login on edge driver
         HomePage homePageEdge = new HomePage(edgeDriver);
-        assertTrue(homePageEdge.isPageLoaded());
+        assertTrue(homePageEdge.isPageLoaded(TITLE_OF_HOME_PAGE_CONTAINER));
         homePageEdge.clickOnLoginButton();
 
         LoginPage loginPageChrome = new LoginPage(chromeDriver);
-        assertTrue(loginPageChrome.isPageLoaded());
+        assertTrue(loginPageChrome.isPageLoaded(TITLE_OF_LOGIN_PAGE));
         loginPageChrome.setEmail(DRIVER_EMAIL_HAS_CURRENT_AND_NEXT_RIDE);
         loginPageChrome.setPassword(EXISTING_PASSWORD);
         loginPageChrome.clickOnLoginButton();
 
         LoginPage loginPageEdge = new LoginPage(edgeDriver);
-        assertTrue(loginPageEdge.isPageLoaded());
+        assertTrue(loginPageEdge.isPageLoaded(TITLE_OF_LOGIN_PAGE));
         loginPageEdge.setEmail(EXISTING_REGULAR_USER_EMAIL_OF_DRIVER_THAT_HAS_NOW_AND_FUTURE_DRIVING);
         loginPageEdge.setPassword(EXISTING_PASSWORD);
         loginPageEdge.clickOnLoginButton();
@@ -74,9 +74,9 @@ public class FinishingRideTest extends CrossBrowsersTestBase {
         //driver finished ride on chrome driver
         DriverActiveRidesPage driverActiveRidesPage = new DriverActiveRidesPage(chromeDriver);
         driverActiveRidesPage.clickOnFinishRideButton();
-        assertTrue(driverActiveRidesPage.isStartButtonPresent());
+        assertTrue(driverActiveRidesPage.isStartButtonPresent(STARTING_RIDE_TILE));
 
         //now, user doesn't have active ride on edge driver
-        assertTrue(homePageEdge.isFinishedRide());
+        assertTrue(homePageEdge.isFinishedRide(FINISHED_RIDE_TITLE));
     }
 }

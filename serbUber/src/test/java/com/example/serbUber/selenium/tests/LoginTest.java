@@ -4,14 +4,12 @@ import com.example.serbUber.selenium.pages.*;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import static com.example.serbUber.selenium.helper.Constants.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -25,11 +23,11 @@ public class LoginTest extends TestBase {
     @DisplayName("T1-Success login with valid credentials")
     public void regularLoginSuccessfulTest() {
         HomePage homePage = new HomePage(driver);
-        assertTrue(homePage.isPageLoaded());
+        assertTrue(homePage.isPageLoaded(TITLE_OF_HOME_PAGE_CONTAINER));
         homePage.clickOnLoginButton();
 
         LoginPage loginPage = new LoginPage(driver);
-        assertTrue(loginPage.isPageLoaded());
+        assertTrue(loginPage.isPageLoaded(TITLE_OF_LOGIN_PAGE));
         loginPage.setEmail(EXISTING_REGULAR_USER_EMAIL);
         loginPage.setPassword(EXISTING_PASSWORD);
         loginPage.clickOnLoginButton();
@@ -47,11 +45,11 @@ public class LoginTest extends TestBase {
     @MethodSource(value = "sourceWrongCredentials")
     public void regularLoginShouldFailedInvalidEmailTest(String email, String password) {
         HomePage homePage = new HomePage(driver);
-        assertTrue(homePage.isPageLoaded());
+        assertTrue(homePage.isPageLoaded(TITLE_OF_HOME_PAGE_CONTAINER));
         homePage.clickOnLoginButton();
 
         LoginPage loginPage = new LoginPage(driver);
-        assertTrue(loginPage.isPageLoaded());
+        assertTrue(loginPage.isPageLoaded(TITLE_OF_LOGIN_PAGE));
         loginPage.setEmail(email);
         loginPage.setPassword(password);
         loginPage.clickOnLoginButton();
@@ -69,11 +67,11 @@ public class LoginTest extends TestBase {
     @DisplayName("T3-Success login with Google")
     public void googleLoginSuccessfulTest() {
         HomePage homePage = new HomePage(driver);
-        assertTrue(homePage.isPageLoaded());
+        assertTrue(homePage.isPageLoaded(TITLE_OF_HOME_PAGE_CONTAINER));
         homePage.clickOnLoginButton();
 
         LoginPage loginPage = new LoginPage(driver);
-        assertTrue(loginPage.isPageLoaded());
+        assertTrue(loginPage.isPageLoaded(TITLE_OF_LOGIN_PAGE));
         GoogleLoginPage googleLoginPage = new GoogleLoginPage(driver);
         googleLoginPage.clickOnSignInButton();
 
@@ -99,13 +97,13 @@ public class LoginTest extends TestBase {
 
     @Test
     @DisplayName("T4-Success login with Facebook")
-    public void facebookLoginSuccessfulTest() throws InterruptedException {
+    public void facebookLoginSuccessfulTest() {
         HomePage homePage = new HomePage(driver);
-        assertTrue(homePage.isPageLoaded());
+        assertTrue(homePage.isPageLoaded(TITLE_OF_HOME_PAGE_CONTAINER));
         homePage.clickOnLoginButton();
 
         LoginPage loginPage = new LoginPage(driver);
-        assertTrue(loginPage.isPageLoaded());
+        assertTrue(loginPage.isPageLoaded(TITLE_OF_LOGIN_PAGE));
 
         FacebookLoginPage facebookLoginPage = new FacebookLoginPage(driver);
         facebookLoginPage.clickOnSignInButton();
@@ -121,7 +119,7 @@ public class LoginTest extends TestBase {
         facebookLoginPage.setPassword(EXISTING_PASSWORD_GOOGLE_AND_FACEBOOK);
         facebookLoginPage.clickOnLoginButton();
 
-        facebookLoginPage.isFacebookPageLoaded();
+        assertTrue(facebookLoginPage.isFacebookPageLoaded(FACEBOOK_TITLE));
         driver.switchTo().window(onePage);
         facebookLoginPage.clickOnSignInButton();    //mora ponovo za facebook
 

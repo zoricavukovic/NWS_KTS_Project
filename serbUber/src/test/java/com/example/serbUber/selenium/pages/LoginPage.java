@@ -36,9 +36,9 @@ public class LoginPage {
         PageFactory.initElements(driver, this);
     }
 
-    public boolean isPageLoaded(){
+    public boolean isPageLoaded(String titleOfLoginPage){
         return new WebDriverWait(driver, Duration.ofSeconds(2))
-            .until(ExpectedConditions.textToBePresentInElement(title, "SerbUber"));
+            .until(ExpectedConditions.textToBePresentInElement(title, titleOfLoginPage));
     }
 
     public void setEmail(String email) {

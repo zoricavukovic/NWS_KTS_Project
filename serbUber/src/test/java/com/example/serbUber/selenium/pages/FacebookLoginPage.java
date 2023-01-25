@@ -1,7 +1,7 @@
 package com.example.serbUber.selenium.pages;
 
 import com.example.serbUber.selenium.tests.TestBase;
-import org.openqa.selenium.Keys;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -28,9 +28,6 @@ public class FacebookLoginPage extends TestBase {
 
     @FindBy(how = How.ID, using = "facebook-img")
     private WebElement facebookButton;
-
-    @FindBy(how = How.XPATH, using = "//span[contains(text(), 'Welcome to Facebook')]")
-    private WebElement facebookWelcomeMessage;
 
     private Actions actions;
 
@@ -65,11 +62,13 @@ public class FacebookLoginPage extends TestBase {
         loginButton.click();
     }
 
-    public boolean isFacebookPageLoaded(){
-        WebElement vidibleBanner = new WebDriverWait(driver, Duration.ofSeconds(3))
-                .until(ExpectedConditions.visibilityOf(facebookWelcomeMessage));
+    public boolean isFacebookPageLoaded(String facebookWelcomeMessage){
+        WebElement visibleBanner = new WebDriverWait(driver, Duration.ofSeconds(3))
+                .until(ExpectedConditions.visibilityOf(driver.findElement(
+                    By.xpath(String.format("//span[contains(text(), '%s')]", facebookWelcomeMessage)))
+                ));
 
-        return vidibleBanner != null;
+        return visibleBanner != null;
     }
 
 }
