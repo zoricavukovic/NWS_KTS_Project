@@ -8,13 +8,16 @@ public class PossibleRouteDTO {
     private double timeInMin;
     private List<double[]> locations;
 
+    private double averagePrice;
+
     public PossibleRouteDTO() {
     }
 
-    public PossibleRouteDTO(final double distance, final List<double[]> locations, final double minutes) {
+    public PossibleRouteDTO(final double distance, final List<double[]> locations, final double minutes, final double averagePrice) {
         this.distance = distance;
         this.timeInMin = minutes;
         this.locations = locations;
+        this.averagePrice = averagePrice;
     }
 
     public double getDistance() {
@@ -41,4 +44,11 @@ public class PossibleRouteDTO {
         this.locations = locations;
     }
 
+    public double getAveragePrice() {
+        return averagePrice;
+    }
+
+    public void setAveragePrice(double averagePrice) {
+        this.averagePrice = averagePrice;
+    }
 }

@@ -1,3 +1,5 @@
+import random
+
 from locust import HttpUser, task, events, between
 import requests
 
@@ -9,6 +11,7 @@ def on_locust_init(environment, **_kwargs):
 
 class QuickStartUser(HttpUser):
     vehicles_dict_with_coordinates = {}
+    vehicle_chosen_route_idx = {}
     host = "http://localhost:8080"
     wait_time = between(0.5, 2)
 
@@ -54,8 +57,16 @@ class QuickStartUser(HttpUser):
         # print(routeGeoJSON['routes'][0]['legs'])
         # print("\n============KRAJ ISPISA IZABRANOG INDEKSA RUTE=========\n\n")
         coordinates = []
-
-        for step in routeGeoJSON['routes'][0]['legs'][chosenRouteIdx]['steps']:
+        # print(vehicle)
+        randomNum = random.randint(1, 50)
+        # print(vehicle['veh'])
+        print(randomNum)
+        print(vehicle['driverId'])
+        if randomNum > 40 and len(routeGeoJSON['routes']) >= 2:
+            chosenRouteIdx = 0 if chosenRouteIdx > 0 else 1
+            print("choseeen ", chosenRouteIdx)
+        self.vehicle_chosen_route_idx[vehicle['vehicleId']] = chosenRouteIdx
+        for step in routeGeoJSON['routes'][chosenRouteIdx]['legs'][0]['steps']:
             coordinates += [*step['geometry']['coordinates']]
         # print(coordinates)
         # print("--------------------         ---------------------")
@@ -117,7 +128,8 @@ class QuickStartUser(HttpUser):
                         'lat': new_coordinate[1],
                         'lon': new_coordinate[0]
                     },
-                    'crossedWaypoints': vehicle["crossedWaypoints"]
+                    'crossedWaypoints': vehicle["crossedWaypoints"],
+                    'chosenRouteIdx': self.vehicle_chosen_route_idx[vehicle['vehicleId']]
                 })
                 responseJSON = response.json()
                 vehicle["activeDriver"] = responseJSON["activeDriver"]
@@ -140,7 +152,8 @@ class QuickStartUser(HttpUser):
                                 'lat': new_coordinate[1],
                                 'lon': new_coordinate[0]
                             },
-                            'crossedWaypoints': vehicle["crossedWaypoints"]
+                            'crossedWaypoints': vehicle["crossedWaypoints"],
+                            'chosenRouteIdx': self.vehicle_chosen_route_idx[vehicle['vehicleId']]
                         })
 
 

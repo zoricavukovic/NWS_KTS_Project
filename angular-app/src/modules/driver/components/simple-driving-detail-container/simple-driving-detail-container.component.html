@@ -13,16 +13,19 @@
         {{ driving.started | dateFormat }}
       </td>
       <td nowrap="nowrap" style="padding: 0 1rem">
-        {{
-        endDrivingDate(driving.started, driving.duration)
-          | dateFormat
-        }}
+        {{ endDrivingDate(driving.started, driving.duration) | dateFormat }}
       </td>
     </tr>
   </table>
   <div style="margin-left: 0.7rem">
     <p-avatarGroup>
-      <div *ngFor="let user of driving.users; let userIndex = index" [class]="userIndex < 5 ? 'avatar-icon random-color-' + userIndex : 'avatar-icon random-color-' + (userIndex-5)">
+      <div
+        *ngFor="let user of driving.users; let userIndex = index"
+        [class]="
+          userIndex < 5
+            ? 'avatar-icon random-color-' + userIndex
+            : 'avatar-icon random-color-' + (userIndex - 5)
+        ">
         <p-avatar
           *ngIf="userIndex < maxNumberOfShowedUsers"
           shape="circle"
@@ -49,19 +52,11 @@
     alt="no info photo"
     (click)="showDrivingDetails(driving?.id)" />
   <div *ngIf="driving.active">
-    <img
-      matTooltip="Show current location"
-      matTooltipClass="tooltip"
-      matTooltipHideDelay="10"
-      style="float: right"
-      src="../../../assets/images/mapView.png"
-      alt="no photo"
-      (click)="showOnMapDriving(driving)" />
-    <button
-      mat-button
-      (click)="onFinishDriving()"
-      class="finish-button">
+    <button mat-button (click)="onFinishDriving()" class="finish-button">
       Finish
+    </button>
+    <button mat-button (click)="onRejectDriving()" class="finish-button">
+      Report
     </button>
   </div>
   <div *ngIf="!driving.active && driving.drivingStatus === 'ACCEPTED'">
@@ -72,10 +67,7 @@
       class="finish-button">
       Start
     </button>
-    <button
-      mat-button
-      (click)="onRejectDriving()"
-      class="finish-button">
+    <button mat-button (click)="onRejectDriving()" class="finish-button">
       Reject
     </button>
   </div>

@@ -267,12 +267,13 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
     this.drivingNotificationSubscription = this.drivingNotificationService
       .create(drivingNotification)
       .subscribe(
-        () => {
+        response => {
           this.store
             .dispatch(
               new UpdateStatusDrivingNotification({
                 active: false,
                 drivingStatus: 'ACCEPTED',
+                started: response.started,
               })
             )
             .subscribe(response => {

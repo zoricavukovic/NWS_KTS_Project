@@ -11,12 +11,20 @@ public class VehicleCurrentPositionRequest {
     @NotNull(message = "Crossed waypoints value cannot be empty.")
     int crossedWaypoint;
 
+    @NotNull(message = "Chosen route index cannot be empty.")
+    int chosenRouteIdx;
+
     public VehicleCurrentPositionRequest() {
     }
 
-    public VehicleCurrentPositionRequest(LongLatRequest longLatRequest, int crossedWaypoint) {
+    public VehicleCurrentPositionRequest(
+            final LongLatRequest longLatRequest,
+            final int crossedWaypoint,
+            final int chosenRouteIdx
+    ) {
         this.longLatRequest = longLatRequest;
         this.crossedWaypoint = crossedWaypoint;
+        this.chosenRouteIdx = chosenRouteIdx;
     }
 
     public LongLatRequest getLongLatRequest() {
@@ -33,5 +41,13 @@ public class VehicleCurrentPositionRequest {
 
     public void setCrossedWaypoint(int crossedWaypoint) {
         this.crossedWaypoint = crossedWaypoint;
+    }
+
+    public int getChosenRouteIdx() {
+        return chosenRouteIdx;
+    }
+
+    public void setChosenRouteIdx(int chosenRouteIdx) {
+        this.chosenRouteIdx = chosenRouteIdx;
     }
 }

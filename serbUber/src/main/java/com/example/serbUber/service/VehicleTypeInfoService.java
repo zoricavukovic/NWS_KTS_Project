@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.example.serbUber.dto.VehicleTypeInfoDTO.fromVehicleTypeInfos;
+import static com.example.serbUber.util.Constants.ONE_KILOMETER_TO_METER;
+import static com.example.serbUber.util.Constants.TOKEN_VALUE;
 
 @Component
 @Qualifier("vehicleTypeInfoServiceConfiguration")
@@ -59,7 +61,16 @@ public class VehicleTypeInfoService implements IVehicleTypeInfoService {
     public double getPriceForVehicleAndChosenRoute(double kilometers, VehicleType vehicleType) throws EntityNotFoundException {
         double priceForType = getPriceForVehicle(vehicleType);
 
-        return Math.ceil(priceForType + (kilometers/1000)*1); // *1 token -> 1token=1e
+        return Math.ceil(priceForType + (kilometers/ONE_KILOMETER_TO_METER)*TOKEN_VALUE);
+    }
+
+    public double getAveragePriceForChosenRoute(double kilometers) throws EntityNotFoundException {
+        double totalPrice = 0;
+        for(VehicleType vehicleType : VehicleType.values()){
+            totalPrice += getPriceForVehicleAndChosenRoute(kilometers, vehicleType);
+        }
+
+        return Math.ceil(totalPrice/VehicleType.values().length);
     }
 
     public VehicleTypeInfo get(VehicleType vehicleType) throws EntityNotFoundException {

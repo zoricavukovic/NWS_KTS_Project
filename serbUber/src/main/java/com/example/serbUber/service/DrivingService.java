@@ -408,6 +408,12 @@ public class DrivingService implements IDrivingService {
                 : calculateForAllUsers(chartType, startDate, endDate);
     }
 
+    public LocalDateTime getTimeForDriving(final Long drivingId) throws EntityNotFoundException {
+        Driving driving = getDriving(drivingId);
+
+        return driving.getStarted();
+    }
+
     boolean checkSenderAndReceiverInActiveDriving(Long driverId, Long userId) {
 
         return driverHasActiveDriving(driverId) && this.checkUserHasActiveDriving(userId) != null;

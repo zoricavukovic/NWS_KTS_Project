@@ -8,6 +8,7 @@ import com.example.serbUber.exception.EntityType;
 import com.example.serbUber.model.DrivingLocationIndex;
 import com.example.serbUber.model.Location;
 import com.example.serbUber.model.Route;
+import com.example.serbUber.model.VehicleType;
 import com.example.serbUber.repository.RouteRepository;
 import com.example.serbUber.request.DrivingLocationIndexRequest;
 import com.example.serbUber.request.LocationsForRoutesRequest;
@@ -34,17 +35,19 @@ public class RouteService implements IRouteService {
 
     private final RouteRepository routeRepository;
     private final LocationService locationService;
-
+    private final VehicleTypeInfoService vehicleTypeInfoService;
     private final DrivingLocationIndexService drivingLocationIndexService;
 
     public RouteService(
             final RouteRepository routeRepository,
             final LocationService locationService,
-            final DrivingLocationIndexService drivingLocationIndexService
-    ) {
+            final DrivingLocationIndexService drivingLocationIndexService,
+            final VehicleTypeInfoService vehicleTypeInfoService
+            ) {
         this.routeRepository = routeRepository;
         this.locationService = locationService;
         this.drivingLocationIndexService = drivingLocationIndexService;
+        this.vehicleTypeInfoService = vehicleTypeInfoService;
 
     }
 
@@ -85,7 +88,7 @@ public class RouteService implements IRouteService {
                 .forEach(index -> {
                     try {
                         addPossibleRoutesViaPoints(locationsForRouteRequest.getLocationsForRouteRequest(), possibleRoutesViaPointsDTOs, index);
-                    } catch (IOException e) {
+                    } catch (IOException | EntityNotFoundException e) {
                         e.printStackTrace();
                     }
                 });
@@ -114,7 +117,7 @@ public class RouteService implements IRouteService {
                                 secondLocation.getLocation().getLat(),
                                 secondLocation.getLocation().getLon()
                         ).get(firstLocation.getRouteIndex());
-                    } catch (IOException e) {
+                    } catch (IOException | EntityNotFoundException e) {
                         e.printStackTrace();
                     }
                     assert path != null;
@@ -178,7 +181,7 @@ public class RouteService implements IRouteService {
             List<LongLatRequest> longLatRequestList,
             List<PossibleRoutesViaPointsDTO> possibleRoutesViaPointsDTOs,
             int index
-    ) throws IOException {
+    ) throws IOException, EntityNotFoundException {
 
         possibleRoutesViaPointsDTOs.add(
                 new PossibleRoutesViaPointsDTO(
@@ -193,7 +196,7 @@ public class RouteService implements IRouteService {
             final double firstPointLng,
             final double secondPointLat,
             final double secondPointLng
-    ) throws IOException {
+    ) throws IOException, EntityNotFoundException {
 
         return fromOSMResponse(getOSMResult(firstPointLat, firstPointLng, secondPointLat, secondPointLng));
     }
@@ -232,12 +235,12 @@ public class RouteService implements IRouteService {
     }
 
 
-    private List<PossibleRouteDTO> fromOSMResponse(String object) {
+    private List<PossibleRouteDTO> fromOSMResponse(String object) throws EntityNotFoundException {
 
         return fromLegs(object);
     }
 
-    private List<PossibleRouteDTO> fromLegs(String object) {
+    private List<PossibleRouteDTO> fromLegs(String object) throws EntityNotFoundException {
         List<PossibleRouteDTO> possibleRouteDTOs = new LinkedList<>();
         List<String> legs = Arrays.stream(object.split("legs=")).toList();
         fromLegs(possibleRouteDTOs, legs);
@@ -245,14 +248,15 @@ public class RouteService implements IRouteService {
         return possibleRouteDTOs;
     }
 
-    private void fromLegs(List<PossibleRouteDTO> possibleRouteDTOs, List<String> legs) {
+    private void fromLegs(List<PossibleRouteDTO> possibleRouteDTOs, List<String> legs) throws EntityNotFoundException {
         for (String leg: legs.subList(1, legs.size())){
             List<double[]> locations = new LinkedList<>();
             List<String> steps = Arrays.stream(leg.split("steps=")).toList();
             fromSteps(locations, steps);
             double distance = getDistance(Arrays.stream(leg.split("distance=")).toList());
             double minutes = getTimeFromDistance(distance);
-            possibleRouteDTOs.add(new PossibleRouteDTO(distance, locations, minutes));
+            double averagePrice = vehicleTypeInfoService.getAveragePriceForChosenRoute(distance/ONE_KILOMETER_TO_METER);
+            possibleRouteDTOs.add(new PossibleRouteDTO(distance, locations, minutes, averagePrice));
         }
     }
 

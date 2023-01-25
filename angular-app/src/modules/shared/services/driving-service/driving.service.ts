@@ -1,24 +1,20 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {BehaviorSubject, Observable} from 'rxjs';
-import {GenericService} from "../generic-service/generic.service";
-import {ConfigService} from "../config-service/config.service";
-import {Driving} from "../../models/driving/driving";
-import {VehicleCurrentLocation} from "../../models/vehicle/vehicle-current-location";
-import {SimpleDrivingInfo} from "../../models/driving/simple-driving-info";
+import { BehaviorSubject, Observable } from 'rxjs';
+import { GenericService } from '../generic-service/generic.service';
+import { ConfigService } from '../config-service/config.service';
+import { Driving } from '../../models/driving/driving';
+import { VehicleCurrentLocation } from '../../models/vehicle/vehicle-current-location';
+import { SimpleDrivingInfo } from '../../models/driving/simple-driving-info';
 import { ChartData, ChartRequest } from '../../models/chart/chart-data';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DrivingService extends GenericService<Driving> {
-
   ride$ = new BehaviorSubject<VehicleCurrentLocation>(null);
 
-  constructor(
-    private http: HttpClient,
-    private configService: ConfigService
-  ) {
+  constructor(private http: HttpClient, private configService: ConfigService) {
     super(http, configService.DRIVINGS_URL);
   }
 
@@ -30,8 +26,13 @@ export class DrivingService extends GenericService<Driving> {
     selectedSortOrder: string
   ) {
     return this.http.get(
-      this.configService.drivingsSortPaginationUrl(id, pageNumber
-        , pageSize, selectedSortBy, selectedSortOrder)
+      this.configService.drivingsSortPaginationUrl(
+        id,
+        pageNumber,
+        pageSize,
+        selectedSortBy,
+        selectedSortOrder
+      )
     );
   }
 
@@ -41,9 +42,16 @@ export class DrivingService extends GenericService<Driving> {
     );
   }
 
-  getDrivingsForDriver(driverId: number): Observable<Driving[]> {
+  getTimeForDriving(drivingId: number): Observable<Date> {
+    return this.http.get<Date>(
+      this.configService.getTimeForDrivingUrl(drivingId)
+    );
+  }
 
-    return this.http.get<Driving[]>(this.configService.nowAndFutureDrivingsUrl(driverId));
+  getDrivingsForDriver(driverId: number): Observable<Driving[]> {
+    return this.http.get<Driving[]>(
+      this.configService.nowAndFutureDrivingsUrl(driverId)
+    );
   }
 
   // getCountDrivings(id: number) {
@@ -51,7 +59,6 @@ export class DrivingService extends GenericService<Driving> {
   // }
 
   rejectDriving(drivingId: number, reason: string): Observable<Driving> {
-
     return this.http.put<Driving>(
       this.configService.rejectDrivingUrl(drivingId),
       reason
@@ -59,23 +66,32 @@ export class DrivingService extends GenericService<Driving> {
   }
 
   finishDriving(drivingId: number): Observable<Driving> {
-
-    return this.http.put<Driving>(this.configService.finishDrivingUrl(drivingId), null);
+    return this.http.put<Driving>(
+      this.configService.finishDrivingUrl(drivingId),
+      null
+    );
   }
 
-  startDriving(drivingId: number):Observable<Driving> {
-
-    return this.http.put<Driving>(this.configService.startDrivingUrl(drivingId), null);
+  startDriving(drivingId: number): Observable<Driving> {
+    return this.http.put<Driving>(
+      this.configService.startDrivingUrl(drivingId),
+      null
+    );
   }
 
   checkIfUserHasActiveDriving(id: number): Observable<SimpleDrivingInfo> {
-
-    return this.http.get<SimpleDrivingInfo>(this.configService.hasUserActiveDriving(id));
+    return this.http.get<SimpleDrivingInfo>(
+      this.configService.hasUserActiveDriving(id)
+    );
   }
 
-  getVehicleDetails(drivingId: number): BehaviorSubject<VehicleCurrentLocation> {
+  getVehicleDetails(
+    drivingId: number
+  ): BehaviorSubject<VehicleCurrentLocation> {
     this.http
-      .get<VehicleCurrentLocation>(this.configService.vehicleCurrentLocation(drivingId))
+      .get<VehicleCurrentLocation>(
+        this.configService.vehicleCurrentLocation(drivingId)
+      )
       .subscribe(vehiclesCurrentLocation => {
         this.ride$.next(vehiclesCurrentLocation);
       });
@@ -87,28 +103,41 @@ export class DrivingService extends GenericService<Driving> {
     this.ride$.next(vehicleCurrentLocation);
   }
 
-  havePassengersAlreadyRide(passengers: string[], started: Date): Observable<boolean>{
-    return this.http.post<boolean>(this.configService.HAVE_PASSENGERS_ALREADY_RIDE_URL, {passengersEmail: passengers, started: started});
+  havePassengersAlreadyRide(
+    passengers: string[],
+    started: Date
+  ): Observable<boolean> {
+    return this.http.post<boolean>(
+      this.configService.HAVE_PASSENGERS_ALREADY_RIDE_URL,
+      { passengersEmail: passengers, started: started }
+    );
   }
 
   getChartData(chartRequest: ChartRequest): Observable<ChartData> {
     return this.http.post<ChartData>(
-      this.configService.getChartData(), chartRequest
+      this.configService.getChartData(),
+      chartRequest
     );
   }
 
   getAdminChartData(chartRequest: ChartRequest): Observable<ChartData> {
     return this.http.post<ChartData>(
-      this.configService.getAdminChartData(), chartRequest
+      this.configService.getAdminChartData(),
+      chartRequest
     );
   }
 
-  createChartRequest(id: number, chartType: string, startDate: string, endDate: string): ChartRequest {
+  createChartRequest(
+    id: number,
+    chartType: string,
+    startDate: string,
+    endDate: string
+  ): ChartRequest {
     return {
       id: id,
       chartType: chartType,
       startDate: startDate,
-      endDate: endDate
-    }
+      endDate: endDate,
+    };
   }
 }

@@ -171,7 +171,8 @@ public class VehicleService implements IVehicleService {
         final Long id,
         final double lng,
         final double lat,
-        final int crossedWaypoints
+        final int crossedWaypoints,
+        final int chosenRouteIdx
     ) throws EntityNotFoundException {
         Vehicle vehicle = getVehicleById(id);
         Location location = vehicle.getCurrentStop();
@@ -186,7 +187,7 @@ public class VehicleService implements IVehicleService {
         Driver driver = getDriverByVehicleId(vehicle.getId());
         vehicleRepository.save(vehicle);
         VehicleWithDriverId vehicleWithDriverId = new VehicleWithDriverId(vehicle, driver.getId(), driver.isActive());
-        webSocketService.sendVehicleCurrentLocation(new VehicleCurrentLocationDTO(vehicleWithDriverId));
+        webSocketService.sendVehicleCurrentLocation(new VehicleCurrentLocationDTO(vehicleWithDriverId,chosenRouteIdx));
 
         return new VehicleCurrentLocationForLocustDTO(vehicleWithDriverId);
     }

@@ -62,7 +62,8 @@ public class VehicleController {
         return this.vehicleService.updateCurrentPosition(
             id, vehicleCurrentPositionRequest.getLongLatRequest().getLon(),
             vehicleCurrentPositionRequest.getLongLatRequest().getLat(),
-            vehicleCurrentPositionRequest.getCrossedWaypoint()
+            vehicleCurrentPositionRequest.getCrossedWaypoint(),
+            vehicleCurrentPositionRequest.getChosenRouteIdx()
         );
     }
 

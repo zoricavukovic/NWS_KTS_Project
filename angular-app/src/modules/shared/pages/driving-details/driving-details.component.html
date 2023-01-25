@@ -75,13 +75,7 @@
         *ngIf="!isRegularUser"
         [users]="driving.users"
         [base64Prefix]="base64Prefix"></app-driving-details-passengers>
-      <div
-        *ngIf="
-          driving &&
-          driving.active &&
-          driving.drivingStatus === 'ACCEPTED' &&
-          isRegularUser
-        ">
+      <div *ngIf="storedDrivingNotification.wrongRoute">
         <button
           mat-raised-button
           (click)="reportDriveBehaviour()"
