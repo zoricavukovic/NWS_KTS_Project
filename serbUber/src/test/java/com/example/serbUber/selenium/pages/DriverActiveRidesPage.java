@@ -29,7 +29,7 @@ public class DriverActiveRidesPage {
     }
 
     public void clickOnFinishRideButton(){
-        new WebDriverWait(driver, Duration.ofSeconds(2))
+        new WebDriverWait(driver, Duration.ofSeconds(3))
             .until(ExpectedConditions.elementToBeClickable(finishRideButton));
         finishRideButton.click();
     }

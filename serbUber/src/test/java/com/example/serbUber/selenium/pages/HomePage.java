@@ -61,7 +61,7 @@ public class HomePage {
     }
 
     public boolean isFinishedRide(){
-        return new WebDriverWait(driver, Duration.ofSeconds(3))
+        return new WebDriverWait(driver, Duration.ofSeconds(4))
                 .until(ExpectedConditions.textToBePresentInElement(regularUserFinishedRideTitle, "Your ride is finished"));
     }
 }

@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Subscription} from 'rxjs';
 import {
   FacebookLoginProvider, GoogleLoginProvider,
   SocialAuthService,
@@ -108,7 +108,8 @@ export class LoginComponent implements OnInit, OnDestroy {
           chatService.connect();
           router.navigate(['/serb-uber/user/map-page-view/-1']);
         },
-        error(): void {
+        error(error): void {
+          console.log(error);
           toast.error('Email or password is not correct!', 'Login failed');
         },
       });

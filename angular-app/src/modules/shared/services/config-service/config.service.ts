@@ -30,6 +30,11 @@ export class ConfigService {
   ///////////////////AUTH///////////////////
   AUTH_URL = `${this.API_URL}/auth`;
   LOGIN_URL = `${this.AUTH_URL}/login`;
+
+  getLoginUrl(): string {
+    return this.LOGIN_URL;
+  }
+
   GOOGLE_LOGIN_URL = `${this.LOGIN_URL}/google`;
   FACEBOOK_LOGIN_URL = `${this.LOGIN_URL}/facebook`;
   LOGOUT_URL = `${this.AUTH_URL}/logout`;
@@ -144,11 +149,11 @@ export class ConfigService {
 
   getChartData(): string {
     return `${this.DRIVINGS_URL}/chart-data`;
-  } 
+  }
 
   getAdminChartData(): string {
     return `${this.DRIVINGS_URL}/admin-chart-data`;
-  } 
+  }
 
   ///////////////////DRIVING-NOTIFICATION///////////////////
 

@@ -1,7 +1,6 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
-import {Router} from '@angular/router';
 import {User} from "../../../shared/models/user/user";
 import {LoginRequest} from "../../../shared/models/user/login-request";
 import {LoginResponse} from "../../../shared/models/user/login-response";
@@ -23,7 +22,6 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private configService: ConfigService,
-    private router: Router,
     private chatService: WebSocketService,
     private store: Store
   ) {
@@ -35,7 +33,7 @@ export class AuthService {
 
   login(loginRequest: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(
-      this.configService.LOGIN_URL,
+      this.configService.getLoginUrl(),
       loginRequest
     );
   }
