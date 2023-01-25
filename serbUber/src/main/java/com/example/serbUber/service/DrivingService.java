@@ -158,6 +158,7 @@ public class DrivingService implements IDrivingService {
         }
     }
 
+    @Transactional
     public List<Driving> getAllReservations(){
 
         return drivingRepository.getAllReservations();
