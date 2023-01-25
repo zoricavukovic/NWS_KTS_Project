@@ -301,4 +301,75 @@ describe('RegistrationComponent', () => {
     );
     expect(routerMock.navigate).toHaveBeenCalledWith(['/verify/1']);
   }));
+
+  it('should register driver success', fakeAsync(() => {
+    authServiceSpy.userIsAdmin.and.returnValue(true);
+    componentForRegistration.ngOnInit();
+    toastrServiceMock.error.calls.reset();
+    componentForRegistration.registrationForm.patchValue({
+      emailFormControl: 'mile@gmail.com',
+      passwordFormControl: 'sifra123@',
+      passwordAgainFormControl: 'sifra123@',
+      phoneNumberFormControl: '0674837484',
+      nameFormControl: 'Mile',
+      surnameFormControl: 'Milic',
+      cityFormControl: 'Novi Sad',
+      vehicleType: 'CAR',
+      babySeat: true,
+      petFriendly: false,
+    });
+    const vehicle: Vehicle = {
+      babySeat: true,
+      petFriendly: false,
+      vehicleType: 'CAR',
+    };
+
+    const registrationRequest: Driver = {
+      email: 'mile@gmail.com',
+      name: 'Mile',
+      surname: 'Milic',
+      city: 'Novi Sad',
+      phoneNumber: '0674837484',
+      password: 'sifra123@',
+      confirmPassword: 'sifra123@',
+      vehicle: vehicle,
+    };
+
+    const role: Role = {
+      name: 'ROLE_DRIVER',
+    };
+
+    expect(componentForRegistration.registrationForm.valid).toBeTruthy();
+    const registrationResponse: User = {
+      id: 1,
+      email: 'mile@gmail.com',
+      name: 'Mile',
+      surname: 'Milic',
+      city: 'Novi Sad',
+      phoneNumber: '0674837484',
+      profilePicture: '',
+      role: role,
+    };
+
+    userServiceMock.registerDriver.and.returnValue(of(registrationResponse));
+    expect(componentForRegistration.showDriverForm).toBe(true);
+    componentForRegistration.register();
+    expect(userServiceMock.registerDriver).toHaveBeenCalledWith(
+      registrationRequest
+    );
+
+    //vrati se na prethodno stanje, zbog drugih testova
+    authServiceSpy.userIsAdmin.and.returnValue(false);
+
+    tick();
+    expect(toastrServiceMock.success).toHaveBeenCalledWith(
+      'Driver is created and waiting for verification!',
+      'Registration successfully'
+    );
+    expect(routerMock.navigate).toHaveBeenCalledWith([
+      '/serb-uber/user/map-page-view/-1',
+    ]);
+  }));
+
+  
 });

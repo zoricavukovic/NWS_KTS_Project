@@ -110,4 +110,104 @@ describe('UserService', () => {
     );
     expect(mockErrorResponse.status).toBe(400);
   }));
+
+  it('registerDriver() should return registration response', fakeAsync(() => {
+    const vehicle: Vehicle = {
+      babySeat: true,
+      petFriendly: false,
+      vehicleType: 'CAR',
+    };
+
+    const registrationRequest: Driver = {
+      email: 'mile@gmail.com',
+      name: 'Mile',
+      surname: 'Milic',
+      city: 'Novi Sad',
+      phoneNumber: '0674837484',
+      password: 'sifra123@',
+      confirmPassword: 'sifra123@',
+      vehicle: vehicle,
+    };
+
+    const role: Role = {
+      name: 'ROLE_DRIVER',
+    };
+
+    const mockRegistrationResponse: User = {
+      id: 1,
+      email: 'mile@gmail.com',
+      name: 'Mile',
+      surname: 'Milic',
+      city: 'Novi Sad',
+      phoneNumber: '0674837484',
+      profilePicture: '',
+      role: role,
+    };
+
+    let registrationResponse: User;
+    configServiceMock.getCreateDriverUrl.and.returnValue(
+      '/users/create/driver'
+    );
+    userService
+      .registerDriver(registrationRequest)
+      .subscribe(res => (registrationResponse = res));
+
+    const req = httpMock.expectOne('/users/create/driver');
+    expect(req.request.method).toBe('POST');
+    req.flush(mockRegistrationResponse);
+
+    tick();
+
+    expect(registrationResponse).toBeDefined();
+    expect(registrationResponse.email).toBe('mile@gmail.com');
+    expect(registrationResponse.name).toBe('Mile');
+    expect(registrationResponse.surname).toBe('Milic');
+    expect(registrationResponse.phoneNumber).toBe('0674837484');
+    expect(registrationResponse.city).toBe('Novi Sad');
+    expect(registrationResponse.id).toBe(1);
+    expect(registrationResponse.role.name).toBe('ROLE_DRIVER');
+  }));
+
+  it('registerDriver() should return error message', fakeAsync(() => {
+    const vehicle: Vehicle = {
+      babySeat: true,
+      petFriendly: false,
+      vehicleType: 'CAR',
+    };
+
+    const registrationRequest: Driver = {
+      email: 'mile@gmail.com',
+      name: 'Mile',
+      surname: 'Milic',
+      city: 'Novi Sad',
+      phoneNumber: '0674837484',
+      password: 'sifra123@',
+      confirmPassword: 'sifra123@',
+      vehicle: vehicle,
+    };
+
+    const mockErrorResponse: HttpErrorResponse = new HttpErrorResponse({
+      error: 'User with email mile@gmail.com already exists.',
+      status: 400,
+    });
+
+    let registrationResponse: User;
+    configServiceMock.getCreateDriverUrl.and.returnValue(
+      '/users/create/driver'
+    );
+    userService
+      .registerDriver(registrationRequest)
+      .subscribe(res => (registrationResponse = res));
+
+    const req = httpMock.expectOne('/users/create/driver');
+    expect(req.request.method).toBe('POST');
+    req.flush(mockErrorResponse);
+
+    expect(mockErrorResponse).toBeDefined();
+    expect(mockErrorResponse.error).toBe(
+      'User with email mile@gmail.com already exists.'
+    );
+    expect(mockErrorResponse.status).toBe(400);
+  }));
+
 });
