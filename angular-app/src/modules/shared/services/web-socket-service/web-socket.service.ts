@@ -104,6 +104,10 @@ export class WebSocketService {
         that.vehicleArriveNotification();
 
         that.rejectOutdatedDriving();
+
+        that.successfulReservationNotification();
+
+        that.reminderReservation();
       });
     }
   }
@@ -171,13 +175,14 @@ export class WebSocketService {
           drivingId: drivingStatusNotification.drivingId,
           vehicleId: drivingStatusNotification.vehicleId,
         };
-
+        console.log(updatedDriving);
+        this.toast.info('Driving created successfully!');
         this.store.dispatch(new GetDrivingNotification());
         this.store.dispatch(
           new UpdateMinutesStatusDrivingNotification(updatedDriving)
         );
         this.router.navigate([
-          `/serb-uber/user/map-page-view/${drivingStatusNotification.drivingId}`,
+          `serb-uber/user/details/${drivingStatusNotification.drivingId}`,
         ]);
       }
     );
@@ -367,6 +372,29 @@ export class WebSocketService {
           );
           this.drivingService.updateRide(vehicleCurrentLocation);
         }
+      }
+    );
+  }
+
+  successfulReservationNotification() {
+    this.stompClient.subscribe(
+      environment.publisherUrl +
+        localStorage.getItem('email') +
+        '/successful-reservation',
+      message => {
+        this.toast.info(message.body, 'Created reservation');
+        this.store.dispatch(new ClearStore());
+      }
+    );
+  }
+
+  reminderReservation() {
+    this.stompClient.subscribe(
+      environment.publisherUrl +
+        localStorage.getItem('email') +
+        '/reservation-reminder',
+      message => {
+        this.toast.info(message.body);
       }
     );
   }

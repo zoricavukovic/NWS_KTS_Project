@@ -33,7 +33,6 @@
         </h2>
       </div>
     </div>
-
     <br />
     <div>
       <app-driving-details-route
@@ -59,7 +58,12 @@
         storedDrivingNotification?.drivingStatus === 'PAYING'
       "></app-waiting-for-accept-ride-container>
     <br />
-    <div *ngIf="!router.url.includes('favourite-route') && !filterVehicleView">
+    <div
+      *ngIf="
+        !router.url.includes('favourite-route') &&
+        !filterVehicleView &&
+        !requestLater
+      ">
       <vehicle-details [vehicle]="driver?.vehicle"></vehicle-details>
       <br />
       <app-driving-details-driver

@@ -3,9 +3,9 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
-import {Driving} from "../../models/driving/driving";
-import {User} from "../../models/user/user";
-import {RatingDialogComponent} from "../rating-dialog/rating-dialog.component";
+import { Driving } from '../../models/driving/driving';
+import { User } from '../../models/user/user';
+import { RatingDialogComponent } from '../rating-dialog/rating-dialog.component';
 import { RegularUserService } from '../../services/regular-user-service/regular-user.service';
 import { AuthService } from 'src/modules/auth/services/auth-service/auth.service';
 
@@ -32,14 +32,14 @@ export class DrivingRowComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.isRegularUser = this.user?.role.name === "ROLE_DRIVER";
+    this.isRegularUser = this.authService.userIsRegular();
     this.favouriteRouteSubscription = this.regularUserService
-          .isFavouriteRouteForUser(this.driving.route.id, this.user.id)
-          .subscribe(response => {
-            if (response) {
-              this.favouriteRoute = true;
-            }
-          });
+      .isFavouriteRouteForUser(this.driving.route.id, this.user.id)
+      .subscribe(response => {
+        if (response) {
+          this.favouriteRoute = true;
+        }
+      });
   }
 
   goToDetailsPage(id: number) {
@@ -118,7 +118,7 @@ export class DrivingRowComponent implements OnInit, OnDestroy {
     if (this.reviewSubscription) {
       this.reviewSubscription.unsubscribe();
     }
-    if(this.favouriteRouteSubscription){
+    if (this.favouriteRouteSubscription) {
       this.favouriteRouteSubscription.unsubscribe();
     }
   }

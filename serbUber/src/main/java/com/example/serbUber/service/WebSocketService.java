@@ -204,7 +204,7 @@ public class WebSocketService {
     }
 
     public void sendReservationReminder(Set<RegularUser> users, int minutes) {
-        String message = String.format("Your future ride start in %d minutes. Tap to see details.", minutes);
+        String message = String.format("Your reserved ride start in %d minutes.", minutes);
         if (users.size() > 0) {
             users.forEach(user -> {
                 this.messagingTemplate.convertAndSendToUser(user.getEmail(), "/reservation-reminder", message);
@@ -234,5 +234,12 @@ public class WebSocketService {
             this.messagingTemplate.convertAndSendToUser(passenger.getEmail(), "/reject-outdated-driving", drivingId);
         });
         this.messagingTemplate.convertAndSendToUser(driverEmail, "/reject-outdated-driving", drivingId);
+    }
+
+    public void sendSuccessfulCreateReservation(Set<RegularUser> passengers) {
+        String message = "Your ride reserved successfully.";
+        passengers.forEach((passenger) -> {
+            this.messagingTemplate.convertAndSendToUser(passenger.getEmail(), "/successful-reservation", message);
+        });
     }
 }

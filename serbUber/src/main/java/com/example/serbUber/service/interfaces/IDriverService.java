@@ -4,6 +4,7 @@ import com.example.serbUber.dto.user.DriverDTO;
 import com.example.serbUber.dto.user.DriverPageDTO;
 import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.*;
+import com.example.serbUber.model.Driving;
 import com.example.serbUber.model.VehicleType;
 import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.model.user.DriverUpdateApproval;
@@ -42,4 +43,6 @@ public interface IDriverService {
     Driver getDriverByEmail(final String email) throws EntityNotFoundException;
 
     List<Driver> getActiveDrivers();
+
+    Driving getActiveDriving(List<Driving> drivings);
 }

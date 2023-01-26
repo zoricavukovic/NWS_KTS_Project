@@ -3,6 +3,7 @@ package com.example.serbUber.service;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import com.example.serbUber.model.Driving;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -18,7 +19,8 @@ public class ScheduleReservationReminder {
         this.webSocketService = webSocketService;
     }
 
-    @Scheduled(cron = "0 * * * * *")
+    @Scheduled(cron = "*/30 * * * * *")
+    @Transactional
     public void remindPassengerForReservation(){
         List<Driving> allReservations = drivingService.getAllReservations();
         for(Driving reservation : allReservations){
