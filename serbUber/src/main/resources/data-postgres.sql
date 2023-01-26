@@ -67,8 +67,8 @@ insert into drivers (id, email, password, name, surname, phone_number, city, pro
     (nextval('users_id_gen'), 'elo@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Elo', 'Elic', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('18.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), 0, 0, true, false, false, 6);
 
 insert into drivings (active, driver_id, driving_status, duration, price, started, end_date, route_id, last_reminder, reservation) values
-                    (true, 18, 2, 2, 3, to_timestamp('25.01.2023. 08:40', 'DD.MM.YYYY HH24:MI'), null, 1, null, false),
-                   (true, 14, 2, 8, 3, to_timestamp('25.01.2023. 8:25', 'DD.MM.YYYY HH24:MI'), null, 2, null, false),
+                    (true, 18, 2, 2, 3, to_timestamp('25.01.2023. 22:48', 'DD.MM.YYYY HH24:MI'), null, 1, null, false),
+                   (true, 14, 2, 8, 3, to_timestamp('25.01.2023. 22:40', 'DD.MM.YYYY HH24:MI'), null, 2, null, false),
                    (false, 18, 2, 10, 5, to_timestamp('25.01.2023 18:50', 'DD.MM.YYYY HH24:MI'), null, 3, null, false);
 
 
