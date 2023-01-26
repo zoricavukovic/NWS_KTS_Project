@@ -145,7 +145,7 @@ insert into token_banks(user_id, num_of_tokens, total_token_amount_spent, total_
                         (10, 10, 0, 10, 1),
                         (11, 10, 0, 10, 1),
                         (12, 10, 0, 10, 1),
-                        (13, 10, 0, 10, 1);
+                        (13, 0, 0, 0, 1);
 
 
 insert into token_transactions(time_stamp, num_of_bought_tokens, total_price, token_bank_id) values
