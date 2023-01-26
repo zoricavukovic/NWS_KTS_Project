@@ -15,6 +15,7 @@ import com.example.serbUber.request.LocationRequest;
 import com.example.serbUber.service.interfaces.IDrivingService;
 import com.example.serbUber.service.user.DriverService;
 import com.example.serbUber.service.user.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -41,31 +42,23 @@ public class DrivingService implements IDrivingService {
     private final DrivingRepository drivingRepository;
     private final UserService userService;
 
-    private final DriverService driverService;
     private final WebSocketService webSocketService;
     private final DrivingStatusNotificationService drivingStatusNotificationService;
-    private final VehicleService vehicleService;
     private final RouteService routeService;
-    private final DrivingWithVehicleService drivingWithVehicleService;
 
+    @Autowired
     public DrivingService(
             final DrivingRepository drivingRepository,
             final UserService userService,
             final WebSocketService webSocketService,
             final DrivingStatusNotificationService drivingStatusNotificationService,
-            final VehicleService vehicleService,
-            final RouteService routeService,
-            final DrivingWithVehicleService drivingWithVehicleService,
-            final DriverService driverService
+            final RouteService routeService
     ) {
         this.drivingRepository = drivingRepository;
         this.userService = userService;
         this.webSocketService = webSocketService;
         this.drivingStatusNotificationService = drivingStatusNotificationService;
-        this.vehicleService = vehicleService;
         this.routeService = routeService;
-        this.drivingWithVehicleService = drivingWithVehicleService;
-        this.driverService = driverService;
     }
 
     public Driving create(
@@ -246,7 +239,6 @@ public class DrivingService implements IDrivingService {
                 driving.getDriver().getEmail(), reason,
                 drivingStatusNotification.getDriving().getUsers()
         );
-//        this.vehicleService.updateCurrentVehiclesLocation();
 
         return new DrivingDTO(driving);
     }
