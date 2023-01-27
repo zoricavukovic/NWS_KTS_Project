@@ -13,6 +13,7 @@ import com.example.serbUber.request.DrivingLocationIndexRequest;
 import com.example.serbUber.request.LocationsForRoutesRequest;
 import com.example.serbUber.request.LongLatRequest;
 import com.example.serbUber.service.interfaces.IRouteService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -37,6 +38,7 @@ public class RouteService implements IRouteService {
 
     private final DrivingLocationIndexService drivingLocationIndexService;
 
+    @Autowired
     public RouteService(
             final RouteRepository routeRepository,
             final LocationService locationService,

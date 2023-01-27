@@ -15,6 +15,7 @@ import com.example.serbUber.service.payment.TokenBankService;
 import com.example.serbUber.service.user.DriverService;
 import com.example.serbUber.service.user.RegularUserService;
 import com.google.maps.errors.NotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
@@ -29,22 +30,20 @@ import static com.example.serbUber.util.Constants.*;
 @Component
 @Qualifier("drivingNotificationServiceConfiguration")
 public class DrivingNotificationService implements IDrivingNotificationService {
-    private final DrivingNotificationRepository drivingNotificationRepository;
-    private final RegularUserService regularUserService;
-    private final WebSocketService webSocketService;
-    private final VehicleService vehicleService;
-    private final DriverService driverService;
-    private final DrivingService drivingService;
-    private final RouteService routeService;
-    private final TokenBankService tokenBankService;
-    private final VehicleTypeInfoService vehicleTypeInfoService;
+    private DrivingNotificationRepository drivingNotificationRepository;
+    private RegularUserService regularUserService;
+    private WebSocketService webSocketService;
+    private DriverService driverService;
+    private DrivingService drivingService;
+    private RouteService routeService;
+    private TokenBankService tokenBankService;
+    private VehicleTypeInfoService vehicleTypeInfoService;
 
-
+    @Autowired
     public DrivingNotificationService(
         final DrivingNotificationRepository drivingNotificationRepository,
         final RegularUserService regularUserService,
         final WebSocketService webSocketService,
-        final VehicleService vehicleService,
         final DriverService driverService,
         final DrivingService drivingService,
         final RouteService routeService,
@@ -54,7 +53,6 @@ public class DrivingNotificationService implements IDrivingNotificationService {
         this.drivingNotificationRepository = drivingNotificationRepository;
         this.regularUserService = regularUserService;
         this.webSocketService = webSocketService;
-        this.vehicleService = vehicleService;
         this.driverService = driverService;
         this.drivingService = drivingService;
         this.routeService = routeService;
@@ -246,16 +244,6 @@ public class DrivingNotificationService implements IDrivingNotificationService {
         });
     }
 
-
-    private boolean allPassengersAcceptDriving(DrivingNotification drivingNotification){
-        Collection<Integer> values = drivingNotification.getReceiversReviewed().values().stream().filter(
-            value -> value == 2
-        ).toList();
-
-        return values.size() == 0;
-    }
-
-
     public void shouldFindDriver(final DrivingNotification drivingNotification) throws EntityNotFoundException, PassengerNotHaveTokensException {
         if (!drivingNotification.isReservation()){
             findDriverNow(drivingNotification);
@@ -364,14 +352,6 @@ public class DrivingNotificationService implements IDrivingNotificationService {
     private double getPriceForOnePassenger(double price, int numOfPassengers) {
 
         return Math.floor(price / numOfPassengers);
-    }
-
-
-    public DrivingNotificationDTO getDrivingNotification(Long id) throws EntityNotFoundException {
-        DrivingNotification drivingNotification =  drivingNotificationRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException(id, EntityType.DRIVING_NOTIFICATION));
-
-        return new DrivingNotificationDTO(drivingNotification);
     }
 
     private DrivingNotification createDrivingNotification(

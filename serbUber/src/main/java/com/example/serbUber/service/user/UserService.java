@@ -12,6 +12,7 @@ import com.example.serbUber.service.DriverUpdateApprovalService;
 import com.example.serbUber.service.EmailService;
 import com.example.serbUber.service.VerifyService;
 import com.example.serbUber.service.interfaces.IUserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
@@ -38,6 +39,7 @@ public class UserService implements IUserService {
     private final RegularUserService regularUserService;
     private final VerifyService verifyService;
 
+    @Autowired
     public UserService(
         final UserRepository userRepository,
         final DriverUpdateApprovalService driverUpdateApprovalService,

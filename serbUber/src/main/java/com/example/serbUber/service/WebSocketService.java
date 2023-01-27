@@ -3,6 +3,7 @@ package com.example.serbUber.service;
 import com.example.serbUber.dto.*;
 import com.example.serbUber.dto.bell.BellNotificationDTO;
 import com.example.serbUber.model.user.RegularUser;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,7 @@ public class WebSocketService {
 
     private final BellNotificationService bellNotificationService;
 
+    @Autowired
     public WebSocketService(
             final SimpMessagingTemplate messagingTemplate,
             final EmailService emailService,
