@@ -149,6 +149,7 @@ public class DrivingService implements IDrivingService {
         }
     }
 
+    @Transactional
     public List<Driving> getAllReservations(){
 
         return drivingRepository.getAllReservations();
@@ -317,8 +318,8 @@ public class DrivingService implements IDrivingService {
             new VehicleWithDriverId(
                 driving.getDriver().getVehicle(),
                 driving.getDriver().getId(),
-                driving.getDriver().isActive())
-            )
+                driving.getDriver().isActive()),
+            driving.getRoute().getLocations().first().getRouteIndex())
         );
 
         return new DrivingDTO(driving);
@@ -394,6 +395,12 @@ public class DrivingService implements IDrivingService {
         return (id != NOT_BY_SPECIFIC_USER) ? calculateChartData(user.getRole().isRegularUser() ? this.drivingRepository.getFinishedDrivingsForRegular(id)
                 : this.drivingRepository.getFinishedDrivingsForDriver(id), chartType, startDate, endDate)
                 : calculateForAllUsers(chartType, startDate, endDate);
+    }
+
+    public LocalDateTime getTimeForDriving(final Long drivingId) throws EntityNotFoundException {
+        Driving driving = getDriving(drivingId);
+
+        return driving.getStarted();
     }
 
     boolean checkSenderAndReceiverInActiveDriving(Long driverId, Long userId) {

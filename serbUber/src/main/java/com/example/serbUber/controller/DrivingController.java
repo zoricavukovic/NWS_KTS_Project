@@ -5,7 +5,6 @@ import com.example.serbUber.dto.DrivingPageDTO;
 import com.example.serbUber.dto.SimpleDrivingInfoDTO;
 import com.example.serbUber.dto.VehicleCurrentLocationDTO;
 import com.example.serbUber.dto.chart.ChartDataDTO;
-import com.example.serbUber.dto.chart.ChartItemDTO;
 import com.example.serbUber.exception.DriverAlreadyHasStartedDrivingException;
 import com.example.serbUber.exception.DrivingShouldNotStartYetException;
 import com.example.serbUber.exception.EntityNotFoundException;
@@ -19,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.example.serbUber.exception.ErrorMessagesConstants.*;
@@ -180,5 +180,12 @@ public class DrivingController {
                 chartRequest.getStartDate(),
                 chartRequest.getEndDate()
         );
+    }
+
+    @GetMapping("/time-for-driving/{drivingId}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_REGULAR_USER')")
+    public LocalDateTime getTimeForDriving(@PathVariable Long drivingId) throws EntityNotFoundException {
+        return drivingService.getTimeForDriving(drivingId);
     }
 }

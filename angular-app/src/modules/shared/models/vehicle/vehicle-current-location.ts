@@ -1,4 +1,4 @@
-import {Location} from "../route/location";
+import { Location } from '../route/location';
 
 export interface VehicleCurrentLocation {
   id: number;
@@ -6,7 +6,8 @@ export interface VehicleCurrentLocation {
   inDrive: boolean;
   type: string;
   driverId: number;
-  activeDriver:boolean;
+  activeDriver: boolean;
   crossedWaypoints: number;
   timeToDestination: number;
+  chosenRouteIdx?: number;
 }

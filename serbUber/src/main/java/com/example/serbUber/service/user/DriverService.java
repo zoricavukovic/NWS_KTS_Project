@@ -171,6 +171,7 @@ public class DriverService implements IDriverService{
     }
 
 
+    @Transactional
     public Driver getDriverForDriving(final DrivingNotification drivingNotification) throws EntityNotFoundException {
         LocalDateTime startDate = drivingNotification.getStarted();
         LocalDateTime endDate = drivingNotification.getStarted().plusMinutes((int) drivingNotification.getDuration());
@@ -268,7 +269,7 @@ public class DriverService implements IDriverService{
         return null;
     }
 
-    private Driving getActiveDriving(List<Driving> drivings){
+    public Driving getActiveDriving(List<Driving> drivings){
         for (Driving driving: drivings){
             if (driving.getDrivingStatus().equals(DrivingStatus.ACCEPTED) && driving.isActive()){
                 return driving;

@@ -56,7 +56,9 @@ export class SimpleUpdateDrivingNotification {
 export class UpdateStatusDrivingNotification {
   static readonly type = '[DrivingNotification] UpdateStatus';
 
-  constructor(public payload: { active: boolean; drivingStatus: string }) {}
+  constructor(
+    public payload: { active: boolean; drivingStatus: string; started?: Date }
+  ) {}
 }
 
 export class ClearStore {
@@ -74,6 +76,12 @@ export class UpdateDurationDrivingNotification {
     '[DrivingNotification] UpdateDurationDrivingNotification';
 
   constructor(public payload: { duration: number }) {}
+}
+
+export class UpdateIfDriverChooseWrongRoute {
+  static readonly type = '[DrivingNotification] UpdateIfDriverChooseWrongRoute';
+
+  constructor(public payload: boolean) {}
 }
 
 export class ResetVehicleInDrivingNotification {

@@ -71,6 +71,10 @@ public class Constants {
     public static final double ZERO_DISTANCE = 0;
     public static final double ZERO_MINUTES = 0;
 
+    public static final double ONE_KILOMETER_TO_METER = 1000;
+
+    public static final int TOKEN_VALUE = 1;
+
     public static int generateSecurityCode() {
         return (int)(Math.random() * (Constants.MAX_SECURITY_NUM - Constants.MIN_SECURITY_NUM + 1) + Constants.MIN_SECURITY_NUM);
     }

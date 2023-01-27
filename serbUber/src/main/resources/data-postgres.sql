@@ -17,7 +17,8 @@ insert into locations (city, lat, lon, street, number, zip_code) values
              ('Novi Sad', 45.248048,19.834964, 'Brace Ribnikara', '29', '21000'),
              ('Novi Sad', 45.247868,19.835635, 'Brace Ribnikara', '25b', '21000'),
              ('Novi Sad', 45.247785,19.836022, 'Brace Ribnikara', '25a', '21000'),
-             ('Novi Sad', 45.242610,19.789230, 'Futoski put', '103', '21000');
+             ('Novi Sad', 45.242610,19.789230, 'Futoski put', '103', '21000'),
+             ('Novi Sad', 45.255842,19.863661, 'Vladimira Nazora', '5', '21000');
 
 insert into vehicle_type_infos (num_of_seats, start_price, vehicle_type) values
     (9, 3, 0);
@@ -36,9 +37,9 @@ insert into vehicles (baby_seat, pet_friendly, rate, vehicle_type_id, active_rou
             (true, false, 0, 1, 2, 0, 2, 0),
             (false, true, 0, 1, null, 0, 12, 0),
             (false, true, 0, 2, null, 0, 5, 0),
-            (true, true, 0, 2, null, 0, 5, 0),
-            (false, true, 0, 1, 1, 0, 5, 0),
-            (false, true, 0, 3, null, 0, 7, 0);
+            (true, true, 0, 2, null, 0, 15, 0),
+            (false, true, 0, 3, 1, 0, 5, 0),
+            (false, true, 0, 3, 2, 0, 7, 0);
 
 --sifra123@
 insert into admins (id, email, password, name, surname, phone_number, city, profile_picture, role_id, verified, online) values
@@ -61,24 +62,25 @@ insert into regular_users (id, email, password, name, surname, phone_number, cit
 insert into drivers (id, email, password, name, surname, phone_number, city, profile_picture, role_id, active, blocked, start_shift, end_shift, rate, working_minutes, verified, online, drive, vehicle_id) values
     (nextval('users_id_gen'), 'mile@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Mile', 'Milic', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('18.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), 0, 20, true, true, false, 1),
     (nextval('users_id_gen'), 'milan@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Milan', 'Milanovic', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('18.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), 0, 1, true, true, false, 2),
-    (nextval('users_id_gen'), 'eki@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Esad', 'Esadic', '012345678', 'Novi Sad', 'default-user.png', 3, false, false, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('18.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), 0, 0, true, false, false, 3),
+    (nextval('users_id_gen'), 'eki@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Esad', 'Esadic', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('18.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), 0, 0, true, false, false, 3),
     (nextval('users_id_gen'), 'bole@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Bole', 'Sam', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('18.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), 0, 0, true, true, false, 4),
     (nextval('users_id_gen'), 'uros@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Uros', 'Pejicc', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('18.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), 0, 0, true, true, true, 5),
-    (nextval('users_id_gen'), 'elo@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Elo', 'Elic', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('18.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), 0, 0, true, false, false, 6);
+    (nextval('users_id_gen'), 'elo@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Elo', 'Elic', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('18.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), 0, 0, true, false, true, 6);
 
 insert into drivings (active, driver_id, driving_status, duration, price, started, end_date, route_id, last_reminder, reservation) values
-                    (true, 18, 2, 2, 3, to_timestamp('25.01.2023. 22:48', 'DD.MM.YYYY HH24:MI'), null, 1, null, false),
-                   (true, 14, 2, 8, 3, to_timestamp('25.01.2023. 22:40', 'DD.MM.YYYY HH24:MI'), null, 2, null, false),
-                   (false, 18, 2, 10, 5, to_timestamp('25.01.2023 18:50', 'DD.MM.YYYY HH24:MI'), null, 3, null, false);
-
+                    (true, 18, 2, 10, 3, to_timestamp('24.01.2023. 19:00', 'DD.MM.YYYY HH24:MI'), null, 1, null, false),
+                   (true, 19, 2, 8, 3, to_timestamp('24.01.2023. 18:58', 'DD.MM.YYYY HH24:MI'), null, 2, null, false),
+                    (false, 17, 2, 8, 3, to_timestamp('25.01.2023. 23:00', 'DD.MM.YYYY HH24:MI'), null, 2, null, false);
 
 insert into driving_locations(location_id, index, route_id, route_index) values
       (5, 1, 1, 0),
       (10, 2, 1, 0),
       (7, 3, 1, 0),
       (14, 4, 1, 0),
-      (2,1,2, 0),
-      (3,2,2, 0),
+      (5,1,2, 1),
+      (15,2,2,0),
+      (4,3,2, 0),
+      (16,4,2, 0),
       (4,1,3, 0),
       (1,2,3, 0),
       (5, 1,4, 0),
@@ -87,9 +89,9 @@ insert into driving_locations(location_id, index, route_id, route_index) values
 
 insert into drivings_users(driving_id, user_id) values
     (1, 8),
-    (1, 9),
+    (1, 11),
     (2, 10),
-    (3, 7);
+    (3, 12);
 
 insert into chat_rooms(client_id, admin_id, resolved) values
     (3, 1, true);

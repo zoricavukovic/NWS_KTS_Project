@@ -45,6 +45,7 @@ public class ScheduleAllPassengersReviewCallForRide {
             if (drivingNotificationService.checkIfUsersReviewed(drivingNotification)){
                 if (drivingNotificationService.checkTimeOfStartingReservationRide(drivingNotification.getStarted())){
                     drivingNotificationService.findDriverNow(drivingNotification);
+
                 }else if (drivingNotificationService.checkTimeOfStartingReservationIsSoonRide(drivingNotification.getStarted())){
                     drivingNotificationService.deleteOutdatedReservationWithoutDriverNotification(drivingNotification);
                 }

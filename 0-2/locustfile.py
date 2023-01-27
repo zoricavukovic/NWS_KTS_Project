@@ -1,3 +1,5 @@
+import random
+
 from locust import HttpUser, task, events, between
 import requests
 
@@ -9,12 +11,17 @@ def on_locust_init(environment, **_kwargs):
 
 class QuickStartUser(HttpUser):
     vehicles_dict_with_coordinates = {}
+    vehicle_chosen_route_idx = {}
     host = "http://localhost:8080"
     wait_time = between(0.5, 2)
 
     def on_start(self):
         self.vehicles_dict = {}
         self.vehicles = requests.get('http://localhost:8080/vehicles/locust').json()
+<<<<<<< HEAD
+=======
+
+>>>>>>> developer
         for vehicle in self.vehicles:
             vehicleId = vehicle["vehicleId"]
 
@@ -23,11 +30,17 @@ class QuickStartUser(HttpUser):
                 self.get_coordinates(vehicle)
 
     def get_coordinates(self, vehicle):
+<<<<<<< HEAD
+=======
+        if vehicle["crossedWaypoints"] == -1 or not vehicle["crossedWaypoints"] < (len(vehicle["waypoints"])-1) \
+                or not vehicle["activeDriver"] or not vehicle["inDrive"]:
+>>>>>>> developer
 
         if vehicle["crossedWaypoints"] == -1 \
                 or not vehicle["crossedWaypoints"] < (len(vehicle["waypoints"]) - 1) \
                 or not vehicle["activeDriver"] or not vehicle["inDrive"]:
             return
+<<<<<<< HEAD
 
         first_point = vehicle["waypoints"][vehicle["crossedWaypoints"]]  # izabere lokaciju iz waypoints
         second_point = vehicle["waypoints"][vehicle["crossedWaypoints"] + 1]  # izabere lokaciju iz waypoints + 1
@@ -36,18 +49,38 @@ class QuickStartUser(HttpUser):
             f'https://routing.openstreetmap.de/routed-car/route/v1/driving/{first_point["lng"]},{first_point["lat"]};{second_point["lng"]},{second_point["lat"]}?geometries=geojson&overview=false&alternatives=true&steps=true')
 
         routeGeoJSON = response.json()
+=======
+        first_point = vehicle["waypoints"][vehicle["crossedWaypoints"]] #izabere lokaciju iz waypoints
+        second_point = vehicle["waypoints"][vehicle["crossedWaypoints"] + 1]  # izabere lokaciju iz waypoints + 1
+
+        response = requests.get(
+                f'https://routing.openstreetmap.de/routed-car/route/v1/driving/{first_point["lng"]},{first_point["lat"]};{second_point["lng"]},{second_point["lat"]}?geometries=geojson&overview=false&alternatives=true&steps=true')
+
+        routeGeoJSON = response.json()
+
+>>>>>>> developer
         chosenRouteIdx = vehicle["chosenRouteIdx"][vehicle["crossedWaypoints"]]
         coordinates = []
+        randomNum = random.randint(1, 50)
 
-        for step in routeGeoJSON['routes'][0]['legs'][chosenRouteIdx]['steps']:
+        if randomNum > 30 and len(routeGeoJSON['routes']) >= 2:
+            chosenRouteIdx = 0 if chosenRouteIdx > 0 else 1
+
+        self.vehicle_chosen_route_idx[vehicle['vehicleId']] = chosenRouteIdx
+        for step in routeGeoJSON['routes'][chosenRouteIdx]['legs'][0]['steps']:
             coordinates += [*step['geometry']['coordinates']]
 
         coordinates += [[second_point["lng"], second_point["lat"]]]
+<<<<<<< HEAD
+=======
+
+>>>>>>> developer
         self.vehicles_dict_with_coordinates[vehicle["vehicleId"]] = coordinates
 
     @task
     def update_coordinate(self):
         for vehicle in self.vehicles_dict.values():
+<<<<<<< HEAD
             responseCheck = self.client.get(f"/vehicles/check-vehicle-activity/{vehicle['vehicleId']}")
 
             responseCheckStatusJSON = responseCheck.json()
@@ -57,6 +90,18 @@ class QuickStartUser(HttpUser):
                     or not vehicle["activeDriver"] \
                     or not vehicle["inDrive"] \
                     or not self.listsAreSame(vehicle["waypoints"], responseCheckStatusJSON["waypoints"]):
+=======
+
+            if not vehicle['vehicleId'] in self.vehicle_chosen_route_idx.keys():
+                self.vehicle_chosen_route_idx[vehicle['vehicleId']] = -1
+            responseCheck = self.client.get(f"/vehicles/check-vehicle-activity/{vehicle['vehicleId']}/{self.vehicle_chosen_route_idx[vehicle['vehicleId']]}")
+
+            responseCheckStatusJSON = responseCheck.json()
+
+            if vehicle["activeDriver"] != responseCheckStatusJSON["activeDriver"] or vehicle["inDrive"] != responseCheckStatusJSON["inDrive"] \
+                    or not vehicle["activeDriver"] or not vehicle["inDrive"] or not self.listsAreSame(vehicle["waypoints"], responseCheckStatusJSON["waypoints"]):
+
+>>>>>>> developer
                 vehicle["activeDriver"] = responseCheckStatusJSON["activeDriver"]
                 vehicle["inDrive"] = responseCheckStatusJSON["inDrive"]
                 vehicle["waypoints"] = responseCheckStatusJSON["waypoints"]
@@ -64,6 +109,12 @@ class QuickStartUser(HttpUser):
                 vehicle["chosenRouteIdx"] = responseCheckStatusJSON["chosenRouteIdx"]
                 vehicle["currentIndexOfLocation"] = responseCheckStatusJSON["currentIndexOfLocation"]
                 vehicle["crossedWaypoints"] = responseCheckStatusJSON["crossedWaypoints"]
+<<<<<<< HEAD
+=======
+
+                self.get_coordinates(vehicle)
+
+>>>>>>> developer
 
                 self.get_coordinates(vehicle)
 
@@ -77,18 +128,30 @@ class QuickStartUser(HttpUser):
                         'lat': new_coordinate[1],
                         'lon': new_coordinate[0]
                     },
-                    'crossedWaypoints': vehicle["crossedWaypoints"]
+                    'crossedWaypoints': vehicle["crossedWaypoints"],
+                    'chosenRouteIdx': self.vehicle_chosen_route_idx[vehicle['vehicleId']]
                 })
                 responseJSON = response.json()
                 vehicle["activeDriver"] = responseJSON["activeDriver"]
                 vehicle["inDrive"] = responseJSON["inDrive"]
+<<<<<<< HEAD
             elif vehicle["vehicleId"] in self.vehicles_dict_with_coordinates \
                     and len(self.vehicles_dict_with_coordinates[vehicle["vehicleId"]]) == 0:  # nema koordinata na tom waypointu
 
                 if vehicle["crossedWaypoints"] + 1 < len(vehicle["waypoints"]) - 1:
+=======
+            elif vehicle["vehicleId"] in self.vehicles_dict_with_coordinates and len(self.vehicles_dict_with_coordinates[vehicle["vehicleId"]]) == 0: #nema koordinata na tom waypointu
+>>>>>>> developer
 
+                if vehicle["crossedWaypoints"]+1 < len(vehicle["waypoints"])-1:
                     vehicle["crossedWaypoints"] += 1
+<<<<<<< HEAD
                     self.vehicles_dict[vehicle["vehicleId"]] = vehicle
+=======
+
+                    self.vehicles_dict[vehicle["vehicleId"]] = vehicle
+
+>>>>>>> developer
                     self.get_coordinates(vehicle)
                     if len(self.vehicles_dict_with_coordinates[vehicle["vehicleId"]]) > 0:
                         new_coordinate = self.vehicles_dict_with_coordinates[vehicle["vehicleId"]].pop(0)
@@ -97,7 +160,8 @@ class QuickStartUser(HttpUser):
                                 'lat': new_coordinate[1],
                                 'lon': new_coordinate[0]
                             },
-                            'crossedWaypoints': vehicle["crossedWaypoints"]
+                            'crossedWaypoints': vehicle["crossedWaypoints"],
+                            'chosenRouteIdx': self.vehicle_chosen_route_idx[vehicle['vehicleId']]
                         })
 
                         responseJSON = response.json()
@@ -105,6 +169,10 @@ class QuickStartUser(HttpUser):
                         vehicle["inDrive"] = responseJSON["inDrive"]
 
     def listsAreSame(self, list1, list2):
+<<<<<<< HEAD
+=======
+
+>>>>>>> developer
         if len(list1) != len(list2):
             return False
         for i in range(0, len(list1)):

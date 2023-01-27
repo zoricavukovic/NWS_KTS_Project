@@ -257,7 +257,7 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
       chosenDateTime: started,
       reservation: this.rideRequestForm.get('chosenDateTime').value != null,
     };
-    console.log(drivingNotification);
+    this.rideRequestForm.reset();
     this.store
       .dispatch(new AddDrivingNotification(drivingNotification))
       .subscribe(response => {
@@ -267,12 +267,13 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
     this.drivingNotificationSubscription = this.drivingNotificationService
       .create(drivingNotification)
       .subscribe(
-        () => {
+        response => {
           this.store
             .dispatch(
               new UpdateStatusDrivingNotification({
                 active: false,
                 drivingStatus: 'ACCEPTED',
+                started: response.started,
               })
             )
             .subscribe(response => {

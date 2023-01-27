@@ -249,6 +249,11 @@ public class DrivingNotificationService implements IDrivingNotificationService {
             findDriverNow(drivingNotification);
             delete(drivingNotification);
         }
+        else {
+            Map<RegularUser, Integer> receiversReviewed = drivingNotification.getReceiversReviewed();
+            receiversReviewed.put(drivingNotification.getSender(), 0);
+            webSocketService.sendSuccessfulCreateReservation(getListOfUsers(receiversReviewed));
+        }
     }
 
     public void findDriverNow(DrivingNotification drivingNotification) throws PassengerNotHaveTokensException, EntityNotFoundException {
@@ -270,14 +275,23 @@ public class DrivingNotificationService implements IDrivingNotificationService {
             passengers.remove(drivingNotification.getSender());
             if (isPaidDriving(driving.getPrice(), passengers, drivingNotification.getSender())) {
                 double minutesToStartDrive = driverService.calculateMinutesToStartDriving(driver, driving);
-                driving.setStarted(LocalDateTime.now().plusMinutes((long) minutesToStartDrive));
+                if(drivingNotification.isReservation()){
+                    driving.setStarted(drivingNotification.getStarted());
+                }
+                else {
+                    driving.setStarted(LocalDateTime.now().plusMinutes((long) minutesToStartDrive));
+                }
                 driving.setDrivingStatus(DrivingStatus.ACCEPTED);
                 driving.setReservation(drivingNotification.isReservation());
+
                 DrivingDTO drivingDTO = drivingService.save(driving);
                 DrivingStatusNotificationDTO drivingStatusNotificationDTO = new DrivingStatusNotificationDTO(
                     driver.getId(), minutesToStartDrive, DrivingStatus.ACCEPTED, "",
                     drivingDTO.getId(), drivingNotification.getId(), driver.getVehicle().getId()
                 );
+                if(drivingNotification.isReservation()) {
+                    delete(drivingNotification);
+                }
                 webSocketService.sendSuccessfulDriving(drivingStatusNotificationDTO, receiversReviewed);
                 webSocketService.sendNewDrivingNotification(drivingStatusNotificationDTO, driver.getEmail());
             } else {

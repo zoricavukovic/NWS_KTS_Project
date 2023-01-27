@@ -24,6 +24,7 @@ import { Select, Store } from '@ngxs/store';
 import { DrivingNotificationState } from '../../../shared/state/driving-notification.state';
 import { DrivingNotification } from '../../../shared/models/notification/driving-notification';
 import { updateTime } from '../../../shared/utils/time';
+import { UpdateIfDriverChooseWrongRoute } from 'src/modules/shared/actions/driving-notification.action';
 
 @Component({
   selector: 'map-page',
@@ -154,6 +155,7 @@ export class MapPageComponent implements OnInit, OnDestroy {
           const index: number = this.vehiclesCurrentPosition.indexOf(vehicle);
 
           if (vehicle) {
+            this.updateIfDriverChooseWrongRoute(vehicleCurrentLocation);
             if (!vehicleCurrentLocation.activeDriver) {
               vehicle.marker.setVisible(false);
               this.vehiclesCurrentPosition[index] = vehicle;
@@ -205,6 +207,25 @@ export class MapPageComponent implements OnInit, OnDestroy {
         }
       }
     );
+  }
+
+  updateIfDriverChooseWrongRoute(
+    vehicleCurrentLocation: VehicleCurrentLocation
+  ) {
+    const correctRouteIndex = this.storedDrivingNotification.route.locations.at(
+      vehicleCurrentLocation.crossedWaypoints
+    ).routeIndex;
+    console.log(correctRouteIndex);
+    console.log(vehicleCurrentLocation.chosenRouteIdx);
+    console.log(vehicleCurrentLocation.id)
+    if (
+      correctRouteIndex !== vehicleCurrentLocation.chosenRouteIdx &&
+      this.storedDrivingNotification.vehicleId === vehicleCurrentLocation.id &&
+      !this.storedDrivingNotification.wrongRoute
+    ) {
+      console.log('trueee');
+      this.store.dispatch(new UpdateIfDriverChooseWrongRoute(true));
+    }
   }
 
   ngOnDestroy(): void {
