@@ -2,7 +2,8 @@ package com.example.serbUber.selenium.tests;
 
 import com.example.serbUber.selenium.pages.DriverActiveRidesPage;
 import com.example.serbUber.selenium.pages.HomePage;
-import com.example.serbUber.selenium.tests.bases.CrossBrowsersTestBase;
+import com.example.serbUber.selenium.tests.bases.OneBrowserTestBase;
+import com.example.serbUber.selenium.tests.bases.TwoBrowserTestBase;
 import org.junit.jupiter.api.*;
 import com.example.serbUber.selenium.helper.LoginHelper;
 
@@ -11,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestMethodOrder(MethodOrderer.DisplayName.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class FinishingRideTest extends CrossBrowsersTestBase {
+public class FinishingRideTest extends TwoBrowserTestBase {
 
     @Test
     @DisplayName("T1-Success finished ride, driver doesn't have next ride")

@@ -4,22 +4,22 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.edge.EdgeDriver;
 
-public class TestBase {
+public class OneBrowserTestBase {
 
-    public static WebDriver driver;
+    public static WebDriver chromeDriver;
 
     @BeforeEach
     public void setup() {
         System.setProperty("webdriver.chrome.driver", "chromedriver");
-
-        driver = new ChromeDriver();
-        driver.manage().deleteAllCookies();
-        driver.manage().window();
+        chromeDriver = new ChromeDriver();
+//        chromeDriver.manage().deleteAllCookies();
+        chromeDriver.manage().window();
     }
 
     @AfterEach
     public void destroy() {
-        driver.quit();
+        chromeDriver.quit();
     }
 }

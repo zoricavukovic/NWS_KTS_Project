@@ -164,12 +164,12 @@ public class DrivingNotificationService implements IDrivingNotificationService {
     }
 
     private LocalDateTime getStartedDate(final LocalDateTime chosenDateTime, final boolean isReservation)
-            throws InvalidChosenTimeForReservationException, NotFoundException {
+            throws InvalidChosenTimeForReservationException {
 
-        return isReservation? getStartedDateForReservation(chosenDateTime) : LocalDateTime.now();
+        return isReservation ? getStartedDateForReservation(chosenDateTime) : LocalDateTime.now();
     }
 
-    private LocalDateTime getStartedDateForReservation(LocalDateTime chosenDateTime) throws InvalidChosenTimeForReservationException, NotFoundException {
+    private LocalDateTime getStartedDateForReservation(LocalDateTime chosenDateTime) throws InvalidChosenTimeForReservationException {
 
         if (LocalDateTime.now().plusHours(5).isBefore(chosenDateTime)){
             throw new InvalidChosenTimeForReservationException(INVALID_CHOSEN_TIME_AFTER_FOR_RESERVATION_MESSAGE);

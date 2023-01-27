@@ -5,26 +5,22 @@ import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.PropertySource;
 
-@SpringBootTest
-@PropertySource(
-        ignoreResourceNotFound = false,
-        value = "classpath:application-test.properties")
-public class CrossBrowsersTestBase {
-    public static WebDriver edgeDriver;
+public class TwoBrowserTestBase {
     public static WebDriver chromeDriver;
+    public static WebDriver edgeDriver;
 
     @BeforeEach
     public void setup() {
-        System.setProperty("webdriver.chrome.driver", "srdjanchromedriver");
-
+        System.setProperty("webdriver.chrome.driver", "chromedriver");
         chromeDriver = new ChromeDriver();
-        chromeDriver.manage().window().maximize();
+//        chromeDriver.manage().deleteAllCookies();
+        chromeDriver.manage().window();
 
-        System.setProperty("webdriver.edge.driver", "srdjanedgedriver.exe");
+        System.setProperty("webdriver.edge.driver", "msedgedriver");
         edgeDriver = new EdgeDriver();
+//        edgeDriver.manage().deleteAllCookies();
+        edgeDriver.manage().window();
     }
 
     @AfterEach
