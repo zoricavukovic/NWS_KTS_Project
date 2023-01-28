@@ -34,15 +34,16 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static com.example.serbUber.model.DrivingNotification.getListOfUsers;
 import static com.example.serbUber.server.helper.Constants.*;
+import static com.example.serbUber.server.helper.DriverConstants.DRIVER_ID;
+import static com.example.serbUber.server.helper.DriverConstants.EXIST_DRIVER;
 import static com.example.serbUber.server.helper.VehicleTypeInfoConstants.*;
 import static com.example.serbUber.server.helper.RegularUserConstants.*;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.util.AssertionErrors.assertEquals;
-import static org.springframework.test.util.AssertionErrors.assertNotNull;
 
 @ExtendWith(MockitoExtension.class)
 @TestMethodOrder(MethodOrderer.DisplayName.class)
@@ -151,17 +152,23 @@ public class DrivingNotificationServiceTest {
     @Test
     @DisplayName("should throw exception when number of passengers is greater than num of seats")
     public void createDrivingNotificationDTO_throwExcessiveNumOfPassengersException() throws EntityNotFoundException {
-        when(vehicleTypeInfoService.isCorrectNumberOfSeats(VEHICLE_TYPE_INFO_SUV, SUV_INVALID_NUMBER_OF_PASSENGERS))
+        when(regularUserService.getRegularByEmail(FIRST_USER_EMAIL)).thenReturn(FIRST_USER);
+        when(regularUserService.getRegularByEmail(SECOND_USER_EMAIL)).thenReturn(SECOND_USER);
+        when(vehicleTypeInfoService.get(VehicleType.SUV)).thenReturn(VEHICLE_TYPE_INFO_SUV);
+        List<String> users = new ArrayList<>();
+        users.add(SECOND_USER_EMAIL);
+        users.add(SECOND_USER_EMAIL);
+        when(vehicleTypeInfoService.isCorrectNumberOfSeats(VEHICLE_TYPE_INFO_SUV, 3))
                 .thenReturn(false);
         assertThrows(ExcessiveNumOfPassengersException.class, () -> drivingNotificationService.createDrivingNotificationDTO(
-                new RouteRequest(), FIRST_USER_EMAIL, PRICE, new ArrayList<>(), DURATION,
+                new RouteRequest(), FIRST_USER_EMAIL, PRICE, users, DURATION,
                 false, false, SUV, null, false));
         verify(routeService, times(0)).createRoute(anyList(), anyDouble(), anyDouble(), anyList());
     }
 
     @Test
     @DisplayName("should throw exception when vehicle type info is not found")
-    public void createDrivingNotificationDTO_throwEntityNotFoundExceptionForVehicleTypeInfo() throws EntityNotFoundException, InvalidChosenTimeForReservationException, ExcessiveNumOfPassengersException, NotFoundException, PassengerNotHaveTokensException {
+    public void createDrivingNotificationDTO_throwEntityNotFoundExceptionForVehicleTypeInfo() throws EntityNotFoundException {
         when(regularUserService.getRegularByEmail(FIRST_USER_EMAIL)).thenReturn(FIRST_USER);
         when(regularUserService.getRegularByEmail(SECOND_USER_EMAIL)).thenReturn(SECOND_USER);
         when(vehicleTypeInfoService.get(VehicleType.SUV)).thenThrow(EntityNotFoundException.class);
@@ -216,42 +223,102 @@ public class DrivingNotificationServiceTest {
     }
 
 
+    @Test
+    @DisplayName("should send notification about failed ride request, driver is not found and ride is not reservation")
+    public void createDrivingNotificationDTO_driverNotFound() throws EntityNotFoundException, InvalidChosenTimeForReservationException, ExcessiveNumOfPassengersException, NotFoundException, PassengerNotHaveTokensException {
+        when(regularUserService.getRegularByEmail(FIRST_USER_EMAIL)).thenReturn(FIRST_USER);
+        when(vehicleTypeInfoService.get(VehicleType.SUV)).thenReturn(VEHICLE_TYPE_INFO_SUV);
+        when(vehicleTypeInfoService.isCorrectNumberOfSeats(VEHICLE_TYPE_INFO_SUV, 1)).thenReturn(true);
+        when(routeService.createRoute(anyList(), anyDouble(), anyDouble(), anyList())).thenReturn(ROUTE);
+
+        DrivingNotification drivingNotification = new DrivingNotification(
+            ROUTE, PRICE, FIRST_USER, LocalDateTime.now(), DURATION, false, false, VEHICLE_TYPE_INFO_SUV,
+            new HashMap<>(),false);
+        when(drivingNotificationRepository.save(any(DrivingNotification.class))).thenReturn(drivingNotification);
+
+        when(driverService.getDriverForDriving(drivingNotification)).thenReturn(null);
+        doNothing().when(webSocketService).sendDrivingStatus(anyString(), anyString(), anyMap());
+        doNothing().when(drivingNotificationRepository).deleteById(drivingNotification.getId());
+
+        DrivingNotificationDTO drivingNotificationDTO = drivingNotificationService.createDrivingNotificationDTO(createRouteRequest(), FIRST_USER_EMAIL, PRICE, new ArrayList<>(), DURATION,
+            false, false, SUV, null, false);
+
+        Assertions.assertEquals(drivingNotification.getRoute(), drivingNotificationDTO.getRoute());
+        Assertions.assertNotNull(drivingNotificationDTO.getStarted());
+        verify(webSocketService, times(1)).sendDrivingStatus(anyString(), anyString(), anyMap());
+        verify(drivingService, times(0)).create(
+            anyDouble(), any(LocalDateTime.class), any(Route.class), any(DrivingStatus.class), anyLong(), anySet(), anyDouble());
+
+        verify(drivingNotificationRepository, times(1)).deleteById(drivingNotification.getId());
+    }
+
+    @Test
+    @DisplayName("should send notification about successfully creating reservation ride")
+    public void createDrivingNotificationDTO_successReservation() throws EntityNotFoundException, InvalidChosenTimeForReservationException, ExcessiveNumOfPassengersException, NotFoundException, PassengerNotHaveTokensException {
+        LocalDateTime chosenTimeForReservation = getValidTimeForReservation();
+        when(regularUserService.getRegularByEmail(FIRST_USER_EMAIL)).thenReturn(FIRST_USER);
+        when(vehicleTypeInfoService.get(VehicleType.SUV)).thenReturn(VEHICLE_TYPE_INFO_SUV);
+        when(vehicleTypeInfoService.isCorrectNumberOfSeats(VEHICLE_TYPE_INFO_SUV, 1)).thenReturn(true);
+        when(routeService.createRoute(anyList(), anyDouble(), anyDouble(), anyList())).thenReturn(ROUTE);
+
+        DrivingNotification drivingNotification = new DrivingNotification(
+            ROUTE, PRICE, FIRST_USER, chosenTimeForReservation, DURATION, false, false, VEHICLE_TYPE_INFO_SUV,
+            new HashMap<>(),true);
+        when(drivingNotificationRepository.save(any(DrivingNotification.class))).thenReturn(drivingNotification);
+        doNothing().when(webSocketService).sendSuccessfulCreateReservation(anySet());
+
+
+        DrivingNotificationDTO drivingNotificationDTO = drivingNotificationService.createDrivingNotificationDTO(createRouteRequest(), FIRST_USER_EMAIL, PRICE, new ArrayList<>(), DURATION,
+            false, false, SUV, chosenTimeForReservation, true);
+
+        Assertions.assertEquals(drivingNotification.getRoute(), drivingNotificationDTO.getRoute());
+        Assertions.assertNotNull(drivingNotificationDTO.getStarted());
+        verify(webSocketService, times(1)).sendSuccessfulCreateReservation(anySet());
+        verify(driverService, times(0)).getDriverForDriving(any(DrivingNotification.class));
+    }
 
 //    @Test
-//    @DisplayName("Should continue execute when chosen time for ride reservation is valid")
-//    public void createDrivingNotification_validChosenTimeForReservation() throws EntityNotFoundException {
-//        when(vehicleTypeInfoService.isCorrectNumberOfSeats("SUV", 1)).thenReturn(true);
-//        RouteRequest routeRequest = createRouteRequest();
-//        Route route = createRoute();
-//        when(routeService.createRoute(
-//                routeRequest.getLocations(),routeRequest.getTimeInMin(),
-//                routeRequest.getDistance(), routeRequest.getRoutePathIndex())
-//        ).thenReturn();
-//        assertDoesNotThrow(
-//                () -> drivingNotificationService.createDrivingNotificationDTO(
-//                        routeRequest, "ana@gmail.com", 5, new ArrayList<>(), 5,
-//                        false, false, "SUV",
-//                        getValidTimeForReservation(), true
-//                ));
+//    @DisplayName("should send notification about failed ride request, driver is not found and ride is not reservation")
+//    public void createDrivingNotificationDTO_driverNotFound() throws EntityNotFoundException, InvalidChosenTimeForReservationException, ExcessiveNumOfPassengersException, NotFoundException, PassengerNotHaveTokensException {
+//        when(regularUserService.getRegularByEmail(FIRST_USER_EMAIL)).thenReturn(FIRST_USER);
+//        when(vehicleTypeInfoService.get(VehicleType.SUV)).thenReturn(VEHICLE_TYPE_INFO_SUV);
+//        when(vehicleTypeInfoService.isCorrectNumberOfSeats(VEHICLE_TYPE_INFO_SUV, 1)).thenReturn(true);
+//        when(routeService.createRoute(anyList(), anyDouble(), anyDouble(), anyList())).thenReturn(ROUTE);
+//
+//        DrivingNotification drivingNotification = new DrivingNotification(
+//            ROUTE, PRICE, FIRST_USER, LocalDateTime.now(), DURATION, false, false, VEHICLE_TYPE_INFO_SUV,
+//            new HashMap<>(),false);
+//        when(drivingNotificationRepository.save(any(DrivingNotification.class))).thenReturn(drivingNotification);
+//
+//        when(driverService.getDriverForDriving(drivingNotification)).thenReturn(EXIST_DRIVER);
+//        Set<RegularUser> regularUsers = new HashSet<>();
+//        regularUsers.add(FIRST_USER);
+//        Driving driving = new Driving(DURATION, drivingNotification.getStarted(), null, drivingNotification.getRoute(),
+//            DrivingStatus.PAYING, EXIST_DRIVER, PRICE);
+//        when(drivingService.create(drivingNotification.getRoute().getTimeInMin(), drivingNotification.getStarted(),
+//            drivingNotification.getRoute(), DrivingStatus.PAYING, DRIVER_ID, regularUsers, drivingNotification.getPrice()))
+//            .thenReturn(driving);
+//
+//
+//
+//
+//
+//
+//        doNothing().when(webSocketService).sendDrivingStatus(anyString(), anyString(), anyMap());
+//        doNothing().when(drivingNotificationRepository).deleteById(drivingNotification.getId());
+//
+//        DrivingNotificationDTO drivingNotificationDTO = drivingNotificationService.createDrivingNotificationDTO(createRouteRequest(), FIRST_USER_EMAIL, PRICE, new ArrayList<>(), DURATION,
+//            false, false, SUV, null, false);
+//
+//        Assertions.assertEquals(drivingNotification.getRoute(), drivingNotificationDTO.getRoute());
+//        Assertions.assertNotNull(drivingNotificationDTO.getStarted());
+//        verify(webSocketService, times(1)).sendDrivingStatus(anyString(), anyString(), anyMap());
+//        verify(drivingService, times(0)).create(
+//            anyDouble(), any(LocalDateTime.class), any(Route.class), any(DrivingStatus.class), anyLong(), anySet(), anyDouble());
+//
+//        verify(drivingNotificationRepository, times(1)).deleteById(drivingNotification.getId());
 //    }
 
-
-
-
-//    @Test
-//    @DisplayName("T3-Should throw excessive num of passengers exception")
-//    public void createDrivingNotificationDTOThrowExcessiveNumOfPassengersException() throws EntityNotFoundException {
-//
-//       when(vehicleTypeInfoService.isCorrectNumberOfSeats("SUV", 6))
-//               .thenReturn(false);
-//        Assertions.assertThrows(ExcessiveNumOfPassengersException.class,
-//                () -> drivingNotificationService.createDrivingNotificationDTO(
-//                        new RouteRequest(),
-//                        "",
-//                        ));
-//
-//        verify(drivingNotificationRepository, times(0)).save(any(DrivingNotification.class));
-//    }
 
     private List<Arguments> getInvalidDatesForReservation(){
         return Arrays.asList(Arguments.arguments(LocalDateTime.now().plusHours(6)),
@@ -285,13 +352,6 @@ public class DrivingNotificationServiceTest {
 
         return new RouteRequest(5, 2000, locations, routeIndexList );
     }
-
-//    private Route createRoute(List<LocationRequest> locations, double timeinMin, double distance){
-//
-//        return new Route(,timeinMin, distance);
-//    }
-
-
 
 
     @DisplayName("T3-Should create new driving notification")

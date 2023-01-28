@@ -76,7 +76,6 @@ public class VehicleTypeInfoService implements IVehicleTypeInfoService {
 
         return vehicleTypeInfoRepository.getVehicleTypeInfoByName(vehicleType)
                 .orElseThrow(() -> new EntityNotFoundException(vehicleType.toString(), EntityType.VEHICLE_TYPE_INFO));
-
     }
 
     public VehicleTypeInfoDTO getDTO(VehicleType vehicleType) throws EntityNotFoundException {

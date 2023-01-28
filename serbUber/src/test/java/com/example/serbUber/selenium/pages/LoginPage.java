@@ -1,5 +1,6 @@
 package com.example.serbUber.selenium.pages;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -27,9 +28,6 @@ public class LoginPage {
 
     @FindBy(how = How.XPATH, using="//h1")
     private WebElement title;
-
-    @FindBy(how = How.XPATH, using = "//div[contains(@aria-label, 'Email or password is not correct!')]")
-    private WebElement errorToastLabel;
 
     @FindBy(how = How.XPATH, using = "//mat-error")
     private List<WebElement> matErrors;
@@ -63,9 +61,11 @@ public class LoginPage {
         loginButton.click();
     }
 
-    public boolean isVisibleErrorToast(){
+    public boolean isVisibleErrorToast(final String toastMessage){
         WebElement webElement = new WebDriverWait(driver, Duration.ofSeconds(2))
-            .until(ExpectedConditions.visibilityOf(errorToastLabel));
+            .until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath(
+                String.format("//div[contains(@aria-label, '%s')]", toastMessage)
+            ))));
 
         return webElement != null;
     }

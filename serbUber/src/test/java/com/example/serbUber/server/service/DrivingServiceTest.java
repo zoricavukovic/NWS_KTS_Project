@@ -28,6 +28,8 @@ import java.util.*;
 
 import static com.example.serbUber.model.DrivingStatus.ACCEPTED;
 import static com.example.serbUber.server.helper.Constants.*;
+import static com.example.serbUber.server.helper.DriverConstants.EXIST_DRIVER;
+import static com.example.serbUber.server.helper.DriverConstants.EXIST_DRIVER_EMAIL;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 

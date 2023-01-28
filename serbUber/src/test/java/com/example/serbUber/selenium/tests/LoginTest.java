@@ -41,7 +41,7 @@ public class LoginTest extends TestBase {
         LoginHelper.login(driver, email, password);
 
         LoginPage loginPage = new LoginPage(driver);
-        assertTrue(loginPage.isVisibleErrorToast());
+        assertTrue(loginPage.isVisibleErrorToast(FAILED_LOGIN_MESSAGE));
     }
 
     List<Arguments> sourceWrongCredentials(){
