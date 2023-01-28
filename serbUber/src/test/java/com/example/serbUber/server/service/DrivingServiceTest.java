@@ -7,8 +7,6 @@ import com.example.serbUber.exception.DriverAlreadyHasStartedDrivingException;
 import com.example.serbUber.exception.DrivingShouldNotStartYetException;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.model.*;
-import com.example.serbUber.model.user.RegularUser;
-import com.example.serbUber.model.user.Role;
 import com.example.serbUber.repository.DrivingRepository;
 import com.example.serbUber.service.DrivingService;
 import com.example.serbUber.service.DrivingStatusNotificationService;
@@ -19,28 +17,19 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
 import static com.example.serbUber.model.DrivingStatus.ACCEPTED;
 import static com.example.serbUber.model.DrivingStatus.FINISHED;
-import static com.example.serbUber.selenium.helper.Constants.*;
-import static com.example.serbUber.selenium.helper.Constants.EMAIL_IS_REQUIRED_MESSAGE;
 import static com.example.serbUber.server.helper.Constants.*;
 import static java.lang.Math.abs;
-import java.util.*;
-
-import static com.example.serbUber.model.DrivingStatus.ACCEPTED;
-import static com.example.serbUber.server.helper.Constants.*;
 import static com.example.serbUber.server.helper.DriverConstants.EXIST_DRIVER;
 import static com.example.serbUber.server.helper.DriverConstants.EXIST_DRIVER_EMAIL;
 import static org.junit.jupiter.params.provider.Arguments.arguments;

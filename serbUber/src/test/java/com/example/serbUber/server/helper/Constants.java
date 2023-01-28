@@ -49,12 +49,6 @@ public class Constants {
     public static final Driver EXIST_DRIVER = new Driver(DRIVER_ID, EXIST_DRIVER_EMAIL, EXIST_PASSWORD, NAME, SURNAME, PHONE_NUMBER, CITY, PROFILE_PICTURE, EXIST_VEHICLE, ROLE_DRIVER);
     public static final Driving NOT_REJECTED_DRIVING = new Driving(EXIST_OBJECT_ID, DURATION, STARTED, END, new Route(), DrivingStatus.PENDING, EXIST_DRIVER, PRICE);
     public static final DrivingStatusNotification REJECTED_DRIVING_STATUS_NOTIFICATION = new DrivingStatusNotification(DRIVING_REJECTION_REASON, DrivingStatus.REJECTED, NOT_REJECTED_DRIVING);
-    public static double DISTANCE = 5.0;
-    public static double TIME_IN_MIN = 10.0;
-    public static Location LOCATION = new Location("Novi Sad", "Lasla Gala", "2", "21000", 45.247460, 19.839030);
-    public static DrivingLocationIndex DRIVING_LOCATION_INDEX = new DrivingLocationIndex(LOCATION, 1, 0);
-    public static SortedSet<DrivingLocationIndex> SORTED_SET_DRIVING_LOCATION_INDEX = new TreeSet<>(new HashSet<DrivingLocationIndex>(Arrays.asList(DRIVING_LOCATION_INDEX)));
-    public static Route ROUTE = new Route(SORTED_SET_DRIVING_LOCATION_INDEX, DISTANCE, DURATION);
 
     public static final double LON = 45.247460;
     public static final double LAT = 19.839030;
