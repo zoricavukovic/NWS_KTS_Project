@@ -17,6 +17,10 @@ public class VehicleCurrentLocationDTO {
 
     private int chosenRouteIdx;
 
+    public VehicleCurrentLocationDTO() {
+
+    }
+
     public VehicleCurrentLocationDTO(final VehicleWithDriverId vehicleWithDriverId) {
         this.id = vehicleWithDriverId.getVehicle().getId();
         this.type = vehicleWithDriverId.getVehicle().getVehicleTypeInfo().getVehicleType();

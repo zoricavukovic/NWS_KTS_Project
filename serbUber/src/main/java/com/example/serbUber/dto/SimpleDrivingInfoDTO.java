@@ -22,6 +22,10 @@ public class SimpleDrivingInfoDTO {
 
     private String vehicleType;
 
+    public SimpleDrivingInfoDTO() {
+
+    }
+
     public SimpleDrivingInfoDTO(Driving driving) {
         this.drivingStatus = driving.getDrivingStatus().toString();
         this.drivingId = driving.getId();
