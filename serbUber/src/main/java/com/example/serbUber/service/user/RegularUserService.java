@@ -18,6 +18,7 @@ import com.example.serbUber.service.VerifyService;
 import com.example.serbUber.service.WebSocketService;
 import com.example.serbUber.service.interfaces.IRegularUserService;
 import com.example.serbUber.service.payment.TokenBankService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -42,14 +43,15 @@ import static com.example.serbUber.util.PictureHandler.convertPictureToBase64ByN
 @Qualifier("regularUserServiceConfiguration")
 public class RegularUserService implements IRegularUserService {
 
-    private final RegularUserRepository regularUserRepository;
-    private final VerifyService verifyService;
-    private final RoleService roleService;
-    private final RouteService routeService;
-    private final WebSocketService webSocketService;
-    private final TokenBankService tokenBankService;
-    private final EmailService emailService;
+    private RegularUserRepository regularUserRepository;
+    private VerifyService verifyService;
+    private RoleService roleService;
+    private RouteService routeService;
+    private WebSocketService webSocketService;
+    private TokenBankService tokenBankService;
+    private EmailService emailService;
 
+    @Autowired
     public RegularUserService(
             final RegularUserRepository regularUserRepository,
             final VerifyService verifyService,
@@ -91,6 +93,7 @@ public class RegularUserService implements IRegularUserService {
     }
 
     public RegularUser getRegularByEmail(final String email) throws EntityNotFoundException {
+
         return regularUserRepository.getRegularUserByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException(email, EntityType.USER));
     }

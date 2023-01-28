@@ -105,4 +105,19 @@ public class DrivingNotificationServiceTest {
         Assertions.assertEquals(postArgumentCaptor.getValue().getReceiversReviewed().get(FIRST_USER), NOT_REVIEWED_LINKED_REQUEST);
         Assertions.assertEquals(postArgumentCaptor.getValue().getReceiversReviewed().get(SECOND_USER), ACCEPT_DRIVING);
     }
+
+    @Test
+    @DisplayName("T3-Should create new driving notification")
+    public void shouldSuccessfullyCreateNewDrivingNotification() {
+        Map<RegularUser, Integer> receiversReviewed = new HashMap<>();
+        receiversReviewed.put(FIRST_USER, NOT_REVIEWED_LINKED_REQUEST);
+        receiversReviewed.put(SECOND_USER, NOT_REVIEWED_LINKED_REQUEST);
+        DrivingNotification drivingNotification = new DrivingNotification(
+            new Route(), PRICE, new RegularUser(), STARTED, DURATION, true, true, new VehicleTypeInfo(),
+            receiversReviewed, true
+        );
+        when(drivingNotificationRepository.save(any(DrivingNotification.class))).thenReturn(drivingNotification);
+
+
+    }
 }
