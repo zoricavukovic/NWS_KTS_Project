@@ -172,12 +172,12 @@ public class DriverService implements IDriverService{
 
 
     @Transactional
-    public Driver getDriverForDriving(final DrivingNotification drivingNotification) throws EntityNotFoundException {
+    public Driver getDriverForDriving(final DrivingNotification drivingNotification){
         LocalDateTime startDate = drivingNotification.getStarted();
         LocalDateTime endDate = drivingNotification.getStarted().plusMinutes((int) drivingNotification.getDuration());
         Location startLocation = drivingNotification.getRoute().getLocations().first().getLocation();
 
-        List<Driver> drivers = driverRepository.getActiveDriversWhichVehicleMatchParams1(drivingNotification.getVehicleTypeInfo().getVehicleType());
+        List<Driver> drivers = driverRepository.getActiveDriversWhichVehicleMatchParams(drivingNotification.getVehicleTypeInfo().getVehicleType());
 
         return drivers.size() > 0 ?
             findMatchesDriver(
@@ -210,7 +210,7 @@ public class DriverService implements IDriverService{
         final LocalDateTime start,
         final LocalDateTime end,
         final double duration
-    ) throws EntityNotFoundException {
+    ){
         List<Driver> matchedDrivers = new LinkedList<>();
         for (Driver driver: drivers){
             if (checkDriverVehicleAttributes(driver, babySeat, petFriendly)){
@@ -433,7 +433,7 @@ public class DriverService implements IDriverService{
 
 
 
-    private Driver findNearestDriver(List<Driver> activeAndFreeDrivers, double lonStart, double latStart) throws EntityNotFoundException {
+    private Driver findNearestDriver(List<Driver> activeAndFreeDrivers, double lonStart, double latStart) {
 
         double lon = activeAndFreeDrivers.get(0).getVehicle().getCurrentStop().getLon();
         double lat = activeAndFreeDrivers.get(0).getVehicle().getCurrentStop().getLat();

@@ -111,15 +111,15 @@ public class DrivingNotificationService implements IDrivingNotificationService {
         RegularUser sender = regularUserService.getRegularByEmail(senderEmail);
 
         Map<RegularUser, Integer> receiversReviewed = new HashMap<>();
-        for (String passengerEmail: passengers){
+        for (String passengerEmail : passengers){
             receiversReviewed.put(regularUserService.getRegularByEmail(passengerEmail), NotificationReviewedType.NOT_REVIEWED.ordinal());
         }
+        VehicleTypeInfo vehicleTypeInfo = vehicleTypeInfoService.get(VehicleType.getVehicleType(vehicleType));
 
-        if(!vehicleTypeInfoService.isCorrectNumberOfSeats(vehicleType, passengers.size()+1)) {
+        if(!vehicleTypeInfoService.isCorrectNumberOfSeats(vehicleTypeInfo, passengers.size()+1)) {
             throw new ExcessiveNumOfPassengersException(vehicleType);
         }
 
-        VehicleTypeInfo vehicleTypeInfo = vehicleTypeInfoService.get(VehicleType.getVehicleType(vehicleType));
         Route route = routeService.createRoute(routeRequest.getLocations(), routeRequest.getTimeInMin(), routeRequest.getDistance(), routeRequest.getRoutePathIndex());
         LocalDateTime startedDateTime = getStartedDate(chosenDateTime, isReservation);
         DrivingNotification notification = createDrivingNotification(
@@ -164,7 +164,7 @@ public class DrivingNotificationService implements IDrivingNotificationService {
     private LocalDateTime getStartedDate(final LocalDateTime chosenDateTime, final boolean isReservation)
             throws InvalidChosenTimeForReservationException, NotFoundException {
 
-        return isReservation? getStartedDateForReservation(chosenDateTime) : LocalDateTime.now();
+        return isReservation ? getStartedDateForReservation(chosenDateTime) : LocalDateTime.now();
     }
 
     private LocalDateTime getStartedDateForReservation(LocalDateTime chosenDateTime) throws InvalidChosenTimeForReservationException, NotFoundException {

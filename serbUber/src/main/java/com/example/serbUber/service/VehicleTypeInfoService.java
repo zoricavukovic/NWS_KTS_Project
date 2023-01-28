@@ -9,7 +9,6 @@ import com.example.serbUber.repository.VehicleTypeInfoRepository;
 import com.example.serbUber.service.interfaces.IVehicleTypeInfoService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +21,7 @@ import static com.example.serbUber.util.Constants.TOKEN_VALUE;
 @Qualifier("vehicleTypeInfoServiceConfiguration")
 public class VehicleTypeInfoService implements IVehicleTypeInfoService {
 
-    private final VehicleTypeInfoRepository vehicleTypeInfoRepository;
+    private VehicleTypeInfoRepository vehicleTypeInfoRepository;
 
     public VehicleTypeInfoService(final VehicleTypeInfoRepository vehicleTypeInfoRepository) {
         this.vehicleTypeInfoRepository = vehicleTypeInfoRepository;
@@ -77,7 +76,6 @@ public class VehicleTypeInfoService implements IVehicleTypeInfoService {
 
         return vehicleTypeInfoRepository.getVehicleTypeInfoByName(vehicleType)
                 .orElseThrow(() -> new EntityNotFoundException(vehicleType.toString(), EntityType.VEHICLE_TYPE_INFO));
-
     }
 
     public VehicleTypeInfoDTO getDTO(VehicleType vehicleType) throws EntityNotFoundException {
@@ -85,8 +83,8 @@ public class VehicleTypeInfoService implements IVehicleTypeInfoService {
         return new VehicleTypeInfoDTO(get(vehicleType));
     }
 
-    public boolean isCorrectNumberOfSeats(String vehicleType, int numberOfPassengers) throws EntityNotFoundException {
-        VehicleTypeInfo vehicleTypeInfo = get(VehicleType.getVehicleType(vehicleType));
+    public boolean isCorrectNumberOfSeats(VehicleTypeInfo vehicleTypeInfo, int numberOfPassengers) {
+
         return vehicleTypeInfo.getNumOfSeats() >= numberOfPassengers;
     }
 

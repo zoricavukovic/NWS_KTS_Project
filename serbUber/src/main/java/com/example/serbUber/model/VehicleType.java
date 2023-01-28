@@ -9,7 +9,8 @@ public enum VehicleType {
         return switch (vehicleType.toLowerCase()) {
             case "van" -> VehicleType.VAN;
             case "suv" -> VehicleType.SUV;
-            default -> VehicleType.CAR;
+            case "car" -> VehicleType.CAR;
+            default -> VehicleType.valueOf("");
         };
     }
 }

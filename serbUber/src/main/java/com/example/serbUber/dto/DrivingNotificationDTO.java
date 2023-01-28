@@ -25,6 +25,9 @@ public class DrivingNotificationDTO {
         this.route = drivingNotification.getRoute();
         this.price = drivingNotification.getPrice();
         this.vehicleTypeInfo = drivingNotification.getVehicleTypeInfo();
+        this.started = drivingNotification.getStarted();
+        this.duration = drivingNotification.getDuration();
+        this.vehicleTypeInfo = drivingNotification.getVehicleTypeInfo();
         Set<RegularUser> passengers = getListOfUsers(drivingNotification.getReceiversReviewed());
         passengers.add(drivingNotification.getSender());
         this.passengers = passengers;

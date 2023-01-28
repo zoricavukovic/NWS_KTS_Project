@@ -4,6 +4,8 @@ import com.example.serbUber.model.user.RegularUser;
 import com.example.serbUber.model.user.Role;
 
 public class RegularUserConstants {
+    public static final String NOT_EXIST_USER_EMAIL = "not_found@gmail.com";
+
     public static final String FIRST_USER_EMAIL = "john@gmail.com";
     public static final String FIRST_USER_NAME = "John";
     public static final String FIRST_USER_SURNAME = "Snow";

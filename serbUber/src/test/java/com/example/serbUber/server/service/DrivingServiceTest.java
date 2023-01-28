@@ -8,6 +8,7 @@ import com.example.serbUber.exception.DrivingShouldNotStartYetException;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.model.*;
 import com.example.serbUber.model.user.RegularUser;
+import com.example.serbUber.model.user.Role;
 import com.example.serbUber.repository.DrivingRepository;
 import com.example.serbUber.service.DrivingService;
 import com.example.serbUber.service.DrivingStatusNotificationService;
@@ -36,6 +37,12 @@ import static com.example.serbUber.selenium.helper.Constants.*;
 import static com.example.serbUber.selenium.helper.Constants.EMAIL_IS_REQUIRED_MESSAGE;
 import static com.example.serbUber.server.helper.Constants.*;
 import static java.lang.Math.abs;
+import java.util.*;
+
+import static com.example.serbUber.model.DrivingStatus.ACCEPTED;
+import static com.example.serbUber.server.helper.Constants.*;
+import static com.example.serbUber.server.helper.DriverConstants.EXIST_DRIVER;
+import static com.example.serbUber.server.helper.DriverConstants.EXIST_DRIVER_EMAIL;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 
@@ -349,6 +356,5 @@ public class DrivingServiceTest {
 
         return driving;
     }
-
 
 }
