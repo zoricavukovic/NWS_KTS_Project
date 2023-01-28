@@ -34,10 +34,10 @@ import static com.example.serbUber.util.Constants.*;
 @Qualifier("routeServiceConfiguration")
 public class RouteService implements IRouteService {
 
-    private final RouteRepository routeRepository;
-    private final LocationService locationService;
-    private final VehicleTypeInfoService vehicleTypeInfoService;
-    private final DrivingLocationIndexService drivingLocationIndexService;
+    private RouteRepository routeRepository;
+    private LocationService locationService;
+    private VehicleTypeInfoService vehicleTypeInfoService;
+    private DrivingLocationIndexService drivingLocationIndexService;
 
     @Autowired
     public RouteService(
@@ -45,7 +45,7 @@ public class RouteService implements IRouteService {
             final LocationService locationService,
             final DrivingLocationIndexService drivingLocationIndexService,
             final VehicleTypeInfoService vehicleTypeInfoService
-            ) {
+    ) {
         this.routeRepository = routeRepository;
         this.locationService = locationService;
         this.drivingLocationIndexService = drivingLocationIndexService;
@@ -142,17 +142,7 @@ public class RouteService implements IRouteService {
     ){
         SortedSet<DrivingLocationIndex> drivingLocations = new TreeSet<>();
         locations.forEach(locationIndex -> {
-            Location location = locationService.tryToFindLocation(locationIndex.getLocation().getLon(), locationIndex.getLocation().getLat());
-            if (location == null){
-                location = locationService.create(
-                    locationIndex.getLocation().getCity(),
-                    locationIndex.getLocation().getStreet(),
-                    locationIndex.getLocation().getNumber(),
-                    locationIndex.getLocation().getZipCode(),
-                    locationIndex.getLocation().getLon(),
-                    locationIndex.getLocation().getLat()
-                );
-            }
+            Location location = createLocationIfDoesNotExist(locationIndex);
             DrivingLocationIndex drivingLocationIndex = drivingLocationIndexService.create(
                     location,
                     locationIndex.getIndex(),
@@ -163,6 +153,21 @@ public class RouteService implements IRouteService {
         });
 
         return create(drivingLocations, distance, time);
+    }
+
+    private Location createLocationIfDoesNotExist(final DrivingLocationIndexRequest locationIndex) {
+        Location location = locationService.tryToFindLocation(locationIndex.getLocation().getLon(), locationIndex.getLocation().getLat());
+        if (location == null){
+            location = locationService.create(
+                locationIndex.getLocation().getCity(),
+                locationIndex.getLocation().getStreet(),
+                locationIndex.getLocation().getNumber(),
+                locationIndex.getLocation().getZipCode(),
+                locationIndex.getLocation().getLon(),
+                locationIndex.getLocation().getLat()
+            );
+        }
+        return location;
     }
 
     public double getTimeFromDistance(final double distance) {
@@ -179,6 +184,7 @@ public class RouteService implements IRouteService {
 
         return indexOfLocation == numOfLocations - 1;
     }
+
     private void addPossibleRoutesViaPoints(
             List<LongLatRequest> longLatRequestList,
             List<PossibleRoutesViaPointsDTO> possibleRoutesViaPointsDTOs,

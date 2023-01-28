@@ -18,8 +18,8 @@ import org.mockito.quality.Strictness;
 
 import java.util.Optional;
 
-import static com.example.serbUber.server.helper.Constants.DRIVING_REJECTION_REASON;
-import static com.example.serbUber.server.helper.Constants.NOT_EXIST_OBJECT_ID;
+import static com.example.serbUber.server.helper.Constants.*;
+import static com.example.serbUber.server.helper.VehicleTypeInfoConstants.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -53,7 +53,7 @@ public class VehicleTypeInfoServiceTest {
                 () -> vehicleTypeInfoService.get(VehicleType.SUV));
 
         Assertions.assertThrows(EntityNotFoundException.class,
-                () -> vehicleTypeInfoService.isCorrectNumberOfSeats("SUV", 5));
+                () -> vehicleTypeInfoService.isCorrectNumberOfSeats(VEHICLE_TYPE_INFO_SUV, 5));
     }
 
     @Test
@@ -66,7 +66,7 @@ public class VehicleTypeInfoServiceTest {
 
         Assertions.assertDoesNotThrow(() -> vehicleTypeInfoService.get(VehicleType.SUV));
 
-        assertFalse(vehicleTypeInfoService.isCorrectNumberOfSeats("SUV", 5));
+        assertFalse(vehicleTypeInfoService.isCorrectNumberOfSeats(VEHICLE_TYPE_INFO_SUV, 5));
     }
 
     @Test
@@ -78,6 +78,6 @@ public class VehicleTypeInfoServiceTest {
 
         Assertions.assertDoesNotThrow(() -> vehicleTypeInfoService.get(VehicleType.SUV));
 
-        assertTrue(vehicleTypeInfoService.isCorrectNumberOfSeats("SUV", 4));
+        assertTrue(vehicleTypeInfoService.isCorrectNumberOfSeats(VEHICLE_TYPE_INFO, 4));
     }
 }

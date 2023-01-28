@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import static com.example.serbUber.server.helper.LocationHelper.*;
 import static org.mockito.ArgumentMatchers.any;
 
 public class Constants {
@@ -35,7 +36,6 @@ public class Constants {
     public static final String NAME = "Mile";
     public static final String SURNAME = "Milic";
     public static final String PHONE_NUMBER = "232132131";
-    public static final String CITY = "Novi Sad";
     public static final String PROFILE_PICTURE = "default";
     public static final Role ROLE_DRIVER = new Role("ROLE_DRIVER");
     public static final Long DRIVER_ID = 1L;
@@ -49,6 +49,7 @@ public class Constants {
 
 
     public static double DISTANCE = 5.0;
+    public static double TIME_IN_MIN = 10.0;
     public static Location LOCATION = new Location("Novi Sad", "Lasla Gala", "2", "21000", 45.247460, 19.839030);
     public static DrivingLocationIndex DRIVING_LOCATION_INDEX = new DrivingLocationIndex(LOCATION, 1, 0);
     public static SortedSet<DrivingLocationIndex> SORTED_SET_DRIVING_LOCATION_INDEX = new TreeSet<>(new HashSet<DrivingLocationIndex>(Arrays.asList(DRIVING_LOCATION_INDEX)));

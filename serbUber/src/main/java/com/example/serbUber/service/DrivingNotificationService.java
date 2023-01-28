@@ -114,12 +114,12 @@ public class DrivingNotificationService implements IDrivingNotificationService {
         for (String passengerEmail : passengers){
             receiversReviewed.put(regularUserService.getRegularByEmail(passengerEmail), NotificationReviewedType.NOT_REVIEWED.ordinal());
         }
+        VehicleTypeInfo vehicleTypeInfo = vehicleTypeInfoService.get(VehicleType.getVehicleType(vehicleType));
 
-        if(!vehicleTypeInfoService.isCorrectNumberOfSeats(vehicleType, passengers.size()+1)) {
+        if(!vehicleTypeInfoService.isCorrectNumberOfSeats(vehicleTypeInfo, passengers.size()+1)) {
             throw new ExcessiveNumOfPassengersException(vehicleType);
         }
 
-        VehicleTypeInfo vehicleTypeInfo = vehicleTypeInfoService.get(VehicleType.getVehicleType(vehicleType));
         Route route = routeService.createRoute(routeRequest.getLocations(), routeRequest.getTimeInMin(), routeRequest.getDistance(), routeRequest.getRoutePathIndex());
         LocalDateTime startedDateTime = getStartedDate(chosenDateTime, isReservation);
         DrivingNotification notification = createDrivingNotification(

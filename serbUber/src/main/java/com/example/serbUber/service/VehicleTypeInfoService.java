@@ -9,7 +9,6 @@ import com.example.serbUber.repository.VehicleTypeInfoRepository;
 import com.example.serbUber.service.interfaces.IVehicleTypeInfoService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
@@ -85,8 +84,8 @@ public class VehicleTypeInfoService implements IVehicleTypeInfoService {
         return new VehicleTypeInfoDTO(get(vehicleType));
     }
 
-    public boolean isCorrectNumberOfSeats(String vehicleType, int numberOfPassengers) throws EntityNotFoundException {
-        VehicleTypeInfo vehicleTypeInfo = get(VehicleType.getVehicleType(vehicleType));
+    public boolean isCorrectNumberOfSeats(VehicleTypeInfo vehicleTypeInfo, int numberOfPassengers) {
+
         return vehicleTypeInfo.getNumOfSeats() >= numberOfPassengers;
     }
 
