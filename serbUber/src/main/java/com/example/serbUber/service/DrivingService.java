@@ -246,7 +246,7 @@ public class DrivingService implements IDrivingService {
         for(Driving driving : drivings){
             if(driving.getStarted().plusMinutes(FIVE_MINUTES).isBefore(LocalDateTime.now())){
                 driving.setDrivingStatus(DrivingStatus.REJECTED);
-                save(driving);
+                drivingRepository.save(driving);
                 webSocketService.sendRejectedOutdatedDriving(driving.getUsers(), driving.getDriver().getEmail(), driving.getId());
             }
         }

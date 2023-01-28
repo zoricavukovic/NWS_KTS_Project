@@ -17,17 +17,17 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
-import static com.example.serbUber.model.DrivingStatus.ACCEPTED;
-import static com.example.serbUber.model.DrivingStatus.FINISHED;
+import static com.example.serbUber.model.DrivingStatus.*;
 import static com.example.serbUber.server.helper.Constants.*;
 import static java.lang.Math.abs;
 import static com.example.serbUber.server.helper.DriverConstants.EXIST_DRIVER;
@@ -57,6 +57,9 @@ public class DrivingServiceTest {
 
     @Captor
     private ArgumentCaptor<Driving> drivingArgumentCaptor;
+
+    @Captor
+    private ArgumentCaptor<DrivingDTO> drivingDTOArgumentCaptor;
 
     @InjectMocks
     private DrivingService drivingService;
@@ -319,6 +322,72 @@ public class DrivingServiceTest {
         Assertions.assertEquals(EXPECTED_CURRENT_LOCATION_INDEX_FOR_FINISHED_DRIVING, drivingArgumentCaptor.getValue().getDriver().getVehicle().getCurrentLocationIndex());
         Assertions.assertNull(drivingArgumentCaptor.getValue().getDriver().getVehicle().getActiveRoute());
         Assertions.assertEquals(EXPECTED_CROSSED_WAYPOINTS, drivingArgumentCaptor.getValue().getDriver().getVehicle().getCrossedWaypoints());
+    }
+
+    @ParameterizedTest
+    @DisplayName("T14-Should reject outdated drivings")
+    @CsvSource(value = {"4,5", "1,3"})
+    public void shouldRejectOutdatedDrivings(int minutesForFirst, int minutesForSecond) {
+        List<Driving> drivings = createDrivingList(minutesForFirst, minutesForSecond);
+
+        when(drivingService.getAcceptedNotActiveDrivings()).thenReturn(drivings);
+        doNothing().when(webSocketService).sendRejectedOutdatedDriving(anySet(), anyString(), anyLong());
+        when(drivingRepository.save(drivings.get(0))).thenReturn(drivings.get(0));
+        when(drivingRepository.save(drivings.get(1))).thenReturn(drivings.get(1));
+
+        drivingService.rejectOutdatedDrivings();
+
+        verify(drivingRepository, times(2)).save(drivingArgumentCaptor.capture());
+        verify(webSocketService, times(2)).sendRejectedOutdatedDriving(anySet(), anyString(), anyLong());
+        List<Driving> changedDrivings = drivingArgumentCaptor.getAllValues();
+
+        changedDrivings.forEach(driving -> {
+            Assertions.assertEquals(REJECTED,driving.getDrivingStatus());
+        });
+    }
+
+    @ParameterizedTest
+    @DisplayName("T14-Should skip all, there is not outdated outdated drivings")
+    @CsvSource(value = {"6,7"})
+    public void shouldNotRejectDrivings(int minutesForFirst, int minutesForSecond) {
+        List<Driving> drivings = createDrivingList(minutesForFirst, minutesForSecond);
+
+        when(drivingService.getAcceptedNotActiveDrivings()).thenReturn(drivings);
+
+        drivingService.rejectOutdatedDrivings();
+
+        verify(drivingRepository, times(0)).save(drivingArgumentCaptor.capture());
+        verify(webSocketService, times(0)).sendRejectedOutdatedDriving(anySet(), anyString(), anyLong());
+        List<Driving> changedDrivings = drivingArgumentCaptor.getAllValues();
+
+        Assertions.assertEquals(0, changedDrivings.size());
+    }
+
+    private DrivingDTO createDrivingDTO(Driving driving) {
+        driving.setDrivingStatus(REJECTED);
+
+        return new DrivingDTO(driving);
+    }
+
+    private List<Driving> createDrivingList(int minutesForFirst, int minutesForSecond) {
+        LocalDateTime firstStarted = LocalDateTime.now().minusMinutes(10).plusMinutes(minutesForFirst);
+        LocalDateTime secondStarted = LocalDateTime.now().minusMinutes(10).plusMinutes(minutesForSecond);
+
+        Driving drivingFirst = new Driving(EXIST_OBJECT_ID, DURATION, firstStarted, null, ROUTE,
+                ACCEPTED, EXIST_DRIVER, PRICE
+        );
+        drivingFirst.setUsers(new HashSet<>());
+
+        Driving drivingSecond = new Driving(EXIST_OBJECT_ID+1, DURATION, secondStarted, null, ROUTE,
+                ACCEPTED, EXIST_DRIVER, PRICE
+        );
+        drivingSecond.setUsers(new HashSet<>());
+
+        List<Driving> drivings = new ArrayList<>();
+        drivings.add(drivingFirst);
+        drivings.add(drivingSecond);
+
+        return drivings;
     }
 
     private Driving createFinishedDriving(Driving driving) {
