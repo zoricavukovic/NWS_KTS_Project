@@ -111,7 +111,7 @@ public class DrivingNotificationService implements IDrivingNotificationService {
         RegularUser sender = regularUserService.getRegularByEmail(senderEmail);
 
         Map<RegularUser, Integer> receiversReviewed = new HashMap<>();
-        for (String passengerEmail: passengers){
+        for (String passengerEmail : passengers){
             receiversReviewed.put(regularUserService.getRegularByEmail(passengerEmail), NotificationReviewedType.NOT_REVIEWED.ordinal());
         }
 
@@ -164,7 +164,7 @@ public class DrivingNotificationService implements IDrivingNotificationService {
     private LocalDateTime getStartedDate(final LocalDateTime chosenDateTime, final boolean isReservation)
             throws InvalidChosenTimeForReservationException, NotFoundException {
 
-        return isReservation? getStartedDateForReservation(chosenDateTime) : LocalDateTime.now();
+        return isReservation ? getStartedDateForReservation(chosenDateTime) : LocalDateTime.now();
     }
 
     private LocalDateTime getStartedDateForReservation(LocalDateTime chosenDateTime) throws InvalidChosenTimeForReservationException, NotFoundException {

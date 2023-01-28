@@ -22,7 +22,7 @@ import static com.example.serbUber.util.Constants.TOKEN_VALUE;
 @Qualifier("vehicleTypeInfoServiceConfiguration")
 public class VehicleTypeInfoService implements IVehicleTypeInfoService {
 
-    private final VehicleTypeInfoRepository vehicleTypeInfoRepository;
+    private VehicleTypeInfoRepository vehicleTypeInfoRepository;
 
     public VehicleTypeInfoService(final VehicleTypeInfoRepository vehicleTypeInfoRepository) {
         this.vehicleTypeInfoRepository = vehicleTypeInfoRepository;

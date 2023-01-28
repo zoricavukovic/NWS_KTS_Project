@@ -1,11 +1,14 @@
 package com.example.serbUber.server.service;
 
 import com.example.serbUber.dto.DrivingDTO;
+import com.example.serbUber.dto.SimpleDrivingInfoDTO;
+import com.example.serbUber.dto.VehicleCurrentLocationDTO;
+import com.example.serbUber.exception.DriverAlreadyHasStartedDrivingException;
+import com.example.serbUber.exception.DrivingShouldNotStartYetException;
 import com.example.serbUber.exception.EntityNotFoundException;
-import com.example.serbUber.model.Driving;
-import com.example.serbUber.model.DrivingStatus;
-import com.example.serbUber.model.DrivingStatusNotification;
-import com.example.serbUber.model.Route;
+import com.example.serbUber.model.*;
+import com.example.serbUber.model.user.RegularUser;
+import com.example.serbUber.model.user.Role;
 import com.example.serbUber.repository.DrivingRepository;
 import com.example.serbUber.service.DrivingService;
 import com.example.serbUber.service.DrivingStatusNotificationService;
@@ -14,14 +17,18 @@ import com.example.serbUber.service.WebSocketService;
 import com.example.serbUber.service.user.UserService;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
 
+import static com.example.serbUber.model.DrivingStatus.ACCEPTED;
 import static com.example.serbUber.server.helper.Constants.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -127,6 +134,13 @@ public class DrivingServiceTest {
 
         Driving drivingResponse = drivingService.getDriving(EXIST_OBJECT_ID);
         Assertions.assertEquals(driving.getId(), drivingResponse.getId());
+    }
+
+
+    List<Arguments> getValidStartTimeForStartingDriving(){
+
+        return Arrays.asList(arguments(LocalDateTime.now().plusMinutes(5)),
+                arguments(LocalDateTime.now().plusMinutes(4)));
     }
 
 }
