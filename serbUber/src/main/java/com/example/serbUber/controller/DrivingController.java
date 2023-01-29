@@ -15,7 +15,10 @@ import com.example.serbUber.service.DrivingService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
@@ -26,6 +29,7 @@ import static com.example.serbUber.util.Constants.NUM_OF_LETTERS_REASON_TOO_LONG
 
 @RestController
 @RequestMapping("/drivings")
+@Validated
 public class DrivingController {
 
     private final DrivingService drivingService;
@@ -112,9 +116,8 @@ public class DrivingController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ROLE_DRIVER')")
     public DrivingDTO rejectDriving(
-        @PathVariable Long id,
-        @Valid @NotBlank(message="Reason must be added")
-        @Size(max=NUM_OF_LETTERS_REASON_TOO_LONG, message=REASON_TOO_LONG) @RequestBody String reason
+         @PathVariable Long id,
+        @Valid @RequestBody @Size(max=NUM_OF_LETTERS_REASON_TOO_LONG, message=REASON_TOO_LONG) String reason
     ) throws EntityNotFoundException {
 
         return drivingService.rejectDriving(id, reason);

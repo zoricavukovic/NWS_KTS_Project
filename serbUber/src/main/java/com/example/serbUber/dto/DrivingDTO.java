@@ -25,6 +25,8 @@ public class DrivingDTO {
 
     private boolean hasReviewForUser = false;
 
+    public DrivingDTO() {}
+
     public DrivingDTO(Driving driving){
         this.id = driving.getId();
         this.active = driving.isActive();
