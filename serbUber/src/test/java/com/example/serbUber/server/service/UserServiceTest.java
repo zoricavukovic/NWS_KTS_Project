@@ -1,7 +1,6 @@
 package com.example.serbUber.server.service;
 
 import com.example.serbUber.exception.EntityNotFoundException;
-import com.example.serbUber.model.user.User;
 import com.example.serbUber.repository.user.UserRepository;
 import com.example.serbUber.service.DriverUpdateApprovalService;
 import com.example.serbUber.service.EmailService;
@@ -18,9 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static com.example.serbUber.server.helper.Constants.NOT_EXIST_OBJECT_ID;
-import static com.example.serbUber.server.helper.Constants.USER_EMAIL;
-import static com.example.serbUber.server.helper.UserConstants.*;
+import static com.example.serbUber.server.service.helper.UserConstants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 

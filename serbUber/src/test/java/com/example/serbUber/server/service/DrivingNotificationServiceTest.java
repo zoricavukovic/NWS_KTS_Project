@@ -36,9 +36,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static com.example.serbUber.server.helper.Constants.*;
-import static com.example.serbUber.server.helper.VehicleTypeInfoConstants.*;
-import static com.example.serbUber.server.helper.RegularUserConstants.*;
+import static com.example.serbUber.server.service.helper.Constants.*;
+import static com.example.serbUber.server.service.helper.VehicleTypeInfoConstants.*;
+import static com.example.serbUber.server.service.helper.RegularUserConstants.*;
 import static com.example.serbUber.util.Constants.DRIVER_NOT_FOUND_MESSAGE;
 import static com.example.serbUber.util.Constants.DRIVER_NOT_FOUND_PATH;
 import static org.junit.jupiter.api.Assertions.assertThrows;

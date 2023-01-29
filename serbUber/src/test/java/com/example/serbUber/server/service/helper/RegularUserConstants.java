@@ -1,4 +1,4 @@
-package com.example.serbUber.server.helper;
+package com.example.serbUber.server.service.helper;
 
 import com.example.serbUber.model.user.RegularUser;
 import com.example.serbUber.model.user.Role;

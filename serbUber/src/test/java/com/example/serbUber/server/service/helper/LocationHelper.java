@@ -1,15 +1,11 @@
-package com.example.serbUber.server.helper;
+package com.example.serbUber.server.service.helper;
 
 import com.example.serbUber.model.DrivingLocationIndex;
 import com.example.serbUber.model.Location;
 import com.example.serbUber.model.Route;
 import com.example.serbUber.request.*;
 
-import javax.validation.Valid;
 import java.util.*;
-
-import static com.example.serbUber.server.helper.Constants.DISTANCE;
-import static com.example.serbUber.server.helper.Constants.TIME_IN_MIN;
 
 
 public class LocationHelper {
@@ -85,7 +81,7 @@ public class LocationHelper {
 
     public static RouteRequest createRouteRequest(){
         List<Integer> routePathIndex = Arrays.asList(1, 2);
-        RouteRequest routeRequest = new RouteRequest(TIME_IN_MIN, DISTANCE, createDrivingLocationIndexRequests(), routePathIndex);
+        RouteRequest routeRequest = new RouteRequest(Constants.TIME_IN_MIN, Constants.DISTANCE, createDrivingLocationIndexRequests(), routePathIndex);
 
         return routeRequest;
     }

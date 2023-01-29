@@ -16,9 +16,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static com.example.serbUber.model.DrivingStatus.ACCEPTED;
-import static com.example.serbUber.server.helper.Constants.*;
-import static com.example.serbUber.server.helper.Constants.EXIST_OBJECT_ID;
+import static com.example.serbUber.server.service.helper.Constants.*;
+import static com.example.serbUber.server.service.helper.Constants.EXIST_OBJECT_ID;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 

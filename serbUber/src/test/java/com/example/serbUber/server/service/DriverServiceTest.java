@@ -7,21 +7,19 @@ import com.example.serbUber.service.*;
 import com.example.serbUber.service.user.DriverService;
 import com.example.serbUber.service.user.RoleService;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static com.example.serbUber.server.helper.Constants.*;
-import static com.example.serbUber.server.helper.DriverConstants.*;
-import static com.example.serbUber.server.helper.DrivingConstants.*;
-import static com.example.serbUber.server.helper.LocationHelper.*;
-import static com.example.serbUber.server.helper.RegularUserConstants.FIRST_USER;
-import static com.example.serbUber.server.helper.VehicleTypeInfoConstants.VEHICLE_TYPE_INFO_SUV;
+import static com.example.serbUber.server.service.helper.Constants.*;
+import static com.example.serbUber.server.service.helper.DriverConstants.*;
+import static com.example.serbUber.server.service.helper.DrivingConstants.*;
+import static com.example.serbUber.server.service.helper.LocationHelper.*;
+import static com.example.serbUber.server.service.helper.RegularUserConstants.FIRST_USER;
+import static com.example.serbUber.server.service.helper.VehicleTypeInfoConstants.VEHICLE_TYPE_INFO_SUV;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.Mockito.*;

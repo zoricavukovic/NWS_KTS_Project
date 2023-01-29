@@ -1,4 +1,4 @@
-package com.example.serbUber.server.helper;
+package com.example.serbUber.server.service.helper;
 
 import com.example.serbUber.model.*;
 import com.example.serbUber.model.user.Driver;
@@ -10,7 +10,6 @@ import java.util.HashSet;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import static com.example.serbUber.server.helper.LocationHelper.*;
 import static org.mockito.ArgumentMatchers.any;
 
 public class Constants {

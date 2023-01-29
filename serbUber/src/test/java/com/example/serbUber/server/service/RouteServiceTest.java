@@ -3,7 +3,6 @@ package com.example.serbUber.server.service;
 import com.example.serbUber.dto.PossibleRoutesViaPointsDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.EntityType;
-import com.example.serbUber.model.*;
 import com.example.serbUber.model.DrivingLocationIndex;
 import com.example.serbUber.model.Location;
 import com.example.serbUber.model.Route;
@@ -21,7 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.*;
 
-import static com.example.serbUber.server.helper.LocationHelper.*;
+import static com.example.serbUber.server.service.helper.LocationHelper.*;
 import static com.example.serbUber.util.Constants.getBeforeLastIndexOfList;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
@@ -117,45 +116,6 @@ public class RouteServiceTest {
         WireMockServer wireMockServer = new WireMockServer();
         wireMockServer.start();
 
-        wireMockServer.stubFor(get(urlEqualTo("https://routing.openstreetmap.de/routed-car/routed-car/route/v1/driving/1,2;3,4?geometries=geojson&overview=false&alternatives=true&steps=true"))
-            .willReturn(aResponse().withStatus(200).withBody("{ / JSON response / }")));
-
-        when(vehicleTypeInfoService.getAveragePriceForChosenRoute(anyDouble())).thenThrow(new EntityNotFoundException("CAR", EntityType.VEHICLE_TYPE_INFO));
-
-        List<PossibleRoutesViaPointsDTO> result = routeService.getPossibleRoutes(locationsForRoutesRequest);
-        wireMockServer.stop();
-
-        assertEquals(0, result.size());
-    }
-
-    @Test
-    @DisplayName("T5-Should return possible routes list")
-    public void shouldReturnListOfPossibleRoutes() throws EntityNotFoundException {
-        LocationsForRoutesRequest locationsForRoutesRequest = createLocationsForRoutesRequest(2);
-
-        WireMockServer wireMockServer = new WireMockServer();
-        wireMockServer.start();
-
-        wireMockServer.stubFor(get(urlEqualTo("https://routing.openstreetmap.de/routed-car/route/v1/driving/1,2;3,4?geometries=geojson&overview=false&alternatives=true&steps=true"))
-            .willReturn(aResponse().withStatus(200).withBody("{ / JSON response / }")));
-
-        when(vehicleTypeInfoService.getAveragePriceForChosenRoute(anyDouble())).thenReturn(4.0);
-
-        List<PossibleRoutesViaPointsDTO> result = routeService.getPossibleRoutes(locationsForRoutesRequest);
-        wireMockServer.stop();
-
-        assertEquals(1, result.size());
-        assertEquals(result.get(0).getPossibleRouteDTOList().get(0).getAveragePrice(), 4.0);
-    }
-
-    @Test
-    @DisplayName("T4-Should throw entity not found when vehicle type not found")
-    public void shouldReturnEmptyListOfPossibleRoutes() throws EntityNotFoundException {
-        LocationsForRoutesRequest locationsForRoutesRequest = createLocationsForRoutesRequest(2);
-
-        WireMockServer wireMockServer = new WireMockServer();
-        wireMockServer.start();
-
         wireMockServer.stubFor(get(urlEqualTo("/routed-car/route/v1/driving/1,2;3,4?geometries=geojson&overview=false&alternatives=true&steps=true"))
                 .willReturn(aResponse().withStatus(200).withBody("{ /* JSON response */ }")));
 
@@ -168,7 +128,7 @@ public class RouteServiceTest {
     }
 
     @Test
-    @DisplayName("T5-Should return possible routes list")
+    @DisplayName("T4-Should return possible routes list")
     public void shouldReturnListOfPossibleRoutes() throws EntityNotFoundException {
         LocationsForRoutesRequest locationsForRoutesRequest = createLocationsForRoutesRequest(2);
 
