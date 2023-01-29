@@ -45,24 +45,6 @@ public class DrivingController {
         return this.drivingService.getAll();
     }
 
-    @PostMapping()
-    @ResponseStatus(HttpStatus.CREATED)
-    public DrivingDTO create(@Valid @RequestBody DrivingRequest drivingRequest) {
-        /*
-        return this.drivingService.create(
-              drivingRequest.isActive(),
-                drivingRequest.getDuration(),
-                drivingRequest.getStarted(),
-                drivingRequest.getPayingLimit(),
-                drivingRequest.getRoute(),
-                drivingRequest.getDrivingStatus(),
-                drivingRequest.getDriverEmail(),
-                drivingRequest.getUsersPaid(),
-                drivingRequest.getPrice()
-        ); */
-        return null;
-    }
-
     @GetMapping("/{id}/{pageNumber}/{pageSize}/{parameter}/{sortOrder}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
