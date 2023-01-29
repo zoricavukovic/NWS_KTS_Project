@@ -38,6 +38,7 @@ insert into vehicles (baby_seat, pet_friendly, rate, vehicle_type_id, active_rou
         (false, true, 0, 2, null, 0, 5, 0),
         (true, true, 0, 2, null, 0, 5, 0),
         (false, true, 0, 1, 1, 0, 5, 0),
+        (false, true, 0, 3, null, 0, 7, 0),
         (false, true, 0, 3, null, 0, 7, 0);
 
 --sifra123@
@@ -66,16 +67,18 @@ insert into drivers (id, email, password, name, surname, phone_number, city, pro
             (nextval('users_id_gen'), 'uros@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Uros', 'Pejicc', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('18.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), 0, 0, true, true, true, 5),
             (nextval('users_id_gen'), 'elo@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Elo', 'Elic', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('18.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), 0, 0, true, false, false, 6);
 
+
 insert into drivings (active, driver_id, driving_status, duration, price, started, end_date, route_id, last_reminder, reservation) values
            (true, 18, 2, 2, 3, to_timestamp('25.01.2023. 22:48', 'DD.MM.YYYY HH24:MI'), null, 1, null, false),
            (true, 14, 2, 8, 3, to_timestamp('25.01.2023. 22:40', 'DD.MM.YYYY HH24:MI'), null, 2, null, false),
            (false, 18, 2, 10, 5, to_timestamp('25.01.2023 18:50', 'DD.MM.YYYY HH24:MI'), null, 3, null, false),
            (false, 14, 2, 10, 5, to_timestamp('27.01.2023 18:50', 'DD.MM.YYYY HH24:MI'), null, 3, null, false),
-           (false, 19, 2, 10, 5, to_timestamp('10.02.2023 18:50', 'DD.MM.YYYY HH24:MI'), null, 3, null, false),
+           (false, 19, 2, 10, 5, CURRENT_TIMESTAMP + INTERVAL '1 day', null, 3, null, false),
            (false, 19, 2, 10, 5, CURRENT_TIMESTAMP, null, 3, null, false),
            ---za driver_id 15 ne menjaj, testira se baza, dodajte voznje posle ove dve i ne brisite prethodne, ako obrisete, promenite drivings_users.
            (false, 15, 3, 10, 5, to_timestamp('27.01.2023 18:50', 'DD.MM.YYYY HH24:MI'), to_timestamp('27.01.2023 19:00', 'DD.MM.YYYY HH24:MI'), 3, null, false),
            (false, 15, 3, 10, 5, to_timestamp('27.01.2023 18:50', 'DD.MM.YYYY HH24:MI'), to_timestamp('27.01.2023 19:00', 'DD.MM.YYYY HH24:MI'), 3, null, false);
+
 
 
 --DATEADD(MINUTE, -15, GETDATE())

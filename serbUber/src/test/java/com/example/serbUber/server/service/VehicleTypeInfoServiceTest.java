@@ -7,20 +7,17 @@ import com.example.serbUber.model.VehicleTypeInfo;
 import com.example.serbUber.repository.VehicleTypeInfoRepository;
 import com.example.serbUber.service.VehicleTypeInfoService;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.example.serbUber.dto.VehicleTypeInfoDTO.fromVehicleTypeInfos;
-import static com.example.serbUber.server.helper.VehicleTypeInfoConstants.*;
+import static com.example.serbUber.server.service.helper.VehicleTypeInfoConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 

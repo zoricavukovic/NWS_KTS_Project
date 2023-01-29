@@ -1,10 +1,8 @@
-package com.example.serbUber.server.helper;
+package com.example.serbUber.server.service.helper;
 
 import com.example.serbUber.model.user.RegularUser;
 import com.example.serbUber.model.user.Role;
 import com.example.serbUber.model.user.User;
-
-import static com.example.serbUber.server.helper.Constants.*;
 
 public class UserConstants {
 //    final String email,
@@ -28,12 +26,12 @@ public class UserConstants {
         return new RegularUser(
                 id,
                 email,
-                EXIST_PASSWORD,
+                Constants.EXIST_PASSWORD,
                 USER_NAME,
                 USER_SURNAME,
-                PHONE_NUMBER,
-                CITY,
-                PROFILE_PICTURE,
+                Constants.PHONE_NUMBER,
+                Constants.CITY,
+                Constants.PROFILE_PICTURE,
                 new Role("ROLE_REGULAR_USER")
         );
     }

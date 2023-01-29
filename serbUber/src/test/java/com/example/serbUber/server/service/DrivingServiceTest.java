@@ -1,6 +1,5 @@
 package com.example.serbUber.server.service;
 
-import com.beust.ah.A;
 import com.example.serbUber.dto.DrivingDTO;
 import com.example.serbUber.dto.SimpleDrivingInfoDTO;
 import com.example.serbUber.dto.VehicleCurrentLocationDTO;
@@ -22,25 +21,23 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.example.serbUber.model.DrivingStatus.*;
-import static com.example.serbUber.server.helper.Constants.*;
-import static com.example.serbUber.server.helper.DriverConstants.*;
-import static com.example.serbUber.server.helper.DriverConstants.EXIST_DRIVER;
-import static com.example.serbUber.server.helper.DriverConstants.EXIST_DRIVER_EMAIL;
-import static com.example.serbUber.server.helper.DrivingConstants.*;
-import static com.example.serbUber.server.helper.LocationHelper.FIRST_LOCATION;
-import static com.example.serbUber.server.helper.RegularUserConstants.FIRST_USER;
-import static com.example.serbUber.server.helper.UserConstants.*;
+import static com.example.serbUber.server.service.helper.DrivingConstants.*;
+import static com.example.serbUber.server.service.helper.Constants.*;
+import static com.example.serbUber.server.service.helper.DriverConstants.*;
+import static com.example.serbUber.server.service.helper.DriverConstants.EXIST_DRIVER;
+import static com.example.serbUber.server.service.helper.DriverConstants.EXIST_DRIVER_EMAIL;
+import static com.example.serbUber.server.service.helper.DrivingConstants.*;
+import static com.example.serbUber.server.service.helper.LocationHelper.FIRST_LOCATION;
+import static com.example.serbUber.server.service.helper.RegularUserConstants.FIRST_USER;
+import static com.example.serbUber.server.service.helper.UserConstants.*;
 import static java.lang.Math.abs;
-import static com.example.serbUber.server.helper.RegularUserConstants.FIRST_USER_ID;
+import static com.example.serbUber.server.service.helper.RegularUserConstants.FIRST_USER_ID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
@@ -481,8 +478,7 @@ public class DrivingServiceTest {
     public void isPassengersAlreadyHaveRide_returnTrue_passengerHaveActiveDriving() throws EntityNotFoundException {
         when(userService.getUserByEmail(USER_EMAIL_1)).thenReturn(createUser(USER_ID_1, USER_EMAIL_1));
         Driving activeDriving =
-                createActiveDriving(5,
-                createDriver(DRIVER_ID_1, DRIVER_EMAIL_1, VEHICLE_1, FIRST_LOCATION));
+                createActiveDriving(5, createDriver(DRIVER_ID_1, DRIVER_EMAIL_1, VEHICLE_1, FIRST_LOCATION));
         List<Driving> drivings = new ArrayList<>();
         drivings.add(activeDriving);
         when(drivingRepository
@@ -571,7 +567,6 @@ public class DrivingServiceTest {
                         PRICE).getDriver().getId());
     }
 
-
     @Test
     @DisplayName("T22 - Should throw exception, driving is not found")
     public void create_throwEntityNotFoundException() throws EntityNotFoundException {
@@ -590,12 +585,6 @@ public class DrivingServiceTest {
         verify(drivingRepository, times(0)).save(any(Driving.class));
     }
 
-
-    private DrivingDTO createDrivingDTO(Driving driving) {
-        driving.setDrivingStatus(REJECTED);
-
-        return new DrivingDTO(driving);
-    }
 
     private List<Arguments> getInvalidStartingTime(){
 

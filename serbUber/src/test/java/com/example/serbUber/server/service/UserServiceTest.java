@@ -1,7 +1,6 @@
 package com.example.serbUber.server.service;
 
 import com.example.serbUber.exception.EntityNotFoundException;
-import com.example.serbUber.model.user.User;
 import com.example.serbUber.repository.user.UserRepository;
 import com.example.serbUber.service.DriverUpdateApprovalService;
 import com.example.serbUber.service.EmailService;
@@ -18,8 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static com.example.serbUber.server.helper.Constants.*;
-import static com.example.serbUber.server.helper.UserConstants.*;
+import static com.example.serbUber.server.service.helper.DriverConstants.*;
+import static com.example.serbUber.server.service.helper.UserConstants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
@@ -49,7 +48,6 @@ public class UserServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    //greska: User: user1@gmail.com is not found
     @Test
     @DisplayName("T1 - Should return user")
     public void getUserByEmail_ReturnUser() throws EntityNotFoundException {

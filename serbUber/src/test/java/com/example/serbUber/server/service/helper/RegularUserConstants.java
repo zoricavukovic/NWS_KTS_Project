@@ -1,4 +1,4 @@
-package com.example.serbUber.server.helper;
+package com.example.serbUber.server.service.helper;
 
 import com.example.serbUber.model.user.RegularUser;
 import com.example.serbUber.model.user.Role;
@@ -29,6 +29,7 @@ public class RegularUserConstants {
 
     public static final RegularUser FIRST_USER = new RegularUser(FIRST_USER_ID, FIRST_USER_EMAIL, USER_PASSWORD, FIRST_USER_NAME, FIRST_USER_SURNAME, USER_PHONE_NUMBER, USER_CITY, USER_PROFILE_PICTURE, ROLE_REGULAR_USER);
     public static final RegularUser SECOND_USER = new RegularUser(SECOND_USER_ID, SECOND_USER_EMAIL, USER_PASSWORD, SECOND_USER_NAME, SECOND_USER_SURNAME, USER_PHONE_NUMBER, USER_CITY, USER_PROFILE_PICTURE, ROLE_REGULAR_USER);
+    public static final RegularUser THIRD_USER = new RegularUser(THIRD_USER_ID, THIRD_USER_EMAIL, USER_PASSWORD, THIRD_USER_NAME, THIRD_USER_SURNAME, USER_PHONE_NUMBER, USER_CITY, USER_PROFILE_PICTURE, ROLE_REGULAR_USER);
 
     public static final RegularUser USER_WITHOUT_TOKEN_BANK = new RegularUser(THIRD_USER_ID, THIRD_USER_EMAIL, USER_PASSWORD, THIRD_USER_NAME, THIRD_USER_SURNAME, USER_PHONE_NUMBER, USER_CITY, USER_PROFILE_PICTURE, ROLE_REGULAR_USER);
 }

@@ -11,7 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.LinkedList;
 import java.util.List;
-import static com.example.serbUber.server.helper.LocationHelper.*;
+import static com.example.serbUber.server.service.helper.LocationHelper.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)

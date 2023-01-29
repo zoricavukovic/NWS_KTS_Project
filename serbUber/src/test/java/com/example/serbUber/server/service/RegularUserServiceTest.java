@@ -1,11 +1,7 @@
 package com.example.serbUber.server.service;
 
 import com.example.serbUber.exception.EntityNotFoundException;
-import com.example.serbUber.model.Driving;
-import com.example.serbUber.model.DrivingStatus;
-import com.example.serbUber.model.Route;
 import com.example.serbUber.model.user.RegularUser;
-import com.example.serbUber.repository.RouteRepository;
 import com.example.serbUber.repository.user.RegularUserRepository;
 import com.example.serbUber.service.*;
 import com.example.serbUber.service.payment.TokenBankService;
@@ -18,7 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
-import static com.example.serbUber.server.helper.RegularUserConstants.*;
+import static com.example.serbUber.server.service.helper.RegularUserConstants.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
