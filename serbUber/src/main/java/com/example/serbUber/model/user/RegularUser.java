@@ -49,6 +49,20 @@ public class RegularUser extends User {
         super(email, password, name, surname, phoneNumber, city, profilePicture, role);
     }
 
+    public RegularUser(
+        final Long id,
+        final String email,
+        final String password,
+        final String name,
+        final String surname,
+        final String phoneNumber,
+        final String city,
+        final String profilePicture,
+        final Role role
+    ) {
+        super(id, email, password, name, surname, phoneNumber, city, profilePicture, role);
+    }
+
 
     public RegularUser(RegularUser regularUser) {
         super(

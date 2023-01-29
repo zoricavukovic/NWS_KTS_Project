@@ -194,9 +194,9 @@ public class DrivingService implements IDrivingService {
                 .orElseThrow(() -> new EntityNotFoundException(id, EntityType.DRIVING));
     }
 
-    public List<DrivingDTO> getAllNowAndFutureDrivings(final Long id) {
+    public List<DrivingDTO> getAllNowAndFutureDrivings(final Long driverId) {
 
-        return fromDrivings(drivingRepository.getAllNowAndFutureDrivings(id));
+        return fromDrivings(drivingRepository.getAllNowAndFutureDrivings(driverId));
     }
 
     public DrivingDTO paidDriving(final Long id) throws EntityNotFoundException {

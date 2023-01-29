@@ -1,14 +1,10 @@
 package com.example.serbUber.server.service;
 
+import com.beust.ah.A;
 import com.example.serbUber.dto.DrivingDTO;
 import com.example.serbUber.dto.SimpleDrivingInfoDTO;
-import com.example.serbUber.dto.VehicleCurrentLocationDTO;
-import com.example.serbUber.exception.DriverAlreadyHasStartedDrivingException;
-import com.example.serbUber.exception.DrivingShouldNotStartYetException;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.model.*;
-import com.example.serbUber.model.user.RegularUser;
-import com.example.serbUber.model.user.Role;
 import com.example.serbUber.repository.DrivingRepository;
 import com.example.serbUber.service.DrivingService;
 import com.example.serbUber.service.DrivingStatusNotificationService;
@@ -17,9 +13,6 @@ import com.example.serbUber.service.WebSocketService;
 import com.example.serbUber.service.user.UserService;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -30,7 +23,7 @@ import static com.example.serbUber.model.DrivingStatus.ACCEPTED;
 import static com.example.serbUber.server.helper.Constants.*;
 import static com.example.serbUber.server.helper.DriverConstants.EXIST_DRIVER;
 import static com.example.serbUber.server.helper.DriverConstants.EXIST_DRIVER_EMAIL;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static com.example.serbUber.server.helper.RegularUserConstants.FIRST_USER_ID;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -138,11 +131,120 @@ public class DrivingServiceTest {
         Assertions.assertEquals(driving.getId(), drivingResponse.getId());
     }
 
+    @Test
+    @DisplayName("T5-Should return empty list of now and future drivings")
+    public void shouldReturnEmptyListOfNowAndFutureDrivingsForDriverId() {
 
-    List<Arguments> getValidStartTimeForStartingDriving(){
+        List<Driving> drivings = new LinkedList<>();
 
-        return Arrays.asList(arguments(LocalDateTime.now().plusMinutes(5)),
-                arguments(LocalDateTime.now().plusMinutes(4)));
+        when(drivingRepository.getAllNowAndFutureDrivings(EXIST_DRIVER.getId()))
+            .thenReturn(drivings);
+
+        List<DrivingDTO> drivingDTOs = drivingService.getAllNowAndFutureDrivings(EXIST_DRIVER.getId());
+
+        Assertions.assertEquals(0, drivingDTOs.size());
+        verify(drivingRepository).getAllNowAndFutureDrivings(EXIST_DRIVER.getId());
     }
 
+    @Test
+    @DisplayName("T6-Should return list of now and future drivings with many drivings")
+    public void shouldReturnListOfNowAndFutureDrivingsForDriverId() {
+
+        List<Driving> drivings = new LinkedList<>();
+        Driving activeDriving = new Driving(DURATION, LocalDateTime.now().minusMinutes(1), null, ROUTE,
+            ACCEPTED, EXIST_DRIVER, PRICE);
+        activeDriving.setActive(true);
+        DrivingDTO activeDrivingDTO = new DrivingDTO(activeDriving);
+
+        Driving futureDriving = new Driving(DURATION, LocalDateTime.now().plusMinutes(5), null, ROUTE,
+            ACCEPTED, EXIST_DRIVER, PRICE);
+        DrivingDTO futureDrivingDTO = new DrivingDTO(futureDriving);
+
+        drivings.add(activeDriving);
+        drivings.add(futureDriving);
+
+        when(drivingRepository.getAllNowAndFutureDrivings(EXIST_DRIVER.getId()))
+            .thenReturn(drivings);
+
+        List<DrivingDTO> drivingDTOs = drivingService.getAllNowAndFutureDrivings(EXIST_DRIVER.getId());
+
+        Assertions.assertEquals(2, drivingDTOs.size());
+        Assertions.assertEquals(activeDrivingDTO.getStarted(), drivingDTOs.get(0).getStarted());
+        Assertions.assertEquals(futureDrivingDTO.getStarted(), drivingDTOs.get(1).getStarted());
+    }
+
+    @Test
+    @DisplayName("T7-Should not found future drivings for driver")
+    public void shouldNotFoundFutureDrivingsForDriver() {
+
+        List<Driving> drivings = new LinkedList<>();
+
+        when(drivingRepository.driverHasFutureDriving(EXIST_DRIVER.getId()))
+            .thenReturn(drivings);
+
+        Driving driving = drivingService.driverHasFutureDriving(EXIST_DRIVER.getId());
+
+        Assertions.assertNull(driving);
+        verify(drivingRepository).driverHasFutureDriving(EXIST_DRIVER.getId());
+    }
+
+    @Test
+    @DisplayName("T8-Should found future driving for driver")
+    public void shouldFoundFutureDrivingForDriver() {
+
+        List<Driving> drivings = new LinkedList<>();
+        Driving futureDriving1 = new Driving(DURATION, LocalDateTime.now().plusMinutes(5), null, ROUTE,
+            ACCEPTED, EXIST_DRIVER, PRICE);
+
+
+        Driving futureDriving2 = new Driving(DURATION, LocalDateTime.now().plusMinutes(10), null, ROUTE,
+            ACCEPTED, EXIST_DRIVER, PRICE);
+
+        drivings.add(futureDriving1);
+        drivings.add(futureDriving2);
+
+        when(drivingRepository.driverHasFutureDriving(EXIST_DRIVER.getId()))
+            .thenReturn(drivings);
+
+        Driving driving = drivingService.driverHasFutureDriving(EXIST_DRIVER.getId());
+
+        Assertions.assertNotNull(driving);
+        Assertions.assertEquals(futureDriving1.getDrivingStatus(), driving.getDrivingStatus());
+        Assertions.assertEquals(futureDriving1.getStarted(), driving.getStarted());
+    }
+
+    @Test
+    @DisplayName("T9-Should not found active driving for user")
+    public void shouldNotFoundActiveDrivingForUser() {
+
+        List<Driving> drivings = new LinkedList<>();
+
+        when(drivingRepository.getActiveDrivingForUser(anyLong(), any(LocalDateTime.class)))
+            .thenReturn(drivings);
+
+        SimpleDrivingInfoDTO activeDriving = drivingService.checkUserHasActiveDriving(FIRST_USER_ID);
+
+        Assertions.assertNull(activeDriving);
+    }
+
+    @Test
+    @DisplayName("T10-Should found active driving for user")
+    public void shouldFoundActiveDrivingForUser() {
+
+        List<Driving> drivings = new LinkedList<>();
+        Driving activeDriving = new Driving(DURATION, LocalDateTime.now().minusMinutes(1), null, ROUTE,
+            ACCEPTED, EXIST_DRIVER, PRICE);
+        activeDriving.setActive(true);
+        SimpleDrivingInfoDTO activeDrivingDTO = new SimpleDrivingInfoDTO(activeDriving);
+
+        drivings.add(activeDriving);
+
+        when(drivingRepository.getActiveDrivingForUser(anyLong(), any(LocalDateTime.class)))
+            .thenReturn(drivings);
+
+        SimpleDrivingInfoDTO activeSimpleDrivingDTO = drivingService.checkUserHasActiveDriving(FIRST_USER_ID);
+
+        Assertions.assertTrue(activeSimpleDrivingDTO.isActive());
+        Assertions.assertEquals(activeDrivingDTO.getCost(), activeSimpleDrivingDTO.getCost());
+    }
 }
