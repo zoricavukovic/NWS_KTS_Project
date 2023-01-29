@@ -36,8 +36,6 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.example.serbUber.server.helper.Constants.*;
-import static com.example.serbUber.server.helper.DriverConstants.DRIVER_ID;
-import static com.example.serbUber.server.helper.DriverConstants.EXIST_DRIVER;
 import static com.example.serbUber.server.helper.VehicleTypeInfoConstants.*;
 import static com.example.serbUber.server.helper.RegularUserConstants.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;

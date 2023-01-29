@@ -18,7 +18,7 @@ public class Constants {
     public static final Long NOT_EXIST_OBJECT_ID = -1L;
     public static final Long EXIST_OBJECT_ID = 1L;
     public static final String DRIVING_REJECTION_REASON = "Driving is rejected..";
-    public static final double DURATION = 3;
+    public static final double DURATION = 10;
     public static final LocalDateTime STARTED = LocalDateTime.now();
     public static final LocalDateTime END = LocalDateTime.now().plusMinutes((long) DURATION);
     public static final double PRICE = 2;

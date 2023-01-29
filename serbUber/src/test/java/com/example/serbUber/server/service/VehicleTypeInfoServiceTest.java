@@ -67,7 +67,6 @@ public class VehicleTypeInfoServiceTest {
                 .thenReturn(Optional.of(vehicleTypeInfo));
 
         Assertions.assertDoesNotThrow(() -> vehicleTypeInfoService.get(VehicleType.SUV));
-
         assertTrue(vehicleTypeInfoService.isCorrectNumberOfSeats(VEHICLE_TYPE_INFO_SUV, numberOfPassengers));
     }
 }
