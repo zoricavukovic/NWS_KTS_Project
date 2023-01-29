@@ -1,14 +1,8 @@
 package com.example.serbUber.server.service;
 
 import com.example.serbUber.dto.DrivingDTO;
-import com.example.serbUber.dto.SimpleDrivingInfoDTO;
-import com.example.serbUber.dto.VehicleCurrentLocationDTO;
-import com.example.serbUber.exception.DriverAlreadyHasStartedDrivingException;
-import com.example.serbUber.exception.DrivingShouldNotStartYetException;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.model.*;
-import com.example.serbUber.model.user.RegularUser;
-import com.example.serbUber.model.user.Role;
 import com.example.serbUber.repository.DrivingRepository;
 import com.example.serbUber.service.DrivingService;
 import com.example.serbUber.service.DrivingStatusNotificationService;
@@ -17,16 +11,13 @@ import com.example.serbUber.service.WebSocketService;
 import com.example.serbUber.service.user.UserService;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static com.example.serbUber.model.DrivingStatus.ACCEPTED;
 import static com.example.serbUber.server.helper.Constants.*;
 import static com.example.serbUber.server.helper.DriverConstants.EXIST_DRIVER;
 import static com.example.serbUber.server.helper.DriverConstants.EXIST_DRIVER_EMAIL;

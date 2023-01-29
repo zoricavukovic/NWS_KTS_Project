@@ -18,6 +18,7 @@ import org.mockito.quality.Strictness;
 
 import java.util.Optional;
 
+import static com.example.serbUber.exception.EntityType.VEHICLE_TYPE_INFO;
 import static com.example.serbUber.server.helper.Constants.*;
 import static com.example.serbUber.server.helper.VehicleTypeInfoConstants.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -78,6 +79,6 @@ public class VehicleTypeInfoServiceTest {
 
         Assertions.assertDoesNotThrow(() -> vehicleTypeInfoService.get(VehicleType.SUV));
 
-        assertTrue(vehicleTypeInfoService.isCorrectNumberOfSeats(VEHICLE_TYPE_INFO, 4));
+        assertTrue(vehicleTypeInfoService.isCorrectNumberOfSeats(VEHICLE_TYPE_INFO_SUV, 4));
     }
 }

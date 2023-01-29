@@ -100,7 +100,6 @@ public class RouteService implements IRouteService {
 
     public List<double[]> getRoutePath(final Long id) throws EntityNotFoundException {
         Route route = this.routeRepository.findById(id)
-
                 .orElseThrow(() -> new EntityNotFoundException(id, EntityType.ROUTE));
         List<DrivingLocationIndex> locations = route.getLocations().stream().toList();
 

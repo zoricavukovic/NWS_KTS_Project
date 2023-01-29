@@ -38,13 +38,13 @@ import static com.example.serbUber.util.PictureHandler.convertPictureToBase64ByN
 @Qualifier("driverServiceConfiguration")
 public class DriverService implements IDriverService{
 
-    private final DriverRepository driverRepository;
+    private DriverRepository driverRepository;
     private final VehicleService vehicleService;
     private final RoleService roleService;
     private final VerifyService verifyService;
     private final EmailService emailService;
     private final WebSocketService webSocketService;
-    private final RouteService routeService;
+    private RouteService routeService;
 
     public DriverService(
             final DriverRepository driverRepository,
@@ -252,7 +252,7 @@ public class DriverService implements IDriverService{
             }
             if (!hasFutureDriving){
                 double minutesToArrival = calculateMinutesToArrivalForBusyDriversWithoutFutureDrivings(driver, startLat, startLng);
-                if(minutesToArrival > 0){
+                if(minutesToArrival >= 0){
                     LocalDateTime endOfDriving = start.plusMinutes((long) (duration + minutesToArrival));
                     if (isNotSoonEndShiftForDriver(endOfDriving, driver.getWorkingMinutes())) {
                         busyDriversWithoutFutureDrivings.add(driver);
@@ -418,7 +418,7 @@ public class DriverService implements IDriverService{
     ){
         Location driverLocation = driver.getVehicle().getCurrentStop();
         Driving activeDriving = getActiveDriving(driver.getDrivings());
-        double minutes = 0;
+        double minutes = -1;
         if(activeDriving != null) {
             Location lastLocationOfActiveDriving = activeDriving.getRoute().getLocations().last().getLocation();
             double minutesToFinishDriving = routeService.calculateMinutesForDistance(

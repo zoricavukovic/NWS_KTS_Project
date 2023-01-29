@@ -1,7 +1,5 @@
 package com.example.serbUber.server.service;
 
-import com.beust.ah.A;
-import com.example.serbUber.dto.DrivingDTO;
 import com.example.serbUber.dto.DrivingNotificationDTO;
 import com.example.serbUber.dto.DrivingNotificationWebSocketDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
@@ -10,9 +8,7 @@ import com.example.serbUber.exception.InvalidChosenTimeForReservationException;
 import com.example.serbUber.exception.PassengerNotHaveTokensException;
 import com.example.serbUber.model.*;
 import com.example.serbUber.model.user.RegularUser;
-import com.example.serbUber.model.user.Role;
 import com.example.serbUber.repository.DrivingNotificationRepository;
-import com.example.serbUber.repository.DrivingRepository;
 import com.example.serbUber.request.DrivingLocationIndexRequest;
 import com.example.serbUber.request.LocationRequest;
 import com.example.serbUber.request.RouteRequest;
@@ -21,7 +17,6 @@ import com.example.serbUber.service.payment.TokenBankService;
 import com.example.serbUber.service.user.DriverService;
 import com.example.serbUber.service.user.RegularUserService;
 import com.google.maps.errors.NotFoundException;
-import net.bytebuddy.asm.Advice;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -30,14 +25,10 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static com.example.serbUber.model.DrivingNotification.getListOfUsers;
 import static com.example.serbUber.server.helper.Constants.*;
-import static com.example.serbUber.server.helper.DriverConstants.DRIVER_ID;
-import static com.example.serbUber.server.helper.DriverConstants.EXIST_DRIVER;
 import static com.example.serbUber.server.helper.VehicleTypeInfoConstants.*;
 import static com.example.serbUber.server.helper.RegularUserConstants.*;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;

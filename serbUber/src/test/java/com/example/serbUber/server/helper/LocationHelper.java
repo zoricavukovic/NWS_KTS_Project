@@ -15,25 +15,28 @@ import static com.example.serbUber.server.helper.Constants.TIME_IN_MIN;
 
 public class LocationHelper {
 
-    public static final double[] LOCATION_LON_LAT_1 = new double[]{19.3443, 45.332};
-    public static final double[] LOCATION_LON_LAT_2 = new double[]{18.6, 45};
+    public static final double[] LOCATION_LON_LAT_1 = new double[]{19.839030, 45.247460};
+    public static final double[] LOCATION_LON_LAT_2 = new double[]{19.789230, 45.242610, };
+    public static final double[] LOCATION_LON_LAT_3 = new double[]{19.837379, 45.2457200};
     public static final double[] NOT_EXIST_LOCATION = new double[]{-1.0, -1.0};
     public static final String CITY = "Novi Sad";
     public static final String STREET_1 = "Lasla Gala";
     public static final String STREET_2 = "Futoski put";
-    public static final String NUMBER_1 = "21";
+    public static final String NUMBER_1 = "2";
     public static final String NUMBER_2 = "103";
+    public static final String NUMBER_3 = "21";
     public static final String ZIP_CODE = "21000";
 
     public static final Location FIRST_LOCATION = new Location(CITY, STREET_1, NUMBER_1, ZIP_CODE, LOCATION_LON_LAT_1[0], LOCATION_LON_LAT_1[1]);
 
     public static final Location SECOND_LOCATION = new Location(CITY, STREET_2, NUMBER_2, ZIP_CODE, LOCATION_LON_LAT_2[0], LOCATION_LON_LAT_2[1]);
 
+    public static final Location THIRD_LOCATION = new Location(CITY, STREET_1, NUMBER_3, ZIP_CODE, LOCATION_LON_LAT_3[0], LOCATION_LON_LAT_3[1]);
 
     public static SortedSet<DrivingLocationIndex> createDrivingLocationIndex() {
         SortedSet<DrivingLocationIndex> locations = new TreeSet<>();
         locations.add(new DrivingLocationIndex(FIRST_LOCATION, 1, 1));
-        locations.add(new DrivingLocationIndex(FIRST_LOCATION, 2, -1));
+        locations.add(new DrivingLocationIndex(SECOND_LOCATION, 2, -1));
 
         return locations;
     }
