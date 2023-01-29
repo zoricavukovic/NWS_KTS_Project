@@ -3,21 +3,21 @@ INSERT INTO ROLE (name) VALUES ('ROLE_REGULAR_USER');
 INSERT INTO ROLE (name) VALUES ('ROLE_DRIVER');
 
 insert into locations (city, lat, lon, street, number, zip_code) values
-                                                                     ('Novi Sad', 45.258300,19.833950, 'Bulevar Oslobodjenja', '55', '21000'),
-                                                                     ('Novi Sad', 45.246710, 19.848760, 'Bulevar Cara Lazara', '5', '21000'),
-                                                                     ('Novi Sad', 45.256420, 19.811140, 'Bulevar Evrope', '10', '21000'),
-                                                                     ('Novi Sad', 45.247460, 19.839030, 'Lasla Gala', '2', '21000'),
-                                                                     ('Novi Sad', 45.245720,19.837379, 'Lasla Gala', '21', '21000'),
-                                                                     ('Novi Sad', 45.245540,19.836470, 'Gogoljeva', '2', '21000'),
-                                                                     ('Novi Sad', 45.245736,19.835760, 'Gogoljeva', '10', '21000'),
-                                                                     ('Novi Sad', 45.246382,19.834196, 'Gogoljeva', '22', '21000'),
-                                                                     ('Novi Sad', 45.246611,19.833666, 'Gogoljeva', '28', '21000'),
-                                                                     ('Novi Sad', 45.246956,19.833697, 'Mise Dimitrijevica', '3c', '21000'),
-                                                                     ('Novi Sad', 45.247748,19.834440, 'Mise Dimitrijevica', '1a', '21000'),
-                                                                     ('Novi Sad', 45.248048,19.834964, 'Brace Ribnikara', '29', '21000'),
-                                                                     ('Novi Sad', 45.247868,19.835635, 'Brace Ribnikara', '25b', '21000'),
-                                                                     ('Novi Sad', 45.247785,19.836022, 'Brace Ribnikara', '25a', '21000'),
-                                                                     ('Novi Sad', 45.242610,19.789230, 'Futoski put', '103', '21000');
+                     ('Novi Sad', 45.258300,19.833950, 'Bulevar Oslobodjenja', '55', '21000'),
+                     ('Novi Sad', 45.246710, 19.848760, 'Bulevar Cara Lazara', '5', '21000'),
+                     ('Novi Sad', 45.256420, 19.811140, 'Bulevar Evrope', '10', '21000'),
+                     ('Novi Sad', 45.247460, 19.839030, 'Lasla Gala', '2', '21000'),
+                     ('Novi Sad', 45.245720,19.837379, 'Lasla Gala', '21', '21000'),
+                     ('Novi Sad', 45.245540,19.836470, 'Gogoljeva', '2', '21000'),
+                     ('Novi Sad', 45.245736,19.835760, 'Gogoljeva', '10', '21000'),
+                     ('Novi Sad', 45.246382,19.834196, 'Gogoljeva', '22', '21000'),
+                     ('Novi Sad', 45.246611,19.833666, 'Gogoljeva', '28', '21000'),
+                     ('Novi Sad', 45.246956,19.833697, 'Mise Dimitrijevica', '3c', '21000'),
+                     ('Novi Sad', 45.247748,19.834440, 'Mise Dimitrijevica', '1a', '21000'),
+                     ('Novi Sad', 45.248048,19.834964, 'Brace Ribnikara', '29', '21000'),
+                     ('Novi Sad', 45.247868,19.835635, 'Brace Ribnikara', '25b', '21000'),
+                     ('Novi Sad', 45.247785,19.836022, 'Brace Ribnikara', '25a', '21000'),
+                     ('Novi Sad', 45.242610,19.789230, 'Futoski put', '103', '21000');
 
 insert into vehicle_type_infos (num_of_seats, start_price, vehicle_type) values
     (9, 3, 0);
