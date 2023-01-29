@@ -61,6 +61,7 @@ dependencies {
 	implementation 'org.seleniumhq.selenium:selenium-java:3.141.59'
 	implementation 'org.assertj:assertj-core:3.8.0'
 	implementation 'commons-io:commons-io:2.6'
+	implementation 'com.github.tomakehurst:wiremock-jre8:2.27.2'
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }
 

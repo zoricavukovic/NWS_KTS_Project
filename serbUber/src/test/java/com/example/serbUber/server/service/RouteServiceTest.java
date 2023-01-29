@@ -5,7 +5,10 @@ import com.example.serbUber.model.Location;
 import com.example.serbUber.model.Route;
 import com.example.serbUber.repository.RouteRepository;
 import com.example.serbUber.request.DrivingLocationIndexRequest;
+import com.example.serbUber.request.LocationsForRoutesRequest;
+import com.example.serbUber.request.LongLatRequest;
 import com.example.serbUber.service.*;
+import com.github.tomakehurst.wiremock.WireMockServer;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,10 +18,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.*;
 
 import static com.example.serbUber.server.helper.LocationHelper.*;
+import static com.example.serbUber.util.Constants.getBeforeLastIndexOfList;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+
 
 @ExtendWith(MockitoExtension.class)
 @TestMethodOrder(MethodOrderer.DisplayName.class)
@@ -80,5 +88,50 @@ public class RouteServiceTest {
         verify(drivingLocationIndexService, times(drivingLocationIndexRequests.size())).create(any(Location.class), anyInt(), anyInt());
     }
 
+    @Test
+    @DisplayName("T2-Should return before last index of list")
+    public void shouldGetBeforeLastIndexOfList() {
+
+        assertEquals(-1, getBeforeLastIndexOfList(new ArrayList<>()));
+
+        List<LongLatRequest> oneElementList = new ArrayList<>();
+        oneElementList.add(new LongLatRequest(1, 2));
+        assertEquals(0, getBeforeLastIndexOfList(oneElementList));
+
+        List<LongLatRequest> moreThanOneElementList = new ArrayList<>();
+        moreThanOneElementList.add(new LongLatRequest(1, 2));
+        moreThanOneElementList.add(new LongLatRequest(3, 4));
+        moreThanOneElementList.add(new LongLatRequest(5, 6));
+        assertEquals(2, getBeforeLastIndexOfList(moreThanOneElementList));
+    }
+
+    @Test
+    @DisplayName("T3-Should throw entity not found when getting possible routes and cannot find average price for ride")
+    public void shouldThrowEntityNotFoundWhenCannotFindAveragePriceForRide() {
+        LocationsForRoutesRequest locationsForRoutesRequest = createLocationsForRoutesRequest(0);
+
+        WireMockServer wireMockServer = new WireMockServer();
+        wireMockServer.start();
+
+        // Configure the mock server to return a fixed response
+        wireMockServer.stubFor(get(urlEqualTo("/routed-car/route/v1/driving/firstPointLng,firstPointLat;secondPointLng,secondPointLat?geometries=geojson&overview=false&alternatives=true&steps=true"))
+            .willReturn(aResponse().withStatus(200).withBody("{ /* JSON response */ }")));
+
+        routeService.getPossibleRoutes(locationsForRoutesRequest);
+        wireMockServer.stop();
+
+
+        assertEquals(-1, getBeforeLastIndexOfList(new ArrayList<>()));
+
+        List<LongLatRequest> oneElementList = new ArrayList<>();
+        oneElementList.add(new LongLatRequest(1, 2));
+        assertEquals(0, getBeforeLastIndexOfList(oneElementList));
+
+        List<LongLatRequest> moreThanOneElementList = new ArrayList<>();
+        moreThanOneElementList.add(new LongLatRequest(1, 2));
+        moreThanOneElementList.add(new LongLatRequest(3, 4));
+        moreThanOneElementList.add(new LongLatRequest(5, 6));
+        assertEquals(2, getBeforeLastIndexOfList(moreThanOneElementList));
+    }
 
 }

@@ -3,10 +3,9 @@ package com.example.serbUber.server.helper;
 import com.example.serbUber.model.DrivingLocationIndex;
 import com.example.serbUber.model.Location;
 import com.example.serbUber.model.Route;
-import com.example.serbUber.request.DrivingLocationIndexRequest;
-import com.example.serbUber.request.LocationRequest;
-import com.example.serbUber.request.RouteRequest;
+import com.example.serbUber.request.*;
 
+import javax.validation.Valid;
 import java.util.*;
 
 import static com.example.serbUber.server.helper.Constants.DISTANCE;
@@ -44,6 +43,33 @@ public class LocationHelper {
     public static Route createTestRoute(final SortedSet<DrivingLocationIndex> drivingLocationIndexList, final double time, final double distance) {
 
         return new Route(drivingLocationIndexList, distance, time);
+    }
+
+
+
+    public static LocationsForRoutesRequest createLocationsForRoutesRequest(int numberOfElementsInList) {
+        LongLatRequest firstLonLat = new LongLatRequest(1, 2);
+        LongLatRequest secondLonLat = new LongLatRequest(3, 4);
+        LongLatRequest thirdLonLat = new LongLatRequest(5, 6);
+
+        List<LongLatRequest> longLats = new LinkedList<>();
+        switch (numberOfElementsInList) {
+            case 0 -> {
+            }
+            case 1 ->
+                longLats.add(firstLonLat);
+            case 2 -> {
+                longLats.add(firstLonLat);
+                longLats.add(secondLonLat);
+            }
+            default -> {
+                longLats.add(firstLonLat);
+                longLats.add(secondLonLat);
+                longLats.add(thirdLonLat);
+            }
+        }
+
+        return new LocationsForRoutesRequest(longLats);
     }
 
     public static List<DrivingLocationIndexRequest> createDrivingLocationIndexRequests() {
