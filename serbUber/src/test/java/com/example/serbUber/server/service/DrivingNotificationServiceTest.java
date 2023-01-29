@@ -11,7 +11,6 @@ import com.example.serbUber.exception.PassengerNotHaveTokensException;
 import com.example.serbUber.model.*;
 import com.example.serbUber.model.token.PayingInfo;
 import com.example.serbUber.model.token.TokenBank;
-import com.example.serbUber.model.token.TokenTransaction;
 import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.model.user.RegularUser;
 import com.example.serbUber.repository.DrivingNotificationRepository;
@@ -392,6 +391,7 @@ public class DrivingNotificationServiceTest {
         verify(tokenBankService, times(0)).updateNumOfTokens(anyLong(), anyDouble());
         verify(drivingService).removeDriver(EXIST_OBJECT_ID);
     }
+    
 
     @Test
     @DisplayName("T14-Should not create driving, when driver is not found and ride is reservation")
@@ -422,6 +422,7 @@ public class DrivingNotificationServiceTest {
         receiversReviewed.put(drivingNotification.getSender(), 0);
 
         when(driverService.getDriverForDriving(drivingNotification)).thenReturn(null);
+        doNothing().when(webSocketService).sendDrivingStatus(DRIVER_NOT_FOUND_PATH, DRIVER_NOT_FOUND_MESSAGE, receiversReviewed);
         Driving driving = drivingNotificationService.findDriverNow(drivingNotification);
 
         Assertions.assertNull(driving);
@@ -462,11 +463,9 @@ public class DrivingNotificationServiceTest {
         verify(drivingService, times(1)).removeDriver(driving.getId());
     }
 
-
     @Test
     @DisplayName("T18-Should throw entity not found exception for user without token bank")
     public void findDriverNow_userDontHaveTokenBank() throws EntityNotFoundException {
-        //TODO: SETOVATI ID OD EXIST_ID ZA SET_ID
         DrivingNotification drivingNotification = new DrivingNotification(
             ROUTE, PRICE, USER_WITHOUT_TOKEN_BANK, LocalDateTime.now(), DURATION, false, false, VEHICLE_TYPE_INFO_SUV,
             new HashMap<>(),true);
@@ -536,7 +535,47 @@ public class DrivingNotificationServiceTest {
     }
 
     @Test
-    @DisplayName("T20-Should throw PassengerNotHaveTokensException for many passengers without enough tokens for paying in sum")
+    @DisplayName("T20-Should create accept driving with found driver for only one user with enough tokens for paying, not reservation")
+    public void findDriverNow_userHasEnoughTokenNotReservation() throws EntityNotFoundException, PassengerNotHaveTokensException {
+        DrivingNotification drivingNotification = new DrivingNotification(
+            ROUTE, PRICE, FIRST_USER, LocalDateTime.now(), DURATION, false, false, VEHICLE_TYPE_INFO_SUV,
+            new HashMap<>(),false);
+        drivingNotification.setId(60L);
+
+        Driving driving = new Driving(DURATION, drivingNotification.getStarted(), null, drivingNotification.getRoute(),
+            DrivingStatus.PAYING, EXIST_DRIVER, PRICE);
+        driving.setId(5L);
+
+        Set<RegularUser> regularUsers = getRegularUsers(FIRST_USER);
+
+        when(driverService.getDriverForDriving(drivingNotification)).thenReturn(EXIST_DRIVER);
+        when(drivingService.create(drivingNotification.getRoute().getTimeInMin(), drivingNotification.getStarted(),
+            drivingNotification.getRoute(), DrivingStatus.PAYING, DRIVER_ID, regularUsers, drivingNotification.getPrice()))
+            .thenReturn(driving);
+        when(tokenBankService.getTokensForUser(FIRST_USER.getId())).thenReturn(2d);
+        when(tokenBankService.updateNumOfTokens(FIRST_USER.getId(), 0)).thenReturn(getTokenBankForFirstUser());
+        when(driverService.calculateMinutesToStartDriving(EXIST_DRIVER, driving)).thenReturn(TIME_IN_MIN);
+        when(drivingService.save(any(Driving.class))).thenReturn(new DrivingDTO(driving));
+
+        doNothing().when(webSocketService).sendSuccessfulDriving(any(DrivingStatusNotificationDTO.class), anyMap());
+        doNothing().when(webSocketService).sendNewDrivingNotification(any(DrivingStatusNotificationDTO.class), anyString());
+
+        Driving createdDriving = drivingNotificationService.findDriverNow(drivingNotification);
+
+        verify(drivingService).save(drivingArgumentCaptor.capture());
+        Assertions.assertEquals(DrivingStatus.ACCEPTED, drivingArgumentCaptor.getValue().getDrivingStatus());
+        Assertions.assertNotEquals(drivingNotification.getStarted(), createdDriving.getStarted());
+        Assertions.assertEquals(driving.getId(), drivingArgumentCaptor.getValue().getId());
+        Assertions.assertNotNull(createdDriving);
+
+        verify(webSocketService).sendSuccessfulDriving(any(DrivingStatusNotificationDTO.class), anyMap());
+        verify(webSocketService).sendNewDrivingNotification(any(DrivingStatusNotificationDTO.class), anyString());
+        verify(drivingNotificationRepository, times(0)).deleteById(drivingNotification.getId());
+        verify(drivingService, times(0)).removeDriver(anyLong());
+    }
+
+    @Test
+    @DisplayName("T21-Should throw PassengerNotHaveTokensException for many passengers without enough tokens for paying in sum")
     public void findDriverNow_usersDontHaveEnoughTokensInSum() throws EntityNotFoundException {
 
         DrivingNotification drivingNotification = new DrivingNotification(
@@ -573,7 +612,7 @@ public class DrivingNotificationServiceTest {
     }
 
     @ParameterizedTest
-    @DisplayName("T21-Should create accept driving with found driver for many passengers with enough tokens for paying in sum")
+    @DisplayName("T22-Should create accept driving with found driver for many passengers with enough tokens for paying in sum")
     @CsvSource(value = {"1,6,3", "2,4,4", "0,0,10", "12,0,4"})
     public void findDriverNow_usersHaveEnoughTokenInSum(
         double numOfTokensForFirstUser,
@@ -586,7 +625,7 @@ public class DrivingNotificationServiceTest {
         drivingNotification.setId(60L);
 
         Driving driving = new Driving(DURATION, drivingNotification.getStarted(), null, drivingNotification.getRoute(),
-            DrivingStatus.PAYING, EXIST_DRIVER, PRICE);
+            DrivingStatus.PAYING, EXIST_DRIVER, 10);
         driving.setId(5L);
 
         Set<RegularUser> regularUsers = getRegularUsers(FIRST_USER);
@@ -604,8 +643,6 @@ public class DrivingNotificationServiceTest {
         when(tokenBankService.updateNumOfTokens(anyLong(), anyDouble())).thenReturn(getTokenBankForFirstUser());
 
         when(driverService.calculateMinutesToStartDriving(EXIST_DRIVER, driving)).thenReturn(TIME_IN_MIN);
-        driving.setDrivingStatus(DrivingStatus.ACCEPTED);
-        driving.setStarted(drivingNotification.getStarted());
         when(drivingService.save(any(Driving.class))).thenReturn(new DrivingDTO(driving));
 
         doNothing().when(drivingNotificationRepository).deleteById(drivingNotification.getId());
@@ -616,7 +653,7 @@ public class DrivingNotificationServiceTest {
 
         verify(drivingService).save(drivingArgumentCaptor.capture());
         Assertions.assertEquals(DrivingStatus.ACCEPTED, drivingArgumentCaptor.getValue().getDrivingStatus());
-        Assertions.assertEquals(driving.getStarted(), drivingArgumentCaptor.getValue().getStarted());
+        Assertions.assertEquals(drivingNotification.getStarted(), drivingArgumentCaptor.getValue().getStarted());
         Assertions.assertEquals(driving.getId(), drivingArgumentCaptor.getValue().getId());
         Assertions.assertNotNull(createdDriving);
 
@@ -624,6 +661,20 @@ public class DrivingNotificationServiceTest {
         verify(webSocketService).sendNewDrivingNotification(any(DrivingStatusNotificationDTO.class), anyString());
         verify(drivingNotificationRepository).deleteById(drivingNotification.getId());
         verify(drivingService, times(0)).removeDriver(anyLong());
+    }
+
+    @Test
+    @DisplayName("T23-Should successfully delete driving notification")
+    public void delete_shouldSuccessfullyDeleteDrivingNotification() {
+        DrivingNotification drivingNotification = new DrivingNotification(
+            ROUTE, PRICE, FIRST_USER, LocalDateTime.now(), DURATION, false, false, VEHICLE_TYPE_INFO_SUV,
+            getUsers(),true);
+        drivingNotification.setId(60L);
+
+        doNothing().when(drivingNotificationRepository).deleteById(drivingNotification.getId());
+
+        drivingNotificationService.delete(drivingNotification);
+        verify(drivingNotificationRepository).deleteById(drivingNotification.getId());
     }
 
     @NotNull

@@ -23,7 +23,7 @@ public class VehicleTypeInfoService implements IVehicleTypeInfoService {
 
     private VehicleTypeInfoRepository vehicleTypeInfoRepository;
 
-    public VehicleTypeInfoService(final VehicleTypeInfoRepository vehicleTypeInfoRepository) {
+    public VehicleTypeInfoService(VehicleTypeInfoRepository vehicleTypeInfoRepository) {
         this.vehicleTypeInfoRepository = vehicleTypeInfoRepository;
     }
 
@@ -46,15 +46,10 @@ public class VehicleTypeInfoService implements IVehicleTypeInfoService {
         )));
     }
 
-    public VehicleTypeInfoDTO findBy(VehicleType vehicleType) throws EntityNotFoundException {
-        Optional<VehicleTypeInfo> vehicleTypeInfoOpt = vehicleTypeInfoRepository.findByVehicleType(vehicleType);
 
-        return vehicleTypeInfoOpt.map(VehicleTypeInfoDTO::new).orElseThrow(() ->
-                new EntityNotFoundException(vehicleType.toString(), EntityType.VEHICLE_TYPE_INFO));
-    }
 
     public double getPriceForVehicle(VehicleType vehicleType) throws EntityNotFoundException {
-        return findBy(vehicleType).getStartPrice();
+        return get(vehicleType).getStartPrice();
     }
 
     public double getPriceForVehicleAndChosenRoute(double kilometers, VehicleType vehicleType) throws EntityNotFoundException {

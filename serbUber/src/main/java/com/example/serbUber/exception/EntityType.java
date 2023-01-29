@@ -15,8 +15,7 @@ public enum EntityType {
     PAYING_INFO,
     DRIVER_UPDATE_APPROVAL,
     DRIVING_NOTIFICATION,
-    BELL_NOTIFICATION
-    ;
+    BELL_NOTIFICATION;
 
     public static String getEntityErrorMessage(String id, EntityType entityType){
         switch (entityType){

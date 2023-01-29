@@ -211,14 +211,14 @@ public class DrivingService implements IDrivingService {
     public DrivingDTO removeDriver(Long id) throws EntityNotFoundException {
         Driving driving = getDriving(id);
         driving.setDriver(null);
-
         drivingRepository.save(driving);
 
         return new DrivingDTO(driving);
     }
 
     public SimpleDrivingInfoDTO checkUserHasActiveDriving(final Long id) {
-       List<Driving> optionalDriving = drivingRepository.getActiveDrivingForUser(id, LocalDateTime.now().plusMinutes(30));
+        LocalDateTime limitDateTime = LocalDateTime.now().plusMinutes(30);
+       List<Driving> optionalDriving = drivingRepository.getActiveDrivingForUser(id, limitDateTime);
 
         return optionalDriving.size() > 0 ? new SimpleDrivingInfoDTO(optionalDriving.get(0)): null;
     }

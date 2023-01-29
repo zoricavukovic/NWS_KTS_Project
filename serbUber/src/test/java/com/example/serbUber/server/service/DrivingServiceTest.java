@@ -1,6 +1,5 @@
 package com.example.serbUber.server.service;
 
-import com.beust.ah.A;
 import com.example.serbUber.dto.DrivingDTO;
 import com.example.serbUber.dto.SimpleDrivingInfoDTO;
 import com.example.serbUber.dto.VehicleCurrentLocationDTO;
@@ -8,6 +7,8 @@ import com.example.serbUber.exception.DriverAlreadyHasStartedDrivingException;
 import com.example.serbUber.exception.DrivingShouldNotStartYetException;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.model.*;
+import com.example.serbUber.model.user.Driver;
+import com.example.serbUber.model.user.RegularUser;
 import com.example.serbUber.repository.DrivingRepository;
 import com.example.serbUber.service.DrivingService;
 import com.example.serbUber.service.DrivingStatusNotificationService;
@@ -20,20 +21,23 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.example.serbUber.model.DrivingStatus.*;
 import static com.example.serbUber.server.helper.Constants.*;
-import static java.lang.Math.abs;
+import static com.example.serbUber.server.helper.DriverConstants.*;
 import static com.example.serbUber.server.helper.DriverConstants.EXIST_DRIVER;
 import static com.example.serbUber.server.helper.DriverConstants.EXIST_DRIVER_EMAIL;
+import static com.example.serbUber.server.helper.DrivingConstants.*;
+import static com.example.serbUber.server.helper.LocationHelper.FIRST_LOCATION;
+import static com.example.serbUber.server.helper.RegularUserConstants.FIRST_USER;
+import static com.example.serbUber.server.helper.UserConstants.*;
+import static java.lang.Math.abs;
 import static com.example.serbUber.server.helper.RegularUserConstants.FIRST_USER_ID;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 
@@ -267,7 +271,7 @@ public class DrivingServiceTest {
         Assertions.assertEquals(startedDriving.isActive(), drivingResponse.isActive());
         Assertions.assertEquals(ACCEPTED, drivingResponse.getDrivingStatus());
         Assertions.assertEquals(EXPECTED_CURRENT_LOCATION_INDEX_FOR_STARTED_DRIVING, drivingArgumentCaptor.getValue().getDriver().getVehicle().getCurrentLocationIndex());
-        Assertions.assertTrue(drivingArgumentCaptor.getValue().getDriver().isDrive());
+        assertTrue(drivingArgumentCaptor.getValue().getDriver().isDrive());
         Assertions.assertEquals(EXPECTED_CROSSED_WAYPOINTS, drivingArgumentCaptor.getValue().getDriver().getVehicle().getCrossedWaypoints());
 
         verify(webSocketService, times(1)).startDrivingNotification(any(SimpleDrivingInfoDTO.class), any());
@@ -285,7 +289,7 @@ public class DrivingServiceTest {
 
         Driving driving = drivingService.driverHasFutureDriving(EXIST_DRIVER.getId());
 
-        Assertions.assertNull(driving);
+        assertNull(driving);
         verify(drivingRepository).driverHasFutureDriving(EXIST_DRIVER.getId());
     }
 
@@ -325,7 +329,7 @@ public class DrivingServiceTest {
 
         SimpleDrivingInfoDTO activeDriving = drivingService.checkUserHasActiveDriving(FIRST_USER_ID);
 
-        Assertions.assertNull(activeDriving);
+        assertNull(activeDriving);
     }
 
     @Test
@@ -345,7 +349,7 @@ public class DrivingServiceTest {
 
         SimpleDrivingInfoDTO activeSimpleDrivingDTO = drivingService.checkUserHasActiveDriving(FIRST_USER_ID);
 
-        Assertions.assertTrue(activeSimpleDrivingDTO.isActive());
+        assertTrue(activeSimpleDrivingDTO.isActive());
         Assertions.assertEquals(activeDrivingDTO.getCost(), activeSimpleDrivingDTO.getCost());
     }
 
@@ -422,10 +426,10 @@ public class DrivingServiceTest {
         verify(drivingRepository, times(1)).save(drivingArgumentCaptor.capture());
         verify(webSocketService, times(1)).finishDrivingNotification(any(SimpleDrivingInfoDTO.class), any());
         Assertions.assertEquals(driving.getId(), drivingResponse.getId());
-        Assertions.assertFalse(drivingResponse.isActive());
+        assertFalse(drivingResponse.isActive());
         Assertions.assertEquals(FINISHED, drivingResponse.getDrivingStatus());
         Assertions.assertEquals(EXPECTED_CURRENT_LOCATION_INDEX_FOR_FINISHED_DRIVING, drivingArgumentCaptor.getValue().getDriver().getVehicle().getCurrentLocationIndex());
-        Assertions.assertNull(drivingArgumentCaptor.getValue().getDriver().getVehicle().getActiveRoute());
+        assertNull(drivingArgumentCaptor.getValue().getDriver().getVehicle().getActiveRoute());
         Assertions.assertEquals(EXPECTED_CROSSED_WAYPOINTS, drivingArgumentCaptor.getValue().getDriver().getVehicle().getCrossedWaypoints());
     }
 
@@ -466,6 +470,119 @@ public class DrivingServiceTest {
         List<Driving> changedDrivings = drivingArgumentCaptor.getAllValues();
 
         Assertions.assertEquals(0, changedDrivings.size());
+    }
+
+    @Test
+    @DisplayName("T15 - Should return true, passenger has active driving")
+    public void isPassengersAlreadyHaveRide_returnTrue_passengerHaveActiveDriving() throws EntityNotFoundException {
+        when(userService.getUserByEmail(USER_EMAIL_1)).thenReturn(createUser(USER_ID_1, USER_EMAIL_1));
+        Driving activeDriving =
+                createActiveDriving(5,
+                createDriver(DRIVER_ID_1, DRIVER_EMAIL_1, VEHICLE_1, FIRST_LOCATION));
+        List<Driving> drivings = new ArrayList<>();
+        drivings.add(activeDriving);
+        when(drivingRepository
+                .getActiveDrivingForUser(anyLong(), any(LocalDateTime.class)))
+                .thenReturn(drivings);
+        List<String> passengers = new ArrayList<>();
+        passengers.add(USER_EMAIL_1);
+        assertTrue(drivingService.isPassengersAlreadyHaveRide(passengers, LocalDateTime.now()));
+    }
+
+    @Test
+    @DisplayName("T16 - Should return false, passenger don't have active driving")
+    public void isPassengersAlreadyHaveRide_returnFalse_notHaveActiveDriving() throws EntityNotFoundException {
+        when(userService.getUserByEmail(USER_EMAIL_1)).thenReturn(createUser(USER_ID_1, USER_EMAIL_1));
+        List<Driving> drivings = new ArrayList<>();
+        when(drivingRepository
+                .getActiveDrivingForUser(anyLong(), any(LocalDateTime.class)))
+                .thenReturn(drivings);
+        List<String> passengers = new ArrayList<>();
+        passengers.add(USER_EMAIL_1);
+        assertFalse(drivingService.isPassengersAlreadyHaveRide(passengers, LocalDateTime.now()));
+    }
+
+    @Test
+    @DisplayName("T17 - Should return false, passenger have future driving before/after driving")
+    public void isPassengersAlreadyHaveRide_returnFalse_haveFutureDriving() throws EntityNotFoundException {
+        when(userService.getUserByEmail(USER_EMAIL_1)).thenReturn(createUser(USER_ID_1, USER_EMAIL_1));
+        List<Driving> drivings = new ArrayList<>();
+        Driving driving = createFutureDriving(5, createDriver(DRIVER_ID_1, DRIVER_EMAIL_1, VEHICLE_1, FIRST_LOCATION));
+        drivings.add(driving);
+        when(drivingRepository
+                .getActiveDrivingForUser(anyLong(), any(LocalDateTime.class)))
+                .thenReturn(drivings);
+        List<String> passengers = new ArrayList<>();
+        passengers.add(USER_EMAIL_1);
+        assertFalse(drivingService.isPassengersAlreadyHaveRide(passengers, LocalDateTime.now().plusMinutes(40)));
+    }
+
+    @Test
+    @DisplayName("T18 - Should remove driver, return null for driver")
+    public void removeDriver_returnDrivingWithoutDriver() throws EntityNotFoundException {
+        Driving driving = createFutureDriving(10,
+                createDriver(DRIVER_ID_1, DRIVER_EMAIL_1, VEHICLE_1, FIRST_LOCATION));
+        when(drivingRepository.getDrivingById(DRIVING_ID_1)).thenReturn(Optional.of(driving));
+
+        assertNull(drivingService.removeDriver(DRIVING_ID_1).getDriverId());
+    }
+
+    @Test
+    @DisplayName("T19 - Should throw exception, driving is not found")
+    public void removeDriver_throwException() {
+        when(drivingRepository.getDrivingById(DRIVING_ID_1)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> drivingService.removeDriver(DRIVING_ID_1));
+    }
+
+    @Test
+    @DisplayName("T20 - Should return saved driving")
+    public void save_returnSavedDriving() {
+        Driving driving = createFutureDriving(10,
+                createDriver(DRIVER_ID_1, DRIVER_EMAIL_1, VEHICLE_1, FIRST_LOCATION));
+        when(drivingRepository.save(any(Driving.class))).thenReturn(driving);
+        assertEquals(driving.getDriver().getId(), drivingService.save(driving).getDriverId());
+    }
+
+    @Test
+    @DisplayName("T21 - Should return created driving")
+    public void create_returnCreatedDriving() throws EntityNotFoundException {
+        Driver driver = createDriver(DRIVER_ID_1, DRIVER_EMAIL_1, VEHICLE_1, FIRST_LOCATION);
+        Driving driving = createFutureDriving(10, driver);
+        Set<RegularUser> users = new HashSet<>();
+        users.add(FIRST_USER);
+
+        when(drivingRepository.getAllDrivingsForUserEmail(anyString())).thenReturn(new ArrayList<>());
+        when(userService.getDriverById(DRIVER_ID_1)).thenReturn(driver);
+        when(drivingRepository.save(any(Driving.class))).thenReturn(driving);
+
+        assertEquals(driving.getDriver().getId(),
+                drivingService.create(
+                        DURATION,
+                        driving.getStarted(),
+                        driving.getRoute(),
+                        ACCEPTED,
+                        DRIVER_ID_1,
+                        users,
+                        PRICE).getDriver().getId());
+    }
+
+    @Test
+    @DisplayName("T22 - Should throw exception, driving is not found")
+    public void create_throwEntityNotFoundException() throws EntityNotFoundException {
+        Set<RegularUser> users = new HashSet<>();
+        users.add(FIRST_USER);
+        when(userService.getDriverById(anyLong())).thenThrow(EntityNotFoundException.class);
+        assertThrows(EntityNotFoundException.class, () -> drivingService.create(
+                DURATION,
+                LocalDateTime.now(),
+                ROUTE,
+                ACCEPTED,
+                DRIVER_ID_1,
+                users,
+                PRICE));
+        verify(drivingRepository, times(0)).getAllDrivingsForUserEmail(anyString());
+        verify(drivingRepository, times(0)).save(any(Driving.class));
     }
 
 

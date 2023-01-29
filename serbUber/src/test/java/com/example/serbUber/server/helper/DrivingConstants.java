@@ -14,6 +14,7 @@ import static com.example.serbUber.server.helper.Constants.*;
 import static com.example.serbUber.server.helper.LocationHelper.createDrivingLocationIndex;
 
 public class DrivingConstants {
+    public static final Long DRIVING_ID_1 = 1L;
     public static final Driving DRIVING_1 = new Driving(DURATION, null, null, null, DrivingStatus.ACCEPTED, null, PRICE);
     public static final Driving DRIVING_2 = new Driving(DURATION, null, null, null, DrivingStatus.ACCEPTED, null, PRICE);
     public static final Driving DRIVING_3 = new Driving(DURATION, null, null, null, DrivingStatus.ACCEPTED, null, PRICE);
