@@ -336,7 +336,7 @@ public class DrivingNotificationServiceTest {
             drivingNotification.getRoute(), DrivingStatus.PAYING, DRIVER_ID, regularUsers, drivingNotification.getPrice()))
             .thenReturn(driving);
         when(tokenBankService.getTokensForUser(FIRST_USER.getId())).thenReturn(numOfTokens);
-        
+
         //TODO: NAPRAVITI TOKEN UPDATES
 //        doNothing().when(tokenBankService).updateNumOfTokens(FIRST_USER.getId(), numOfTokens-PRICE);
 
