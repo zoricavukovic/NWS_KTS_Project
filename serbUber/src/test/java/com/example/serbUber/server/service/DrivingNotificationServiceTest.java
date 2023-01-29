@@ -393,7 +393,7 @@ public class DrivingNotificationServiceTest {
         verify(tokenBankService, times(0)).updateNumOfTokens(anyLong(), anyDouble());
         verify(drivingService).removeDriver(EXIST_OBJECT_ID);
     }
-    
+
 
     private DrivingDTO getDrivingWithoutDriver(Driving driving) {
         driving.setDriver(null);

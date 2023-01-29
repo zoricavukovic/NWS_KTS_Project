@@ -32,12 +32,12 @@ import static com.example.serbUber.util.PictureHandler.convertPictureToBase64ByN
 @Qualifier("userServiceConfiguration")
 public class UserService implements IUserService {
 
-    private final UserRepository userRepository;
-    private final DriverUpdateApprovalService driverUpdateApprovalService;
-    private final EmailService emailService;
-    private final DriverService driverService;
-    private final RegularUserService regularUserService;
-    private final VerifyService verifyService;
+    private UserRepository userRepository;
+    private DriverUpdateApprovalService driverUpdateApprovalService;
+    private EmailService emailService;
+    private DriverService driverService;
+    private RegularUserService regularUserService;
+    private VerifyService verifyService;
 
     @Autowired
     public UserService(
@@ -80,7 +80,7 @@ public class UserService implements IUserService {
             .orElseThrow(() -> new EntityNotFoundException(email, EntityType.USER));
     }
 
-    public Driver getDriverById(final long id) throws EntityNotFoundException {
+    public Driver getDriverById(final Long id) throws EntityNotFoundException {
 
         Object user = userRepository.getDriverById(id)
             .orElseThrow(() -> new EntityNotFoundException(id, EntityType.USER));

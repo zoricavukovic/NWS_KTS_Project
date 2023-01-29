@@ -7,18 +7,17 @@ import com.example.serbUber.service.*;
 import com.example.serbUber.service.user.DriverService;
 import com.example.serbUber.service.user.RoleService;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.example.serbUber.server.helper.Constants.*;
 import static com.example.serbUber.server.helper.DriverConstants.*;
-import static com.example.serbUber.server.helper.DrivingConstants.*;
+import static com.example.serbUber.server.helper.DrivingConstants.createActiveDriving;
+import static com.example.serbUber.server.helper.DrivingConstants.createFutureDriving;
 import static com.example.serbUber.server.helper.LocationHelper.*;
 import static com.example.serbUber.server.helper.RegularUserConstants.FIRST_USER;
 import static com.example.serbUber.server.helper.VehicleTypeInfoConstants.VEHICLE_TYPE_INFO_SUV;
@@ -30,6 +29,7 @@ import static org.mockito.Mockito.*;
 @TestMethodOrder(MethodOrderer.DisplayName.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class DriverServiceTest {
+
 
     @Mock
     private DriverRepository driverRepository;

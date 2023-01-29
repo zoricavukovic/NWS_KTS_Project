@@ -609,49 +609,18 @@ public class DrivingServiceTest {
             arguments(LocalDateTime.now().plusMinutes(4)));
     }
 
-    private List<Driving> createDrivingList(int minutesForFirst, int minutesForSecond) {
-        LocalDateTime firstStarted = LocalDateTime.now().minusMinutes(10).plusMinutes(minutesForFirst);
-        LocalDateTime secondStarted = LocalDateTime.now().minusMinutes(10).plusMinutes(minutesForSecond);
-
-        Driving drivingFirst = new Driving(EXIST_OBJECT_ID, DURATION, firstStarted, null, ROUTE,
-                ACCEPTED, EXIST_DRIVER, PRICE
-        );
-        drivingFirst.setUsers(new HashSet<>());
-
-        Driving drivingSecond = new Driving(EXIST_OBJECT_ID+1, DURATION, secondStarted, null, ROUTE,
-                ACCEPTED, EXIST_DRIVER, PRICE
-        );
-        drivingSecond.setUsers(new HashSet<>());
-
+    @Test
+    @DisplayName("T8 - Should return drivings for user")
+    public void getAllDrivingsForUserEmail_returnDrivingsForUser(){
         List<Driving> drivings = new ArrayList<>();
-        drivings.add(drivingFirst);
-        drivings.add(drivingSecond);
+        Driving driving_1 = createFutureDriving(5, DRIVER_1);
+        Driving driving_2 = createActiveDriving(5, DRIVER_2);
+        drivings.add(driving_1);
+        drivings.add(driving_2);
+        when(drivingRepository.getAllDrivingsForUserEmail(USER_EMAIL_1)).thenReturn(drivings);
 
-        return drivings;
+        assertEquals(2, drivingService.getAllDrivingsForUserEmail(USER_EMAIL_1).size());
     }
 
-    private Driving createFinishedDriving(Driving driving) {
-        driving.setActive(false);
-        driving.setDrivingStatus(FINISHED);
-        driving.setEnd(LocalDateTime.now());
-        driving.getDriver().getVehicle().setCurrentLocationIndex(-1);
-        driving.getDriver().getVehicle().setActiveRoute(null);
-        driving.getDriver().getVehicle().setCrossedWaypoints(0);
-        driving.getDriver().setDrive(false);
 
-        return driving;
-    }
-
-    private Driving createStartedDriving(Driving driving) {
-        driving.setStarted(LocalDateTime.now());
-        driving.setActive(true);
-        driving.getDriver().getVehicle().setActiveRoute(driving.getRoute());
-        driving.getDriver().getVehicle().setCurrentLocationIndex(0);
-        driving.getDriver().getVehicle().setCrossedWaypoints(0);
-        driving.getDriver().getVehicle().setCurrentStop(driving.getRoute().getLocations().first().getLocation());
-        driving.getDriver().setDrive(true);
-        driving.setDrivingStatus(DrivingStatus.ACCEPTED);
-
-        return driving;
-    }
 }

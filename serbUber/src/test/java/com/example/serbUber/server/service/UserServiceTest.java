@@ -18,10 +18,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static com.example.serbUber.server.helper.Constants.NOT_EXIST_OBJECT_ID;
-import static com.example.serbUber.server.helper.Constants.USER_EMAIL;
+import static com.example.serbUber.server.helper.Constants.*;
 import static com.example.serbUber.server.helper.UserConstants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -57,4 +57,17 @@ public class UserServiceTest {
         assertEquals(USER_ID_1, userService.getUserByEmail(USER_EMAIL_1).getId());
     }
 
+    @Test
+    @DisplayName("T2 - Should return driver")
+    public void getDriverById_ReturnDriver() throws EntityNotFoundException {
+        when(userRepository.getDriverById(DRIVER_ID)).thenReturn(Optional.of(EXIST_DRIVER));
+        assertEquals(EXIST_DRIVER_EMAIL, userService.getDriverById(DRIVER_ID).getEmail());
+    }
+
+    @Test
+    @DisplayName("T3 - Should return driver")
+    public void getDriverById_throwEntityNotFoundException() {
+        when(userRepository.getDriverById(DRIVER_ID)).thenReturn(Optional.empty());
+        assertThrows(EntityNotFoundException.class, () -> userService.getDriverById(DRIVER_ID));
+    }
 }
