@@ -256,7 +256,7 @@ public class DrivingNotificationService implements IDrivingNotificationService {
         }
     }
 
-    public void findDriverNow(DrivingNotification drivingNotification) throws PassengerNotHaveTokensException, EntityNotFoundException {
+    public Driving findDriverNow(DrivingNotification drivingNotification) throws PassengerNotHaveTokensException, EntityNotFoundException {
         Map<RegularUser, Integer> receiversReviewed = drivingNotification.getReceiversReviewed();
         Driver driver = driverService.getDriverForDriving(drivingNotification);
         receiversReviewed.put(drivingNotification.getSender(), 0);
@@ -294,6 +294,8 @@ public class DrivingNotificationService implements IDrivingNotificationService {
                 }
                 webSocketService.sendSuccessfulDriving(drivingStatusNotificationDTO, receiversReviewed);
                 webSocketService.sendNewDrivingNotification(drivingStatusNotificationDTO, driver.getEmail());
+
+                return driving;
             } else {
                 drivingService.removeDriver(driving.getId());
                 webSocketService.sendDrivingStatus(UNSUCCESSFUL_PAYMENT_PATH, UNSUCCESSFUL_PAYMENT_MESSAGE, receiversReviewed);
@@ -302,6 +304,8 @@ public class DrivingNotificationService implements IDrivingNotificationService {
             }
 
         }
+
+        return null;
     }
 
     private boolean isPaidDriving(

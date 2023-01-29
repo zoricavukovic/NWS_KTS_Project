@@ -190,7 +190,7 @@ public class DrivingServiceTest {
     }
 
     @Test
-    @DisplayName("T5-Starting driving should fail, driving not found exception")
+    @DisplayName("T7-Starting driving should fail, driving not found exception")
     public void shouldThrowDrivingNotFoundExceptionWhenStartingDriving() {
         Assertions.assertThrows(EntityNotFoundException.class,
                 () -> drivingService.startDriving(NOT_EXIST_OBJECT_ID));
@@ -201,7 +201,7 @@ public class DrivingServiceTest {
     }
 
     @Test
-    @DisplayName("T6-should throw driver already has started driving exception when starting driving")
+    @DisplayName("T8-should throw driver already has started driving exception when starting driving")
     public void shouldThrowDriverAlreadyHasStartedDrivingException() {
 
         Driving driving = new Driving(EXIST_OBJECT_ID, DURATION, STARTED, END, new Route(),
@@ -219,7 +219,7 @@ public class DrivingServiceTest {
     }
 
     @ParameterizedTest
-    @DisplayName("T7-should throw driving should not start yet exception when starting driving")
+    @DisplayName("T9-should throw driving should not start yet exception when starting driving")
     @MethodSource(value = "getInvalidStartingTime")
     public void shouldThrowDrivingShouldNotStartYetExceptionWhenStartingDriving(LocalDateTime starting) {
 
@@ -238,7 +238,7 @@ public class DrivingServiceTest {
     }
 
     @ParameterizedTest
-    @DisplayName("T8-should start driving")
+    @DisplayName("T10-should start driving")
     @MethodSource(value = "getValidStartTimeForStartingDriving")
     public void shouldStartDriving(LocalDateTime starting)
         throws DriverAlreadyHasStartedDrivingException, EntityNotFoundException, DrivingShouldNotStartYetException {
@@ -275,7 +275,7 @@ public class DrivingServiceTest {
     }
 
     @Test
-    @DisplayName("T7-Should not found future drivings for driver")
+    @DisplayName("T11-Should not found future drivings for driver")
     public void shouldNotFoundFutureDrivingsForDriver() {
 
         List<Driving> drivings = new LinkedList<>();
@@ -290,7 +290,7 @@ public class DrivingServiceTest {
     }
 
     @Test
-    @DisplayName("T8-Should found future driving for driver")
+    @DisplayName("T12-Should found future driving for driver")
     public void shouldFoundFutureDrivingForDriver() {
 
         List<Driving> drivings = new LinkedList<>();
@@ -315,7 +315,7 @@ public class DrivingServiceTest {
     }
 
     @Test
-    @DisplayName("T9-Should not found active driving for user")
+    @DisplayName("T13-Should not found active driving for user")
     public void shouldNotFoundActiveDrivingForUser() {
 
         List<Driving> drivings = new LinkedList<>();
@@ -329,7 +329,7 @@ public class DrivingServiceTest {
     }
 
     @Test
-    @DisplayName("T10-Should found active driving for user")
+    @DisplayName("T14-Should found active driving for user")
     public void shouldFoundActiveDrivingForUser() {
 
         List<Driving> drivings = new LinkedList<>();
@@ -350,7 +350,7 @@ public class DrivingServiceTest {
     }
 
     @Test
-    @DisplayName("T9-SimpleDrivingInfoDTO creation, should set minutes from route when driving is active")
+    @DisplayName("T15-SimpleDrivingInfoDTO creation, should set minutes from route when driving is active")
     public void shouldSetMinutesFromRouteWhenDrivingIsActive() {
 
         Driving driving = new Driving(EXIST_OBJECT_ID, DURATION, STARTED, END, ROUTE,
@@ -364,7 +364,7 @@ public class DrivingServiceTest {
     }
 
     @Test
-    @DisplayName("T10-SimpleDrivingInfoDTO creation, should set minutes from route when end time is null")
+    @DisplayName("T16-SimpleDrivingInfoDTO creation, should set minutes from route when end time is null")
     public void shouldSetMinutesFromRouteWhenDEndTimeIsNull() {
 
         Driving driving = new Driving(EXIST_OBJECT_ID, DURATION, STARTED, null, ROUTE,
@@ -378,7 +378,7 @@ public class DrivingServiceTest {
     }
 
     @Test
-    @DisplayName("T11-SimpleDrivingInfoDTO creation, should set minutes like difference between end and started time")
+    @DisplayName("T17-SimpleDrivingInfoDTO creation, should set minutes like difference between end and started time")
     public void shouldSetMinutesLikeDifferenceBetweenEndAndStartTime() {
 
         Driving driving = new Driving(EXIST_OBJECT_ID, DURATION, STARTED, END, ROUTE,
@@ -390,7 +390,7 @@ public class DrivingServiceTest {
     }
 
     @Test
-    @DisplayName("T12-Finishing driving failed, driving not found exception")
+    @DisplayName("T18-Finishing driving failed, driving not found exception")
     public void shouldThrowEntityNotFoundExceptionWhenDrivingFinishing() {
 
         Assertions.assertThrows(EntityNotFoundException.class,
@@ -401,7 +401,7 @@ public class DrivingServiceTest {
     }
 
     @Test
-    @DisplayName("T13-Finishing driving successfully")
+    @DisplayName("T19-Finishing driving successfully")
     public void shouldFinishDrivingSuccessfully() throws EntityNotFoundException {
 
         Driving driving = new Driving(EXIST_OBJECT_ID, DURATION, STARTED, END, ROUTE,
@@ -430,7 +430,7 @@ public class DrivingServiceTest {
     }
 
     @ParameterizedTest
-    @DisplayName("T14-Should reject outdated drivings")
+    @DisplayName("T20-Should reject outdated drivings")
     @CsvSource(value = {"4,5", "1,3"})
     public void shouldRejectOutdatedDrivings(int minutesForFirst, int minutesForSecond) {
         List<Driving> drivings = createDrivingList(minutesForFirst, minutesForSecond);
@@ -452,7 +452,7 @@ public class DrivingServiceTest {
     }
 
     @ParameterizedTest
-    @DisplayName("T14-Should skip all, there is not outdated outdated drivings")
+    @DisplayName("T21-Should skip all, there is not outdated outdated drivings")
     @CsvSource(value = {"6,7"})
     public void shouldNotRejectDrivings(int minutesForFirst, int minutesForSecond) {
         List<Driving> drivings = createDrivingList(minutesForFirst, minutesForSecond);
@@ -468,11 +468,6 @@ public class DrivingServiceTest {
         Assertions.assertEquals(0, changedDrivings.size());
     }
 
-    private DrivingDTO createDrivingDTO(Driving driving) {
-        driving.setDrivingStatus(REJECTED);
-
-        return new DrivingDTO(driving);
-    }
 
     private List<Arguments> getInvalidStartingTime(){
 
