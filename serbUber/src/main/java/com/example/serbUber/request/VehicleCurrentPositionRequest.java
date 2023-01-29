@@ -1,6 +1,7 @@
 package com.example.serbUber.request;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 public class VehicleCurrentPositionRequest {
@@ -8,10 +9,10 @@ public class VehicleCurrentPositionRequest {
     @Valid
     LongLatRequest longLatRequest;
 
-    @NotNull(message = "Crossed waypoints value cannot be empty.")
+    @Min(message = "Crossed waypoints value cannot be lower than -1.", value = -1)
     int crossedWaypoints;
 
-    @NotNull(message = "Chosen route index cannot be empty.")
+    @Min(message = "Chosen route index cannot be lower than -1.", value = -1)
     int chosenRouteIdx;
 
     public VehicleCurrentPositionRequest() {
