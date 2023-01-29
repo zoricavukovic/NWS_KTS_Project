@@ -1,6 +1,5 @@
 package com.example.serbUber.server.service;
 
-import com.beust.ah.A;
 import com.example.serbUber.dto.DrivingDTO;
 import com.example.serbUber.dto.SimpleDrivingInfoDTO;
 import com.example.serbUber.dto.VehicleCurrentLocationDTO;
@@ -22,11 +21,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -571,7 +567,6 @@ public class DrivingServiceTest {
                         PRICE).getDriver().getId());
     }
 
-
     @Test
     @DisplayName("T22 - Should throw exception, driving is not found")
     public void create_throwEntityNotFoundException() throws EntityNotFoundException {
@@ -590,12 +585,6 @@ public class DrivingServiceTest {
         verify(drivingRepository, times(0)).save(any(Driving.class));
     }
 
-
-    private DrivingDTO createDrivingDTO(Driving driving) {
-        driving.setDrivingStatus(REJECTED);
-
-        return new DrivingDTO(driving);
-    }
 
     private List<Arguments> getInvalidStartingTime(){
 

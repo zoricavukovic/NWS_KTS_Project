@@ -51,7 +51,7 @@ public class VehicleControllerTest {
     @Rollback(true)
     public void shouldThrowEntityNotFoundUpdateCurrentPosition() throws Exception {
 
-        String errorMessage = String.format(getEntityErrorMessage(NOT_EXIST_ENTITY.toString(), EntityType.VEHICLE));
+        String errorMessage = getEntityErrorMessage(NOT_EXIST_ENTITY.toString(), EntityType.VEHICLE);
         String json = TestUtil.json(VEHICLE_CURRENT_POSITION_REQUEST);
         this.mockMvc.perform(MockMvcRequestBuilders.put(String.format("%s/update-current-location/%d", VEHICLE_URL_PREFIX, NOT_EXIST_ENTITY))
                         .contentType(contentType).content(json)).andExpect(status().isNotFound())
@@ -66,7 +66,7 @@ public class VehicleControllerTest {
     @Rollback(true)
     public void shouldThrowEntityNotFoundWhenNotFoundDriverUpdateCurrentPosition() throws Exception {
 
-        String errorMessage = String.format(getEntityErrorMessage(INVALID_VEHICLE_WITHOUT_DRIVER_ID.toString(), EntityType.VEHICLE));
+        String errorMessage = getEntityErrorMessage(INVALID_VEHICLE_WITHOUT_DRIVER_ID.toString(), EntityType.VEHICLE);
         String json = TestUtil.json(VEHICLE_CURRENT_POSITION_REQUEST);
         this.mockMvc.perform(MockMvcRequestBuilders.put(String.format("%s/update-current-location/%d", VEHICLE_URL_PREFIX, INVALID_VEHICLE_WITHOUT_DRIVER_ID))
                         .contentType(contentType).content(json)).andExpect(status().isNotFound())
@@ -151,5 +151,4 @@ public class VehicleControllerTest {
                 .andExpect(jsonPath("$.waypoints.size()").value(0))
                 .andExpect(jsonPath("$.inDrive").value(false));
     }
-
 }

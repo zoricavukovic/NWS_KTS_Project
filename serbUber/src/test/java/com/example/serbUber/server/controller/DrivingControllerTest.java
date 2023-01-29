@@ -51,7 +51,6 @@ public class DrivingControllerTest {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
-
     @Test
     @DisplayName("T1-Should successfully reject driving when making PUT request to endpoint - /drivings/reject/{drivingId}")
     @WithMockUser(roles="DRIVER")
@@ -73,14 +72,13 @@ public class DrivingControllerTest {
     public void shouldThrowEntityNotFoundRejectDriving() throws Exception {
 
         String reason = "reason";
-        String errorMessage = String.format(getEntityErrorMessage(NOT_EXIST_ENTITY.toString(), EntityType.DRIVING));
+        String errorMessage = getEntityErrorMessage(NOT_EXIST_ENTITY.toString(), EntityType.DRIVING);
         this.mockMvc.perform(MockMvcRequestBuilders.put(String.format("%s/reject/%d", DRIVING_URL_PREFIX, NOT_EXIST_ENTITY))
                 .contentType(contentType).content(reason)).andExpect(status().isNotFound())
             .andExpect(result ->
                 assertTrue(result.getResolvedException() instanceof EntityNotFoundException)
             )
             .andExpect(result -> assertEquals(errorMessage, Objects.requireNonNull(result.getResolvedException()).getMessage()));
-
     }
 
     @Test
@@ -102,7 +100,7 @@ public class DrivingControllerTest {
     @Rollback(true)
     public void shouldThrowEntityNotFoundStartDriving() throws Exception {
 
-        String errorMessage = String.format(getEntityErrorMessage(NOT_EXIST_ENTITY.toString(), EntityType.DRIVING));
+        String errorMessage = getEntityErrorMessage(NOT_EXIST_ENTITY.toString(), EntityType.DRIVING);
         this.mockMvc.perform(MockMvcRequestBuilders.put(String.format("%s/start/%d", DRIVING_URL_PREFIX, NOT_EXIST_ENTITY))
                         .contentType(contentType).content("")).andExpect(status().isNotFound())
                 .andExpect(result ->
@@ -118,13 +116,12 @@ public class DrivingControllerTest {
     @Rollback(true)
     public void shouldThrowDriverHasAlreadyStartedDrivingExceptionStartDriving() throws Exception {
 
-        String errorMessage = DRIVER_ALREADY_HAS_STARTED_DRIVING_EXCEPTION;
         this.mockMvc.perform(MockMvcRequestBuilders.put(String.format("%s/start/%d", DRIVING_URL_PREFIX, DRIVING_CANNOT_BE_STARTED_ID))
                         .contentType(contentType).content("")).andExpect(status().isBadRequest())
                 .andExpect(result ->
                         assertTrue(result.getResolvedException() instanceof DriverAlreadyHasStartedDrivingException)
                 )
-                .andExpect(result -> assertEquals(errorMessage, Objects.requireNonNull(result.getResolvedException()).getMessage()));
+                .andExpect(result -> assertEquals(DRIVER_ALREADY_HAS_STARTED_DRIVING_EXCEPTION, Objects.requireNonNull(result.getResolvedException()).getMessage()));
 
     }
 
@@ -134,14 +131,12 @@ public class DrivingControllerTest {
     @Rollback(true)
     public void shouldThrowDrivingShouldNotStartYetExceptionStartDriving() throws Exception {
 
-        String errorMessage = DRIVING_SHOULD_NOT_START_YET;
         this.mockMvc.perform(MockMvcRequestBuilders.put(String.format("%s/start/%d", DRIVING_URL_PREFIX, DRIVING_SHOULD_NOT_START_YET_ID))
                         .contentType(contentType).content("")).andExpect(status().isBadRequest())
                 .andExpect(result ->
                         assertTrue(result.getResolvedException() instanceof DrivingShouldNotStartYetException)
                 )
-                .andExpect(result -> assertEquals(errorMessage, Objects.requireNonNull(result.getResolvedException()).getMessage()));
-
+                .andExpect(result -> assertEquals(DRIVING_SHOULD_NOT_START_YET, Objects.requireNonNull(result.getResolvedException()).getMessage()));
     }
 
     @Test
@@ -155,7 +150,6 @@ public class DrivingControllerTest {
                 .andExpect(jsonPath("$.id").value(DRIVING_CAN_BE_STARTED))
                 .andExpect(jsonPath("$.active").value(true))
                 .andExpect(jsonPath("$.drivingStatus").value(ACCEPTED.toString()));
-
     }
 
     @Test
@@ -164,14 +158,13 @@ public class DrivingControllerTest {
     @Rollback(true)
     public void shouldThrowEntityNotFoundFinishDriving() throws Exception {
 
-        String errorMessage = String.format(getEntityErrorMessage(NOT_EXIST_ENTITY.toString(), EntityType.DRIVING));
+        String errorMessage = getEntityErrorMessage(NOT_EXIST_ENTITY.toString(), EntityType.DRIVING);
         this.mockMvc.perform(MockMvcRequestBuilders.put(String.format("%s/finish-driving/%d", DRIVING_URL_PREFIX, NOT_EXIST_ENTITY))
                         .contentType(contentType).content("")).andExpect(status().isNotFound())
                 .andExpect(result ->
                         assertTrue(result.getResolvedException() instanceof EntityNotFoundException)
                 )
                 .andExpect(result -> assertEquals(errorMessage, Objects.requireNonNull(result.getResolvedException()).getMessage()));
-
     }
 
     @Test
@@ -185,7 +178,6 @@ public class DrivingControllerTest {
                 .andExpect(jsonPath("$.id").value(ACTIVE_DRIVING_ID))
                 .andExpect(jsonPath("$.active").value(false))
                 .andExpect(jsonPath("$.drivingStatus").value(FINISHED.toString()));
-
     }
 
 }

@@ -49,7 +49,6 @@ public class UserServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    //greska: User: user1@gmail.com is not found
     @Test
     @DisplayName("T1 - Should return user")
     public void getUserByEmail_ReturnUser() throws EntityNotFoundException {
