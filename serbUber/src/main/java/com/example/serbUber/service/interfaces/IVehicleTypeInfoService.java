@@ -18,8 +18,6 @@ public interface IVehicleTypeInfoService {
             final int numOfSeats
     );
 
-    VehicleTypeInfoDTO findBy(VehicleType vehicleType) throws EntityNotFoundException;
-
     VehicleTypeInfo get(VehicleType vehicleType) throws EntityNotFoundException;
     VehicleTypeInfoDTO getDTO(VehicleType vehicleType) throws EntityNotFoundException;
     public double getPriceForVehicle(VehicleType vehicleType) throws EntityNotFoundException;
