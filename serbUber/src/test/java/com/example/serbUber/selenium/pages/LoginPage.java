@@ -63,9 +63,9 @@ public class LoginPage {
 
     public boolean isVisibleErrorToast(final String toastMessage){
         WebElement webElement = new WebDriverWait(driver, Duration.ofSeconds(2))
-            .until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath(
+            .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(
                 String.format("//div[contains(@aria-label, '%s')]", toastMessage)
-            ))));
+            )));
 
         return webElement != null;
     }

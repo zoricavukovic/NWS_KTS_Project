@@ -1,26 +1,46 @@
-<div class="form-container mat-elevation-z1" *ngIf="rideRequestForm" [formGroup]="rideRequestForm">
-    <h1 style="font-size: 1.4rem;">Vehicle info</h1>
-    <div style="display: flex;">
-        <mat-checkbox [aria-label]=""  formControlName="petFriendly">
-            Pet friendly
-        </mat-checkbox>
+<div
+  class="form-container mat-elevation-z1"
+  *ngIf="rideRequestForm"
+  [formGroup]="rideRequestForm">
+  <h1 style="font-size: 1.4rem">Vehicle info</h1>
+  <div style="display: flex">
+    <mat-checkbox
+      [aria-label]=""
+      formControlName="petFriendly"
+      id="pet-friendly-cb">
+      Pet friendly
+    </mat-checkbox>
 
-        <mat-checkbox [aria-label]="" formControlName="babySeat">
-            Baby seat
-        </mat-checkbox>
-    </div>
+    <mat-checkbox [aria-label]="" formControlName="babySeat" id="baby-seat-cb">
+      Baby seat
+    </mat-checkbox>
+  </div>
 
-    <p-carousel [value]="vehicleTypes" [numVisible]="3" [numScroll]="1" [circular]="true" [responsiveOptions]="responsiveOptions">
-        <ng-template let-vehicleType pTemplate="item">
-            <div class="product-item">
-                <div class="product-item-content" [style.borderColor]="styleArray[vehicleType.index] ? '#b73e3e':'#2c4b61'" (click)="changeSelectedVehicleType(vehicleType)">
-                    <div style="position: relative;">
-                        <img class="img-vehicle-types" src="../../../assets/images/{{vehicleType.img}}" alt="no photo"/>
-                        <h3 class="text-vehicle-types-name">{{vehicleType.vehicleType}}</h3>
-                    </div>
-                </div>
-            </div>
-        </ng-template>
-    </p-carousel>
-
+  <p-carousel
+    [value]="vehicleTypes"
+    [numVisible]="3"
+    [numScroll]="1"
+    [circular]="false"
+    [responsiveOptions]="responsiveOptions">
+    <ng-template let-vehicleType pTemplate="item">
+      <div class="product-item">
+        <div
+          class="product-item-content"
+          [style.borderColor]="
+            styleArray[vehicleType.index] ? '#b73e3e' : '#2c4b61'
+          "
+          (click)="changeSelectedVehicleType(vehicleType)">
+          <div style="position: relative">
+            <img
+              class="img-vehicle-types"
+              src="../../../assets/images/{{ vehicleType.img }}"
+              alt="no photo" />
+            <h3 class="text-vehicle-types-name">
+              {{ vehicleType.vehicleType }}
+            </h3>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </p-carousel>
 </div>

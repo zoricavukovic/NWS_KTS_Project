@@ -1,10 +1,27 @@
-<div *ngIf="!canAcceptOrDeclineRide() && currentUser.role.name==='ROLE_REGULAR_USER'" style="min-height:2rem;">
-  <div style="float: left;" *ngIf="!storedDrivingNotification">
-    <button mat-raised-button (click)="requestNow()" style="margin-right:2.8rem;">Request now</button>
+<div
+  *ngIf="
+    !canAcceptOrDeclineRide() && currentUser.role.name === 'ROLE_REGULAR_USER'
+  "
+  style="min-height: 2rem">
+  <div style="float: left" *ngIf="!storedDrivingNotification">
+    <button
+      mat-raised-button
+      (click)="requestNow()"
+      style="margin-right: 2.8rem">
+      Request now
+    </button>
     <button mat-raised-button (click)="requestLater()">Request later</button>
   </div>
 </div>
 <div *ngIf="canAcceptOrDeclineRide()" class="button-container">
-  <button mat-raised-button color="primary" style="color:var(--deep-blue)" (click)="declineRide()">Decline</button>
-  <button mat-raised-button (click)="acceptRide()">Accept</button>
+  <button
+    mat-raised-button
+    color="primary"
+    style="color: var(--deep-blue)"
+    (click)="declineRide()">
+    Decline
+  </button>
+  <button mat-raised-button (click)="acceptRide()" id="accept-ride-btn">
+    Accept
+  </button>
 </div>

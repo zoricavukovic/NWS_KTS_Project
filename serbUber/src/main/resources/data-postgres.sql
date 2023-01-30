@@ -68,9 +68,9 @@ insert into drivers (id, email, password, name, surname, phone_number, city, pro
     (nextval('users_id_gen'), 'elo@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Elo', 'Elic', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('18.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), 0, 0, true, false, true, 6);
 
 insert into drivings (active, driver_id, driving_status, duration, price, started, end_date, route_id, last_reminder, reservation) values
-                    (true, 18, 2, 10, 3, to_timestamp('24.01.2023. 19:00', 'DD.MM.YYYY HH24:MI'), null, 1, null, false),
-                   (true, 19, 2, 8, 3, to_timestamp('24.01.2023. 18:58', 'DD.MM.YYYY HH24:MI'), null, 2, null, false),
-                    (false, 17, 2, 8, 3, to_timestamp('25.01.2023. 23:00', 'DD.MM.YYYY HH24:MI'), null, 2, null, false);
+                    (true, 18, 2, 2, 3, CURRENT_TIMESTAMP, null, 1, null, false),
+                   (true, 14, 2, 8, 3, to_timestamp('25.01.2023. 22:40', 'DD.MM.YYYY HH24:MI'), null, 2, null, false),
+                   (false, 18, 2, 10, 5, CURRENT_TIMESTAMP + INTERVAL '20 minutes', null, 3, null, false);
 
 insert into driving_locations(location_id, index, route_id, route_index) values
       (5, 1, 1, 0),
@@ -89,7 +89,6 @@ insert into driving_locations(location_id, index, route_id, route_index) values
 
 insert into drivings_users(driving_id, user_id) values
     (1, 8),
-    (1, 11),
     (2, 10),
     (3, 12);
 
@@ -147,7 +146,7 @@ insert into token_banks(user_id, num_of_tokens, total_token_amount_spent, total_
                         (10, 10, 0, 10, 1),
                         (11, 10, 0, 10, 1),
                         (12, 10, 0, 10, 1),
-                        (13, 10, 0, 10, 1);
+                        (13, 0, 0, 0, 1);
 
 
 insert into token_transactions(time_stamp, num_of_bought_tokens, total_price, token_bank_id) values

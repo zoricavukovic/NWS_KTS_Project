@@ -1,9 +1,12 @@
-<mat-card>
-  <mat-card-header (click)="goToDriverProfile()" [matTooltip]="driver?.name + ' ' + driver?.surname" style="cursor:pointer;">
+<mat-card id="driver-card">
+  <mat-card-header
+    (click)="goToDriverProfile()"
+    [matTooltip]="driver?.name + ' ' + driver?.surname"
+    style="cursor: pointer">
     <img
       mat-card-avatar
       style="height: 5rem; width: 5rem"
-      [src]="base64Prefix + driver?.profilePicture"/>
+      [src]="base64Prefix + driver?.profilePicture" />
 
     <mat-card-title>{{ driver?.name }} {{ driver?.surname }}</mat-card-title>
     <mat-card-subtitle>

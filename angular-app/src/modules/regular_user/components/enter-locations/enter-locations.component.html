@@ -3,11 +3,22 @@
   <div formArrayName="searchingRoutesForm">
     <div
       *ngFor="let addedLocation of searchingForm; let i = index"
-      class="div" [formGroupName]="i">
+      class="div"
+      [formGroupName]="i">
       <mat-form-field appearance="fill">
-        <mat-label *ngIf="i === 0" class="font-size-label">Enter pickup location</mat-label>
-        <mat-label *ngIf="i ===  searchingForm.length - 1" class="font-size-label">Enter destination</mat-label>
-        <mat-label *ngIf="i !== 0 && i !==  searchingForm.length - 1" class="font-size-label">Via destination</mat-label>
+        <mat-label *ngIf="i === 0" class="font-size-label"
+          >Enter pickup location</mat-label
+        >
+        <mat-label
+          *ngIf="i === searchingForm.length - 1"
+          class="font-size-label"
+          >Enter destination</mat-label
+        >
+        <mat-label
+          *ngIf="i !== 0 && i !== searchingForm.length - 1"
+          class="font-size-label"
+          >Via destination</mat-label
+        >
 
         <input
           type="text"
@@ -18,19 +29,16 @@
           formControlName="inputPlace"
           (onAddressChange)="addressChange($event, i)"
           placeholder="Enter location"
-          class="font-size-input"
-        />
+          class="font-size-input" />
         <mat-icon
-          *ngIf="i === 0 || i ===  searchingForm.length - 1"
+          *ngIf="i === 0 || i === searchingForm.length - 1"
           [style.color]="i === 0 ? '#abbbae' : '#b73e3e'"
           matSuffix>
           location_on
         </mat-icon>
-        <mat-icon
-          *ngIf="i !== 0 && i !==  searchingForm.length - 1"
-          matSuffix
-        >{{ getIconName(i) }}</mat-icon
-        >
+        <mat-icon *ngIf="i !== 0 && i !== searchingForm.length - 1" matSuffix>{{
+          getIconName(i)
+        }}</mat-icon>
       </mat-form-field>
 
       <button
@@ -51,17 +59,25 @@
       *ngIf="canAddMoreLocation()"
       mat-button
       (click)="addOneMoreLocation()"
-      style="font-size: 1rem; color: #2c4b61; border-color: #2c4b61">
+      style="font-size: 1rem; color: #2c4b61; border-color: #2c4b61"
+      id="add-location-btn">
       <mat-icon>add_circle</mat-icon>
       Add location
     </button>
   </div>
 
   <div class="margin-top">
-    <button mat-raised-button (click)="getPossibleRoutes()" style="float: left">
+    <button
+      mat-raised-button
+      (click)="getPossibleRoutes()"
+      style="float: left"
+      id="view-possible-routes">
       <strong>View possible routes</strong>
     </button>
-    <div class="mat-elevation-z3" *ngIf="possibleRoutesViaPoints.length > 0 && currentUser" style="float: right">
+    <div
+      class="mat-elevation-z3"
+      *ngIf="possibleRoutesViaPoints.length > 0 && currentUser"
+      style="float: right">
       <button
         mat-button
         [matMenuTriggerFor]="menu"
@@ -88,7 +104,10 @@
     </div>
   </div>
 
-  <div *ngIf="possibleRoutesViaPoints.length > 0" class="devider-container" style="margin-top: 4rem;">
+  <div
+    *ngIf="possibleRoutesViaPoints.length > 0"
+    class="devider-container"
+    style="margin-top: 4rem">
     <div class="devider-line"><mat-divider></mat-divider></div>
     <div class="devider-text mat-typography"><b>Possible routes</b></div>
     <div class="devider-line"><mat-divider></mat-divider></div>
@@ -129,19 +148,27 @@
       </p-carousel>
       <mat-divider></mat-divider>
     </div>
-    <br>
+    <br />
     <div
-    class="continue-buttons"
-    *ngIf="currentUser && possibleRoutesViaPoints.length > 0">
-    <button mat-raised-button (click)="chooseVehicleAndPassengers()">
-      <strong>Request now</strong>
-    </button>
-    <button mat-raised-button style="background-color: var(--white);color: var(--deep-blue);margin-left:0.7rem;" (click)="chooseVehicleAndPassengersLater()">
-      <strong>Schedule for later</strong>
-    </button>
+      class="continue-buttons"
+      *ngIf="currentUser && possibleRoutesViaPoints.length > 0">
+      <button
+        mat-raised-button
+        (click)="chooseVehicleAndPassengers()"
+        id="request-now-btn">
+        <strong>Request now</strong>
+      </button>
+      <button
+        mat-raised-button
+        style="
+          background-color: var(--white);
+          color: var(--deep-blue);
+          margin-left: 0.7rem;
+        "
+        (click)="chooseVehicleAndPassengersLater()"
+        id="request-later-btn">
+        <strong>Schedule for later</strong>
+      </button>
+    </div>
   </div>
-  </div>
-
-
-
 </div>

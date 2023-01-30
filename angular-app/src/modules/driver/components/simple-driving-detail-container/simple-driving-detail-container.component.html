@@ -52,7 +52,7 @@
     alt="no info photo"
     (click)="showDrivingDetails(driving?.id)" />
   <div *ngIf="driving.active">
-    <button mat-button (click)="onFinishDriving()" class="finish-button">
+    <button mat-button (click)="onFinishDriving()" id="finish-btn" class="finish-button">
       Finish
     </button>
     <button mat-button (click)="onRejectDriving()" class="finish-button">
