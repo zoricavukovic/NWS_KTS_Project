@@ -5,23 +5,22 @@ import com.example.serbUber.exception.DrivingShouldNotStartYetException;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.EntityType;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.*;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
-
 import java.util.Objects;
 
 import static com.example.serbUber.exception.EntityType.getEntityErrorMessage;
-import static com.example.serbUber.exception.ErrorMessagesConstants.DRIVER_ALREADY_HAS_STARTED_DRIVING_EXCEPTION;
-import static com.example.serbUber.exception.ErrorMessagesConstants.DRIVING_SHOULD_NOT_START_YET;
+import static com.example.serbUber.exception.ErrorMessagesConstants.*;
 import static com.example.serbUber.model.DrivingStatus.*;
 import static com.example.serbUber.server.controller.helper.ControllerConstants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,22 +30,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.DisplayName.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Transactional
 public class DrivingControllerTest {
 
     private static final String DRIVING_URL_PREFIX = "/drivings";
 
     private MockMvc mockMvc;
-    private final MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
-        MediaType.APPLICATION_JSON.getSubtype());
 
     @Autowired
     private WebApplicationContext webApplicationContext;
 
-    @Autowired
-    private TestRestTemplate restTemplate;
-
-    @BeforeEach
+    @BeforeAll
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
@@ -180,4 +175,49 @@ public class DrivingControllerTest {
                 .andExpect(jsonPath("$.drivingStatus").value(FINISHED.toString()));
     }
 
+    @ParameterizedTest
+    @CsvSource(value = {"14,2", "18,1"})
+    @DisplayName("T10-Should successfully return all now and future drivings for driver when making GET request to endpoint - /drivings/now-and-future/{id}")
+    @WithMockUser(roles="DRIVER")
+    public void shouldSuccessfullyReturnAllNowAndFutureDrivingsForDriver(Long driverId, int numOfDrivings) throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.get(String.format("%s/now-and-future/%d", DRIVING_URL_PREFIX, driverId))
+                .contentType(contentType)).andExpect(status().isOk())
+            .andExpect(jsonPath("$.size()").value(numOfDrivings))
+            .andExpect(jsonPath("$.[0].driverId").value(driverId));
+    }
+
+    @Test
+    @DisplayName("T11-Should return empty list of now and future drivings for driver when making GET request to endpoint - /drivings/now-and-future/{id}")
+    @WithMockUser(roles="DRIVER")
+    public void shouldSuccessfullyReturnAllNowAndFutureDrivingsForDriver() throws Exception {
+        Long driverId = 50L;
+        this.mockMvc.perform(MockMvcRequestBuilders.get(String.format("%s/now-and-future/%d", DRIVING_URL_PREFIX, driverId))
+                .contentType(contentType)).andExpect(status().isOk())
+            .andExpect(jsonPath("$.size()").value(0));
+    }
+
+    @Test
+    @DisplayName("T12-Should not return active driving for user when making GET request to endpoint - /drivings/has-active/user/{id}")
+    @WithMockUser(roles="REGULAR_USER")
+    public void shouldNotReturnActiveDrivingForUser() throws Exception {
+        Long userId = 13L;
+        MvcResult result = this.mockMvc.perform(MockMvcRequestBuilders.get(String.format("%s/has-active/user/%d", DRIVING_URL_PREFIX, userId))
+                .contentType(contentType)).andExpect(status().isOk())
+            .andReturn();
+        String response = result.getResponse().getContentAsString();
+        Assertions.assertEquals("", response);
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"8,1,ACCEPTED", "12,9,ON_WAY_TO_DEPARTURE"})
+    @DisplayName("T13-Should successfully return active driving for user when making GET request to endpoint - /drivings/has-active/user/{id}")
+    @WithMockUser(roles="REGULAR_USER")
+    public void shouldReturnActiveDrivingForUser(Long userId, Long drivingId, String drivingStatus) throws Exception {
+
+        this.mockMvc.perform(MockMvcRequestBuilders.get(String.format("%s/has-active/user/%d", DRIVING_URL_PREFIX, userId))
+                .contentType(contentType)).andExpect(status().isOk())
+            .andExpect(jsonPath("$.drivingId").value(drivingId))
+            .andExpect(jsonPath("$.drivingStatus").value(drivingStatus))
+            .andExpect(jsonPath("$.active").value(true));
+    }
 }

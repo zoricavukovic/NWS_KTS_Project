@@ -13,15 +13,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
 
-import static com.example.serbUber.server.helper.Constants.EXIST_PASSWORD;
-import static com.example.serbUber.server.helper.DriverConstants.*;
-import static com.example.serbUber.server.helper.DrivingConstants.DRIVING_ID_1;
-import static com.example.serbUber.server.helper.DrivingConstants.createFinishedDriving;
-import static com.example.serbUber.server.helper.LocationHelper.CITY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest

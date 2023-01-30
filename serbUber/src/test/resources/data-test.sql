@@ -72,14 +72,18 @@ insert into drivings (active, driver_id, driving_status, duration, price, starte
            (true, 18, 2, 2, 3, to_timestamp('25.01.2023. 22:48', 'DD.MM.YYYY HH24:MI'), null, 1, null, false),
            (true, 14, 2, 8, 3, to_timestamp('25.01.2023. 22:40', 'DD.MM.YYYY HH24:MI'), null, 2, null, false),
            (false, 18, 2, 10, 5, to_timestamp('25.01.2023 18:50', 'DD.MM.YYYY HH24:MI'), null, 3, null, false),
-           (false, 14, 2, 10, 5, to_timestamp('27.01.2023 18:50', 'DD.MM.YYYY HH24:MI'), null, 3, null, false),
+           (false, 14, 2, 10, 5, CURRENT_TIMESTAMP + INTERVAL '5 minutes', null, 3, null, false),
            (false, 19, 2, 10, 5, CURRENT_TIMESTAMP + INTERVAL '1 day', null, 3, null, false),
            (false, 19, 2, 10, 5, CURRENT_TIMESTAMP, null, 3, null, false),
            ---za driver_id 15 ne menjaj, testira se baza, dodajte voznje posle ove dve i ne brisite prethodne, ako obrisete, promenite drivings_users.
            (false, 15, 3, 10, 5, to_timestamp('27.01.2023 18:50', 'DD.MM.YYYY HH24:MI'), to_timestamp('27.01.2023 19:00', 'DD.MM.YYYY HH24:MI'), 3, null, false),
-           (false, 15, 3, 10, 5, to_timestamp('27.01.2023 18:50', 'DD.MM.YYYY HH24:MI'), to_timestamp('27.01.2023 19:00', 'DD.MM.YYYY HH24:MI'), 3, null, false);
+           (false, 15, 3, 10, 5, to_timestamp('27.01.2023 18:50', 'DD.MM.YYYY HH24:MI'), to_timestamp('27.01.2023 19:00', 'DD.MM.YYYY HH24:MI'), 3, null, false),
+           ---za driving 9 ako se menja promeniti u drivingControllerTest test broj 13
+            (true, 17, 5, 10, 5, to_timestamp('27.01.2023 18:50', 'DD.MM.YYYY HH24:MI'), null, 3, null, false);
 
 
+insert into driving_notifications(route_id, price, sender_id, started, duration, baby_seat, pet_friendly, vehicle_type_info, is_reservation) values
+            (3, 10, 12, to_timestamp('25.01.2023. 22:48', 'DD.MM.YYYY HH24:MI'), 5, true, true, 1, false);
 
 --DATEADD(MINUTE, -15, GETDATE())
 
@@ -104,7 +108,8 @@ insert into drivings_users(driving_id, user_id) values
         (4, 8),
         (5, 8),
         (7, 6), --nemojte dodavati za user_id 6 druge voznje
-        (8, 6);
+        (8, 6),
+        (9, 12);
 
 insert into chat_rooms(client_id, admin_id, resolved) values
     (3, 1, true);

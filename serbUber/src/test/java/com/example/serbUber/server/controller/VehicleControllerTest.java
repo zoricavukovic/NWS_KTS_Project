@@ -8,7 +8,6 @@ import com.example.serbUber.server.controller.helper.TestUtil;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -21,6 +20,7 @@ import java.util.Objects;
 
 import static com.example.serbUber.exception.EntityType.getEntityErrorMessage;
 import static com.example.serbUber.server.controller.helper.ControllerConstants.NOT_EXIST_ENTITY;
+import static com.example.serbUber.server.controller.helper.ControllerConstants.contentType;
 import static com.example.serbUber.server.controller.helper.VehicleConstants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -29,19 +29,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.DisplayName.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Transactional
 public class VehicleControllerTest {
 
     private static final String VEHICLE_URL_PREFIX = "/vehicles";
 
     private MockMvc mockMvc;
-    private final MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
-            MediaType.APPLICATION_JSON.getSubtype());
 
     @Autowired
     private WebApplicationContext webApplicationContext;
 
-    @BeforeEach
+    @BeforeAll
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
