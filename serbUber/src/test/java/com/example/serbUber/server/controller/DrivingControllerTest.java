@@ -8,20 +8,22 @@ import com.example.serbUber.request.LinkedPassengersRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.*;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import static com.example.serbUber.exception.EntityType.getEntityErrorMessage;
@@ -36,72 +38,68 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.DisplayName.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Transactional
 public class DrivingControllerTest {
 
     private static final String DRIVING_URL_PREFIX = "/drivings";
 
     private MockMvc mockMvc;
-    private final MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
-        MediaType.APPLICATION_JSON.getSubtype());
 
     @Autowired
     private WebApplicationContext webApplicationContext;
 
-    @Autowired
-    private TestRestTemplate restTemplate;
-
-    @BeforeEach
+    @BeforeAll
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
     @Test
     @DisplayName("T1-Should successfully reject driving when making PUT request to endpoint - /drivings/reject/{drivingId}")
-    @WithMockUser(roles="DRIVER")
+    @WithMockUser(roles = "DRIVER")
     @Rollback(true)
     public void shouldSuccessfullyRejectDriving() throws Exception {
 
         String reason = "reason";
         Long drivingId = 1L;
         this.mockMvc.perform(MockMvcRequestBuilders.put(String.format("%s/reject/%d", DRIVING_URL_PREFIX, drivingId))
-            .contentType(contentType).content(reason)).andExpect(status().isOk())
-            .andExpect(jsonPath("$.id").value(drivingId))
-            .andExpect(jsonPath("$.drivingStatus").value(REJECTED.toString()));
+                        .contentType(contentType).content(reason)).andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(drivingId))
+                .andExpect(jsonPath("$.drivingStatus").value(REJECTED.toString()));
     }
 
     @Test
     @DisplayName("T2-Should throw entity not found (not found driving) when making PUT request to endpoint - /drivings/reject/{drivingId}")
-    @WithMockUser(roles="DRIVER")
+    @WithMockUser(roles = "DRIVER")
     @Rollback(true)
     public void shouldThrowEntityNotFoundRejectDriving() throws Exception {
 
         String reason = "reason";
         String errorMessage = getEntityErrorMessage(NOT_EXIST_ENTITY.toString(), EntityType.DRIVING);
         this.mockMvc.perform(MockMvcRequestBuilders.put(String.format("%s/reject/%d", DRIVING_URL_PREFIX, NOT_EXIST_ENTITY))
-                .contentType(contentType).content(reason)).andExpect(status().isNotFound())
-            .andExpect(result ->
-                assertTrue(result.getResolvedException() instanceof EntityNotFoundException)
-            )
-            .andExpect(result -> assertEquals(errorMessage, Objects.requireNonNull(result.getResolvedException()).getMessage()));
+                        .contentType(contentType).content(reason)).andExpect(status().isNotFound())
+                .andExpect(result ->
+                        assertTrue(result.getResolvedException() instanceof EntityNotFoundException)
+                )
+                .andExpect(result -> assertEquals(errorMessage, Objects.requireNonNull(result.getResolvedException()).getMessage()));
     }
 
     @Test
     @DisplayName("T3-Should throw validation error when reason is too long when making PUT request to endpoint - /drivings/reject/{drivingId}")
-    @WithMockUser(roles="DRIVER")
+    @WithMockUser(roles = "DRIVER")
     @Rollback(true)
     public void shouldThrowValidationErrorWhenMissingReasonRejectDriving() throws Exception {
         Long drivingId = 1L;
         String tooLongReason = "AKAKKSAKSDAJDJWDHUJASDASKJDKASLJDKJAKDJKSAJDKASJDKA";
         String errorMessage = "rejectDriving.reason: Entered reason must contain less than 50 letters.";
         this.mockMvc.perform(MockMvcRequestBuilders.put(String.format("%s/reject/%d", DRIVING_URL_PREFIX, drivingId))
-            .contentType(contentType).content(tooLongReason)).andExpect(status().isBadRequest())
-            .andExpect(result -> assertEquals(errorMessage, Objects.requireNonNull(result.getResolvedException()).getMessage()));
+                        .contentType(contentType).content(tooLongReason)).andExpect(status().isBadRequest())
+                .andExpect(result -> assertEquals(errorMessage, Objects.requireNonNull(result.getResolvedException()).getMessage()));
     }
 
     @Test
     @DisplayName("T4-Should throw entity not found (not found driving) when making PUT request to endpoint - /drivings/start/{drivingId}")
-    @WithMockUser(roles="DRIVER")
+    @WithMockUser(roles = "DRIVER")
     @Rollback(true)
     public void shouldThrowEntityNotFoundStartDriving() throws Exception {
 
@@ -117,7 +115,7 @@ public class DrivingControllerTest {
 
     @Test
     @DisplayName("T5-Should throw driver has already started driving exception when making PUT request to endpoint - /drivings/start/{drivingId}")
-    @WithMockUser(roles="DRIVER")
+    @WithMockUser(roles = "DRIVER")
     @Rollback(true)
     public void shouldThrowDriverHasAlreadyStartedDrivingExceptionStartDriving() throws Exception {
 
@@ -132,7 +130,7 @@ public class DrivingControllerTest {
 
     @Test
     @DisplayName("T6-Should throw driving should not start yet exception when making PUT request to endpoint - /drivings/start/{drivingId}")
-    @WithMockUser(roles="DRIVER")
+    @WithMockUser(roles = "DRIVER")
     @Rollback(true)
     public void shouldThrowDrivingShouldNotStartYetExceptionStartDriving() throws Exception {
 
@@ -146,7 +144,7 @@ public class DrivingControllerTest {
 
     @Test
     @DisplayName("T7-Should successfully start driving when making PUT request to endpoint - /drivings/start/{drivingId}")
-    @WithMockUser(roles="DRIVER")
+    @WithMockUser(roles = "DRIVER")
     @Rollback(true)
     public void shouldSuccessfullyStartDriving() throws Exception {
 
@@ -159,7 +157,7 @@ public class DrivingControllerTest {
 
     @Test
     @DisplayName("T8-Should throw entity not found (not found driving) when making PUT request to endpoint - /drivings/finish-driving/{drivingId}")
-    @WithMockUser(roles="DRIVER")
+    @WithMockUser(roles = "DRIVER")
     @Rollback(true)
     public void shouldThrowEntityNotFoundFinishDriving() throws Exception {
 
@@ -174,7 +172,7 @@ public class DrivingControllerTest {
 
     @Test
     @DisplayName("T9-Should successfully finish driving when making PUT request to endpoint - /drivings/finish-driving/{drivingId}")
-    @WithMockUser(roles="DRIVER")
+    @WithMockUser(roles = "DRIVER")
     @Rollback(true)
     public void shouldSuccessfullyFinishDriving() throws Exception {
 
@@ -187,7 +185,7 @@ public class DrivingControllerTest {
 
     @Test
     @DisplayName("T10 - Should get driving when making GET request to endpoint - /drivings/{id}")
-    @WithMockUser(roles={"DRIVER", "REGULAR_USER", "ADMIN"})
+    @WithMockUser(roles = {"DRIVER", "REGULAR_USER", "ADMIN"})
     @Rollback(true)
     public void getDriving_returnDrivingForId() throws Exception {
 
@@ -198,7 +196,7 @@ public class DrivingControllerTest {
 
     @Test
     @DisplayName("T11 - Should throw EntityNotFoundException when making GET request to endpoint - /drivings/{id}")
-    @WithMockUser(roles={"DRIVER", "REGULAR_USER", "ADMIN"})
+    @WithMockUser(roles = {"DRIVER", "REGULAR_USER", "ADMIN"})
     @Rollback(true)
     public void getDriving_throwEntityNotFoundException() throws Exception {
 
@@ -206,8 +204,8 @@ public class DrivingControllerTest {
         this.mockMvc.perform(MockMvcRequestBuilders.get(String.format("%s/%d", DRIVING_URL_PREFIX, NOT_EXIST_ID))
                         .contentType(contentType).content("")).andExpect(status().isNotFound())
                 .andExpect(result ->
-                assertTrue(result.getResolvedException() instanceof EntityNotFoundException)
-        )
+                        assertTrue(result.getResolvedException() instanceof EntityNotFoundException)
+                )
                 .andExpect(result -> assertEquals(errorMessage, Objects.requireNonNull(result.getResolvedException()).getMessage()));
     }
 
@@ -237,7 +235,7 @@ public class DrivingControllerTest {
 
     @Test
     @DisplayName("T14 - Should throw EntityNotFoundException when making POST request to endpoint - /busy-passengers")
-    @WithMockUser(roles="REGULAR_USER")
+    @WithMockUser(roles = "REGULAR_USER")
     @Rollback(true)
     public void isPassengersAlreadyHaveRide_throwEntityNotFoundException() throws Exception {
         List<String> linkedPassengers = new ArrayList<>();
@@ -259,7 +257,7 @@ public class DrivingControllerTest {
 
     @Test
     @DisplayName("T15 - Should return true when making POST request to endpoint - /busy-passengers")
-    @WithMockUser(roles="REGULAR_USER")
+    @WithMockUser(roles = "REGULAR_USER")
     @Rollback(true)
     public void isPassengersAlreadyHaveRide_returnTrue() throws Exception {
         List<String> linkedPassengers = new ArrayList<>();
@@ -277,7 +275,7 @@ public class DrivingControllerTest {
 
     @Test
     @DisplayName("T16 - Should return false when making POST request to endpoint - /busy-passengers")
-    @WithMockUser(roles="REGULAR_USER")
+    @WithMockUser(roles = "REGULAR_USER")
     @Rollback(true)
     public void isPassengersAlreadyHaveRide_returnFalse() throws Exception {
         List<String> linkedPassengers = new ArrayList<>();
@@ -295,7 +293,7 @@ public class DrivingControllerTest {
 
     @Test
     @DisplayName("T17 - Should throw EntityNotFoundException when making GET request to endpoint - /time-for-driving/{drivingId}")
-    @WithMockUser(roles="REGULAR_USER")
+    @WithMockUser(roles = "REGULAR_USER")
     @Rollback(true)
     public void getTimeForDriving_throwEntityNotFoundException() throws Exception {
 
@@ -309,13 +307,59 @@ public class DrivingControllerTest {
     }
 
     @Test
-    @DisplayName("T17 - Should return LocalDateTime for driving with drivingId when making GET request to endpoint - /time-for-driving/{drivingId}")
-    @WithMockUser(roles="REGULAR_USER")
+    @DisplayName("T18 - Should return LocalDateTime for driving with drivingId when making GET request to endpoint - /time-for-driving/{drivingId}")
+    @WithMockUser(roles = "REGULAR_USER")
     @Rollback(true)
     public void getTimeForDriving_returnStartedDateTimeForDriving() throws Exception {
 
         this.mockMvc.perform(MockMvcRequestBuilders.get(String.format("%s/time-for-driving/%d", DRIVING_URL_PREFIX, NOT_ACTIVE_DRIVING_ID))
                         .contentType(contentType).content("")).andExpect(status().isOk())
                 .andExpect(jsonPath("$").value(STARTED_DRIVING_THREE_ID));
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"14,2", "18,1"})
+    @DisplayName("T19 - Should successfully return all now and future drivings for driver when making GET request to endpoint - /drivings/now-and-future/{id}")
+    @WithMockUser(roles = "DRIVER")
+    public void shouldSuccessfullyReturnAllNowAndFutureDrivingsForDriver(Long driverId, int numOfDrivings) throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.get(String.format("%s/now-and-future/%d", DRIVING_URL_PREFIX, driverId))
+                        .contentType(contentType)).andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(numOfDrivings))
+                .andExpect(jsonPath("$.[0].driverId").value(driverId));
+    }
+
+    @Test
+    @DisplayName("T20 - Should return empty list of now and future drivings for driver when making GET request to endpoint - /drivings/now-and-future/{id}")
+    @WithMockUser(roles = "DRIVER")
+    public void shouldSuccessfullyReturnAllNowAndFutureDrivingsForDriver() throws Exception {
+        Long driverId = 50L;
+        this.mockMvc.perform(MockMvcRequestBuilders.get(String.format("%s/now-and-future/%d", DRIVING_URL_PREFIX, driverId))
+                        .contentType(contentType)).andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(0));
+    }
+
+    @Test
+    @DisplayName("T21 - Should not return active driving for user when making GET request to endpoint - /drivings/has-active/user/{id}")
+    @WithMockUser(roles = "REGULAR_USER")
+    public void shouldNotReturnActiveDrivingForUser() throws Exception {
+        Long userId = 13L;
+        MvcResult result = this.mockMvc.perform(MockMvcRequestBuilders.get(String.format("%s/has-active/user/%d", DRIVING_URL_PREFIX, userId))
+                        .contentType(contentType)).andExpect(status().isOk())
+                .andReturn();
+        String response = result.getResponse().getContentAsString();
+        Assertions.assertEquals("", response);
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"8,1,ACCEPTED", "12,9,ON_WAY_TO_DEPARTURE"})
+    @DisplayName("T22 - Should successfully return active driving for user when making GET request to endpoint - /drivings/has-active/user/{id}")
+    @WithMockUser(roles = "REGULAR_USER")
+    public void shouldReturnActiveDrivingForUser(Long userId, Long drivingId, String drivingStatus) throws Exception {
+
+        this.mockMvc.perform(MockMvcRequestBuilders.get(String.format("%s/has-active/user/%d", DRIVING_URL_PREFIX, userId))
+                        .contentType(contentType)).andExpect(status().isOk())
+                .andExpect(jsonPath("$.drivingId").value(drivingId))
+                .andExpect(jsonPath("$.drivingStatus").value(drivingStatus))
+                .andExpect(jsonPath("$.active").value(true));
     }
 }

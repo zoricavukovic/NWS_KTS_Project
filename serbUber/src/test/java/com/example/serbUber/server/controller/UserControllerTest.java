@@ -1,8 +1,5 @@
 package com.example.serbUber.server.controller;
 
-import com.example.serbUber.request.LinkedPassengersRequest;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,16 +13,13 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
 import static com.example.serbUber.server.controller.helper.ControllerConstants.USER_EMAIL_DRIVING;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.DisplayName.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Transactional
 public class UserControllerTest {
 
@@ -41,14 +35,14 @@ public class UserControllerTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
-    @BeforeEach
+    @BeforeAll
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
     @Test
     @DisplayName("T1 - Should return user by email - /byEmail/{email}")
-    @WithMockUser(roles={"REGULAR_USER", "DRIVER", "ADMIN"})
+    @WithMockUser(roles = {"REGULAR_USER", "DRIVER", "ADMIN"})
     @Rollback(true)
     public void getUserByEmail_returnUser() throws Exception {
 

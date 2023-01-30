@@ -1,8 +1,5 @@
 package com.example.serbUber.server.controller;
 
-import com.example.serbUber.exception.EntityNotFoundException;
-import com.example.serbUber.exception.EntityType;
-import com.example.serbUber.model.VehicleType;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,17 +13,14 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.Objects;
-
-import static com.example.serbUber.exception.EntityType.getEntityErrorMessage;
-import static com.example.serbUber.server.controller.helper.ControllerConstants.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static com.example.serbUber.server.controller.helper.ControllerConstants.NUM_OF_SEATS_SUV;
+import static com.example.serbUber.server.controller.helper.ControllerConstants.VEHICLE_TYPE_SUV;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.DisplayName.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Transactional
 public class VehicleTypeInfoControllerTest {
 
@@ -42,7 +36,7 @@ public class VehicleTypeInfoControllerTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
-    @BeforeEach
+    @BeforeAll
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
@@ -50,18 +44,18 @@ public class VehicleTypeInfoControllerTest {
 
     @Test
     @DisplayName("T1-Should return price for vehicle type and route when making GET request to endpoint - /price/{vehicleType}/{kilometers}")
-    @WithMockUser(roles={"DRIVER", "REGULAR_USER", "ADMIN"})
+    @WithMockUser(roles = {"DRIVER", "REGULAR_USER", "ADMIN"})
     @Rollback(true)
     public void getPriceForSelectedRouteAndVehicle_returnPriceForVehicleTypeAndRoute() throws Exception {
         this.mockMvc.perform(MockMvcRequestBuilders.get(
-                String.format("%s/price/%s/%d", VEHICLE_TYPE_INFO_URL_PREFIX, VEHICLE_TYPE_SUV, 3000))
+                                String.format("%s/price/%s/%d", VEHICLE_TYPE_INFO_URL_PREFIX, VEHICLE_TYPE_SUV, 3000))
                         .contentType(contentType).content("")).andExpect(status().isOk())
                 .andExpect(jsonPath("$").value(5.0));
     }
 
     @Test
     @DisplayName("T2-Should return vehicle type info and route when making GET request to endpoint - /{vehicleType}")
-    @WithMockUser(roles={"DRIVER", "REGULAR_USER", "ADMIN"})
+    @WithMockUser(roles = {"DRIVER", "REGULAR_USER", "ADMIN"})
     @Rollback(true)
     public void getVehicleByVehicleType_returnVehicleTypeInfo() throws Exception {
         this.mockMvc.perform(MockMvcRequestBuilders.get(
@@ -72,4 +66,4 @@ public class VehicleTypeInfoControllerTest {
     }
 
 
-    }
+}

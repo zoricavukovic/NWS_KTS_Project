@@ -218,7 +218,7 @@ public class DrivingService implements IDrivingService {
 
     public SimpleDrivingInfoDTO checkUserHasActiveDriving(final Long id) {
         LocalDateTime limitDateTime = LocalDateTime.now().plusMinutes(30);
-       List<Driving> optionalDriving = drivingRepository.getActiveDrivingForUser(id, limitDateTime);
+        List<Driving> optionalDriving = drivingRepository.getActiveDrivingForUser(id, limitDateTime);
 
         return optionalDriving.size() > 0 ? new SimpleDrivingInfoDTO(optionalDriving.get(0)): null;
     }

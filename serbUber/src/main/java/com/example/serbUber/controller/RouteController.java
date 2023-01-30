@@ -40,7 +40,7 @@ public class RouteController {
 
     @GetMapping("/path/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public List<double[]> getRoutePath(@Valid @NotNull(message = MISSING_ID) @PathVariable Long id) throws EntityNotFoundException {
+    public List<double[]> getRoutePath(@PathVariable Long id) throws EntityNotFoundException {
 
         return this.routeService.getRoutePath(id);
     }
