@@ -68,7 +68,9 @@ public class VehicleTypeInfoService implements IVehicleTypeInfoService {
     }
 
     public VehicleTypeInfo get(VehicleType vehicleType) throws EntityNotFoundException {
-
+        if (vehicleType == null){
+            throw new EntityNotFoundException("NOT_FOUND", EntityType.VEHICLE_TYPE_INFO);
+        }
         return vehicleTypeInfoRepository.getVehicleTypeInfoByName(vehicleType)
                 .orElseThrow(() -> new EntityNotFoundException(vehicleType.toString(), EntityType.VEHICLE_TYPE_INFO));
     }

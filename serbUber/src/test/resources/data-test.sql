@@ -178,3 +178,6 @@ insert into bell_notifications(message, redirect_id, seen, should_redirect, time
          ('Driver accepted driving.', null, false, false, '2022-01-01 14:05', 3),
          ('Driver accepted driving.', null, false, false, '2022-12-01 14:03', 4);
 
+
+insert into regular_users (id, email, password, name, surname, phone_number, city, profile_picture, role_id, blocked, verified, online) values
+    (nextval('users_id_gen'), 'userwithoutbank@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'No', 'Bank', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false);
