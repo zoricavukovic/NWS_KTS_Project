@@ -3,12 +3,15 @@ package com.example.serbUber.server.controller;
 import com.example.serbUber.exception.*;
 import com.example.serbUber.request.DrivingNotificationRequest;
 import com.example.serbUber.server.controller.helper.TestUtil;
+import com.example.serbUber.exception.EntityNotFoundException;
+import com.example.serbUber.exception.EntityType;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
@@ -44,13 +47,29 @@ public class DrivingNotificationControllerTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
+    @Autowired
+    private TestRestTemplate restTemplate;
+
     @BeforeAll
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
     @Test
-    @DisplayName("T1-Should successfully get driving notification when making GET request to endpoint - /driving-notifications/{id}")
+    @DisplayName("T1 - Should throw entity not found (not found driving) when making PUT request to endpoint - /update-status/{id}/{accepted}/{email}")
+    @WithMockUser(roles="REGULAR_USER")
+    @Rollback(true)
+    public void acceptDriving_throwEntityNotFoundException() throws Exception {
+
+        String errorMessage = getEntityErrorMessage(NOT_EXIST_ID.toString(), EntityType.DRIVING_NOTIFICATION);
+        this.mockMvc.perform(MockMvcRequestBuilders.put(String.format("%s/update-status/%d/%s/%s", DRIVING_NOTIFICATION_URL_PREFIX, NOT_EXIST_ID, "true", USER_EMAIL_DRIVING))
+                        .contentType(contentType).content("")).andExpect(status().isNotFound())
+                .andExpect(result ->
+                        assertTrue(result.getResolvedException() instanceof EntityNotFoundException)
+                )
+                .andExpect(result -> assertEquals(errorMessage, Objects.requireNonNull(result.getResolvedException()).getMessage()));
+    }
+    @DisplayName("T2 - Should successfully get driving notification when making GET request to endpoint - /driving-notifications/{id}")
     @WithMockUser(roles="REGULAR_USER")
     @Rollback(true)
     public void shouldSuccessfullyGetDrivingNotification() throws Exception {
@@ -63,7 +82,7 @@ public class DrivingNotificationControllerTest {
     }
 
     @Test
-    @DisplayName("T2-Should throw entity not found (not found driving notification) when making GET request to endpoint - /driving-notifications/{id}")
+    @DisplayName("T3 - Should throw entity not found (not found driving notification) when making GET request to endpoint - /driving-notifications/{id}")
     @WithMockUser(roles="REGULAR_USER")
     @Rollback(true)
     public void shouldThrowEntityNotFoundGetDrivingNotification() throws Exception {

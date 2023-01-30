@@ -23,11 +23,12 @@ import java.util.Objects;
 
 import static com.example.serbUber.exception.EntityType.getEntityErrorMessage;
 import static com.example.serbUber.server.controller.helper.ControllerConstants.*;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.hamcrest.Matchers.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.DisplayName.class)
@@ -51,8 +52,8 @@ public class RouteControllerTest {
     public void shouldSuccessfullyGetRoutePath() throws Exception {
         Long routeId = 1L;
         this.mockMvc.perform(MockMvcRequestBuilders.get(String.format("%s/path/%d", ROUTE_URL_PREFIX, routeId))
-                .contentType(contentType)).andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(greaterThan(0))));
+                        .contentType(contentType)).andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(greaterThan(0))));
     }
 
     @Test
@@ -60,11 +61,11 @@ public class RouteControllerTest {
     public void shouldThrowEntityNotFoundGetRoutePath() throws Exception {
         String errorMessage = getEntityErrorMessage(NOT_EXIST_ENTITY.toString(), EntityType.ROUTE);
         this.mockMvc.perform(MockMvcRequestBuilders.get(String.format("%s/path/%d", ROUTE_URL_PREFIX, NOT_EXIST_ENTITY))
-                .contentType(contentType)).andExpect(status().isNotFound())
-            .andExpect(result ->
-                assertTrue(result.getResolvedException() instanceof EntityNotFoundException)
-            )
-            .andExpect(result -> assertEquals(errorMessage, Objects.requireNonNull(result.getResolvedException()).getMessage()));
+                        .contentType(contentType)).andExpect(status().isNotFound())
+                .andExpect(result ->
+                        assertTrue(result.getResolvedException() instanceof EntityNotFoundException)
+                )
+                .andExpect(result -> assertEquals(errorMessage, Objects.requireNonNull(result.getResolvedException()).getMessage()));
     }
 
     @ParameterizedTest
@@ -85,7 +86,7 @@ public class RouteControllerTest {
         String json = TestUtil.json(LONG_LAT_REQUESTS_TWO_ELEMENTS_WRONG_LAT);
 
         this.mockMvc.perform(MockMvcRequestBuilders.post(String.format("%s/possible", ROUTE_URL_PREFIX))
-            .contentType(contentType).content(json)).andExpect(status().isBadRequest());
+                .contentType(contentType).content(json)).andExpect(status().isBadRequest());
     }
 
     @ParameterizedTest
@@ -96,23 +97,23 @@ public class RouteControllerTest {
         String json = TestUtil.json(locationsForRoutesRequest);
 
         this.mockMvc.perform(MockMvcRequestBuilders.post(String.format("%s/possible", ROUTE_URL_PREFIX))
-            .contentType(contentType).content(json)).andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(locationsForRoutesRequest.getLocationsForRouteRequest().size()-1)));
+                        .contentType(contentType).content(json)).andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(locationsForRoutesRequest.getLocationsForRouteRequest().size() - 1)));
     }
 
     private List<Arguments> getLocationsForRoutesRequestWithLessThanTwoElements() {
 
         return Arrays.asList(
-            Arguments.arguments(new LocationsForRoutesRequest(LONG_LAT_REQUESTS_EMPTY)),
-            Arguments.arguments(new LocationsForRoutesRequest(LONG_LAT_REQUESTS_ONE_ELEMENT))
+                Arguments.arguments(new LocationsForRoutesRequest(LONG_LAT_REQUESTS_EMPTY)),
+                Arguments.arguments(new LocationsForRoutesRequest(LONG_LAT_REQUESTS_ONE_ELEMENT))
         );
     }
 
     private List<Arguments> getLocationsForRoutesRequestWithMoreOrEqualThanTwoElements() {
 
         return Arrays.asList(
-            Arguments.arguments(new LocationsForRoutesRequest(LONG_LAT_REQUESTS_TWO_ELEMENTS)),
-            Arguments.arguments(new LocationsForRoutesRequest(LONG_LAT_REQUESTS_THREE_ELEMENTS))
+                Arguments.arguments(new LocationsForRoutesRequest(LONG_LAT_REQUESTS_TWO_ELEMENTS)),
+                Arguments.arguments(new LocationsForRoutesRequest(LONG_LAT_REQUESTS_THREE_ELEMENTS))
         );
     }
 }
