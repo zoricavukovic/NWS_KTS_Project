@@ -286,7 +286,7 @@ public class UserService implements IUserService {
         }
 
         if (checkIfUserAlreadyExists(email)) {
-            throw new EntityAlreadyExistsException(String.format("User with %s already exists.", email));
+            throw new EntityAlreadyExistsException(String.format("User with email %s already exists.", email));
         }
 
         return regularUserService.registerRegularUser(email, password, name, surname, phoneNumber, city, profilePicture);
@@ -310,7 +310,7 @@ public class UserService implements IUserService {
         }
 
         if (this.checkIfUserAlreadyExists(email)) {
-            throw new EntityAlreadyExistsException(String.format("User with %s already exists.", email));
+            throw new EntityAlreadyExistsException(String.format("User with email %s already exists.", email));
         }
 
         return driverService.create(email, password, confirmPassword, name, surname, phoneNumber,
