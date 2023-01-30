@@ -64,8 +64,8 @@ public class FacebookLoginPage extends OneBrowserTestBase {
 
     public boolean isFacebookPageLoaded(String facebookWelcomeMessage){
         WebElement visibleBanner = new WebDriverWait(driver, Duration.ofSeconds(5))
-            .until(ExpectedConditions.visibilityOf(driver.findElement(
-                By.xpath(String.format("//span[contains(text(), '%s')]", facebookWelcomeMessage)))
+            .until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath(String.format("//span[contains(text(), '%s')]", facebookWelcomeMessage))
             ));
 
         return visibleBanner != null;

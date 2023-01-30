@@ -1,9 +1,6 @@
 package com.example.serbUber.selenium.pages;
 
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
@@ -50,9 +47,6 @@ public class RideRequestPage {
     @FindBy(how = How.ID, using="possible-route")
     private WebElement secondRouteDiv;
 
-    @FindBy(how = How.XPATH, using = "//div[contains(@aria-label, 'Invalid form')]")
-    private WebElement errorToastNotSelectedLocation;
-
     public RideRequestPage(WebDriver driver) {
         this.driver = driver;
         this.actions = new Actions(driver);
@@ -64,9 +58,9 @@ public class RideRequestPage {
                 .until(ExpectedConditions.textToBePresentInElement(requestRideTitle, requestRideLabel));
     }
 
-    public boolean isVisibleEnterLocationsErrorToast(){
+    public boolean isVisibleEnterLocationsErrorToast(String message){
         WebElement webElement = new WebDriverWait(driver, Duration.ofSeconds(2))
-                .until(ExpectedConditions.visibilityOf(errorToastNotSelectedLocation));
+                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(String.format("//div[contains(@aria-label, '%s')]", message))));
 
         return webElement != null;
     }

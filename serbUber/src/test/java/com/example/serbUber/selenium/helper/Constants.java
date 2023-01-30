@@ -34,6 +34,18 @@ public class Constants {
     public static final String START_POINT = "Lasla Gala 2";
     public static final String END_POINT = "Futoski put 105";
 
+    public static final String MY_PROFILE_LABEL = "My profile";
+    public static final String ACCEPT_RIDE_MESSAGE = "add you as linked passenger.Tap to accept!";
+    public static final String RIDE_RESERVATION_CREATED_MESSAGE = "Your ride reserved successfully.";
+    public static final String LOG_IN_PAGE_ERROR_TOAST_MESSAGE = "Email or password is not correct!";
+    public static final String ENTER_LOCATION_ERROR_TOAST_MESSAGE = "Invalid form";
+    public static final String NOT_ENOUGH_TOKENS_TOAST_MESSAGE = "Ride is rejected because payment was not successful.";
+    public static final String NOT_DRIVER_FOUND_TOAST_MESSAGE = "Ride is rejected because driver is not found.";
+    public static final String INVALID_CHOSEN_TIME_TOAST_MESSAGE = "Invalid chosen time";
+    public static final String INVALID_NUMBER_OF_PASSENGERS_TOAST_MESSAGE = "You can not add passenger!";
+    public static final String GOOGLE_NEXT_BUTTON_NAME = "Next";
+    public static final String RIDE_IS_REJECTED_TOAST_MESSAGE = "Successfully rejected ride";
+
     public static final String START_POINT_TWO_ROUTES = "Lasla Gala 10, Novi Sad";
 
     public static final String END_POINT_TWO_ROUTES = "Cirila i Metodija 100, Novi Sad";

@@ -33,7 +33,7 @@ public class RideRequestOnePassengerTest extends OneBrowserTestBase {
         RideRequestPage rideRequestPage = new RideRequestPage(chromeDriver);
         rideRequestPage.isRequestFormPresent(REQUEST_RIDE_TITLE);
         rideRequestPage.clickOnViewPossibleRoutesButton();
-        assertTrue(rideRequestPage.isVisibleEnterLocationsErrorToast());
+        assertTrue(rideRequestPage.isVisibleEnterLocationsErrorToast(ENTER_LOCATION_ERROR_TOAST_MESSAGE));
     }
 
     @Test
@@ -53,7 +53,7 @@ public class RideRequestOnePassengerTest extends OneBrowserTestBase {
         SelectPassengersAndVehicleRideRequestPage selectRideDetailsPage = new SelectPassengersAndVehicleRideRequestPage(chromeDriver);
         selectRideDetailsPage.clickOnVanVehicleType();
         selectRideDetailsPage.clickOnRequestRideButton();
-        assertTrue(selectRideDetailsPage.isVisibleNoEnoughTokensToast());
+        assertTrue(selectRideDetailsPage.isVisibleNoEnoughTokensToast(NOT_ENOUGH_TOKENS_TOAST_MESSAGE));
     }
 
     @Test
@@ -73,7 +73,7 @@ public class RideRequestOnePassengerTest extends OneBrowserTestBase {
         SelectPassengersAndVehicleRideRequestPage selectRideDetailsPage = new SelectPassengersAndVehicleRideRequestPage(chromeDriver);
         selectRideDetailsPage.clickOnSuvVehicleType();
         selectRideDetailsPage.clickOnRequestRideButton();
-        assertTrue(selectRideDetailsPage.isVisibleNoDriverFound());
+        assertTrue(selectRideDetailsPage.isVisibleNoDriverFound(NOT_DRIVER_FOUND_TOAST_MESSAGE));
     }
 
     @Test
@@ -98,7 +98,7 @@ public class RideRequestOnePassengerTest extends OneBrowserTestBase {
             selectRideDetailsPage.clickOnAddPassengerInput();
             selectRideDetailsPage.clickOnFirstPassengerOption();
         }
-        assertTrue(selectRideDetailsPage.isVisibleInvalidNumberOfPassengersToast());
+        assertTrue(selectRideDetailsPage.isVisibleInvalidNumberOfPassengersToast(INVALID_NUMBER_OF_PASSENGERS_TOAST_MESSAGE));
     }
 
 
@@ -121,7 +121,7 @@ public class RideRequestOnePassengerTest extends OneBrowserTestBase {
         selectRideDetailsPage.selectReservationTime(hour, minutes);
 
         selectRideDetailsPage.clickOnRequestRideButton();
-        Assertions.assertTrue(selectRideDetailsPage.isVisibleInvalidChosenTime());
+        Assertions.assertTrue(selectRideDetailsPage.isVisibleInvalidChosenTime(INVALID_CHOSEN_TIME_TOAST_MESSAGE));
     }
 
     @Test
@@ -172,7 +172,7 @@ public class RideRequestOnePassengerTest extends OneBrowserTestBase {
         rideDetailsPage.selectReservationTime(hour, minutes);
         rideDetailsPage.clickOnRequestRideButton();
 
-        assertTrue(homePage.isVisibleSuccessfullyReservationRideToast());
+        assertTrue(homePage.isVisibleSuccessfullyReservationRideToast(RIDE_RESERVATION_CREATED_MESSAGE));
     }
 
 

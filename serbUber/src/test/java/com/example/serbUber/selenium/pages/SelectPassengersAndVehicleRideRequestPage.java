@@ -1,5 +1,6 @@
 package com.example.serbUber.selenium.pages;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -33,20 +34,8 @@ public class SelectPassengersAndVehicleRideRequestPage {
     @FindBy(how = How.ID, using = "request-ride")
     private WebElement requestRideButton;
 
-    @FindBy(how = How.XPATH, using = "//div[contains(@aria-label, 'Ride is rejected because payment was not successful.')]")
-    private WebElement notEnoughTokensToast;
-
     @FindBy(how = How.XPATH, using="//h1")
     private WebElement titleFilterVehicleDiv;
-
-    @FindBy(how = How.XPATH, using = "//div[contains(@aria-label, 'Ride is rejected because driver is not found.')]")
-    private WebElement driverNotFoundToast;
-
-    @FindBy(how = How.XPATH, using = "//div[contains(@aria-label, 'Invalid chosen time')]")
-    private WebElement invalidChosenTimeToast;
-
-    @FindBy(how = How.XPATH, using = "//div[contains(@aria-label, 'You can not add passenger!')]")
-    private WebElement invalidNumberOfPassengersToast;
 
     @FindBy(how = How.XPATH, using = "//input[@ng-reflect-name='hour']")
     private WebElement scheduleHourInput;
@@ -81,16 +70,16 @@ public class SelectPassengersAndVehicleRideRequestPage {
     }
 
 
-    public boolean isVisibleNoDriverFound(){
+    public boolean isVisibleNoDriverFound(String message){
         WebElement webElement = new WebDriverWait(driver, Duration.ofSeconds(2))
-                .until(ExpectedConditions.visibilityOf(driverNotFoundToast));
+                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(String.format("//div[contains(@aria-label, '%s')]", message))));
 
         return webElement != null;
     }
 
-    public boolean isVisibleInvalidChosenTime(){
+    public boolean isVisibleInvalidChosenTime(String message){
         WebElement webElement = new WebDriverWait(driver, Duration.ofSeconds(2))
-                .until(ExpectedConditions.visibilityOf(invalidChosenTimeToast));
+                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(String.format("//div[contains(@aria-label, '%s')]", message))));
 
         return webElement != null;
     }
@@ -152,16 +141,16 @@ public class SelectPassengersAndVehicleRideRequestPage {
         requestRideButton.click();
     }
 
-    public boolean isVisibleNoEnoughTokensToast(){
+    public boolean isVisibleNoEnoughTokensToast(String message){
         WebElement webElement = new WebDriverWait(driver, Duration.ofSeconds(2))
-                .until(ExpectedConditions.visibilityOf(notEnoughTokensToast));
+                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(String.format("//div[contains(@aria-label, '%s')]", message))));
 
         return webElement != null;
     }
 
-    public boolean isVisibleInvalidNumberOfPassengersToast(){
-        WebElement webElement = new WebDriverWait(driver, Duration.ofSeconds(3))
-                .until(ExpectedConditions.visibilityOf(invalidNumberOfPassengersToast));
+    public boolean isVisibleInvalidNumberOfPassengersToast(String message){
+        WebElement webElement = new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(String.format("//div[contains(@aria-label, '%s')]", message))));
 
         return webElement != null;
     }

@@ -1,5 +1,6 @@
 package com.example.serbUber.selenium.pages;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -27,18 +28,8 @@ public class HomePage {
     @FindBy(how = How.XPATH, using = "//img[contains(@class, 'img-circle-small')]")
     private WebElement profileIconMenuButton;
 
-    @FindBy(how = How.XPATH, using = "//button/span[contains(text(), 'My profile')]")
-    private WebElement myProfileMenuOption;
-
     @FindBy(how = How.XPATH, using="//div[contains(@class, 'title')]")
     private WebElement regularUserFinishedRideTitle;
-
-    @FindBy(how = How.XPATH, using = "//div[contains(@aria-label, 'add you as linked passenger.Tap to accept!')]")
-    private WebElement acceptRideToast;
-
-    @FindBy(how = How.XPATH, using = "//div[contains(@aria-label, 'Your ride reserved successfully.')]")
-    private WebElement successfullyReservationRideToast;
-
 
     public HomePage(WebDriver driver) {
         this.driver = driver;
@@ -65,9 +56,9 @@ public class HomePage {
         profileIconMenuButton.click();
     }
 
-    public void clickOnMyProfileMenuOption(){
-        new WebDriverWait(driver, Duration.ofSeconds(2))
-            .until(ExpectedConditions.elementToBeClickable(myProfileMenuOption));
+    public void clickOnMyProfileMenuOption(String label){
+        WebElement myProfileMenuOption = new WebDriverWait(driver, Duration.ofSeconds(2))
+            .until(ExpectedConditions.elementToBeClickable(By.xpath(String.format("//button/span[contains(text(), '%s')]", label))));
         myProfileMenuOption.click();
     }
 
@@ -76,22 +67,22 @@ public class HomePage {
             .until(ExpectedConditions.textToBePresentInElement(regularUserFinishedRideTitle, finishedRideTitle));
     }
 
-    public boolean isVisibleAcceptRideToast(){
+    public boolean isVisibleAcceptRideToast(String acceptRideMessage){
         WebElement webElement = new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.visibilityOf(acceptRideToast));
+                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(String.format("//div[contains(@aria-label, '%s')]", acceptRideMessage))));
 
         return webElement != null;
     }
 
-    public void clickOnAcceptRideToast(){
-        new WebDriverWait(driver, Duration.ofSeconds(5))
-                .until(ExpectedConditions.visibilityOf(acceptRideToast));
+    public void clickOnAcceptRideToast(String acceptRideMessage){
+        WebElement acceptRideToast = new WebDriverWait(driver, Duration.ofSeconds(5))
+                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(String.format("//div[contains(@aria-label, '%s')]", acceptRideMessage))));
         actions.moveToElement(acceptRideToast).click().perform();
     }
 
-    public boolean isVisibleSuccessfullyReservationRideToast(){
+    public boolean isVisibleSuccessfullyReservationRideToast(String successfulReservationMessage){
         WebElement webElement = new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.visibilityOf(successfullyReservationRideToast));
+                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(String.format("//div[contains(@aria-label, '%s')]", successfulReservationMessage))));
 
         return webElement != null;
     }

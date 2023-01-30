@@ -41,11 +41,11 @@ public class RideRequestTwoPassengersTest extends TwoBrowserTestBase {
         selectRideDetailsPage.clickOnFirstPassengerOption();
         selectRideDetailsPage.clickOnRequestRideButton();
 
-        assertTrue(homePageLinkedPassenger.isVisibleAcceptRideToast());
-        homePageLinkedPassenger.clickOnAcceptRideToast();
+        assertTrue(homePageLinkedPassenger.isVisibleAcceptRideToast(ACCEPT_RIDE_MESSAGE));
+        homePageLinkedPassenger.clickOnAcceptRideToast(ACCEPT_RIDE_MESSAGE);
         DrivingNotificationPage drivingNotificationPageLinkedPassenger = new DrivingNotificationPage(edgeDriver);
         drivingNotificationPageLinkedPassenger.clickOnRejectRideButton();
-        Assertions.assertTrue(drivingNotificationPageLinkedPassenger.isVisibleRideIsRejectedToast());
+        Assertions.assertTrue(drivingNotificationPageLinkedPassenger.isVisibleRideIsRejectedToast(RIDE_IS_REJECTED_TOAST_MESSAGE));
     }
     @Test
     @DisplayName("T2-Ride created successfully with two passengers and three locations chosen suv")
@@ -72,8 +72,8 @@ public class RideRequestTwoPassengersTest extends TwoBrowserTestBase {
         rideDetailsPage.clickOnFirstPassengerOption();
         rideDetailsPage.clickOnRequestRideButton();
 
-        assertTrue(homePageLinkedPassenger.isVisibleAcceptRideToast());
-        homePageLinkedPassenger.clickOnAcceptRideToast();
+        assertTrue(homePageLinkedPassenger.isVisibleAcceptRideToast(ACCEPT_RIDE_MESSAGE));
+        homePageLinkedPassenger.clickOnAcceptRideToast(ACCEPT_RIDE_MESSAGE);
 
         DrivingNotificationPage drivingNotificationPageLinkedPassenger = new DrivingNotificationPage(edgeDriver);
         drivingNotificationPageLinkedPassenger.clickOnAcceptRideButton();

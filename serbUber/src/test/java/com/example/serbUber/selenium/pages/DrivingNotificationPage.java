@@ -1,5 +1,6 @@
 package com.example.serbUber.selenium.pages;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -19,9 +20,6 @@ public class DrivingNotificationPage {
     @FindBy(how = How.ID, using = "accept-ride-btn")
     private WebElement acceptRideButton;
 
-    @FindBy(how = How.XPATH, using = "//div[contains(@aria-label, 'Successfully rejected ride')]")
-    private WebElement rideRejectedToast;
-
     public DrivingNotificationPage(WebDriver driver){
         this.driver = driver;
         PageFactory.initElements(driver, this);
@@ -39,9 +37,9 @@ public class DrivingNotificationPage {
         rejectRideButton.click();
     }
 
-    public boolean isVisibleRideIsRejectedToast(){
+    public boolean isVisibleRideIsRejectedToast(String message){
         WebElement webElement = new WebDriverWait(driver, Duration.ofSeconds(2))
-                .until(ExpectedConditions.visibilityOf(rideRejectedToast));
+                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(String.format("//div[contains(@aria-label, '%s')]", message))));
 
         return webElement != null;
     }

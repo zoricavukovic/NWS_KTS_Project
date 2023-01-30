@@ -29,7 +29,7 @@ public class LoginTest extends OneBrowserTestBase {
         homePage = LoginHelper.login(chromeDriver, EXISTING_REGULAR_USER_EMAIL, EXISTING_PASSWORD);
         Thread.sleep(5000);
         homePage.clickOnProfileIconMenuButton();
-        homePage.clickOnMyProfileMenuOption();
+        homePage.clickOnMyProfileMenuOption(MY_PROFILE_LABEL);
 
         UserProfilePage userProfilePage = new UserProfilePage(chromeDriver);
         assertTrue(userProfilePage.isProfileOfSpecificUser(EXISTING_REGULAR_USER_EMAIL));
@@ -42,7 +42,7 @@ public class LoginTest extends OneBrowserTestBase {
         LoginHelper.login(chromeDriver, email, password);
 
         LoginPage loginPage = new LoginPage(chromeDriver);
-        assertTrue(loginPage.isVisibleErrorToast());
+        assertTrue(loginPage.isVisibleErrorToast(LOG_IN_PAGE_ERROR_TOAST_MESSAGE));
     }
 
     List<Arguments> sourceWrongCredentials(){
@@ -89,13 +89,13 @@ public class LoginTest extends OneBrowserTestBase {
         chromeDriver.switchTo().window(secondPage);
 
         googleLoginPage.setEmail(EXISTING_EMAIL_GOOGLE);
-        googleLoginPage.clickOnNextButton();
+        googleLoginPage.clickOnNextButton(GOOGLE_NEXT_BUTTON_NAME);
         googleLoginPage.setPassword(EXISTING_PASSWORD_GOOGLE_AND_FACEBOOK);
-        googleLoginPage.clickOnNextButton();
+        googleLoginPage.clickOnNextButton(GOOGLE_NEXT_BUTTON_NAME);
 
         chromeDriver.switchTo().window(onePage);
         homePage.clickOnProfileIconMenuButton();
-        homePage.clickOnMyProfileMenuOption();
+        homePage.clickOnMyProfileMenuOption(MY_PROFILE_LABEL);
 
         UserProfilePage userProfilePage = new UserProfilePage(chromeDriver);
         assertTrue(userProfilePage.isProfileOfSpecificUser(EXISTING_EMAIL_GOOGLE));
@@ -130,7 +130,7 @@ public class LoginTest extends OneBrowserTestBase {
         facebookLoginPage.clickOnSignInButton();    //mora ponovo za facebook
 
         homePage.clickOnProfileIconMenuButton();
-        homePage.clickOnMyProfileMenuOption();
+        homePage.clickOnMyProfileMenuOption(MY_PROFILE_LABEL);
 
         UserProfilePage userProfilePage = new UserProfilePage(chromeDriver);
         assertTrue(userProfilePage.isProfileOfSpecificUser(EXISTING_EMAIL_FACEBOOK));

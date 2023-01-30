@@ -23,8 +23,8 @@ public class FinishingRideTest extends TwoBrowserTestBase {
         //user with active driving login on edge driver
         HomePage homePageEdge = LoginHelper.redirectToLoginPage(edgeDriver);
 
-        LoginHelper.loginWhenRedirectedOnLoginPage(chromeDriver, DRIVER_EMAIL_HAS_CURRENT_NOT_NEXT_RIDE, EXISTING_PASSWORD);
         LoginHelper.loginWhenRedirectedOnLoginPage(edgeDriver, EXISTING_REGULAR_USER_EMAIL, EXISTING_PASSWORD);
+        LoginHelper.loginWhenRedirectedOnLoginPage(chromeDriver, DRIVER_EMAIL_HAS_CURRENT_NOT_NEXT_RIDE, EXISTING_PASSWORD);
 
         //driver finished ride on chrome driver
         DriverActiveRidesPage driverActiveRidesPage = new DriverActiveRidesPage(chromeDriver);
@@ -44,8 +44,8 @@ public class FinishingRideTest extends TwoBrowserTestBase {
         //user with active driving login on edge driver
         HomePage homePageEdge = LoginHelper.redirectToLoginPage(edgeDriver);
 
-        LoginHelper.loginWhenRedirectedOnLoginPage(chromeDriver, DRIVER_EMAIL_HAS_CURRENT_AND_NEXT_RIDE, EXISTING_PASSWORD);
         LoginHelper.loginWhenRedirectedOnLoginPage(edgeDriver, EXISTING_REGULAR_USER_EMAIL_OF_DRIVER_THAT_HAS_NOW_AND_FUTURE_DRIVING, EXISTING_PASSWORD);
+        LoginHelper.loginWhenRedirectedOnLoginPage(chromeDriver, DRIVER_EMAIL_HAS_CURRENT_AND_NEXT_RIDE, EXISTING_PASSWORD);
 
         //driver finished ride on chrome driver
         DriverActiveRidesPage driverActiveRidesPage = new DriverActiveRidesPage(chromeDriver);
