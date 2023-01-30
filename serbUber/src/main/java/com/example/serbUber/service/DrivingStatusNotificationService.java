@@ -7,6 +7,7 @@ import com.example.serbUber.model.user.RegularUser;
 import com.example.serbUber.model.user.User;
 import com.example.serbUber.repository.DrivingStatusNotificationRepository;
 import com.example.serbUber.service.interfaces.IDrivingStatusNotificationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +25,8 @@ public class DrivingStatusNotificationService implements IDrivingStatusNotificat
     public DrivingStatusNotification create(
             final String reason,
             final DrivingStatus drivingStatus,
-            final Driving driving){
+            final Driving driving
+    ){
 
         return drivingStatusNotificationRepository.save(new DrivingStatusNotification(reason, drivingStatus, driving));
     }

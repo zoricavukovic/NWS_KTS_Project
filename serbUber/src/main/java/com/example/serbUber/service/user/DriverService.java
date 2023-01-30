@@ -38,13 +38,13 @@ import static com.example.serbUber.util.PictureHandler.convertPictureToBase64ByN
 @Qualifier("driverServiceConfiguration")
 public class DriverService implements IDriverService{
 
-    private final DriverRepository driverRepository;
+    private DriverRepository driverRepository;
     private final VehicleService vehicleService;
     private final RoleService roleService;
     private final VerifyService verifyService;
     private final EmailService emailService;
     private final WebSocketService webSocketService;
-    private final RouteService routeService;
+    private RouteService routeService;
 
     public DriverService(
             final DriverRepository driverRepository,
@@ -172,12 +172,12 @@ public class DriverService implements IDriverService{
 
 
     @Transactional
-    public Driver getDriverForDriving(final DrivingNotification drivingNotification) throws EntityNotFoundException {
+    public Driver getDriverForDriving(final DrivingNotification drivingNotification){
         LocalDateTime startDate = drivingNotification.getStarted();
         LocalDateTime endDate = drivingNotification.getStarted().plusMinutes((int) drivingNotification.getDuration());
         Location startLocation = drivingNotification.getRoute().getLocations().first().getLocation();
 
-        List<Driver> drivers = driverRepository.getActiveDriversWhichVehicleMatchParams1(drivingNotification.getVehicleTypeInfo().getVehicleType());
+        List<Driver> drivers = driverRepository.getActiveDriversWhichVehicleMatchParams(drivingNotification.getVehicleTypeInfo().getVehicleType());
 
         return drivers.size() > 0 ?
             findMatchesDriver(
@@ -210,7 +210,7 @@ public class DriverService implements IDriverService{
         final LocalDateTime start,
         final LocalDateTime end,
         final double duration
-    ) throws EntityNotFoundException {
+    ){
         List<Driver> matchedDrivers = new LinkedList<>();
         for (Driver driver: drivers){
             if (checkDriverVehicleAttributes(driver, babySeat, petFriendly)){
@@ -252,7 +252,7 @@ public class DriverService implements IDriverService{
             }
             if (!hasFutureDriving){
                 double minutesToArrival = calculateMinutesToArrivalForBusyDriversWithoutFutureDrivings(driver, startLat, startLng);
-                if(minutesToArrival > 0){
+                if(minutesToArrival >= 0){
                     LocalDateTime endOfDriving = start.plusMinutes((long) (duration + minutesToArrival));
                     if (isNotSoonEndShiftForDriver(endOfDriving, driver.getWorkingMinutes())) {
                         busyDriversWithoutFutureDrivings.add(driver);
@@ -418,7 +418,7 @@ public class DriverService implements IDriverService{
     ){
         Location driverLocation = driver.getVehicle().getCurrentStop();
         Driving activeDriving = getActiveDriving(driver.getDrivings());
-        double minutes = 0;
+        double minutes = -1;
         if(activeDriving != null) {
             Location lastLocationOfActiveDriving = activeDriving.getRoute().getLocations().last().getLocation();
             double minutesToFinishDriving = routeService.calculateMinutesForDistance(
@@ -433,7 +433,7 @@ public class DriverService implements IDriverService{
 
 
 
-    private Driver findNearestDriver(List<Driver> activeAndFreeDrivers, double lonStart, double latStart) throws EntityNotFoundException {
+    private Driver findNearestDriver(List<Driver> activeAndFreeDrivers, double lonStart, double latStart) {
 
         double lon = activeAndFreeDrivers.get(0).getVehicle().getCurrentStop().getLon();
         double lat = activeAndFreeDrivers.get(0).getVehicle().getCurrentStop().getLat();

@@ -13,8 +13,8 @@ import com.example.serbUber.repository.DrivingRepository;
 import com.example.serbUber.request.DrivingLocationIndexRequest;
 import com.example.serbUber.request.LocationRequest;
 import com.example.serbUber.service.interfaces.IDrivingService;
-import com.example.serbUber.service.user.DriverService;
 import com.example.serbUber.service.user.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -38,34 +38,25 @@ import static com.example.serbUber.util.Constants.*;
 @Qualifier("drivingServiceConfiguration")
 public class DrivingService implements IDrivingService {
 
-    private final DrivingRepository drivingRepository;
-    private final UserService userService;
+    private DrivingRepository drivingRepository;
+    private UserService userService;
+    private WebSocketService webSocketService;
+    private DrivingStatusNotificationService drivingStatusNotificationService;
+    private RouteService routeService;
 
-    private final DriverService driverService;
-    private final WebSocketService webSocketService;
-    private final DrivingStatusNotificationService drivingStatusNotificationService;
-    private final VehicleService vehicleService;
-    private final RouteService routeService;
-    private final DrivingWithVehicleService drivingWithVehicleService;
-
+    @Autowired
     public DrivingService(
             final DrivingRepository drivingRepository,
             final UserService userService,
             final WebSocketService webSocketService,
             final DrivingStatusNotificationService drivingStatusNotificationService,
-            final VehicleService vehicleService,
-            final RouteService routeService,
-            final DrivingWithVehicleService drivingWithVehicleService,
-            final DriverService driverService
+            final RouteService routeService
     ) {
         this.drivingRepository = drivingRepository;
         this.userService = userService;
         this.webSocketService = webSocketService;
         this.drivingStatusNotificationService = drivingStatusNotificationService;
-        this.vehicleService = vehicleService;
         this.routeService = routeService;
-        this.drivingWithVehicleService = drivingWithVehicleService;
-        this.driverService = driverService;
     }
 
     public Driving create(
@@ -203,9 +194,9 @@ public class DrivingService implements IDrivingService {
                 .orElseThrow(() -> new EntityNotFoundException(id, EntityType.DRIVING));
     }
 
-    public List<DrivingDTO> getAllNowAndFutureDrivings(final Long id) {
+    public List<DrivingDTO> getAllNowAndFutureDrivings(final Long driverId) {
 
-        return fromDrivings(drivingRepository.getAllNowAndFutureDrivings(id));
+        return fromDrivings(drivingRepository.getAllNowAndFutureDrivings(driverId));
     }
 
     public DrivingDTO paidDriving(final Long id) throws EntityNotFoundException {
@@ -220,18 +211,17 @@ public class DrivingService implements IDrivingService {
     public DrivingDTO removeDriver(Long id) throws EntityNotFoundException {
         Driving driving = getDriving(id);
         driving.setDriver(null);
-
         drivingRepository.save(driving);
 
         return new DrivingDTO(driving);
     }
 
     public SimpleDrivingInfoDTO checkUserHasActiveDriving(final Long id) {
-       List<Driving> optionalDriving = drivingRepository.getActiveDrivingForUser(id, LocalDateTime.now().plusMinutes(30));
+        LocalDateTime limitDateTime = LocalDateTime.now().plusMinutes(30);
+        List<Driving> optionalDriving = drivingRepository.getActiveDrivingForUser(id, limitDateTime);
 
         return optionalDriving.size() > 0 ? new SimpleDrivingInfoDTO(optionalDriving.get(0)): null;
     }
-
 
     public DrivingDTO rejectDriving(final Long id, final String reason) throws EntityNotFoundException {
         Driving driving = getDriving(id);
@@ -247,9 +237,19 @@ public class DrivingService implements IDrivingService {
                 driving.getDriver().getEmail(), reason,
                 drivingStatusNotification.getDriving().getUsers()
         );
-//        this.vehicleService.updateCurrentVehiclesLocation();
 
         return new DrivingDTO(driving);
+    }
+
+    public void rejectOutdatedDrivings(){
+        List<Driving> drivings = getAcceptedNotActiveDrivings();
+        for(Driving driving : drivings){
+            if(driving.getStarted().plusMinutes(FIVE_MINUTES).isBefore(LocalDateTime.now())){
+                driving.setDrivingStatus(DrivingStatus.REJECTED);
+                drivingRepository.save(driving);
+                webSocketService.sendRejectedOutdatedDriving(driving.getUsers(), driving.getDriver().getEmail(), driving.getId());
+            }
+        }
     }
 
     public VehicleCurrentLocationDTO getVehicleCurrentLocation(final Long id) throws EntityNotFoundException {
@@ -318,8 +318,8 @@ public class DrivingService implements IDrivingService {
             new VehicleWithDriverId(
                 driving.getDriver().getVehicle(),
                 driving.getDriver().getId(),
-                driving.getDriver().isActive())
-            )
+                driving.getDriver().isActive()),
+            driving.getRoute().getLocations().first().getRouteIndex())
         );
 
         return new DrivingDTO(driving);
@@ -337,17 +337,6 @@ public class DrivingService implements IDrivingService {
         drivingRepository.save(driving);
 
         webSocketService.finishDrivingNotification(new SimpleDrivingInfoDTO(driving), driving.getUsers());
-
-//        Driving nextDriving = driverHasFutureDriving(driving.getDriver().getId());
-//        if (nextDriving != null) {
-//            if(driverService.isTimeToGoToDeparture(driving.getDriver(), nextDriving)){
-//                createDrivingToDeparture(driving.getDriver(), driving.getDriver().getVehicle().getCurrentStop(), nextDriving.getRoute(), nextDriving.getUsers());
-//            }
-//        } else {
-//            webSocketService.sendVehicleCurrentLocation(
-//                new VehicleCurrentLocationDTO(new VehicleWithDriverId(driving.getDriver().getVehicle(), driving.getDriver().getVehicle().getId(), driving.getDriver().isActive()))
-//            );
-//        }
 
         return new DrivingDTO(driving);
     }
@@ -406,6 +395,12 @@ public class DrivingService implements IDrivingService {
         return (id != NOT_BY_SPECIFIC_USER) ? calculateChartData(user.getRole().isRegularUser() ? this.drivingRepository.getFinishedDrivingsForRegular(id)
                 : this.drivingRepository.getFinishedDrivingsForDriver(id), chartType, startDate, endDate)
                 : calculateForAllUsers(chartType, startDate, endDate);
+    }
+
+    public LocalDateTime getTimeForDriving(final Long drivingId) throws EntityNotFoundException {
+        Driving driving = getDriving(drivingId);
+
+        return driving.getStarted();
     }
 
     boolean checkSenderAndReceiverInActiveDriving(Long driverId, Long userId) {
@@ -504,7 +499,7 @@ public class DrivingService implements IDrivingService {
 
     private boolean drivingShouldNotStartYet(Driving driving) {
 
-        return ChronoUnit.MINUTES.between(LocalDateTime.now(), driving.getStarted()) > MAX_MINUTES_BEFORE_DRIVING_CAN_START;
+        return ChronoUnit.MINUTES.between(LocalDateTime.now(), driving.getStarted()) > FIVE_MINUTES;
     }
 
     private boolean driverHasActiveDriving(Long driverId) {

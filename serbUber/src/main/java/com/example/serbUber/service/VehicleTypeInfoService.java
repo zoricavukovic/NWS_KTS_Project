@@ -9,20 +9,21 @@ import com.example.serbUber.repository.VehicleTypeInfoRepository;
 import com.example.serbUber.service.interfaces.IVehicleTypeInfoService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 import static com.example.serbUber.dto.VehicleTypeInfoDTO.fromVehicleTypeInfos;
+import static com.example.serbUber.util.Constants.ONE_KILOMETER_TO_METER;
+import static com.example.serbUber.util.Constants.TOKEN_VALUE;
 
 @Component
 @Qualifier("vehicleTypeInfoServiceConfiguration")
 public class VehicleTypeInfoService implements IVehicleTypeInfoService {
 
-    private final VehicleTypeInfoRepository vehicleTypeInfoRepository;
+    private VehicleTypeInfoRepository vehicleTypeInfoRepository;
 
-    public VehicleTypeInfoService(final VehicleTypeInfoRepository vehicleTypeInfoRepository) {
+    public VehicleTypeInfoService(VehicleTypeInfoRepository vehicleTypeInfoRepository) {
         this.vehicleTypeInfoRepository = vehicleTypeInfoRepository;
     }
 
@@ -45,28 +46,31 @@ public class VehicleTypeInfoService implements IVehicleTypeInfoService {
         )));
     }
 
-    public VehicleTypeInfoDTO findBy(VehicleType vehicleType) throws EntityNotFoundException {
-        Optional<VehicleTypeInfo> vehicleTypeInfoOpt = vehicleTypeInfoRepository.findByVehicleType(vehicleType);
 
-        return vehicleTypeInfoOpt.map(VehicleTypeInfoDTO::new).orElseThrow(() ->
-                new EntityNotFoundException(vehicleType.toString(), EntityType.VEHICLE_TYPE_INFO));
-    }
 
     public double getPriceForVehicle(VehicleType vehicleType) throws EntityNotFoundException {
-        return findBy(vehicleType).getStartPrice();
+        return get(vehicleType).getStartPrice();
     }
 
     public double getPriceForVehicleAndChosenRoute(double kilometers, VehicleType vehicleType) throws EntityNotFoundException {
         double priceForType = getPriceForVehicle(vehicleType);
 
-        return Math.ceil(priceForType + (kilometers/1000)*1); // *1 token -> 1token=1e
+        return Math.ceil(priceForType + (kilometers/ONE_KILOMETER_TO_METER)*TOKEN_VALUE);
+    }
+
+    public double getAveragePriceForChosenRoute(double kilometers) throws EntityNotFoundException {
+        double totalPrice = 0;
+        for(VehicleType vehicleType : VehicleType.values()){
+            totalPrice += getPriceForVehicleAndChosenRoute(kilometers, vehicleType);
+        }
+
+        return Math.ceil(totalPrice/VehicleType.values().length);
     }
 
     public VehicleTypeInfo get(VehicleType vehicleType) throws EntityNotFoundException {
 
         return vehicleTypeInfoRepository.getVehicleTypeInfoByName(vehicleType)
                 .orElseThrow(() -> new EntityNotFoundException(vehicleType.toString(), EntityType.VEHICLE_TYPE_INFO));
-
     }
 
     public VehicleTypeInfoDTO getDTO(VehicleType vehicleType) throws EntityNotFoundException {
@@ -74,8 +78,8 @@ public class VehicleTypeInfoService implements IVehicleTypeInfoService {
         return new VehicleTypeInfoDTO(get(vehicleType));
     }
 
-    public boolean isCorrectNumberOfSeats(String vehicleType, int numberOfPassengers) throws EntityNotFoundException {
-        VehicleTypeInfo vehicleTypeInfo = get(VehicleType.getVehicleType(vehicleType));
+    public boolean isCorrectNumberOfSeats(VehicleTypeInfo vehicleTypeInfo, int numberOfPassengers) {
+
         return vehicleTypeInfo.getNumOfSeats() >= numberOfPassengers;
     }
 

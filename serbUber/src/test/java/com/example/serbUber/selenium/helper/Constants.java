@@ -51,4 +51,5 @@ public class Constants {
     public static final String END_POINT_TWO_ROUTES = "Cirila i Metodija 100, Novi Sad";
 
     public static final int MAX_NUMBER_OF_SEATS_FOR_SUV = 5;
+    public static final String FAILED_LOGIN_MESSAGE = "Email or password is not correct!";
 }

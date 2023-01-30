@@ -9,6 +9,7 @@ import com.example.serbUber.model.*;
 import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.service.interfaces.IVehicleService;
 import com.example.serbUber.repository.VehicleRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
@@ -25,12 +26,13 @@ import static com.example.serbUber.util.Constants.TAXI_START_LOCATION_ID;
 @Qualifier("vehicleServiceConfiguration")
 public class VehicleService implements IVehicleService {
 
-    private final VehicleRepository vehicleRepository;
-    private final VehicleTypeInfoService vehicleTypeInfoService;
-    private final WebSocketService webSocketService;
-    private final RouteService routeService;
-    private final LocationService locationService;
+    private VehicleRepository vehicleRepository;
+    private VehicleTypeInfoService vehicleTypeInfoService;
+    private WebSocketService webSocketService;
+    private RouteService routeService;
+    private LocationService locationService;
 
+    @Autowired
     public VehicleService(
             final VehicleRepository vehicleRepository,
             final VehicleTypeInfoService vehicleTypeInfoService,
@@ -171,7 +173,8 @@ public class VehicleService implements IVehicleService {
         final Long id,
         final double lng,
         final double lat,
-        final int crossedWaypoints
+        final int crossedWaypoints,
+        final int chosenRouteIdx
     ) throws EntityNotFoundException {
         Vehicle vehicle = getVehicleById(id);
         Location location = vehicle.getCurrentStop();
@@ -186,16 +189,16 @@ public class VehicleService implements IVehicleService {
         Driver driver = getDriverByVehicleId(vehicle.getId());
         vehicleRepository.save(vehicle);
         VehicleWithDriverId vehicleWithDriverId = new VehicleWithDriverId(vehicle, driver.getId(), driver.isActive());
-        webSocketService.sendVehicleCurrentLocation(new VehicleCurrentLocationDTO(vehicleWithDriverId));
+        webSocketService.sendVehicleCurrentLocation(new VehicleCurrentLocationDTO(vehicleWithDriverId,chosenRouteIdx));
 
         return new VehicleCurrentLocationForLocustDTO(vehicleWithDriverId);
     }
 
-    public VehicleCurrentLocationForLocustDTO checkStateOfVehicle(final Long id) throws EntityNotFoundException {
+    public VehicleCurrentLocationForLocustDTO checkStateOfVehicle(final Long id, final int chosenRouteIdx) throws EntityNotFoundException {
         Vehicle vehicle = getVehicleById(id);
         Driver driver = getDriverByVehicleId(vehicle.getId());
         VehicleWithDriverId vehicleWithDriverId = new VehicleWithDriverId(vehicle, driver.getId(), driver.isActive());
-        webSocketService.sendVehicleCurrentLocation(new VehicleCurrentLocationDTO(vehicleWithDriverId));
+        webSocketService.sendVehicleCurrentLocation(new VehicleCurrentLocationDTO(vehicleWithDriverId, chosenRouteIdx));
 
         return new VehicleCurrentLocationForLocustDTO(vehicleWithDriverId);
     }

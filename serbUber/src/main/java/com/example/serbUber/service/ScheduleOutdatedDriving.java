@@ -22,16 +22,10 @@ public class ScheduleOutdatedDriving {
         this.drivingService = drivingService;
         this.webSocketService = webSocketService;
     }
+
     @Scheduled(cron = "*/30 * * * * *")
     @Transactional
     public void rejectOutdatedDrivings(){
-        List<Driving> drivings = drivingService.getAcceptedNotActiveDrivings();
-        for(Driving driving : drivings){
-            if(driving.getStarted().plusMinutes(5).isBefore(LocalDateTime.now())){
-                driving.setDrivingStatus(DrivingStatus.REJECTED);
-                drivingService.save(driving);
-                webSocketService.sendRejectedOutdatedDriving(driving.getUsers(), driving.getDriver().getEmail(), driving.getId());
-            }
-        }
+        this.drivingService.rejectOutdatedDrivings();
     }
 }

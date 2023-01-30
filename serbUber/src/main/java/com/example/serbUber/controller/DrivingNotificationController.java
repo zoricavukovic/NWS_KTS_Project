@@ -35,10 +35,12 @@ public class DrivingNotificationController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyRole('ROLE_REGULAR_USER')")
     public DrivingNotificationDTO create(@Valid @RequestBody DrivingNotificationRequest drivingNotificationRequest)
-            throws EntityNotFoundException,
-            ExcessiveNumOfPassengersException,
-            PassengerNotHaveTokensException,
-            InvalidChosenTimeForReservationException, NotFoundException {
+        throws EntityNotFoundException,
+        ExcessiveNumOfPassengersException,
+        PassengerNotHaveTokensException,
+        InvalidChosenTimeForReservationException,
+        NotFoundException
+    {
 
         return this.drivingNotificationService.createDrivingNotificationDTO(
             drivingNotificationRequest.getRoute(),
@@ -58,6 +60,7 @@ public class DrivingNotificationController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('ROLE_REGULAR_USER')")
     public DrivingNotificationDTO get(@Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable final Long id) throws EntityNotFoundException {
+
         return drivingNotificationService.get(id);
     }
 

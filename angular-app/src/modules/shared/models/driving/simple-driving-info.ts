@@ -9,4 +9,5 @@ export interface SimpleDrivingInfo {
   drivingStatus: string;
   vehicleId: number;
   vehicleType?: string;
+  started?: Date;
 }

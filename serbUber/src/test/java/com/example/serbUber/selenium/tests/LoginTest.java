@@ -41,8 +41,8 @@ public class LoginTest extends OneBrowserTestBase {
     public void regularLoginShouldFailedWrongCredentialsTest(String email, String password) {
         LoginHelper.login(chromeDriver, email, password);
 
-        LoginPage loginPage = new LoginPage(chromeDriver);
-        assertTrue(loginPage.isVisibleErrorToast(LOG_IN_PAGE_ERROR_TOAST_MESSAGE));
+        LoginPage loginPage = new LoginPage(driver);
+        assertTrue(loginPage.isVisibleErrorToast(FAILED_LOGIN_MESSAGE));
     }
 
     List<Arguments> sourceWrongCredentials(){

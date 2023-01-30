@@ -17,7 +17,8 @@ insert into locations (city, lat, lon, street, number, zip_code) values
              ('Novi Sad', 45.248048,19.834964, 'Brace Ribnikara', '29', '21000'),
              ('Novi Sad', 45.247868,19.835635, 'Brace Ribnikara', '25b', '21000'),
              ('Novi Sad', 45.247785,19.836022, 'Brace Ribnikara', '25a', '21000'),
-             ('Novi Sad', 45.242610,19.789230, 'Futoski put', '103', '21000');
+             ('Novi Sad', 45.242610,19.789230, 'Futoski put', '103', '21000'),
+             ('Novi Sad', 45.255842,19.863661, 'Vladimira Nazora', '5', '21000');
 
 insert into vehicle_type_infos (num_of_seats, start_price, vehicle_type) values
     (9, 3, 0);
@@ -38,7 +39,7 @@ insert into vehicles (baby_seat, pet_friendly, rate, vehicle_type_id, active_rou
             (false, true, 0, 2, null, 0, 5, 0),
             (true, true, 0, 2, null, 0, 15, 0),
             (false, true, 0, 3, 1, 0, 5, 0),
-            (false, true, 0, 3, null, 0, 7, 0);
+            (false, true, 0, 3, 2, 0, 7, 0);
 
 --sifra123@
 insert into admins (id, email, password, name, surname, phone_number, city, profile_picture, role_id, verified, online) values
@@ -71,14 +72,15 @@ insert into drivings (active, driver_id, driving_status, duration, price, starte
                    (true, 14, 2, 8, 3, to_timestamp('25.01.2023. 22:40', 'DD.MM.YYYY HH24:MI'), null, 2, null, false),
                    (false, 18, 2, 10, 5, CURRENT_TIMESTAMP + INTERVAL '20 minutes', null, 3, null, false);
 
-
 insert into driving_locations(location_id, index, route_id, route_index) values
       (5, 1, 1, 0),
       (10, 2, 1, 0),
       (7, 3, 1, 0),
       (14, 4, 1, 0),
-      (2,1,2, 0),
-      (3,2,2, 0),
+      (5,1,2, 1),
+      (15,2,2,0),
+      (4,3,2, 0),
+      (16,4,2, 0),
       (4,1,3, 0),
       (1,2,3, 0),
       (5, 1,4, 0),

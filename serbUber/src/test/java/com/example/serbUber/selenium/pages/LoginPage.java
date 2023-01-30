@@ -61,9 +61,11 @@ public class LoginPage {
         loginButton.click();
     }
 
-    public boolean isVisibleErrorToast(String message){
-        WebElement webElement = new WebDriverWait(driver, Duration.ofSeconds(3))
-            .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(String.format("//div[contains(@aria-label, '%s')]", message))));
+    public boolean isVisibleErrorToast(final String toastMessage){
+        WebElement webElement = new WebDriverWait(driver, Duration.ofSeconds(2))
+            .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(
+                String.format("//div[contains(@aria-label, '%s')]", toastMessage)
+            )));
 
         return webElement != null;
     }

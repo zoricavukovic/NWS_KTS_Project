@@ -15,6 +15,12 @@ public class VehicleCurrentLocationDTO {
     private int crossedWaypoints;
     private double timeToDestination;
 
+    private int chosenRouteIdx;
+
+    public VehicleCurrentLocationDTO() {
+
+    }
+
     public VehicleCurrentLocationDTO(final VehicleWithDriverId vehicleWithDriverId) {
         this.id = vehicleWithDriverId.getVehicle().getId();
         this.type = vehicleWithDriverId.getVehicle().getVehicleTypeInfo().getVehicleType();
@@ -30,7 +36,28 @@ public class VehicleCurrentLocationDTO {
         }
         this.currentLocation = vehicleWithDriverId.getVehicle().getCurrentStop();
         this.timeToDestination = 0;
+        this.chosenRouteIdx = 0;
     }
+
+    public VehicleCurrentLocationDTO(final VehicleWithDriverId vehicleWithDriverId, final int chosenRouteIdx) {
+        this.id = vehicleWithDriverId.getVehicle().getId();
+        this.type = vehicleWithDriverId.getVehicle().getVehicleTypeInfo().getVehicleType();
+        this.crossedWaypoints = vehicleWithDriverId.getVehicle().getCrossedWaypoints();
+        this.activeDriver = vehicleWithDriverId.isActiveDriver();
+        this.driverId = vehicleWithDriverId.getDriverId();
+        if (vehicleWithDriverId.getVehicle().hasRoute()){
+            this.inDrive = true;
+            this.currentLocation = vehicleWithDriverId.getVehicle().getCurrentStop();
+        }
+        else {
+            this.inDrive = false;
+        }
+        this.currentLocation = vehicleWithDriverId.getVehicle().getCurrentStop();
+        this.timeToDestination = 0;
+        this.chosenRouteIdx = chosenRouteIdx;
+    }
+
+
 
     public static List<VehicleCurrentLocationDTO> fromVehiclesToVehicleCurrentLocationDTO(
         final List<VehicleWithDriverId> vehicles
@@ -102,5 +129,13 @@ public class VehicleCurrentLocationDTO {
 
     public void setTimeToDestination(double timeToDestination) {
         this.timeToDestination = timeToDestination;
+    }
+
+    public int getChosenRouteIdx() {
+        return chosenRouteIdx;
+    }
+
+    public void setChosenRouteIdx(int chosenRouteIdx) {
+        this.chosenRouteIdx = chosenRouteIdx;
     }
 }

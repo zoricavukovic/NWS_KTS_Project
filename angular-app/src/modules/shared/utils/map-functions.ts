@@ -352,6 +352,7 @@ export function updateVehiclePosition(
     );
     marker.setTitle(getTitle(vehicleCurrentLocation, storeDriving));
 
+    console.log(vehicleCurrentLocation);
     if (vehicleCurrentLocation.inDrive) {
       marker.setPosition({
         lat: vehicleCurrentLocation.currentLocation.lat,

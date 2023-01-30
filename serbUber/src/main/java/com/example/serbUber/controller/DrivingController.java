@@ -5,7 +5,6 @@ import com.example.serbUber.dto.DrivingPageDTO;
 import com.example.serbUber.dto.SimpleDrivingInfoDTO;
 import com.example.serbUber.dto.VehicleCurrentLocationDTO;
 import com.example.serbUber.dto.chart.ChartDataDTO;
-import com.example.serbUber.dto.chart.ChartItemDTO;
 import com.example.serbUber.exception.DriverAlreadyHasStartedDrivingException;
 import com.example.serbUber.exception.DrivingShouldNotStartYetException;
 import com.example.serbUber.exception.EntityNotFoundException;
@@ -16,9 +15,13 @@ import com.example.serbUber.service.DrivingService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+
 import javax.validation.Valid;
 import javax.validation.constraints.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.example.serbUber.exception.ErrorMessagesConstants.*;
@@ -26,6 +29,7 @@ import static com.example.serbUber.util.Constants.NUM_OF_LETTERS_REASON_TOO_LONG
 
 @RestController
 @RequestMapping("/drivings")
+@Validated
 public class DrivingController {
 
     private final DrivingService drivingService;
@@ -39,24 +43,6 @@ public class DrivingController {
     public List<DrivingDTO> getAll() {
 
         return this.drivingService.getAll();
-    }
-
-    @PostMapping()
-    @ResponseStatus(HttpStatus.CREATED)
-    public DrivingDTO create(@Valid @RequestBody DrivingRequest drivingRequest) {
-        /*
-        return this.drivingService.create(
-              drivingRequest.isActive(),
-                drivingRequest.getDuration(),
-                drivingRequest.getStarted(),
-                drivingRequest.getPayingLimit(),
-                drivingRequest.getRoute(),
-                drivingRequest.getDrivingStatus(),
-                drivingRequest.getDriverEmail(),
-                drivingRequest.getUsersPaid(),
-                drivingRequest.getPrice()
-        ); */
-        return null;
     }
 
     @GetMapping("/{id}/{pageNumber}/{pageSize}/{parameter}/{sortOrder}")
@@ -112,9 +98,8 @@ public class DrivingController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ROLE_DRIVER')")
     public DrivingDTO rejectDriving(
-        @PathVariable Long id,
-        @Valid @NotBlank(message="Reason must be added")
-        @Size(max=NUM_OF_LETTERS_REASON_TOO_LONG, message=REASON_TOO_LONG) @RequestBody String reason
+         @PathVariable Long id,
+        @Valid @RequestBody @Size(max=NUM_OF_LETTERS_REASON_TOO_LONG, message=REASON_TOO_LONG) String reason
     ) throws EntityNotFoundException {
 
         return drivingService.rejectDriving(id, reason);
@@ -180,5 +165,12 @@ public class DrivingController {
                 chartRequest.getStartDate(),
                 chartRequest.getEndDate()
         );
+    }
+
+    @GetMapping("/time-for-driving/{drivingId}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_REGULAR_USER')")
+    public LocalDateTime getTimeForDriving(@PathVariable Long drivingId) throws EntityNotFoundException {
+        return drivingService.getTimeForDriving(drivingId);
     }
 }
