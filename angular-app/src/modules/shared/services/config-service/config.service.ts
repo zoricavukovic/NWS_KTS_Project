@@ -28,6 +28,11 @@ export class ConfigService {
   ///////////////////AUTH///////////////////
   AUTH_URL = `${this.API_URL}/auth`;
   LOGIN_URL = `${this.AUTH_URL}/login`;
+
+  getLoginUrl(): string {
+    return this.LOGIN_URL;
+  }
+
   GOOGLE_LOGIN_URL = `${this.LOGIN_URL}/google`;
   FACEBOOK_LOGIN_URL = `${this.LOGIN_URL}/facebook`;
   LOGOUT_URL = `${this.AUTH_URL}/logout`;
@@ -95,6 +100,14 @@ export class ConfigService {
 
   sendResetPassword(email: string): string {
     return `${this.USERS_URL}/send-reset-password-link/${email}`;
+  }
+
+  getCreateRegularUserUrl(): string {
+    return this.CREATE_REGULAR_USER_URL;
+  }
+
+  getCreateDriverUrl(): string {
+    return this.CREATE_DRIVER_URL;
   }
 
   ///////////////////DRIVING///////////////////

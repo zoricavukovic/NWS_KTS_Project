@@ -125,9 +125,9 @@ insert into messages(message, time_stamp, admin_response, chat_room_id, seen) va
 --     (5, 4, 'Dobar utisak..', 3, 4);
 
 insert into reports(id, admin_email, answered, sender_id, receiver_id, message, time_stamp) values
-    (nextval('notifications_id_gen'), null, false, 2, 5, 'Vozac je bezobrazan!','2022-11-20 14:00'),
-    (nextval('notifications_id_gen'), null, false, 3, 5, 'Vozac je skrenuo sa zadate putanje!', '2022-12-01 13:00'),
-    (nextval('notifications_id_gen'), null, false, 5, 2,'Ana je prosula sok po sedistu!', '2022-12-01 13:25');
+    (nextval('notifications_id_gen'), null, false, 3, 14, 'Vozac je bezobrazan!','2022-11-20 14:00'),
+    (nextval('notifications_id_gen'), null, false, 4, 16, 'Vozac je skrenuo sa zadate putanje!', '2022-12-01 13:00'),
+    (nextval('notifications_id_gen'), null, false, 5, 16,'Ana je prosula sok po sedistu!', '2022-12-01 13:25');
 
 
 insert into favourite_routes (user_id, route_id) values
