@@ -2,19 +2,25 @@ package com.example.serbUber.selenium.tests;
 
 import com.example.serbUber.selenium.pages.DriverActiveRidesPage;
 import com.example.serbUber.selenium.pages.HomePage;
-import com.example.serbUber.selenium.tests.bases.CrossBrowsersTestBase;
+import com.example.serbUber.selenium.tests.bases.OneBrowserTestBase;
+import com.example.serbUber.selenium.tests.bases.TwoBrowserTestBase;
 import org.junit.jupiter.api.*;
 import com.example.serbUber.selenium.helper.LoginHelper;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.example.serbUber.selenium.helper.Constants.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@TestMethodOrder(MethodOrderer.DisplayName.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class FinishingRideTest extends CrossBrowsersTestBase {
+@TestMethodOrder(MethodOrderer.DisplayName.class)
+public class FinishingRideTest extends TwoBrowserTestBase {
 
     @Test
     @DisplayName("T1-Success finished ride, driver doesn't have next ride")
+    @Rollback(value = true)
     public void finishingRideNotHavingNextRideSuccessfulTest() {
         //driver login on chrome driver
         HomePage homePageChrome = LoginHelper.redirectToLoginPage(chromeDriver);
@@ -22,8 +28,8 @@ public class FinishingRideTest extends CrossBrowsersTestBase {
         //user with active driving login on edge driver
         HomePage homePageEdge = LoginHelper.redirectToLoginPage(edgeDriver);
 
-        LoginHelper.loginWhenRedirectedOnLoginPage(chromeDriver, DRIVER_EMAIL_HAS_CURRENT_NOT_NEXT_RIDE, EXISTING_PASSWORD);
         LoginHelper.loginWhenRedirectedOnLoginPage(edgeDriver, EXISTING_REGULAR_USER_EMAIL, EXISTING_PASSWORD);
+        LoginHelper.loginWhenRedirectedOnLoginPage(chromeDriver, DRIVER_EMAIL_HAS_CURRENT_NOT_NEXT_RIDE, EXISTING_PASSWORD);
 
         //driver finished ride on chrome driver
         DriverActiveRidesPage driverActiveRidesPage = new DriverActiveRidesPage(chromeDriver);
@@ -36,6 +42,7 @@ public class FinishingRideTest extends CrossBrowsersTestBase {
 
     @Test
     @DisplayName("T2-Success finished ride, driver has next ride")
+    @Rollback(value = true)
     public void finishingRideDriverHasNextRideSuccessfulTest() {
         //driver login on chrome driver
         HomePage homePageChrome = LoginHelper.redirectToLoginPage(chromeDriver);
@@ -43,8 +50,8 @@ public class FinishingRideTest extends CrossBrowsersTestBase {
         //user with active driving login on edge driver
         HomePage homePageEdge = LoginHelper.redirectToLoginPage(edgeDriver);
 
-        LoginHelper.loginWhenRedirectedOnLoginPage(chromeDriver, DRIVER_EMAIL_HAS_CURRENT_AND_NEXT_RIDE, EXISTING_PASSWORD);
         LoginHelper.loginWhenRedirectedOnLoginPage(edgeDriver, EXISTING_REGULAR_USER_EMAIL_OF_DRIVER_THAT_HAS_NOW_AND_FUTURE_DRIVING, EXISTING_PASSWORD);
+        LoginHelper.loginWhenRedirectedOnLoginPage(chromeDriver, DRIVER_EMAIL_HAS_CURRENT_AND_NEXT_RIDE, EXISTING_PASSWORD);
 
         //driver finished ride on chrome driver
         DriverActiveRidesPage driverActiveRidesPage = new DriverActiveRidesPage(chromeDriver);

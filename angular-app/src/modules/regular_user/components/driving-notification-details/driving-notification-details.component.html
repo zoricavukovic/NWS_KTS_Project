@@ -1,34 +1,55 @@
 <div *ngIf="drivingNotification" id="route-div" class="box mat-elevation-z1">
-    <h1><b>Accept ride</b></h1>
-    <app-driving-details-route
-      [locations]="drivingNotification.route.locations"></app-driving-details-route>
-    <br/>
-    <vehicle-details [vehicle]="vehicle"></vehicle-details>
-    <br/>
-    <app-driving-details-passengers
-      [users]="drivingNotification.passengers"
-      [base64Prefix]="base64Prefix">
-    </app-driving-details-passengers>
+  <h1><b>Accept ride</b></h1>
+  <app-driving-details-route
+    [locations]="
+      drivingNotification.route.locations
+    "></app-driving-details-route>
+  <br />
+  <vehicle-details [vehicle]="vehicle"></vehicle-details>
+  <br />
+  <app-driving-details-passengers
+    [users]="drivingNotification.passengers"
+    [base64Prefix]="base64Prefix">
+  </app-driving-details-passengers>
 
-    <div style="margin-top:1.5rem;">
-      <div style="float:left;  font-size: 1.7rem;display: flex;flex-direction: row; margin-top:0.5rem; margin-right:8.5rem">
-        <b>= {{drivingNotification.price}}</b>
-        <mat-icon class="token-icon">payments</mat-icon>
-      </div>
-      <div class="continue-buttons" *ngIf="!answered">
-        <button mat-raised-button style="background-color: var(--white);color: var(--deep-blue);" (click)="rejectRide()">
-          <strong>Reject</strong>
-        </button>
-        <button mat-raised-button style="margin-left:0.7rem;" (click)="acceptRide()">
-          <strong>Accept</strong>
-        </button>
-      </div>
+  <div style="margin-top: 1.5rem">
+    <div
+      style="
+        float: left;
+        font-size: 1.7rem;
+        display: flex;
+        flex-direction: row;
+        margin-top: 0.5rem;
+        margin-right: 8.5rem;
+      ">
+      <b>= {{ drivingNotification.price }}</b>
+      <mat-icon class="token-icon">payments</mat-icon>
     </div>
-
+    <div class="continue-buttons" *ngIf="!answered">
+      <button
+        mat-raised-button
+        style="background-color: var(--white); color: var(--deep-blue)"
+        (click)="rejectRide()"
+        id="reject-ride-btn">
+        <strong>Reject</strong>
+      </button>
+      <button
+        mat-raised-button
+        style="margin-left: 0.7rem"
+        (click)="acceptRide()"
+        id="accept-ride-btn">
+        <strong>Accept</strong>
+      </button>
+    </div>
+  </div>
 </div>
 <div *ngIf="!drivingNotification" class="box mat-elevation-z1">
   <h2 class="text-center">Ride is already rejected.</h2>
-  <a [routerLink]="['/serb-uber/user/map-page-view/-1']" routerLinkActive="active" mat-button
-         color="accent">Go to home page to discover SerbUber.</a>
-
+  <a
+    [routerLink]="['/serb-uber/user/map-page-view/-1']"
+    routerLinkActive="active"
+    mat-button
+    color="accent"
+    >Go to home page to discover SerbUber.</a
+  >
 </div>

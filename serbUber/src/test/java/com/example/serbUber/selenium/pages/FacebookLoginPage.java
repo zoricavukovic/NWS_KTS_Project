@@ -1,6 +1,6 @@
 package com.example.serbUber.selenium.pages;
 
-import com.example.serbUber.selenium.tests.bases.TestBase;
+import com.example.serbUber.selenium.tests.bases.OneBrowserTestBase;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -13,7 +13,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 
-public class FacebookLoginPage extends TestBase {
+public class FacebookLoginPage extends OneBrowserTestBase {
 
     private WebDriver driver;
 
@@ -64,8 +64,8 @@ public class FacebookLoginPage extends TestBase {
 
     public boolean isFacebookPageLoaded(String facebookWelcomeMessage){
         WebElement visibleBanner = new WebDriverWait(driver, Duration.ofSeconds(5))
-            .until(ExpectedConditions.visibilityOf(driver.findElement(
-                By.xpath(String.format("//span[contains(text(), '%s')]", facebookWelcomeMessage)))
+            .until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath(String.format("//span[contains(text(), '%s')]", facebookWelcomeMessage))
             ));
 
         return visibleBanner != null;

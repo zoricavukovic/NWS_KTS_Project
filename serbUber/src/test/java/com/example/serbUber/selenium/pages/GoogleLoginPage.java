@@ -1,5 +1,6 @@
 package com.example.serbUber.selenium.pages;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -21,9 +22,6 @@ public class GoogleLoginPage {
 
     @FindBy(how = How.XPATH, using="//input[@type='email']")
     private WebElement emailInput;
-
-    @FindBy(how = How.XPATH, using="//span[text()='Next']/parent::button")
-    private WebElement nextButton;
 
     @FindBy(how = How.XPATH, using="//input[@type='password']")
     private WebElement passwordInput;
@@ -59,9 +57,9 @@ public class GoogleLoginPage {
         passwordInput.sendKeys(Keys.RETURN);
     }
 
-    public void clickOnNextButton(){
-        new WebDriverWait(driver, Duration.ofSeconds(5))
-            .until(ExpectedConditions.elementToBeClickable(nextButton));
+    public void clickOnNextButton(String buttonLabel){
+        WebElement nextButton = new WebDriverWait(driver, Duration.ofSeconds(5))
+            .until(ExpectedConditions.elementToBeClickable(By.xpath(String.format("//span[text()='%s']/parent::button", buttonLabel))));
         actions.click(nextButton).perform();
     }
 }

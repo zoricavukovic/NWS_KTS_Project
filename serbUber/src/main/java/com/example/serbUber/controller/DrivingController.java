@@ -110,6 +110,7 @@ public class DrivingController {
     @PreAuthorize("hasRole('ROLE_REGULAR_USER')")
     public SimpleDrivingInfoDTO checkUserHasActiveDriving(@Valid @NotNull(message = NOT_NULL_MESSAGE)@PathVariable final Long id){
 
+
         return drivingService.checkUserHasActiveDriving(id);
     }
 
