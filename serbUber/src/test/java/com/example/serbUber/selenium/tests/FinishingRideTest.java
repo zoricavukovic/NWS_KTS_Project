@@ -6,16 +6,21 @@ import com.example.serbUber.selenium.tests.bases.OneBrowserTestBase;
 import com.example.serbUber.selenium.tests.bases.TwoBrowserTestBase;
 import org.junit.jupiter.api.*;
 import com.example.serbUber.selenium.helper.LoginHelper;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.example.serbUber.selenium.helper.Constants.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@TestMethodOrder(MethodOrderer.DisplayName.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.DisplayName.class)
 public class FinishingRideTest extends TwoBrowserTestBase {
 
     @Test
     @DisplayName("T1-Success finished ride, driver doesn't have next ride")
+    @Rollback(value = true)
     public void finishingRideNotHavingNextRideSuccessfulTest() {
         //driver login on chrome driver
         HomePage homePageChrome = LoginHelper.redirectToLoginPage(chromeDriver);
@@ -37,6 +42,7 @@ public class FinishingRideTest extends TwoBrowserTestBase {
 
     @Test
     @DisplayName("T2-Success finished ride, driver has next ride")
+    @Rollback(value = true)
     public void finishingRideDriverHasNextRideSuccessfulTest() {
         //driver login on chrome driver
         HomePage homePageChrome = LoginHelper.redirectToLoginPage(chromeDriver);

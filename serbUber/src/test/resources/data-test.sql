@@ -54,7 +54,7 @@ insert into regular_users (id, email, password, name, surname, phone_number, cit
         (nextval('users_id_gen'), 'srki@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Srdjan', 'Djuric', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false),
         (nextval('users_id_gen'), 'jovan@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Jovan', 'Jovic', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false),
         (nextval('users_id_gen'), 'milos@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Milos', 'Milosevic', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false),
-        (nextval('users_id_gen'), 'zokili@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Zorica', 'Zoric', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false),
+        (nextval('users_id_gen'), 'zokili123@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Zorica', 'Zoric', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false),
         (nextval('users_id_gen'), 'jana@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Jana', 'Janic', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false),
         (nextval('users_id_gen'), 'anastasijas12@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Ana', 'Ancic', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false),
         (nextval('users_id_gen'), 'serbuber2@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Ana', 'Ancic', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false);

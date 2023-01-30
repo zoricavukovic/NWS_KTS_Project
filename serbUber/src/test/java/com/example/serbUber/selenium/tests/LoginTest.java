@@ -7,6 +7,10 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -17,6 +21,7 @@ import static com.example.serbUber.selenium.helper.Constants.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
+//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.DisplayName.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class LoginTest extends OneBrowserTestBase {
@@ -27,7 +32,7 @@ public class LoginTest extends OneBrowserTestBase {
     @DisplayName("T1-Success login with valid credentials")
     public void regularLoginSuccessfulTest() throws InterruptedException {
         homePage = LoginHelper.login(chromeDriver, EXISTING_REGULAR_USER_EMAIL, EXISTING_PASSWORD);
-        Thread.sleep(5000);
+
         homePage.clickOnProfileIconMenuButton();
         homePage.clickOnMyProfileMenuOption(MY_PROFILE_LABEL);
 
@@ -41,7 +46,7 @@ public class LoginTest extends OneBrowserTestBase {
     public void regularLoginShouldFailedWrongCredentialsTest(String email, String password) {
         LoginHelper.login(chromeDriver, email, password);
 
-        LoginPage loginPage = new LoginPage(driver);
+        LoginPage loginPage = new LoginPage(chromeDriver);
         assertTrue(loginPage.isVisibleErrorToast(FAILED_LOGIN_MESSAGE));
     }
 

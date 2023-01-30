@@ -1,8 +1,6 @@
 package com.example.serbUber.server.controller.helper;
 
-import com.example.serbUber.request.LocationsForRoutesRequest;
-import com.example.serbUber.request.LongLatRequest;
-import com.example.serbUber.request.VehicleCurrentPositionRequest;
+import com.example.serbUber.request.*;
 import org.springframework.http.MediaType;
 
 import javax.validation.Valid;
@@ -30,4 +28,5 @@ public class ControllerConstants {
     public static final List<LongLatRequest> LONG_LAT_REQUESTS_THREE_ELEMENTS =Arrays.asList(FIRST_LONG_LAT_REQUESTS, SECOND_LONG_LAT_REQUESTS, THIRD_LONG_LAT_REQUESTS);
 
     public static final List<LongLatRequest> LONG_LAT_REQUESTS_TWO_ELEMENTS_WRONG_LAT = Arrays.asList(FIRST_LONG_LAT_REQUESTS, LONG_LAT_REQUESTS_WRONG_LAT);
+
 }
