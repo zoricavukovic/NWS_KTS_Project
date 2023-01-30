@@ -4,6 +4,9 @@ import com.example.serbUber.exception.DriverAlreadyHasStartedDrivingException;
 import com.example.serbUber.exception.DrivingShouldNotStartYetException;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.EntityType;
+import com.example.serbUber.request.LinkedPassengersRequest;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,6 +20,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.Objects;
 
 import static com.example.serbUber.exception.EntityType.getEntityErrorMessage;
@@ -180,4 +185,137 @@ public class DrivingControllerTest {
                 .andExpect(jsonPath("$.drivingStatus").value(FINISHED.toString()));
     }
 
+    @Test
+    @DisplayName("T10 - Should get driving when making GET request to endpoint - /drivings/{id}")
+    @WithMockUser(roles={"DRIVER", "REGULAR_USER", "ADMIN"})
+    @Rollback(true)
+    public void getDriving_returnDrivingForId() throws Exception {
+
+        this.mockMvc.perform(MockMvcRequestBuilders.get(String.format("%s/%d", DRIVING_URL_PREFIX, ACTIVE_DRIVING_ID))
+                        .contentType(contentType).content("")).andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(ACTIVE_DRIVING_ID));
+    }
+
+    @Test
+    @DisplayName("T11 - Should throw EntityNotFoundException when making GET request to endpoint - /drivings/{id}")
+    @WithMockUser(roles={"DRIVER", "REGULAR_USER", "ADMIN"})
+    @Rollback(true)
+    public void getDriving_throwEntityNotFoundException() throws Exception {
+
+        String errorMessage = getEntityErrorMessage(NOT_EXIST_ID.toString(), EntityType.DRIVING);
+        this.mockMvc.perform(MockMvcRequestBuilders.get(String.format("%s/%d", DRIVING_URL_PREFIX, NOT_EXIST_ID))
+                        .contentType(contentType).content("")).andExpect(status().isNotFound())
+                .andExpect(result ->
+                assertTrue(result.getResolvedException() instanceof EntityNotFoundException)
+        )
+                .andExpect(result -> assertEquals(errorMessage, Objects.requireNonNull(result.getResolvedException()).getMessage()));
+    }
+
+    @Test
+    @DisplayName("T12 - Should get vehicle current location when making GET request to endpoint - /vehicle-current-location/{drivingId}")
+    @Rollback(true)
+    public void getVehicleCurrentLocation_returnVehicleCurrentLocationDTOForDrivingId() throws Exception {
+
+        this.mockMvc.perform(MockMvcRequestBuilders.get(String.format("%s/vehicle-current-location/%d", DRIVING_URL_PREFIX, ACTIVE_DRIVING_ID))
+                        .contentType(contentType).content("")).andExpect(status().isOk())
+                .andExpect(jsonPath("$.driverId").value(DRIVER_ID_FOR_ACTIVE_DRIVING));
+    }
+
+    @Test
+    @DisplayName("T13 - Should throw EntityNotFoundException when making GET request to endpoint - /vehicle-current-location/{drivingId}")
+    @Rollback(true)
+    public void getVehicleCurrentLocation_throwEntityNotFoundException() throws Exception {
+
+        String errorMessage = getEntityErrorMessage(NOT_EXIST_ID.toString(), EntityType.DRIVING);
+        this.mockMvc.perform(MockMvcRequestBuilders.get(String.format("%s/vehicle-current-location/%d", DRIVING_URL_PREFIX, NOT_EXIST_ID))
+                        .contentType(contentType).content("")).andExpect(status().isNotFound())
+                .andExpect(result ->
+                        assertTrue(result.getResolvedException() instanceof EntityNotFoundException)
+                )
+                .andExpect(result -> assertEquals(errorMessage, Objects.requireNonNull(result.getResolvedException()).getMessage()));
+    }
+
+    @Test
+    @DisplayName("T14 - Should throw EntityNotFoundException when making POST request to endpoint - /busy-passengers")
+    @WithMockUser(roles="REGULAR_USER")
+    @Rollback(true)
+    public void isPassengersAlreadyHaveRide_throwEntityNotFoundException() throws Exception {
+        List<String> linkedPassengers = new ArrayList<>();
+        linkedPassengers.add(NOT_EXIST_USER_EMAIL);
+        LinkedPassengersRequest request = new LinkedPassengersRequest(linkedPassengers, LocalDateTime.now());
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule()); //izdvojiti u posebnu metodu
+
+        String requestJSON = mapper.writeValueAsString(request);
+        String errorMessage = getEntityErrorMessage(NOT_EXIST_USER_EMAIL, EntityType.USER);
+        this.mockMvc.perform(MockMvcRequestBuilders.post(String.format("%s/busy-passengers", DRIVING_URL_PREFIX))
+                        .contentType(contentType).content(requestJSON)).andExpect(status().isNotFound())
+                .andExpect(result ->
+                        assertTrue(result.getResolvedException() instanceof EntityNotFoundException)
+                )
+                .andExpect(result -> assertEquals(errorMessage, Objects.requireNonNull(result.getResolvedException()).getMessage()));
+    }
+
+    @Test
+    @DisplayName("T15 - Should return true when making POST request to endpoint - /busy-passengers")
+    @WithMockUser(roles="REGULAR_USER")
+    @Rollback(true)
+    public void isPassengersAlreadyHaveRide_returnTrue() throws Exception {
+        List<String> linkedPassengers = new ArrayList<>();
+        linkedPassengers.add(USER_EMAIL_ACTIVE_DRIVING);
+        LinkedPassengersRequest request = new LinkedPassengersRequest(linkedPassengers, LocalDateTime.now());
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule()); //izdvojiti u posebnu metodu
+
+        String requestJSON = mapper.writeValueAsString(request);
+        this.mockMvc.perform(MockMvcRequestBuilders.post(String.format("%s/busy-passengers", DRIVING_URL_PREFIX))
+                        .contentType(contentType).content(requestJSON)).andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(true));
+    }
+
+    @Test
+    @DisplayName("T16 - Should return false when making POST request to endpoint - /busy-passengers")
+    @WithMockUser(roles="REGULAR_USER")
+    @Rollback(true)
+    public void isPassengersAlreadyHaveRide_returnFalse() throws Exception {
+        List<String> linkedPassengers = new ArrayList<>();
+        linkedPassengers.add(USER_EMAIL_DRIVING);
+        LinkedPassengersRequest request = new LinkedPassengersRequest(linkedPassengers, LocalDateTime.now());
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule()); //izdvojiti u posebnu metodu
+
+        String requestJSON = mapper.writeValueAsString(request);
+        this.mockMvc.perform(MockMvcRequestBuilders.post(String.format("%s/busy-passengers", DRIVING_URL_PREFIX))
+                        .contentType(contentType).content(requestJSON)).andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(false));
+    }
+
+    @Test
+    @DisplayName("T17 - Should throw EntityNotFoundException when making GET request to endpoint - /time-for-driving/{drivingId}")
+    @WithMockUser(roles="REGULAR_USER")
+    @Rollback(true)
+    public void getTimeForDriving_throwEntityNotFoundException() throws Exception {
+
+        String errorMessage = getEntityErrorMessage(NOT_EXIST_ID.toString(), EntityType.DRIVING);
+        this.mockMvc.perform(MockMvcRequestBuilders.get(String.format("%s/time-for-driving/%d", DRIVING_URL_PREFIX, NOT_EXIST_ID))
+                        .contentType(contentType).content("")).andExpect(status().isNotFound())
+                .andExpect(result ->
+                        assertTrue(result.getResolvedException() instanceof EntityNotFoundException)
+                )
+                .andExpect(result -> assertEquals(errorMessage, Objects.requireNonNull(result.getResolvedException()).getMessage()));
+    }
+
+    @Test
+    @DisplayName("T17 - Should return LocalDateTime for driving with drivingId when making GET request to endpoint - /time-for-driving/{drivingId}")
+    @WithMockUser(roles="REGULAR_USER")
+    @Rollback(true)
+    public void getTimeForDriving_returnStartedDateTimeForDriving() throws Exception {
+
+        this.mockMvc.perform(MockMvcRequestBuilders.get(String.format("%s/time-for-driving/%d", DRIVING_URL_PREFIX, NOT_ACTIVE_DRIVING_ID))
+                        .contentType(contentType).content("")).andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(STARTED_DRIVING_THREE_ID));
+    }
 }

@@ -69,7 +69,7 @@ insert into drivers (id, email, password, name, surname, phone_number, city, pro
 
 
 insert into drivings (active, driver_id, driving_status, duration, price, started, end_date, route_id, last_reminder, reservation) values
-           (true, 18, 2, 2, 3, to_timestamp('25.01.2023. 22:48', 'DD.MM.YYYY HH24:MI'), null, 1, null, false),
+           (true, 18, 2, 2, 3,  CURRENT_TIMESTAMP - INTERVAL '10 minutes', null, 1, null, false),
            (true, 14, 2, 8, 3, to_timestamp('25.01.2023. 22:40', 'DD.MM.YYYY HH24:MI'), null, 2, null, false),
            (false, 18, 2, 10, 5, to_timestamp('25.01.2023 18:50', 'DD.MM.YYYY HH24:MI'), null, 3, null, false),
            (false, 14, 2, 10, 5, to_timestamp('27.01.2023 18:50', 'DD.MM.YYYY HH24:MI'), null, 3, null, false),
