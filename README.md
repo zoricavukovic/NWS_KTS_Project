@@ -30,12 +30,19 @@
 - Open serbUber backend app in IntelliJ IDE as Maven project
 - Click on reload project(Maven will update and download all dependencies)
 - Click on run button to run server
+- Open locust.py script in prefered IDE and run command locust -f locustfile.py --headless -u 1 -r 1
 
 #### <span style="vertical-align: middle">:floppy_disk:</span> *How to run frontend:*
 
 - Open angular-app in wanted IDE (VSCode, WebStorm etc.)
 - Run npm install in terminal to install all needed dependencies
 - Run ng serve in terminal to start application
+
+#### <span style="vertical-align: middle">:floppy_disk:</span> *How to run tests:*
+
+- Selenium, unit and integration tests are located in src/test/
+- Backend tests are being run by clicking right click on a test class and selecting run option
+- Frontend tests are being run by running ng test in terminal
 
 <br>
 
