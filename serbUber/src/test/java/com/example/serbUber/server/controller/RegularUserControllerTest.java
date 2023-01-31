@@ -31,9 +31,6 @@ public class RegularUserControllerTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
-    @Autowired
-    private TestRestTemplate restTemplate;
-
     @BeforeAll
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
@@ -47,6 +44,6 @@ public class RegularUserControllerTest {
         this.mockMvc.perform(MockMvcRequestBuilders.get(
                                 String.format("%s", REGULAR_USER_URL_PREFIX))
                         .contentType(contentType).content("")).andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(11)));
+                .andExpect(jsonPath("$", hasSize(12)));
     }
 }

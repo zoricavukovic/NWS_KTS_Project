@@ -10,7 +10,7 @@ public enum VehicleType {
             case "van" -> VehicleType.VAN;
             case "suv" -> VehicleType.SUV;
             case "car" -> VehicleType.CAR;
-            default -> VehicleType.valueOf("");
+            default -> null;
         };
     }
 }

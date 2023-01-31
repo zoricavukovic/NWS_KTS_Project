@@ -9,8 +9,10 @@ import { AuthService } from '../../services/auth-service/auth.service';
 import {
   FacebookLoginProvider,
   GoogleLoginProvider,
+  SocialAuthService,
   SocialAuthServiceConfig,
   SocialLoginModule,
+  SocialUser,
 } from '@abacritt/angularx-social-login';
 import { environment } from '../../../../environments/environment';
 import { ToastrService } from 'ngx-toastr';
@@ -22,9 +24,11 @@ import { LoginResponse } from '../../../shared/models/user/login-response';
 describe('LoginComponent', () => {
   let componentForLogin: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
+
   const authServiceSpy = jasmine.createSpyObj('AuthService', [
     'login',
     'setLocalStorage',
+    'loginWithGoogle'
   ]);
 
   const toastrServiceMock = jasmine.createSpyObj('ToastrService', [
@@ -247,5 +251,109 @@ describe('LoginComponent', () => {
     expect(routerMock.navigate).toHaveBeenCalledWith([
       '/serb-uber/user/map-page-view/-1',
     ]);
+  }));
+
+  it('should log in with Google and navigate to map page', fakeAsync(() => {
+    authServiceSpy.login.calls.reset();
+    authServiceSpy.loginWithGoogle.calls.reset();
+    authServiceSpy.setLocalStorage.calls.reset();
+    routerMock.navigate.calls.reset();
+    // const user = { idToken: 'token' };
+    const loginResponse: LoginResponse = {
+      token: 'token1231324213213',
+      userDTO: {
+        id: 1,
+        email: 'ana@gmail.com',
+        name: 'Ana',
+        surname: 'Ancic',
+        phoneNumber: '012345678',
+        city: 'Novi Sad',
+        role: {
+          name: 'ROLE_REGULAR_USER',
+        },
+        profilePicture: 'defult-user.png',
+        online: true,
+      },
+    };
+
+    const user: SocialUser = {
+      provider: 'GOOGLE',
+      id: '1',
+      email: 'serbuber2@gmail.com',
+      name: 'Test',
+      photoUrl: 'Test',
+      firstName: 'Test',
+      lastName: 'Test',
+      authToken: '1',
+      idToken: 'some-id-token',
+      authorizationCode: 'some',
+      response: ''
+    }
+
+
+    authServiceSpy.loginWithGoogle.and.returnValue(of(loginResponse));
+
+    const socialAuthService = TestBed.get(SocialAuthService);
+    spyOn(socialAuthService, 'authState').and.returnValue(of(user));
+
+    componentForLogin.ngOnInit();
+
+    tick();
+
+    authServiceSpy.loginWithGoogle(user.idToken).subscribe({
+      next(loggedUser: any): void {
+        let bla = loggedUser;
+        authServiceSpy.setLocalStorage(loggedUser);
+        routerMock.navigate(['/serb-uber/user/map-page-view/-1'])
+      },
+      error(): void {
+        fail('Login with Google failed');
+      }
+    });
+
+    expect(authServiceSpy.setLocalStorage).toHaveBeenCalledWith(loginResponse);
+    expect(routerMock.navigate).toHaveBeenCalledWith(['/serb-uber/user/map-page-view/-1']);
+
+  }));
+
+  it('should handle error on login with Google', fakeAsync(() => {
+    authServiceSpy.loginWithGoogle.calls.reset();
+    routerMock.navigate.calls.reset();
+    toastrServiceMock.error.calls.reset();
+
+    const user: SocialUser = {
+      provider: 'GOOGLE',
+      id: '1',
+      email: 'serbuber2@gmail.com',
+      name: 'Test',
+      photoUrl: 'Test',
+      firstName: 'Test',
+      lastName: 'Test',
+      authToken: '1',
+      idToken: 'some-id-token',
+      authorizationCode: 'some',
+      response: ''
+    }
+
+    const errorMessage = 'Email or password is not correct!';
+
+    const socialAuthService = TestBed.get(SocialAuthService);
+    spyOn(socialAuthService, 'authState').and.returnValue(of(user));
+    authServiceSpy.loginWithGoogle.and.returnValue(throwError({errorMessage}));
+
+    componentForLogin.ngOnInit();
+
+    tick();
+
+    authServiceSpy.loginWithGoogle(user.idToken).subscribe({
+      next(): void {
+        fail('Login with Google should have been failed!')
+      },
+      error(error): void {
+        toastrServiceMock.error(error.errorMessage, 'Login failed');
+      }
+    });
+
+    expect(toastrServiceMock.error).toHaveBeenCalledWith('Email or password is not correct!', 'Login failed');
   }));
 });

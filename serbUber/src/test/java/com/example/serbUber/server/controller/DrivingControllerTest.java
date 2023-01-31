@@ -321,6 +321,7 @@ public class DrivingControllerTest {
     @CsvSource(value = {"14,2", "18,1"})
     @DisplayName("T19 - Should successfully return all now and future drivings for driver when making GET request to endpoint - /drivings/now-and-future/{id}")
     @WithMockUser(roles = "DRIVER")
+    @Rollback(true)
     public void shouldSuccessfullyReturnAllNowAndFutureDrivingsForDriver(Long driverId, int numOfDrivings) throws Exception {
         this.mockMvc.perform(MockMvcRequestBuilders.get(String.format("%s/now-and-future/%d", DRIVING_URL_PREFIX, driverId))
                         .contentType(contentType)).andExpect(status().isOk())
@@ -331,6 +332,7 @@ public class DrivingControllerTest {
     @Test
     @DisplayName("T20 - Should return empty list of now and future drivings for driver when making GET request to endpoint - /drivings/now-and-future/{id}")
     @WithMockUser(roles = "DRIVER")
+    @Rollback(true)
     public void shouldSuccessfullyReturnAllNowAndFutureDrivingsForDriver() throws Exception {
         Long driverId = 50L;
         this.mockMvc.perform(MockMvcRequestBuilders.get(String.format("%s/now-and-future/%d", DRIVING_URL_PREFIX, driverId))
@@ -341,6 +343,7 @@ public class DrivingControllerTest {
     @Test
     @DisplayName("T21 - Should not return active driving for user when making GET request to endpoint - /drivings/has-active/user/{id}")
     @WithMockUser(roles = "REGULAR_USER")
+    @Rollback(true)
     public void shouldNotReturnActiveDrivingForUser() throws Exception {
         Long userId = 13L;
         MvcResult result = this.mockMvc.perform(MockMvcRequestBuilders.get(String.format("%s/has-active/user/%d", DRIVING_URL_PREFIX, userId))
@@ -354,6 +357,7 @@ public class DrivingControllerTest {
     @CsvSource(value = {"8,1,ACCEPTED", "12,9,ON_WAY_TO_DEPARTURE"})
     @DisplayName("T22 - Should successfully return active driving for user when making GET request to endpoint - /drivings/has-active/user/{id}")
     @WithMockUser(roles = "REGULAR_USER")
+    @Rollback(true)
     public void shouldReturnActiveDrivingForUser(Long userId, Long drivingId, String drivingStatus) throws Exception {
 
         this.mockMvc.perform(MockMvcRequestBuilders.get(String.format("%s/has-active/user/%d", DRIVING_URL_PREFIX, userId))
