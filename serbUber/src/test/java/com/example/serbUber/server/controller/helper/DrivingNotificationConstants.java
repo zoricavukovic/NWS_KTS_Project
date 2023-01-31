@@ -105,4 +105,14 @@ public class DrivingNotificationConstants {
         route, 100, EXIST_EMAIL, new LinkedList<>(),
         false, false, EXIST_VEHICLE_TYPE, Timestamp.valueOf(LocalDateTime.now().plusMinutes(35))
     );
+
+    public static final DrivingNotificationRequest DRIVING_NOTIFICATION_REQUEST_PRICE_LESS_THAN_ZERO = new DrivingNotificationRequest(
+        route, -10, EXIST_EMAIL, new LinkedList<>(),
+        false, false, EXIST_VEHICLE_TYPE, Timestamp.valueOf(LocalDateTime.now().plusMinutes(35))
+    );
+
+    public static final DrivingNotificationRequest DRIVING_NOTIFICATION_REQUEST_SENDER_EMAIL_IS_NOT_VALID = new DrivingNotificationRequest(
+        route, 10, "novValid", new LinkedList<>(),
+        false, false, EXIST_VEHICLE_TYPE, Timestamp.valueOf(LocalDateTime.now().plusMinutes(35))
+    );
 }

@@ -13,7 +13,6 @@ public class ControllerConstants {
     public static final MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
         MediaType.APPLICATION_JSON.getSubtype());
     public static final Long NOT_EXIST_ENTITY = 100L;
-    public static final Long EXIST_DRIVING_ID = 1L;
 
     public static final String USER_EMAIL_ACTIVE_DRIVING = "milos@gmail.com";
     public static final String USER_EMAIL_DRIVING = "srki@gmail.com";

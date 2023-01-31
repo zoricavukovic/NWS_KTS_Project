@@ -83,9 +83,7 @@ insert into drivings (active, driver_id, driving_status, duration, price, starte
 
 
 insert into driving_notifications(route_id, price, sender_id, started, duration, baby_seat, pet_friendly, vehicle_type_info, is_reservation) values
-            (3, 10, 12, to_timestamp('25.01.2023. 22:48', 'DD.MM.YYYY HH24:MI'), 5, true, true, 1, false);
-
---DATEADD(MINUTE, -15, GETDATE())
+            (3, 10, 12, CURRENT_TIMESTAMP, 5, true, true, 1, false);
 
 insert into driving_locations(location_id, index, route_id, route_index) values
          (5, 1, 1, 0),

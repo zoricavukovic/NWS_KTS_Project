@@ -49,6 +49,7 @@ public class RouteControllerTest {
 
     @Test
     @DisplayName("T1-Should successfully get route path when making GET request to endpoint - /routes/path/{id}")
+    @Rollback(true)
     public void shouldSuccessfullyGetRoutePath() throws Exception {
         Long routeId = 1L;
         this.mockMvc.perform(MockMvcRequestBuilders.get(String.format("%s/path/%d", ROUTE_URL_PREFIX, routeId))
@@ -58,6 +59,7 @@ public class RouteControllerTest {
 
     @Test
     @DisplayName("T2-Should throw entity not found (not found route) when making GET request to endpoint - /routes/path/{id}")
+    @Rollback(true)
     public void shouldThrowEntityNotFoundGetRoutePath() throws Exception {
         String errorMessage = getEntityErrorMessage(NOT_EXIST_ENTITY.toString(), EntityType.ROUTE);
         this.mockMvc.perform(MockMvcRequestBuilders.get(String.format("%s/path/%d", ROUTE_URL_PREFIX, NOT_EXIST_ENTITY))

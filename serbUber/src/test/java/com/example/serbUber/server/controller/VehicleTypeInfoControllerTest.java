@@ -65,5 +65,4 @@ public class VehicleTypeInfoControllerTest {
                 .andExpect(jsonPath("$.vehicleType").value(VEHICLE_TYPE_SUV));
     }
 
-
 }
