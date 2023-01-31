@@ -57,6 +57,7 @@ public class Constants {
     public static final String DRIVER_DATA_UPDATE_REJECTION = "Admin rejected your profile data changes.";
     public static final String UNSUCCESSFUL_PAYMENT_PATH = "/unsuccessful-payment";
     public static final String DRIVER_NOT_FOUND_PATH = "/driver-not-found";
+    public static final String EMPTY_STRING = "";
     public static final double WITHOUT_TOKENS = 0.0;
     public static final double START_MISSING_NUM_OF_TOKENS = 0;
     public static final int HALF_AN_HOUR = 30;

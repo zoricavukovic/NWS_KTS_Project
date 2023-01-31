@@ -39,7 +39,7 @@ public interface IDrivingService {
             final double price
     ) throws EntityNotFoundException;
 
-    public DrivingDTO save(Driving driving);
+    Driving save(Driving driving);
 
     List<DrivingDTO> getAll();
 
@@ -69,7 +69,7 @@ public interface IDrivingService {
 
     Long getDrivingByFavouriteRoute(final Long routeId) throws EntityNotFoundException;
 
-    boolean isPassengersAlreadyHaveRide(final List<String> passengersEmail, final LocalDateTime started)
+    boolean checkIfPassengersAreBusy(final List<String> passengersEmail, final LocalDateTime started)
             throws EntityNotFoundException;
 
     ChartDataDTO getChartData(final Long id, final ChartType chartType, final LocalDate startDate, final LocalDate endDate) throws EntityNotFoundException;

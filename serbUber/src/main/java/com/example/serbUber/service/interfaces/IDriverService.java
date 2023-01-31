@@ -35,7 +35,7 @@ public interface IDriverService {
     DriverDTO updateActivityStatus(final Long id, boolean active)
             throws EntityNotFoundException, ActivityStatusCannotBeChangedException;
     boolean blockDriver(final Long id, final String reason)
-            throws EntityNotFoundException, EntityUpdateException;
+        throws EntityNotFoundException, EntityUpdateException, MailCannotBeSentException;
     boolean getIsBlocked(Long id);
     List<DriverPageDTO> getDriversWithPagination(int pageNumber, int pageSize);
 

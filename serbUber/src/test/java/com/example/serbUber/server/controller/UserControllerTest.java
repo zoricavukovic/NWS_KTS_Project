@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import static com.example.serbUber.server.controller.helper.ControllerConstants.USER_EMAIL_DRIVING;
+import static com.example.serbUber.server.controller.helper.ControllerConstants.USER_DRIVING_EMAIL;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -46,9 +46,9 @@ public class UserControllerTest {
     @Rollback(true)
     public void getUserByEmail_returnUser() throws Exception {
 
-        this.mockMvc.perform(MockMvcRequestBuilders.get(String.format("%s/byEmail/%s", USER_URL_PREFIX, USER_EMAIL_DRIVING))
+        this.mockMvc.perform(MockMvcRequestBuilders.get(String.format("%s/byEmail/%s", USER_URL_PREFIX, USER_DRIVING_EMAIL))
                         .contentType(contentType).content("")).andExpect(status().isOk())
-                .andExpect(jsonPath("$.email").value(USER_EMAIL_DRIVING))
+                .andExpect(jsonPath("$.email").value(USER_DRIVING_EMAIL))
                 .andExpect(jsonPath("$.name").value("Srdjan"));
     }
 

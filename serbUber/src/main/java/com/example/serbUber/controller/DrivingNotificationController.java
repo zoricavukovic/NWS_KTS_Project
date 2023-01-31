@@ -12,6 +12,7 @@ import com.google.maps.errors.NotFoundException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -24,6 +25,7 @@ import static com.example.serbUber.exception.ErrorMessagesConstants.*;
 
 @RestController
 @RequestMapping("/driving-notifications")
+@Validated
 public class DrivingNotificationController {
     private final DrivingNotificationService drivingNotificationService;
 
@@ -68,9 +70,9 @@ public class DrivingNotificationController {
     @PreAuthorize("hasAnyRole('ROLE_REGULAR_USER')")
     @ResponseStatus(HttpStatus.OK)
     public DrivingNotificationDTO acceptDriving(
-        @Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable Long id,
-        @Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable boolean accepted,
-        @Valid @Email(message = WRONG_EMAIL) @NotNull(message = EMPTY_EMAIL) @PathVariable String email
+        @Valid @PathVariable Long id,
+        @Valid @PathVariable boolean accepted,
+        @Valid @Email(message = WRONG_EMAIL) @PathVariable String email
     ) throws EntityNotFoundException {
 
         return this.drivingNotificationService.updateStatus(id, email, accepted);

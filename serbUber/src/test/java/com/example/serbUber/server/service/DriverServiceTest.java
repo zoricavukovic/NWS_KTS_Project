@@ -7,9 +7,11 @@ import com.example.serbUber.service.*;
 import com.example.serbUber.service.user.DriverService;
 import com.example.serbUber.service.user.RoleService;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -24,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.Mockito.*;
 
-//@ExtendWith(MockitoExtension.class) - ne dozvoljava mock za routeService
+@ExtendWith(MockitoExtension.class)
 @TestMethodOrder(MethodOrderer.DisplayName.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class DriverServiceTest {
@@ -194,6 +196,12 @@ public class DriverServiceTest {
     @DisplayName("T6 - should return driver who soon end active driving, all drivers are busy without future drivings")
     public void getDriverForDriving_returnDriverWhoSoonEndDriving_allDriversBusyWithoutFutureDrivings() {
 
+//        doReturn(3.0).when(routeService).calculateMinutesForDistance(LOCATION_LON_LAT_1[1], LOCATION_LON_LAT_1[0], LOCATION_LON_LAT_3[1], LOCATION_LON_LAT_3[0]);
+//        doReturn(9.0).when(routeService).calculateMinutesForDistance(LOCATION_LON_LAT_2[1], LOCATION_LON_LAT_2[0], LOCATION_LON_LAT_3[1], LOCATION_LON_LAT_3[0]);
+//        doReturn(10.0).when(routeService).calculateMinutesForDistance(LOCATION_LON_LAT_2[1], LOCATION_LON_LAT_2[0], LOCATION_LON_LAT_1[1], LOCATION_LON_LAT_1[0]);
+//        doReturn(12.0).when(routeService).calculateMinutesForDistance(LOCATION_LON_LAT_1[1], LOCATION_LON_LAT_1[0], LOCATION_LON_LAT_2[1], LOCATION_LON_LAT_2[0]);
+//        doReturn(12.0).when(routeService).calculateMinutesForDistance(LOCATION_LON_LAT_3[1], LOCATION_LON_LAT_3[0], LOCATION_LON_LAT_2[1], LOCATION_LON_LAT_2[0]);
+//        doReturn(0.0).when(routeService).calculateMinutesForDistance(LOCATION_LON_LAT_2[1], LOCATION_LON_LAT_2[0], LOCATION_LON_LAT_2[1], LOCATION_LON_LAT_2[0]);
 //        doReturn(12.0).when(routeService).calculateMinutesForDistance(LOCATION_LON_LAT_3[1], LOCATION_LON_LAT_3[0], LOCATION_LON_LAT_1[1], LOCATION_LON_LAT_1[0]);
 //        when(routeService.calculateMinutesForDistance(LOCATION_LON_LAT_1[1], LOCATION_LON_LAT_1[0], LOCATION_LON_LAT_3[1], LOCATION_LON_LAT_3[0])).thenReturn(3.0);
 //        when(routeService.calculateMinutesForDistance(LOCATION_LON_LAT_2[1], LOCATION_LON_LAT_2[0], LOCATION_LON_LAT_3[1], LOCATION_LON_LAT_3[0])).thenReturn(10.0);

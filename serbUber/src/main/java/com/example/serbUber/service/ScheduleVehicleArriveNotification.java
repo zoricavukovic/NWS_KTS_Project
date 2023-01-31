@@ -17,7 +17,6 @@ public class ScheduleVehicleArriveNotification {
 
     private final DriverService driverService;
     private final DrivingService drivingService;
-
     private final WebSocketService webSocketService;
 
     public ScheduleVehicleArriveNotification(

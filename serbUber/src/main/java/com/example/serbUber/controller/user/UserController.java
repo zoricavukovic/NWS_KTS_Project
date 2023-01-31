@@ -114,7 +114,7 @@ public class UserController {
     @GetMapping("/send-reset-password-link/{email}")
     @ResponseStatus(HttpStatus.OK)
     public boolean sendResetPasswordLink(@Valid @PathVariable("email") UserEmailRequest userEmailRequest)
-        throws EntityNotFoundException {
+        throws EntityNotFoundException, MailCannotBeSentException {
 
         return userService.sendEmailForResetPassword(userEmailRequest.getEmail());
     }
@@ -130,7 +130,7 @@ public class UserController {
     @PutMapping("/block")
     @ResponseStatus(HttpStatus.OK)
     public boolean block(@Valid @RequestBody BlockingRequest blockingRequest)
-            throws EntityNotFoundException, EntityUpdateException {
+        throws EntityNotFoundException, EntityUpdateException, MailCannotBeSentException {
 
         return userService.block(
                 blockingRequest.getUserId(),

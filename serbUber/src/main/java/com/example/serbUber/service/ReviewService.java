@@ -122,5 +122,4 @@ public class ReviewService implements IReviewService {
         double updatedRateDriver = driverRate/numberOfReviews;
         driverService.updateRate(driverDTO.getId(), updatedRateDriver);
     }
-
 }

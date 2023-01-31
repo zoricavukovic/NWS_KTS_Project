@@ -3,15 +3,10 @@ package com.example.serbUber.service;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.PassengerNotHaveTokensException;
 import com.example.serbUber.model.DrivingNotification;
-import com.example.serbUber.model.user.RegularUser;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
-
-import static com.example.serbUber.util.Constants.*;
 
 @Controller
 public class ScheduleAllPassengersReviewCallForRide {
@@ -30,7 +25,7 @@ public class ScheduleAllPassengersReviewCallForRide {
                 drivingNotificationService.deleteOutdatedNotification(drivingNotification);
             }
             else if (drivingNotificationService.checkIfUsersReviewed(drivingNotification)){
-                drivingNotificationService.findDriverNow(drivingNotification);
+                drivingNotificationService.createDrivingIfFoundDriverAndSuccessfullyPaid(drivingNotification);
                 drivingNotificationService.delete(drivingNotification);
             }
 
@@ -44,7 +39,7 @@ public class ScheduleAllPassengersReviewCallForRide {
         for(DrivingNotification drivingNotification : allDrivingNotifications){
             if (drivingNotificationService.checkIfUsersReviewed(drivingNotification)){
                 if (drivingNotificationService.checkTimeOfStartingReservationRide(drivingNotification.getStarted())){
-                    drivingNotificationService.findDriverNow(drivingNotification);
+                    drivingNotificationService.createDrivingIfFoundDriverAndSuccessfullyPaid(drivingNotification);
 
                 }else if (drivingNotificationService.checkTimeOfStartingReservationIsSoonRide(drivingNotification.getStarted())){
                     drivingNotificationService.deleteOutdatedReservationWithoutDriverNotification(drivingNotification);

@@ -106,7 +106,7 @@ public class RideRequestOnePassengerTest extends OneBrowserTestBase {
     @ParameterizedTest
     @DisplayName("T5-Ride reservation failed, chosen time is out of limits")
     @MethodSource(value = "getNotValidTimeForReservation")
-    public void rideReservationFailedTimeOutOfLimits(String hour, String minutes) {
+    public void rideReservationFailedTimeOutOfLimits(String hour, String minutes) throws InterruptedException {
         HomePage homePage = LoginHelper.login(chromeDriver, USER_FREE_TO_CREATE_RIDE, EXISTING_PASSWORD);
         RideRequestPage rideRequestPage = new RideRequestPage(chromeDriver);
         rideRequestPage.isRequestFormPresent(REQUEST_RIDE_TITLE);
@@ -115,6 +115,8 @@ public class RideRequestOnePassengerTest extends OneBrowserTestBase {
         locations.add(END_POINT);
         rideRequestPage.enterLocations(locations);
         rideRequestPage.clickOnViewPossibleRoutesButton();
+        rideRequestPage.scrollRouteDiv();
+        rideRequestPage.clickOnRequestLaterButton();
 
         SelectPassengersAndVehicleRideRequestPage selectRideDetailsPage = new SelectPassengersAndVehicleRideRequestPage(chromeDriver);
         selectRideDetailsPage.clickOnSuvVehicleType();
@@ -154,7 +156,7 @@ public class RideRequestOnePassengerTest extends OneBrowserTestBase {
     @ParameterizedTest
     @DisplayName("T7-Reservation ride created successfully with one passenger and two locations chosen car")
     @MethodSource(value = "getValidTimeForReservation")
-    public void reservationRideCreatedSuccessfully(String hour, String minutes){
+    public void reservationRideCreatedSuccessfully(String hour, String minutes) throws InterruptedException {
         HomePage homePage = LoginHelper.login(chromeDriver, USER_WITH_NO_TOKENS_EMAIL, EXISTING_PASSWORD);
         RideRequestPage rideRequestPage = new RideRequestPage(chromeDriver);
         assertTrue(rideRequestPage.isRequestFormPresent(REQUEST_RIDE_TITLE));

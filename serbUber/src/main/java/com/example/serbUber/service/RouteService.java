@@ -66,11 +66,7 @@ public class RouteService implements IRouteService {
     }
 
 
-    public Route create(
-            final SortedSet<DrivingLocationIndex> locations,
-            final double distance,
-            final double time
-    ) {
+    public Route create(final SortedSet<DrivingLocationIndex> locations, final double distance, final double time) {
 
         return routeRepository.save(new Route(
                 locations,
@@ -318,7 +314,6 @@ public class RouteService implements IRouteService {
             String lat = secondPoint.replace("[","");
             lat = lat.replace("]","");
             locations.add(new double[]{Double.parseDouble(lat), Double.parseDouble(lng)});
-
         }
     }
 }

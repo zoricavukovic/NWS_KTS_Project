@@ -24,6 +24,4 @@ public class RoleService implements IRoleService {
         return roleRepository.getRoleByName(name)
             .orElseThrow(() -> new EntityNotFoundException(name, EntityType.ROLE));
     }
-
-
 }

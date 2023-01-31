@@ -1,35 +1,26 @@
 package com.example.serbUber.service;
 
+import com.example.serbUber.exception.MailCannotBeSentException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.MailException;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import java.util.Objects;
 
 import static com.example.serbUber.util.EmailConstants.*;
 
 @Service
 public class EmailService {
 
-
     private final Environment env;
 
-    public EmailService(
-        final Environment env
-    ) {
+    public EmailService(final Environment env) {
         this.env = env;
     }
 
     @Async
-    public void sendVerificationMail(int verificationCode, String verificationUrl) throws MailException {
+    public void sendVerificationMail(int verificationCode, String verificationUrl) throws MailException, MailCannotBeSentException {
         String html = "<!doctype html>\n" +
             "<html ⚡4email data-css-strict>\n" +
             "\n" +
@@ -383,11 +374,11 @@ public class EmailService {
         ApplicationContext context = new ClassPathXmlApplicationContext("Spring-Mail.xml");
         HTMLEmailService mm = (HTMLEmailService) context.getBean("htmlMail");
 
-        mm.sendMail("serbUberNWTKTS@gmail.com", "serbUberNWTKTS@gmail.com", SUBJECT_VERIFY_USER, html);
+        mm.sendMail(EMAIL, EMAIL, SUBJECT_VERIFY_USER, html);
     }
 
     @Async
-    public void sendBlockDriverMail(String email, String reason) {
+    public void sendBlockDriverMail(String email, String reason) throws MailCannotBeSentException {
 
         String html = "<!doctype html>\n" +
             "<html ⚡4email data-css-strict>\n" +
@@ -634,11 +625,11 @@ public class EmailService {
         ApplicationContext context = new ClassPathXmlApplicationContext("Spring-Mail.xml");
         HTMLEmailService mm = (HTMLEmailService) context.getBean("htmlMail");
 
-        mm.sendMail("serbUberNWTKTS@gmail.com", "serbUberNWTKTS@gmail.com", SUBJECT_BLOCK, html);
+        mm.sendMail(EMAIL, EMAIL, SUBJECT_BLOCK, html);
     }
 
     @Async
-    public void sendResetPasswordMail(String email, String resetPasswordUrl) {
+    public void sendResetPasswordMail(String email, String resetPasswordUrl) throws MailCannotBeSentException {
 
         String html = "<!DOCTYPE html>\n" +
             "\n" +
@@ -830,7 +821,7 @@ public class EmailService {
         ApplicationContext context = new ClassPathXmlApplicationContext("Spring-Mail.xml");
         HTMLEmailService mm = (HTMLEmailService) context.getBean("htmlMail");
 
-        mm.sendMail("serbUberNWTKTS@gmail.com", "serbUberNWTKTS@gmail.com", SUBJECT_REST_PASSWORD, html);
+        mm.sendMail(EMAIL, EMAIL, SUBJECT_REST_PASSWORD, html);
     }
 
 }
