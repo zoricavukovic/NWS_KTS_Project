@@ -18,9 +18,26 @@ describe('AuthService', () => {
     const errorMessage = 'Email or password is not correct!';
   const unAuthorizesStatus: number = 401;
 
-  const configServiceMock = jasmine.createSpyObj('ConfigService', ['getLoginUrl']);
+  const configServiceMock = jasmine.createSpyObj('ConfigService', ['getLoginUrl', 'getGoogleLoginUrl', 'getFacebookLoginUrl']);
 
   const webSocketServiceMock = jasmine.createSpy('WebSocketService');
+
+  const mockLoginResponse: LoginResponse = {
+    token: "token1231324213213",
+    userDTO: {
+      id: 1,
+      email: "ana@gmail.com",
+      name: "Ana",
+      surname: "Ancic",
+      phoneNumber: "012345678",
+      city: "Novi Sad",
+      role: {
+        name: "ROLE_REGULAR_USER"
+      },
+      profilePicture: "defult-user.png",
+      online: true
+    }
+  }
 
   beforeEach(() => {
 
@@ -49,22 +66,6 @@ describe('AuthService', () => {
       password: "sifra123@"
     }
     let loginResponse: LoginResponse;
-    const mockLoginResponse: LoginResponse = {
-      token: "token1231324213213",
-      userDTO: {
-        id: 1,
-        email: "ana@gmail.com",
-        name: "Ana",
-        surname: "Ancic",
-        phoneNumber: "012345678",
-        city: "Novi Sad",
-        role: {
-          name: "ROLE_REGULAR_USER"
-        },
-        profilePicture: "defult-user.png",
-        online: true
-      }
-    }
 
     configServiceMock.getLoginUrl.and.returnValue('/auth/login');
     authService.login(loginRequest).subscribe(res => loginResponse = res);
@@ -122,27 +123,11 @@ describe('AuthService', () => {
     const token: string = "token123"
 
     let loginResponse: LoginResponse;
-    const mockLoginResponse: LoginResponse = {
-      token: "token1231324213213",
-      userDTO: {
-        id: 1,
-        email: "ana@gmail.com",
-        name: "Ana",
-        surname: "Ancic",
-        phoneNumber: "012345678",
-        city: "Novi Sad",
-        role: {
-          name: "ROLE_REGULAR_USER"
-        },
-        profilePicture: "defult-user.png",
-        online: true
-      }
-    }
 
-    configServiceMock.getLoginUrl.and.returnValue('/login/google');
+    configServiceMock.getGoogleLoginUrl.and.returnValue('/auth/login/google');
     authService.loginWithGoogle(token).subscribe(res => loginResponse = res);
 
-    const req = httpMock.expectOne('/login/google');
+    const req = httpMock.expectOne('/auth/login/google');
     expect(req.request.method).toBe('POST');
     req.flush(mockLoginResponse);
 
@@ -166,10 +151,57 @@ describe('AuthService', () => {
 
       let loginResponse;
       const mockLoginResponse: HttpErrorResponse = new HttpErrorResponse({error: errorMessage, status: unAuthorizesStatus});
-      configServiceMock.getLoginUrl.and.returnValue('/login/google');
+      configServiceMock.getGoogleLoginUrl.and.returnValue('/auth/login/google');
       authService.loginWithGoogle(token).subscribe(res => loginResponse = res);
 
-      const req = httpMock.expectOne('/login/google');
+      const req = httpMock.expectOne('/auth/login/google');
+      expect(req.request.method).toBe('POST');
+      req.flush(mockLoginResponse);
+
+      tick();
+
+      expect(loginResponse).toBeDefined();
+      expect(loginResponse.error).toBe(errorMessage);
+      expect(loginResponse.status).toBe(unAuthorizesStatus);
+    }
+  ));
+
+  it('loginWithFacebook should return logged user', fakeAsync(() => {
+    const token: string = "token123"
+
+    let loginResponse: LoginResponse;
+
+    configServiceMock.getFacebookLoginUrl.and.returnValue('/auth/login/facebook');
+    authService.loginWithFacebook(token).subscribe(res => loginResponse = res);
+
+    const req = httpMock.expectOne('/auth/login/facebook');
+    expect(req.request.method).toBe('POST');
+    req.flush(mockLoginResponse);
+
+    tick();
+
+    expect(loginResponse).toBeDefined();
+    expect(loginResponse.token).toBe("token1231324213213");
+    expect(loginResponse.userDTO.id).toBe(1);
+    expect(loginResponse.userDTO.email).toBe("ana@gmail.com");
+    expect(loginResponse.userDTO.name).toBe("Ana");
+    expect(loginResponse.userDTO.surname).toBe("Ancic");
+    expect(loginResponse.userDTO.phoneNumber).toBe("012345678");
+    expect(loginResponse.userDTO.city).toBe("Novi Sad");
+    expect(loginResponse.userDTO.role.name).toBe("ROLE_REGULAR_USER");
+    expect(loginResponse.userDTO.profilePicture).toBe("defult-user.png");
+    expect(loginResponse.userDTO.online).toBe(true);
+  }));
+
+  it('loginWithGoogle should return error message', fakeAsync(() => {
+      const token: string = "token123"
+
+      let loginResponse;
+      const mockLoginResponse: HttpErrorResponse = new HttpErrorResponse({error: errorMessage, status: unAuthorizesStatus});
+      configServiceMock.getFacebookLoginUrl.and.returnValue('/auth/login/facebook');
+      authService.loginWithFacebook(token).subscribe(res => loginResponse = res);
+
+      const req = httpMock.expectOne('/auth/login/facebook');
       expect(req.request.method).toBe('POST');
       req.flush(mockLoginResponse);
 
