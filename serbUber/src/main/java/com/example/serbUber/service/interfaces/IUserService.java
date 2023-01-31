@@ -53,7 +53,8 @@ public interface IUserService {
             final String newPassword,
             final String confirmPassword
     ) throws PasswordsDoNotMatchException, EntityNotFoundException;
-    boolean sendEmailForResetPassword(String email) throws EntityNotFoundException, IOException;
+
+    boolean sendEmailForResetPassword(String email) throws EntityNotFoundException, IOException, MailCannotBeSentException;
     UserDTO resetPassword(String email, String newPassword, String confirmPassword)
             throws EntityNotFoundException, PasswordsDoNotMatchException;
     UserDTO setOnlineStatus(final String email) throws EntityNotFoundException;
@@ -63,7 +64,7 @@ public interface IUserService {
     boolean activate(final Long verifyId, final int securityCode)
             throws EntityNotFoundException, WrongVerifyTryException;
     boolean block(final Long id, final String reason)
-            throws EntityNotFoundException, EntityUpdateException, IOException;
+            throws EntityNotFoundException, EntityUpdateException, IOException, MailCannotBeSentException;
 
     RegistrationDTO createRegularUser(
         final String email,

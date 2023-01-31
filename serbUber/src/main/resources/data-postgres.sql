@@ -34,12 +34,12 @@ insert into routes (distance, time) values
                     (3200, 3);
 
 insert into vehicles (baby_seat, pet_friendly, rate, vehicle_type_id, active_route_id, current_location_index, current_stop_location_id, crossed_waypoints) values
-            (true, false, 0, 1, 2, 0, 2, 0),
+            (true, false, 0, 1, null, 0, 2, 0),
             (false, true, 0, 1, null, 0, 12, 0),
             (false, true, 0, 2, null, 0, 5, 0),
-            (true, true, 0, 2, null, 0, 15, 0),
-            (false, true, 0, 3, null, 0, 5, 0),
-            (false, true, 0, 3, null, 0, 7, 0);
+            (false, true, 0, 2, null, 0, 15, 0),
+            (false, true, 0, 3, 1, 0, 5, 0),
+            (false, true, 0, 3, 2, 0, 7, 0);
 
 --sifra123@
 insert into admins (id, email, password, name, surname, phone_number, city, profile_picture, role_id, verified, online) values
@@ -64,21 +64,22 @@ insert into drivers (id, email, password, name, surname, phone_number, city, pro
     (nextval('users_id_gen'), 'milan@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Milan', 'Milanovic', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('18.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), 0, 1, true, true, false, 2),
     (nextval('users_id_gen'), 'eki@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Esad', 'Esadic', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('18.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), 0, 0, true, false, false, 3),
     (nextval('users_id_gen'), 'bole@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Bole', 'Sam', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('18.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), 0, 0, true, true, false, 4),
-    (nextval('users_id_gen'), 'uros@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Uros', 'Pejicc', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('18.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), 0, 0, true, true, false, 5),
-    (nextval('users_id_gen'), 'elo@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Elo', 'Elic', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('18.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), 0, 0, true, false, false, 6);
+    (nextval('users_id_gen'), 'uros@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Uros', 'Pejicc', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('18.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), 0, 0, true, true, true, 5),
+    (nextval('users_id_gen'), 'elo@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Elo', 'Elic', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('18.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), 0, 0, true, false, true, 6);
 
 insert into drivings (active, driver_id, driving_status, duration, price, started, end_date, route_id, last_reminder, reservation) values
-                    (true, 19, 2, 2, 3, CURRENT_TIMESTAMP, null, 1, null, false),
-                    (true, 14, 2, 8, 3, to_timestamp('25.01.2023. 22:40', 'DD.MM.YYYY HH24:MI'), null, 2, null, false),
-                    (false, 18, 2, 5, 5, CURRENT_TIMESTAMP + INTERVAL '20 minutes', null, 3, null, false),
-                    (false, null, 2, 1, 5, CURRENT_TIMESTAMP + INTERVAL '35 minutes', null, 3, null, false);
+                    (true, 18, 2, 10, 3, CURRENT_TIMESTAMP - INTERVAL '2 minutes', null, 1, null, false),
+                    (false, 14, 3, 8, 3, to_timestamp('25.01.2023. 22:40', 'DD.MM.YYYY HH24:MI'), to_timestamp('25.01.2023. 22:40', 'DD.MM.YYYY HH24:MI'), 2, null, false),
+                    (false, null, 2, 5, 5, CURRENT_TIMESTAMP + INTERVAL '50 minutes', null, 3, null, true),
+                    (true, 19, 2, 7, 5, CURRENT_TIMESTAMP - INTERVAL '3 minutes', null, 2, null, false);
+
 
 insert into driving_locations(location_id, index, route_id, route_index) values
       (5, 1, 1, 0),
       (10, 2, 1, 0),
       (7, 3, 1, 0),
       (14, 4, 1, 0),
-      (5,1,2, 1),
+      (7,1,2, 1),
       (15,2,2,0),
       (4,3,2, 0),
       (16,4,2, 0),
@@ -138,7 +139,7 @@ insert into paying_info(currency, token_price, max_num_of_tokens_per_transaction
     ('EUR', 1, 20);
 
 insert into token_banks(user_id, num_of_tokens, total_token_amount_spent, total_money_amount_spent, paying_info_id) values
-                        (3, 4, 0, 4, 1),
+                        (3, 18, 0, 4, 1),
                         (4, 8, 0, 8, 1),
                         (5, 5, 1, 6, 1),
                         (6, 3, 0, 3, 1),

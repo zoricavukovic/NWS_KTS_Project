@@ -135,7 +135,7 @@ public class DrivingController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('ROLE_REGULAR_USER')")
     public boolean isPassengersAlreadyHaveRide(@RequestBody LinkedPassengersRequest linkedPassengersRequest) throws EntityNotFoundException {
-        return drivingService.isPassengersAlreadyHaveRide(linkedPassengersRequest.getPassengersEmail(), linkedPassengersRequest.getStarted());
+        return drivingService.checkIfPassengersAreBusy(linkedPassengersRequest.getPassengersEmail(), linkedPassengersRequest.getStarted());
     }
 
     @PostMapping("/chart-data")

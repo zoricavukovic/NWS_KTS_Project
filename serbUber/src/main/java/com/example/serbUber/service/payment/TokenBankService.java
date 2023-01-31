@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static com.example.serbUber.util.Constants.*;
@@ -91,7 +92,7 @@ public class TokenBankService implements ITokenBankService {
         double totalTokenAmountSpent = 0;
         double totalTokensInApp = 0;
 
-        for (TokenBank tokenBank : this.getAll()) { //mora for jer foreach ne moze da menja vrednost varijablama izvan
+        for (TokenBank tokenBank : this.getAll()) {
             totalMoneySpent += tokenBank.getTotalMoneyAmountSpent();
             totalTokenAmountSpent += tokenBank.getTotalTokenAmountSpent();
             totalTokensInApp += tokenBank.getNumOfTokens() + tokenBank.getTotalTokenAmountSpent();
@@ -104,6 +105,14 @@ public class TokenBankService implements ITokenBankService {
         TokenBank tokenBank = getTokenBankByUserId(userId);
         tokenBank.setNumOfTokens(price);
         return tokenBankRepository.save(tokenBank);
+    }
+
+    public boolean updateNumOfTokensForUsers(final Map<Long, Double> updatedUsersTokens) throws EntityNotFoundException {
+        for(Map.Entry<Long,Double> passengerToken : updatedUsersTokens.entrySet()){
+            updateNumOfTokens(passengerToken.getKey(), passengerToken.getValue());
+        }
+
+        return true;
     }
 
     public double getTokensForUser(final Long id) throws EntityNotFoundException {

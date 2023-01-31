@@ -75,8 +75,8 @@ public class DrivingControllerTest {
     public void shouldThrowEntityNotFoundRejectDriving() throws Exception {
 
         String reason = "reason";
-        String errorMessage = getEntityErrorMessage(NOT_EXIST_ENTITY.toString(), EntityType.DRIVING);
-        this.mockMvc.perform(MockMvcRequestBuilders.put(String.format("%s/reject/%d", DRIVING_URL_PREFIX, NOT_EXIST_ENTITY))
+        String errorMessage = getEntityErrorMessage(NOT_EXIST_ID.toString(), EntityType.DRIVING);
+        this.mockMvc.perform(MockMvcRequestBuilders.put(String.format("%s/reject/%d", DRIVING_URL_PREFIX, NOT_EXIST_ID))
                         .contentType(contentType).content(reason)).andExpect(status().isNotFound())
                 .andExpect(result ->
                         assertTrue(result.getResolvedException() instanceof EntityNotFoundException)
@@ -103,8 +103,8 @@ public class DrivingControllerTest {
     @Rollback(true)
     public void shouldThrowEntityNotFoundStartDriving() throws Exception {
 
-        String errorMessage = getEntityErrorMessage(NOT_EXIST_ENTITY.toString(), EntityType.DRIVING);
-        this.mockMvc.perform(MockMvcRequestBuilders.put(String.format("%s/start/%d", DRIVING_URL_PREFIX, NOT_EXIST_ENTITY))
+        String errorMessage = getEntityErrorMessage(NOT_EXIST_ID.toString(), EntityType.DRIVING);
+        this.mockMvc.perform(MockMvcRequestBuilders.put(String.format("%s/start/%d", DRIVING_URL_PREFIX, NOT_EXIST_ID))
                         .contentType(contentType).content("")).andExpect(status().isNotFound())
                 .andExpect(result ->
                         assertTrue(result.getResolvedException() instanceof EntityNotFoundException)
@@ -161,8 +161,8 @@ public class DrivingControllerTest {
     @Rollback(true)
     public void shouldThrowEntityNotFoundFinishDriving() throws Exception {
 
-        String errorMessage = getEntityErrorMessage(NOT_EXIST_ENTITY.toString(), EntityType.DRIVING);
-        this.mockMvc.perform(MockMvcRequestBuilders.put(String.format("%s/finish-driving/%d", DRIVING_URL_PREFIX, NOT_EXIST_ENTITY))
+        String errorMessage = getEntityErrorMessage(NOT_EXIST_ID.toString(), EntityType.DRIVING);
+        this.mockMvc.perform(MockMvcRequestBuilders.put(String.format("%s/finish-driving/%d", DRIVING_URL_PREFIX, NOT_EXIST_ID))
                         .contentType(contentType).content("")).andExpect(status().isNotFound())
                 .andExpect(result ->
                         assertTrue(result.getResolvedException() instanceof EntityNotFoundException)
@@ -261,7 +261,7 @@ public class DrivingControllerTest {
     @Rollback(true)
     public void isPassengersAlreadyHaveRide_returnTrue() throws Exception {
         List<String> linkedPassengers = new ArrayList<>();
-        linkedPassengers.add(USER_EMAIL_ACTIVE_DRIVING);
+        linkedPassengers.add(USER_ACTIVE_DRIVING_EMAIL);
         LinkedPassengersRequest request = new LinkedPassengersRequest(linkedPassengers, LocalDateTime.now());
 
         ObjectMapper mapper = new ObjectMapper();
@@ -279,7 +279,7 @@ public class DrivingControllerTest {
     @Rollback(true)
     public void isPassengersAlreadyHaveRide_returnFalse() throws Exception {
         List<String> linkedPassengers = new ArrayList<>();
-        linkedPassengers.add(USER_EMAIL_DRIVING);
+        linkedPassengers.add(USER_DRIVING_EMAIL);
         LinkedPassengersRequest request = new LinkedPassengersRequest(linkedPassengers, LocalDateTime.now());
 
         ObjectMapper mapper = new ObjectMapper();

@@ -11,7 +11,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
@@ -55,13 +54,13 @@ public class DrivingNotificationControllerTest {
     }
 
     @Test
-    @DisplayName("T1 - Should throw entity not found (not found driving) when making PUT request to endpoint - /update-status/{id}/{accepted}/{email}")
+    @DisplayName("T1-Should throw entity not found (not found driving) when making PUT request to endpoint - /update-status/{id}/{accepted}/{email}")
     @WithMockUser(roles="REGULAR_USER")
     @Rollback(true)
     public void acceptDriving_throwEntityNotFoundException() throws Exception {
 
         String errorMessage = getEntityErrorMessage(NOT_EXIST_ID.toString(), EntityType.DRIVING_NOTIFICATION);
-        this.mockMvc.perform(MockMvcRequestBuilders.put(String.format("%s/update-status/%d/%s/%s", DRIVING_NOTIFICATION_URL_PREFIX, NOT_EXIST_ID, "true", USER_EMAIL_DRIVING))
+        this.mockMvc.perform(MockMvcRequestBuilders.put(String.format("%s/update-status/%d/%s/%s", DRIVING_NOTIFICATION_URL_PREFIX, NOT_EXIST_ID, "true", USER_DRIVING_EMAIL))
                         .contentType(contentType).content("")).andExpect(status().isNotFound())
                 .andExpect(result ->
                         assertTrue(result.getResolvedException() instanceof EntityNotFoundException)
@@ -70,7 +69,7 @@ public class DrivingNotificationControllerTest {
     }
 
     @Test
-    @DisplayName("T1 - Should throw entity bad request exception, email is not valid when making PUT request to endpoint - /update-status/{id}/{accepted}/{email}")
+    @DisplayName("T2-Should throw entity bad request exception, email is not valid when making PUT request to endpoint - /update-status/{id}/{accepted}/{email}")
     @WithMockUser(roles="REGULAR_USER")
     @Rollback(true)
     public void acceptDriving_throwBadRequestException_emailInvalid() throws Exception {
@@ -82,18 +81,20 @@ public class DrivingNotificationControllerTest {
     }
 
     @Test
-    @DisplayName("T1 - Should return updated driving notification when making PUT request to endpoint - /update-status/{id}/{accepted}/{email}")
+    @DisplayName("T3-Should return updated driving notification when making PUT request to endpoint - /update-status/{id}/{accepted}/{email}")
     @WithMockUser(roles="REGULAR_USER")
     @Rollback(true)
     public void acceptDriving_returnUpdatedDrivingNotification() throws Exception {
 
-        this.mockMvc.perform(MockMvcRequestBuilders.put(String.format("%s/update-status/%d/%s/%s", DRIVING_NOTIFICATION_URL_PREFIX, DRIVING_NOTIFICATION_ID, "true", USER_MIKI_EMAIL))
+        String userEmail = "miki@gmail.com";
+        this.mockMvc.perform(MockMvcRequestBuilders.put(String.format("%s/update-status/%d/%s/%s", DRIVING_NOTIFICATION_URL_PREFIX, 2L, "true", userEmail))
                         .contentType(contentType)).andExpect(status().isOk())
-                .andExpect(jsonPath("$.passengers[1].email").value(USER_MIKI_EMAIL));
+                .andExpect(jsonPath("$.passengers.size()").value(2));
     }
-    @DisplayName("T2 - Should successfully get driving notification when making GET request to endpoint - /driving-notifications/{id}")
+
+    @Test
+    @DisplayName("T4-Should successfully get driving notification when making GET request to endpoint - /driving-notifications/{id}")
     @WithMockUser(roles="REGULAR_USER")
-    @Rollback(true)
     public void shouldSuccessfullyGetDrivingNotification() throws Exception {
         Long drivingNotificationId = 1L;
         this.mockMvc.perform(MockMvcRequestBuilders.get(String.format("%s/%d", DRIVING_NOTIFICATION_URL_PREFIX, drivingNotificationId))
@@ -104,13 +105,13 @@ public class DrivingNotificationControllerTest {
     }
 
     @Test
-    @DisplayName("T3 - Should throw entity not found (not found driving notification) when making GET request to endpoint - /driving-notifications/{id}")
+    @DisplayName("T5-Should throw entity not found (not found driving notification) when making GET request to endpoint - /driving-notifications/{id}")
     @WithMockUser(roles="REGULAR_USER")
     @Rollback(true)
     public void shouldThrowEntityNotFoundGetDrivingNotification() throws Exception {
 
-        String errorMessage = getEntityErrorMessage(NOT_EXIST_ENTITY.toString(), EntityType.DRIVING_NOTIFICATION);
-        this.mockMvc.perform(MockMvcRequestBuilders.get(String.format("%s/%d", DRIVING_NOTIFICATION_URL_PREFIX, NOT_EXIST_ENTITY))
+        String errorMessage = getEntityErrorMessage(NOT_EXIST_ID.toString(), EntityType.DRIVING_NOTIFICATION);
+        this.mockMvc.perform(MockMvcRequestBuilders.get(String.format("%s/%d", DRIVING_NOTIFICATION_URL_PREFIX, NOT_EXIST_ID))
                 .contentType(contentType)).andExpect(status().isNotFound())
             .andExpect(result ->
                 assertTrue(result.getResolvedException() instanceof EntityNotFoundException)
@@ -119,7 +120,7 @@ public class DrivingNotificationControllerTest {
     }
 
     @Test
-    @DisplayName("T3-Should throw entity not found (not found sender/creator of driving notification) when making POST request to endpoint - /driving-notifications")
+    @DisplayName("T6-Should throw entity not found (not found sender/creator of driving notification) when making POST request to endpoint - /driving-notifications")
     @WithMockUser(roles="REGULAR_USER")
     @Rollback(true)
     public void shouldThrowEntityNotFoundSenderNotFoundCreatingDrivingNotification() throws Exception {
@@ -134,7 +135,7 @@ public class DrivingNotificationControllerTest {
     }
 
     @Test
-    @DisplayName("T4-Should throw entity not found (not found passenger) when making POST request to endpoint - /driving-notifications")
+    @DisplayName("T7-Should throw entity not found (not found passenger) when making POST request to endpoint - /driving-notifications")
     @WithMockUser(roles="REGULAR_USER")
     @Rollback(true)
     public void shouldThrowEntityNotFoundOneOfPassengerNotFoundCreatingDrivingNotification() throws Exception {
@@ -149,7 +150,7 @@ public class DrivingNotificationControllerTest {
     }
 
     @Test
-    @DisplayName("T5-Should throw entity not found (not found vehicle type) when making POST request to endpoint - /driving-notifications")
+    @DisplayName("T8-Should throw entity not found (not found vehicle type) when making POST request to endpoint - /driving-notifications")
     @WithMockUser(roles="REGULAR_USER")
     @Rollback(true)
     public void shouldThrowEntityNotFoundVehicleTypeNotFoundCreatingDrivingNotification() throws Exception {
@@ -164,7 +165,7 @@ public class DrivingNotificationControllerTest {
     }
 
     @ParameterizedTest
-    @DisplayName("T6-Should throw ExcessiveNumOfPassengersException when making POST request to endpoint - /driving-notifications")
+    @DisplayName("T9-Should throw ExcessiveNumOfPassengersException when making POST request to endpoint - /driving-notifications")
     @WithMockUser(roles="REGULAR_USER")
     @MethodSource("getDrivingNotificationRequestWithExcessiveNumberOfPassengers")
     @Rollback(true)
@@ -180,7 +181,7 @@ public class DrivingNotificationControllerTest {
     }
 
     @ParameterizedTest
-    @DisplayName("T7-Should throw InvalidChosenTimeForReservationException when making POST request to endpoint - /driving-notifications")
+    @DisplayName("T10-Should throw InvalidChosenTimeForReservationException when making POST request to endpoint - /driving-notifications")
     @WithMockUser(roles="REGULAR_USER")
     @MethodSource("getDrivingNotificationRequestInvalidTime")
     @Rollback(true)
@@ -198,7 +199,7 @@ public class DrivingNotificationControllerTest {
     }
 
     @Test
-    @DisplayName("T8-Should throw PassengerNotHaveTokensException when making POST request to endpoint - /driving-notifications")
+    @DisplayName("T11-Should throw PassengerNotHaveTokensException when making POST request to endpoint - /driving-notifications")
     @WithMockUser(roles="REGULAR_USER")
     @Rollback(true)
     public void shouldThrowPassengerNotHaveTokensExceptionCreatingDrivingNotification() throws Exception {
@@ -212,7 +213,7 @@ public class DrivingNotificationControllerTest {
     }
 
     @ParameterizedTest
-    @DisplayName("T9-Should successfully create driving notification when num of passengers is greater than zero when making POST request to endpoint - /driving-notifications")
+    @DisplayName("T12-Should successfully create driving notification when num of passengers is greater than zero when making POST request to endpoint - /driving-notifications")
     @WithMockUser(roles="REGULAR_USER")
     @MethodSource("getDrivingNotificationsRequestWithAndWithoutPassengersSuccessfullyCreation")
     @Rollback(true)
@@ -227,7 +228,7 @@ public class DrivingNotificationControllerTest {
     }
 
     @Test
-    @DisplayName("T10-Should throw EntityNotFoundException for token bank when making POST request to endpoint - /driving-notifications")
+    @DisplayName("T13-Should throw EntityNotFoundException for token bank when making POST request to endpoint - /driving-notifications")
     @WithMockUser(roles="REGULAR_USER")
     @Rollback(true)
     public void shouldThrowEntityNotFoundExceptionForTokenBankCreatingDrivingNotification() throws Exception {
@@ -240,6 +241,30 @@ public class DrivingNotificationControllerTest {
                 assertTrue(result.getResolvedException() instanceof EntityNotFoundException)
             )
             .andExpect(result -> assertEquals(errorMessage, Objects.requireNonNull(result.getResolvedException()).getMessage()));
+    }
+
+    @Test
+    @DisplayName("T14-Should throw BadRequestException when price is less than zero when making POST request to endpoint - /driving-notifications")
+    @WithMockUser(roles="REGULAR_USER")
+    @Rollback(true)
+    public void shouldThrowBadRequestExceptionPriceIsLessThanZeroCreatingDrivingNotification() throws Exception {
+        String json = TestUtil.json(DRIVING_NOTIFICATION_REQUEST_PRICE_LESS_THAN_ZERO);
+
+        MvcResult result = this.mockMvc.perform(MockMvcRequestBuilders.post(DRIVING_NOTIFICATION_URL_PREFIX)
+                .contentType(contentType).content(json)).andExpect(status().isBadRequest()).andReturn();
+        Assertions.assertEquals("Value must be positive.", result.getResponse().getContentAsString());
+    }
+
+    @Test
+    @DisplayName("T15-Should throw BadRequestException when sender email is not valid when making POST request to endpoint - /driving-notifications")
+    @WithMockUser(roles="REGULAR_USER")
+    @Rollback(true)
+    public void shouldThrowBadRequestExceptionEmailIsInvalidCreatingDrivingNotification() throws Exception {
+        String json = TestUtil.json(DRIVING_NOTIFICATION_REQUEST_SENDER_EMAIL_IS_NOT_VALID);
+
+        MvcResult result = this.mockMvc.perform(MockMvcRequestBuilders.post(DRIVING_NOTIFICATION_URL_PREFIX)
+            .contentType(contentType).content(json)).andExpect(status().isBadRequest()).andReturn();
+        Assertions.assertEquals("Email is not in the right format.", result.getResponse().getContentAsString());
     }
 
     private List<Arguments> getDrivingNotificationRequestInvalidTime() {

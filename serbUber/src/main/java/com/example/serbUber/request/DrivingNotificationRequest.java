@@ -13,10 +13,8 @@ import static com.example.serbUber.exception.ErrorMessagesConstants.WRONG_EMAIL;
 public class DrivingNotificationRequest {
 
     private RouteRequest route;
-    @Valid
-//    @Positive(message = POSITIVE_MESSAGE)
+    @Positive(message = POSITIVE_MESSAGE)
     private double price;
-    @Valid
     @Email(message = WRONG_EMAIL)
     private String senderEmail;
     private List<String> passengers;

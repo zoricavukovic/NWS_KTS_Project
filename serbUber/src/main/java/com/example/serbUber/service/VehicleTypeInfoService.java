@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
-
 import static com.example.serbUber.dto.VehicleTypeInfoDTO.fromVehicleTypeInfos;
 import static com.example.serbUber.util.Constants.ONE_KILOMETER_TO_METER;
 import static com.example.serbUber.util.Constants.TOKEN_VALUE;
@@ -45,8 +43,6 @@ public class VehicleTypeInfoService implements IVehicleTypeInfoService {
                 numOfSeats
         )));
     }
-
-
 
     public double getPriceForVehicle(VehicleType vehicleType) throws EntityNotFoundException {
         return get(vehicleType).getStartPrice();
@@ -84,5 +80,4 @@ public class VehicleTypeInfoService implements IVehicleTypeInfoService {
 
         return vehicleTypeInfo.getNumOfSeats() >= numberOfPassengers;
     }
-
 }

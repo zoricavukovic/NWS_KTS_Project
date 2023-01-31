@@ -19,8 +19,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.Objects;
 
 import static com.example.serbUber.exception.EntityType.getEntityErrorMessage;
-import static com.example.serbUber.server.controller.helper.ControllerConstants.NOT_EXIST_ENTITY;
-import static com.example.serbUber.server.controller.helper.ControllerConstants.contentType;
+import static com.example.serbUber.server.controller.helper.ControllerConstants.*;
 import static com.example.serbUber.server.controller.helper.VehicleConstants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -50,9 +49,9 @@ public class VehicleControllerTest {
     @Rollback(true)
     public void shouldThrowEntityNotFoundUpdateCurrentPosition() throws Exception {
 
-        String errorMessage = getEntityErrorMessage(NOT_EXIST_ENTITY.toString(), EntityType.VEHICLE);
+        String errorMessage = getEntityErrorMessage(NOT_EXIST_ID.toString(), EntityType.VEHICLE);
         String json = TestUtil.json(VEHICLE_CURRENT_POSITION_REQUEST);
-        this.mockMvc.perform(MockMvcRequestBuilders.put(String.format("%s/update-current-location/%d", VEHICLE_URL_PREFIX, NOT_EXIST_ENTITY))
+        this.mockMvc.perform(MockMvcRequestBuilders.put(String.format("%s/update-current-location/%d", VEHICLE_URL_PREFIX, NOT_EXIST_ID))
                         .contentType(contentType).content(json)).andExpect(status().isNotFound())
                 .andExpect(result ->
                         assertTrue(result.getResolvedException() instanceof EntityNotFoundException)
@@ -79,11 +78,8 @@ public class VehicleControllerTest {
     @DisplayName("T3-Should throw bad request when invalid longitude request making PUT request to endpoint - /update-current-location/{id}")
     @Rollback(true)
     public void shouldThrowBadRequestInvalidLongitudeReqUpdateCurrentPosition() throws Exception {
-
-        VehicleCurrentPositionRequest vehicleCurrentPositionRequest = new VehicleCurrentPositionRequest(new LongLatRequest(-3, 3), 0, 1);
-
-        String json = TestUtil.json(vehicleCurrentPositionRequest);
-        this.mockMvc.perform(MockMvcRequestBuilders.put(String.format("%s/update-current-location/%d", VEHICLE_URL_PREFIX, EXIST_VEHICLE_ID))
+        String json = TestUtil.json(createVehicleCurrentPositionRequest(-3, 3, 0, 1));
+        this.mockMvc.perform(MockMvcRequestBuilders.put(String.format("%s/update-current-location/%d", VEHICLE_URL_PREFIX, EXIST_ID))
                         .contentType(contentType).content(json)).andExpect(status().isBadRequest());
     }
 
@@ -91,11 +87,8 @@ public class VehicleControllerTest {
     @DisplayName("T4-Should throw bad request when invalid latitude request making PUT request to endpoint - /update-current-location/{id}")
     @Rollback(true)
     public void shouldThrowBadRequestInvalidLatitudeReqUpdateCurrentPosition() throws Exception {
-
-        VehicleCurrentPositionRequest vehicleCurrentPositionRequest = new VehicleCurrentPositionRequest(new LongLatRequest(5, -1), 0, 1);
-
-        String json = TestUtil.json(vehicleCurrentPositionRequest);
-        this.mockMvc.perform(MockMvcRequestBuilders.put(String.format("%s/update-current-location/%d", VEHICLE_URL_PREFIX, EXIST_VEHICLE_ID))
+        String json = TestUtil.json(createVehicleCurrentPositionRequest(5, -1, 0, 1));
+        this.mockMvc.perform(MockMvcRequestBuilders.put(String.format("%s/update-current-location/%d", VEHICLE_URL_PREFIX, EXIST_ID))
                 .contentType(contentType).content(json)).andExpect(status().isBadRequest());
     }
 
@@ -104,10 +97,8 @@ public class VehicleControllerTest {
     @Rollback(true)
     public void shouldThrowBadRequestMissingWaypointsUpdateCurrentPosition() throws Exception {
 
-        VehicleCurrentPositionRequest vehicleCurrentPositionRequest = new VehicleCurrentPositionRequest(LONG_LAT_REQUEST, -2, 1);
-
-        String json = TestUtil.json(vehicleCurrentPositionRequest);
-        this.mockMvc.perform(MockMvcRequestBuilders.put(String.format("%s/update-current-location/%d", VEHICLE_URL_PREFIX, EXIST_VEHICLE_ID))
+        String json = TestUtil.json(createVehicleCurrentPositionRequest(45.0, 45.0, -2, 1));
+        this.mockMvc.perform(MockMvcRequestBuilders.put(String.format("%s/update-current-location/%d", VEHICLE_URL_PREFIX, EXIST_ID))
                 .contentType(contentType).content(json)).andExpect(status().isBadRequest());
     }
 
@@ -116,10 +107,8 @@ public class VehicleControllerTest {
     @Rollback(true)
     public void shouldThrowBadRequestChosenRouteIndexUpdateCurrentPosition() throws Exception {
 
-        VehicleCurrentPositionRequest vehicleCurrentPositionRequest = new VehicleCurrentPositionRequest(LONG_LAT_REQUEST, -1, -4);
-
-        String json = TestUtil.json(vehicleCurrentPositionRequest);
-        this.mockMvc.perform(MockMvcRequestBuilders.put(String.format("%s/update-current-location/%d", VEHICLE_URL_PREFIX, EXIST_VEHICLE_ID))
+        String json = TestUtil.json(createVehicleCurrentPositionRequest(45.0, 45.0, -1, -4));
+        this.mockMvc.perform(MockMvcRequestBuilders.put(String.format("%s/update-current-location/%d", VEHICLE_URL_PREFIX, EXIST_ID))
                 .contentType(contentType).content(json)).andExpect(status().isBadRequest());
     }
 
@@ -129,9 +118,9 @@ public class VehicleControllerTest {
     public void shouldSuccessfullyUpdateCurrentPositionVehicleInDriver() throws Exception {
 
         String json = TestUtil.json(VEHICLE_CURRENT_POSITION_REQUEST);
-        this.mockMvc.perform(MockMvcRequestBuilders.put(String.format("%s/update-current-location/%d", VEHICLE_URL_PREFIX, EXIST_VEHICLE_ID))
+        this.mockMvc.perform(MockMvcRequestBuilders.put(String.format("%s/update-current-location/%d", VEHICLE_URL_PREFIX, EXIST_ID))
                 .contentType(contentType).content(json)).andExpect(status().isOk())
-                .andExpect(jsonPath("$.vehicleId").value(EXIST_VEHICLE_ID))
+                .andExpect(jsonPath("$.vehicleId").value(EXIST_ID))
                 .andExpect(jsonPath("$.crossedWaypoints").value(VEHICLE_CURRENT_POSITION_REQUEST.getCrossedWaypoints()))
                 .andExpect(jsonPath("$.waypoints.size()").value(2))
                 .andExpect(jsonPath("$.inDrive").value(true));

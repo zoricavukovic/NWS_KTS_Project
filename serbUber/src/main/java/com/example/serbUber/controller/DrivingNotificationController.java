@@ -58,7 +58,7 @@ public class DrivingNotificationController {
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('ROLE_REGULAR_USER')")
-    public DrivingNotificationDTO get(@Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable final Long id) throws EntityNotFoundException {
+    public DrivingNotificationDTO get(@PathVariable final Long id) throws EntityNotFoundException {
 
         return drivingNotificationService.get(id);
     }

@@ -22,7 +22,6 @@ import java.util.Optional;
 
 import static com.example.serbUber.dto.user.UserDTO.fromUsers;
 import static com.example.serbUber.model.user.User.passwordsDontMatch;
-import static com.example.serbUber.util.Constants.ROLE_ADMIN;
 import static com.example.serbUber.util.EmailConstants.FRONT_RESET_PASSWORD_URL;
 import static com.example.serbUber.util.JwtProperties.getHashedNewUserPassword;
 import static com.example.serbUber.util.JwtProperties.oldPasswordsMatch;
@@ -87,7 +86,6 @@ public class UserService implements IUserService {
             .orElseThrow(() -> new EntityNotFoundException(id, EntityType.USER));
 
         return (Driver) user;
-
     }
 
     public UserDTO getUserDTOByEmail(String email) throws EntityNotFoundException {
@@ -199,7 +197,7 @@ public class UserService implements IUserService {
         return new UserDTO(user);
     }
 
-    public boolean sendEmailForResetPassword(String email) throws EntityNotFoundException, IOException {
+    public boolean sendEmailForResetPassword(String email) throws EntityNotFoundException, IOException, MailCannotBeSentException {
         User user = getUserByEmail(email);
         emailService.sendResetPasswordMail(user.getEmail(), String.format("%s%s", FRONT_RESET_PASSWORD_URL, email));
 
@@ -218,8 +216,6 @@ public class UserService implements IUserService {
 
         return new UserDTO(user);
     }
-
-
 
     public UserDTO setOnlineStatus(final String email) throws EntityNotFoundException {
         User user = getUserByEmail(email);
@@ -281,7 +277,7 @@ public class UserService implements IUserService {
         final String phoneNumber,
         final String city,
         final String profilePicture
-    ) throws PasswordsDoNotMatchException, EntityAlreadyExistsException, MailCannotBeSentException, EntityNotFoundException {
+    ) throws PasswordsDoNotMatchException, EntityAlreadyExistsException, EntityNotFoundException {
         if (passwordsDontMatch(password, confirmationPassword)) {
             throw new PasswordsDoNotMatchException();
         }
@@ -319,7 +315,7 @@ public class UserService implements IUserService {
     }
 
     public boolean block(final Long id, final String reason)
-            throws EntityNotFoundException, EntityUpdateException, IOException {
+            throws EntityNotFoundException, EntityUpdateException, IOException, MailCannotBeSentException {
         User user = getUserById(id);
         if (user.getRole().isAdmin()) {
             throw new EntityUpdateException("Admin cannot be blocked.");
@@ -357,5 +353,4 @@ public class UserService implements IUserService {
             throw new PasswordsDoNotMatchException("Your old password is not correct.");
         }
     }
-
 }

@@ -415,7 +415,7 @@ public class DrivingNotificationServiceTest {
             new HashMap<>(),true);
 
         when(driverService.getDriverForDriving(drivingNotification)).thenReturn(null);
-        Driving driving = drivingNotificationService.findDriverNow(drivingNotification);
+        Driving driving = drivingNotificationService.createDrivingIfFoundDriverAndSuccessfullyPaid(drivingNotification);
 
         Assertions.assertNull(driving);
 
@@ -436,7 +436,7 @@ public class DrivingNotificationServiceTest {
 
         when(driverService.getDriverForDriving(drivingNotification)).thenReturn(null);
         doNothing().when(webSocketService).sendDrivingStatus(DRIVER_NOT_FOUND_PATH, DRIVER_NOT_FOUND_MESSAGE, receiversReviewed);
-        Driving driving = drivingNotificationService.findDriverNow(drivingNotification);
+        Driving driving = drivingNotificationService.createDrivingIfFoundDriverAndSuccessfullyPaid(drivingNotification);
 
         Assertions.assertNull(driving);
 
@@ -469,7 +469,7 @@ public class DrivingNotificationServiceTest {
         doNothing().when(drivingNotificationRepository).deleteById(drivingNotification.getId());
 
         assertThrows(PassengerNotHaveTokensException.class, () ->
-            drivingNotificationService.findDriverNow(drivingNotification)
+            drivingNotificationService.createDrivingIfFoundDriverAndSuccessfullyPaid(drivingNotification)
         );
 
         verify(driverService, times(0)).calculateMinutesToStartDriving(any(Driver.class), any(Driving.class));
@@ -497,7 +497,7 @@ public class DrivingNotificationServiceTest {
         when(tokenBankService.getTokensForUser(USER_WITHOUT_TOKEN_BANK.getId())).thenThrow(EntityNotFoundException.class);
 
         assertThrows(EntityNotFoundException.class, () ->
-            drivingNotificationService.findDriverNow(drivingNotification)
+            drivingNotificationService.createDrivingIfFoundDriverAndSuccessfullyPaid(drivingNotification)
         );
 
         verify(driverService, times(0)).calculateMinutesToStartDriving(any(Driver.class), any(Driving.class));
@@ -533,7 +533,7 @@ public class DrivingNotificationServiceTest {
         doNothing().when(webSocketService).sendSuccessfulDriving(any(DrivingStatusNotificationDTO.class), anyMap());
         doNothing().when(webSocketService).sendNewDrivingNotification(any(DrivingStatusNotificationDTO.class), anyString());
 
-        Driving createdDriving = drivingNotificationService.findDriverNow(drivingNotification);
+        Driving createdDriving = drivingNotificationService.createDrivingIfFoundDriverAndSuccessfullyPaid(drivingNotification);
 
         verify(drivingService).save(drivingArgumentCaptor.capture());
         Assertions.assertEquals(DrivingStatus.ACCEPTED, drivingArgumentCaptor.getValue().getDrivingStatus());
@@ -573,7 +573,7 @@ public class DrivingNotificationServiceTest {
         doNothing().when(webSocketService).sendSuccessfulDriving(any(DrivingStatusNotificationDTO.class), anyMap());
         doNothing().when(webSocketService).sendNewDrivingNotification(any(DrivingStatusNotificationDTO.class), anyString());
 
-        Driving createdDriving = drivingNotificationService.findDriverNow(drivingNotification);
+        Driving createdDriving = drivingNotificationService.createDrivingIfFoundDriverAndSuccessfullyPaid(drivingNotification);
 
         verify(drivingService).save(drivingArgumentCaptor.capture());
         Assertions.assertEquals(DrivingStatus.ACCEPTED, drivingArgumentCaptor.getValue().getDrivingStatus());
@@ -617,7 +617,7 @@ public class DrivingNotificationServiceTest {
         doNothing().when(drivingNotificationRepository).deleteById(drivingNotification.getId());
 
         assertThrows(PassengerNotHaveTokensException.class, () ->
-            drivingNotificationService.findDriverNow(drivingNotification)
+            drivingNotificationService.createDrivingIfFoundDriverAndSuccessfullyPaid(drivingNotification)
         );
 
         verify(driverService, times(0)).calculateMinutesToStartDriving(any(Driver.class), any(Driving.class));
@@ -662,7 +662,7 @@ public class DrivingNotificationServiceTest {
         doNothing().when(webSocketService).sendSuccessfulDriving(any(DrivingStatusNotificationDTO.class), anyMap());
         doNothing().when(webSocketService).sendNewDrivingNotification(any(DrivingStatusNotificationDTO.class), anyString());
 
-        Driving createdDriving = drivingNotificationService.findDriverNow(drivingNotification);
+        Driving createdDriving = drivingNotificationService.createDrivingIfFoundDriverAndSuccessfullyPaid(drivingNotification);
 
         verify(drivingService).save(drivingArgumentCaptor.capture());
         Assertions.assertEquals(DrivingStatus.ACCEPTED, drivingArgumentCaptor.getValue().getDrivingStatus());

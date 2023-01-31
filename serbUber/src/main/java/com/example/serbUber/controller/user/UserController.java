@@ -9,8 +9,8 @@ import com.example.serbUber.request.user.*;
 import com.example.serbUber.service.user.UserService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
@@ -77,8 +77,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
     public UserDTO update(@Valid @RequestBody UserProfilePictureRequest userData)
-        throws EntityUpdateException
-    {
+            throws EntityUpdateException {
 
         return userService.updateProfilePicture(
                 userData.getEmail(),
@@ -90,7 +89,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
     public UserDTO update(@Valid @RequestBody UserPasswordUpdateRequest userData)
-        throws PasswordsDoNotMatchException, EntityNotFoundException {
+            throws PasswordsDoNotMatchException, EntityNotFoundException {
 
         return userService.updatePassword(
                 userData.getEmail(),
@@ -103,19 +102,19 @@ public class UserController {
     @PutMapping("reset-password")
     @ResponseStatus(HttpStatus.OK)
     public UserDTO resetPassword(@Valid @RequestBody PasswordResetRequest passwordResetRequest)
-        throws PasswordsDoNotMatchException, EntityNotFoundException {
+            throws PasswordsDoNotMatchException, EntityNotFoundException {
 
         return userService.resetPassword(
-            passwordResetRequest.getEmail(),
-            passwordResetRequest.getNewPassword(),
-            passwordResetRequest.getConfirmPassword()
+                passwordResetRequest.getEmail(),
+                passwordResetRequest.getNewPassword(),
+                passwordResetRequest.getConfirmPassword()
         );
     }
 
     @GetMapping("/send-reset-password-link/{email}")
     @ResponseStatus(HttpStatus.OK)
     public boolean sendResetPasswordLink(@Valid @PathVariable("email") UserEmailRequest userEmailRequest)
-            throws EntityNotFoundException, IOException {
+            throws EntityNotFoundException, IOException, MailCannotBeSentException {
 
         return userService.sendEmailForResetPassword(userEmailRequest.getEmail());
     }
@@ -131,7 +130,7 @@ public class UserController {
     @PutMapping("/block")
     @ResponseStatus(HttpStatus.OK)
     public boolean block(@Valid @RequestBody BlockingRequest blockingRequest)
-            throws EntityNotFoundException, EntityUpdateException, IOException {
+            throws EntityNotFoundException, EntityUpdateException, IOException, MailCannotBeSentException {
 
         return userService.block(
                 blockingRequest.getUserId(),
@@ -164,24 +163,24 @@ public class UserController {
     @PostMapping("/create/regular-user")
     @ResponseStatus(HttpStatus.CREATED)
     public RegistrationDTO createRegularUser(@Valid @RequestBody RegularUserRequest regularUserRequest)
-        throws EntityNotFoundException, PasswordsDoNotMatchException, EntityAlreadyExistsException, MailCannotBeSentException {
+            throws EntityNotFoundException, PasswordsDoNotMatchException, EntityAlreadyExistsException, MailCannotBeSentException {
 
         return userService.createRegularUser(
-            regularUserRequest.getEmail(),
-            regularUserRequest.getPassword(),
-            regularUserRequest.getConfirmPassword(),
-            regularUserRequest.getName(),
-            regularUserRequest.getSurname(),
-            regularUserRequest.getPhoneNumber(),
-            regularUserRequest.getCity(),
-            regularUserRequest.getProfilePicture()
+                regularUserRequest.getEmail(),
+                regularUserRequest.getPassword(),
+                regularUserRequest.getConfirmPassword(),
+                regularUserRequest.getName(),
+                regularUserRequest.getSurname(),
+                regularUserRequest.getPhoneNumber(),
+                regularUserRequest.getCity(),
+                regularUserRequest.getProfilePicture()
         );
     }
 
     @GetMapping("/byEmail/{email}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
-    public UserDTO getUserByEmail(@Valid @Email(message=WRONG_EMAIL) @NotBlank(message=EMPTY_EMAIL) @PathVariable String email) throws EntityNotFoundException {
+    public UserDTO getUserByEmail(@Valid @Email(message = WRONG_EMAIL) @NotBlank(message = EMPTY_EMAIL) @PathVariable String email) throws EntityNotFoundException {
 
         return userService.getUserDTOByEmail(email);
     }
