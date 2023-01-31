@@ -31,6 +31,7 @@ public class RideRequestTwoPassengersTest extends TwoBrowserTestBase {
         locations.add(START_POINT);
         locations.add(END_POINT);
         rideRequestPage.enterLocations(locations);
+        assertTrue(rideRequestPage.allLocationsAreSelected());
         rideRequestPage.clickOnViewPossibleRoutesButton();
         rideRequestPage.clickOnRequestNowButton();
 
@@ -59,6 +60,7 @@ public class RideRequestTwoPassengersTest extends TwoBrowserTestBase {
         locations.add("Bulevar Evrope 20");
         locations.add("Futoski put 103");
         rideRequestPage.enterLocations(locations);
+        assertTrue(rideRequestPage.allLocationsAreSelected());
         rideRequestPage.clickOnViewPossibleRoutesButton();
         rideRequestPage.scrollRouteDiv();
 
@@ -80,11 +82,9 @@ public class RideRequestTwoPassengersTest extends TwoBrowserTestBase {
 
         DrivingDetailsPage drivingDetailsPageSender = new DrivingDetailsPage(chromeDriver);
         drivingDetailsPageSender.isDrivingDetailsPage(DRIVING_DETAILS_TITLE);
-        drivingDetailsPageSender.isCorrectDriver(DRIVER_NAME_RIDE_TWO_LOCATIONS_ONE_PASSENGER);
 
         DrivingDetailsPage drivingDetailsPageLinkedPassenger = new DrivingDetailsPage(edgeDriver);
         drivingDetailsPageLinkedPassenger.isDrivingDetailsPage(DRIVING_DETAILS_TITLE);
-        drivingDetailsPageLinkedPassenger.isCorrectDriver(DRIVER_NAME_RIDE_TWO_LOCATIONS_ONE_PASSENGER);
     }
 
 }

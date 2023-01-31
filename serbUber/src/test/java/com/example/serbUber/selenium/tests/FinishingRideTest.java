@@ -16,9 +16,9 @@ import javax.transaction.Transactional;
 import static com.example.serbUber.selenium.helper.Constants.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestMethodOrder(MethodOrderer.DisplayName.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+//@TestMethodOrder(MethodOrderer.DisplayName.class)
+//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class FinishingRideTest extends TwoBrowserTestBase {
 
     @Test

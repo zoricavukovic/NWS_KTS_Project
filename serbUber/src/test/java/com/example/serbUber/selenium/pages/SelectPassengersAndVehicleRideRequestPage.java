@@ -34,11 +34,11 @@ public class SelectPassengersAndVehicleRideRequestPage {
     @FindBy(how = How.XPATH, using="//h1")
     private WebElement titleFilterVehicleDiv;
 
-    @FindBy(how = How.XPATH, using = "//input[@ng-reflect-name='hour']")
-    private WebElement scheduleHourInput;
+    @FindBy(how = How.XPATH, using = "//button[contains(@aria-label, 'expand_less')]")
+    private List<WebElement> upArrowScheduleTime;
 
-    @FindBy(how = How.XPATH, using = "//input[@ng-reflect-name='minute']")
-    private WebElement scheduleMinuteInput;
+    @FindBy(how = How.XPATH, using = "//button[contains(@aria-label, 'expand_more')]")
+    private List<WebElement> downArrowScheduleTime;
 
     @FindBy(how = How.TAG_NAME, using = "mat-panel-title")
     private WebElement passengersExpansionPanel;
@@ -110,24 +110,41 @@ public class SelectPassengersAndVehicleRideRequestPage {
         this.actions.moveToElement(passengerAutocompleteOption).click().perform();
     }
 
-    public void selectReservationTime(String hour, String minutes) throws InterruptedException {
-        new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//input[@ng-reflect-name='hour']")));
+    public boolean increaseTime(int numOfHours) {
+        if (upArrowScheduleTime.size() == 0) {
+            return false;
+        }
 
-        ((JavascriptExecutor) driver).executeScript("document.getElementByXpath(\"//input[@ng-reflect-name='hour']\").value='12'");
-        Thread.sleep(5000);
-        actions.moveToElement(scheduleHourInput).click().sendKeys("").perform();
-        Thread.sleep(5000);
-//        scheduleHourInput.clear();
-//        scheduleHourInput.sendKeys(hour);
-        scheduleHourInput.sendKeys(Keys.RETURN);
+        for (int i = 0; i < numOfHours; i++) {
+            actions.moveToElement(upArrowScheduleTime.get(0)).click().perform();
+        }
 
-        new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//input[@ng-reflect-name='minute']")));
-        scheduleMinuteInput.clear();
-        scheduleMinuteInput.sendKeys(minutes);
-        scheduleMinuteInput.sendKeys(Keys.RETURN);
+        return true;
+    }
 
+    public boolean decreaseTime(int numOfHours) {
+        if (downArrowScheduleTime.size() == 0) {
+            return false;
+        }
+
+        for (int i = 0; i < numOfHours; i++) {
+            actions.moveToElement(downArrowScheduleTime.get(0)).click().perform();
+        }
+
+        return true;
+    }
+
+    public boolean setTimeForInvalidReservation(int increaseMinutes) {
+        if (upArrowScheduleTime.size() == 0 || downArrowScheduleTime.size() == 0) {
+            return false;
+        }
+
+        actions.moveToElement(downArrowScheduleTime.get(0)).click().perform();  //prvo se skida jedan sat
+        for (int i = 0; i < increaseMinutes; i++) {
+            actions.moveToElement(upArrowScheduleTime.get(1)).click().perform();
+        }
+
+        return true;
     }
 
     public void clickOnVanVehicleType(){
@@ -173,5 +190,4 @@ public class SelectPassengersAndVehicleRideRequestPage {
                 .until(ExpectedConditions.visibilityOf(babySeatCheckBox));
         actions.moveToElement(babySeatCheckBox).click().perform();
     }
-
 }

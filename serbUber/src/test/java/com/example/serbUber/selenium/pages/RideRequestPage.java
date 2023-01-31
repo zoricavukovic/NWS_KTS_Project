@@ -47,6 +47,9 @@ public class RideRequestPage {
     @FindBy(how = How.ID, using="possible-route")
     private WebElement secondRouteDiv;
 
+    @FindBy(how = How.CLASS_NAME, using = "request-now-title")
+    private WebElement requestNowTitle;
+
     public RideRequestPage(WebDriver driver) {
         this.driver = driver;
         this.actions = new Actions(driver);
@@ -73,10 +76,13 @@ public class RideRequestPage {
         }
 
         for(int i=0; i<locations.size(); i++){
+            actions.moveToElement(locationInputFields.get(i)).click().perform();
             locationInputFields.get(i).clear();
             locationInputFields.get(i).sendKeys(locations.get(i));
             this.selectFirstLocationOption();
         }
+
+        actions.moveToElement(requestNowTitle).click().perform();
     }
 
     public void addMoreLocations(int numberOfLocations){
@@ -99,6 +105,12 @@ public class RideRequestPage {
         viewPossibleRoutesButton.click();
     }
 
+    public boolean allLocationsAreSelected() {
+
+        return new WebDriverWait(driver, Duration.ofSeconds(3))
+                .until(ExpectedConditions.invisibilityOfAllElements(placesAutocompleteOptions));
+    }
+
     public void clickOnRequestNowButton(){
         new WebDriverWait(driver, Duration.ofSeconds(3))
                 .until(ExpectedConditions.elementToBeClickable(requestNowButton));
@@ -117,7 +129,10 @@ public class RideRequestPage {
 
     private void selectFirstLocationOption() {
         new WebDriverWait(driver, Duration.ofSeconds(5))
-                .until(ExpectedConditions.visibilityOfAllElements(placesAutocompleteOptions));
+                .until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(".pac-item-query")));
+
+        new WebDriverWait(driver, Duration.ofSeconds(5))
+                .until(ExpectedConditions.elementToBeClickable(placesAutocompleteOptions.get(0)));
 
         this.actions.moveToElement(placesAutocompleteOptions.get(0)).click().perform();
     }

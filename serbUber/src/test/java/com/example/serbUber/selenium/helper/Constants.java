@@ -33,6 +33,8 @@ public class Constants {
     public static final String REQUEST_RIDE_TITLE = "Request a ride now";
     public static final String START_POINT = "Lasla Gala 2";
     public static final String END_POINT = "Futoski put 105";
+    public static final int DECREASE_HOUR = 1;
+    public static final int INCREASE_MINUTES = 5;
 
     public static final String MY_PROFILE_LABEL = "My profile";
     public static final String ACCEPT_RIDE_MESSAGE = "add you as linked passenger.Tap to accept!";

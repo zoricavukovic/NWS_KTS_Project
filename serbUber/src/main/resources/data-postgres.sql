@@ -37,7 +37,7 @@ insert into vehicles (baby_seat, pet_friendly, rate, vehicle_type_id, active_rou
             (true, false, 0, 1, 2, 0, 2, 0),
             (false, true, 0, 1, null, 0, 12, 0),
             (false, true, 0, 2, null, 0, 5, 0),
-            (true, true, 0, 2, null, 0, 15, 0),
+            (false, true, 0, 2, null, 0, 15, 0),
             (false, true, 0, 3, 1, 0, 5, 0),
             (false, true, 0, 3, 2, 0, 7, 0);
 
@@ -136,7 +136,7 @@ insert into paying_info(currency, token_price, max_num_of_tokens_per_transaction
     ('EUR', 1, 20);
 
 insert into token_banks(user_id, num_of_tokens, total_token_amount_spent, total_money_amount_spent, paying_info_id) values
-                        (3, 4, 0, 4, 1),
+                        (3, 20, 0, 4, 1),
                         (4, 8, 0, 8, 1),
                         (5, 5, 1, 6, 1),
                         (6, 3, 0, 3, 1),
