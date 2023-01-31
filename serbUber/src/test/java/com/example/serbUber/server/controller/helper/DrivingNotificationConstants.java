@@ -20,18 +20,18 @@ public class DrivingNotificationConstants {
     public static final String EXIST_VEHICLE_TYPE = "SUV";
     public static final LocationRequest locationRequest = new LocationRequest(
         "Novi Sad",
-        "Bulevar Oslobodjenja",
-        "55",
+        "Bulevar Evrope",
+        "20",
         "21000",
-        45.258300,19.833950
+        19.8187936,45.246117299999
     );
 
     public static final LocationRequest locationRequest2 = new LocationRequest(
         "Novi Sad",
-        "Futoski put",
-        "103",
+        "Bulevar Cara Lazara",
+        "10",
         "21000",
-        45.242610,19.789230
+        19.8485285, 45.2467885
     );
 
     public static final DrivingLocationIndexRequest drivingLocationIndexRequest = new DrivingLocationIndexRequest(
@@ -46,9 +46,9 @@ public class DrivingNotificationConstants {
 
     public static final RouteRequest route = new RouteRequest(
         5,
-        6,
+        3361.9,
         Arrays.asList(drivingLocationIndexRequest, drivingLocationIndexRequest2),
-        Arrays.asList(1,2)
+        List.of(0)
     );
 
     public static final DrivingNotificationRequest DRIVING_NOTIFICATION_REQUEST_SENDER_NOT_FOUND = new DrivingNotificationRequest(

@@ -29,6 +29,7 @@ import static com.example.serbUber.exception.ErrorMessagesConstants.INVALID_CHOS
 import static com.example.serbUber.exception.ErrorMessagesConstants.INVALID_CHOSEN_TIME_BEFORE_FOR_RESERVATION_MESSAGE;
 import static com.example.serbUber.server.controller.helper.ControllerConstants.*;
 import static com.example.serbUber.server.controller.helper.DrivingNotificationConstants.*;
+import static com.example.serbUber.util.Constants.UNSUCCESSFUL_PAYMENT_MESSAGE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -46,9 +47,6 @@ public class DrivingNotificationControllerTest {
 
     @Autowired
     private WebApplicationContext webApplicationContext;
-
-    @Autowired
-    private TestRestTemplate restTemplate;
 
     @BeforeAll
     public void setup() {
@@ -175,19 +173,19 @@ public class DrivingNotificationControllerTest {
             .andExpect(result -> assertEquals(errorMessage, Objects.requireNonNull(result.getResolvedException()).getMessage()));
     }
 
-//    @Test
-//    @DisplayName("T8-Should throw PassengerNotHaveTokensException when making POST request to endpoint - /driving-notifications")
-//    @WithMockUser(roles="REGULAR_USER")
-//    @Rollback(true)
-//    public void shouldThrowPassengerNotHaveTokensExceptionCreatingDrivingNotification() throws Exception {
-//        String json = TestUtil.json(DRIVING_NOTIFICATION_REQUEST_USER_DOESNOT_HAVE_ENOUGH_MONEY);
-//        this.mockMvc.perform(MockMvcRequestBuilders.post(DRIVING_NOTIFICATION_URL_PREFIX)
-//                .contentType(contentType).content(json)).andExpect(status().isBadRequest())
-//            .andExpect(result ->
-//                assertTrue(result.getResolvedException() instanceof PassengerNotHaveTokensException)
-//            )
-//            .andExpect(result -> assertEquals(UNSUCCESSFUL_PAYMENT_MESSAGE, Objects.requireNonNull(result.getResolvedException()).getMessage()));
-//    }
+    @Test
+    @DisplayName("T8-Should throw PassengerNotHaveTokensException when making POST request to endpoint - /driving-notifications")
+    @WithMockUser(roles="REGULAR_USER")
+    @Rollback(true)
+    public void shouldThrowPassengerNotHaveTokensExceptionCreatingDrivingNotification() throws Exception {
+        String json = TestUtil.json(DRIVING_NOTIFICATION_REQUEST_USER_DOESNOT_HAVE_ENOUGH_MONEY);
+        this.mockMvc.perform(MockMvcRequestBuilders.post(DRIVING_NOTIFICATION_URL_PREFIX)
+                .contentType(contentType).content(json)).andExpect(status().isBadRequest())
+            .andExpect(result ->
+                assertTrue(result.getResolvedException() instanceof PassengerNotHaveTokensException)
+            )
+            .andExpect(result -> assertEquals(UNSUCCESSFUL_PAYMENT_MESSAGE, Objects.requireNonNull(result.getResolvedException()).getMessage()));
+    }
 
     @ParameterizedTest
     @DisplayName("T9-Should successfully create driving notification when num of passengers is greater than zero when making POST request to endpoint - /driving-notifications")
@@ -204,21 +202,21 @@ public class DrivingNotificationControllerTest {
             .andExpect(jsonPath("$.passengers.size()").value(drivingNotificationRequest.getPassengers().size() + 1));
     }
 
-//    @Test
-//    @DisplayName("T10-Should throw EntityNotFoundException for token bank when making POST request to endpoint - /driving-notifications")
-//    @WithMockUser(roles="REGULAR_USER")
-//    @Rollback(true)
-//    public void shouldThrowEntityNotFoundExceptionForTokenBankCreatingDrivingNotification() throws Exception {
-//        String json = TestUtil.json(DRIVING_NOTIFICATION_REQUEST_WITHOUT_TOKEN_BANK);
-//        String errorMessage = getEntityErrorMessage("20", EntityType.USER);
-//
-//        this.mockMvc.perform(MockMvcRequestBuilders.post(DRIVING_NOTIFICATION_URL_PREFIX)
-//                .contentType(contentType).content(json)).andExpect(status().isNotFound())
-//            .andExpect(result ->
-//                assertTrue(result.getResolvedException() instanceof EntityNotFoundException)
-//            )
-//            .andExpect(result -> assertEquals(errorMessage, Objects.requireNonNull(result.getResolvedException()).getMessage()));
-//    }
+    @Test
+    @DisplayName("T10-Should throw EntityNotFoundException for token bank when making POST request to endpoint - /driving-notifications")
+    @WithMockUser(roles="REGULAR_USER")
+    @Rollback(true)
+    public void shouldThrowEntityNotFoundExceptionForTokenBankCreatingDrivingNotification() throws Exception {
+        String json = TestUtil.json(DRIVING_NOTIFICATION_REQUEST_WITHOUT_TOKEN_BANK);
+        String errorMessage = getEntityErrorMessage("20", EntityType.USER);
+
+        this.mockMvc.perform(MockMvcRequestBuilders.post(DRIVING_NOTIFICATION_URL_PREFIX)
+                .contentType(contentType).content(json)).andExpect(status().isNotFound())
+            .andExpect(result ->
+                assertTrue(result.getResolvedException() instanceof EntityNotFoundException)
+            )
+            .andExpect(result -> assertEquals(errorMessage, Objects.requireNonNull(result.getResolvedException()).getMessage()));
+    }
 
     private List<Arguments> getDrivingNotificationRequestInvalidTime() {
 

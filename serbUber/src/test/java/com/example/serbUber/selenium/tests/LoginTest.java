@@ -30,7 +30,7 @@ public class LoginTest extends OneBrowserTestBase {
 
     @Test
     @DisplayName("T1-Success login with valid credentials")
-    public void regularLoginSuccessfulTest() throws InterruptedException {
+    public void regularLoginSuccessfulTest() {
         homePage = LoginHelper.login(chromeDriver, EXISTING_REGULAR_USER_EMAIL, EXISTING_PASSWORD);
 
         homePage.clickOnProfileIconMenuButton();
