@@ -13,6 +13,7 @@ import com.example.serbUber.request.DrivingLocationIndexRequest;
 import com.example.serbUber.request.LocationsForRoutesRequest;
 import com.example.serbUber.request.LongLatRequest;
 import com.example.serbUber.service.interfaces.IRouteService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
@@ -58,11 +59,9 @@ public class RouteService implements IRouteService {
     }
 
     public Route get(Long id) throws EntityNotFoundException {
-        Optional<Route> route = routeRepository.findById(id);
-        if(route.isPresent()){
-            return route.get();
-        }
-        throw new EntityNotFoundException(id, ROUTE);
+
+        return routeRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(id, EntityType.ROUTE));
     }
 
 
@@ -107,33 +106,31 @@ public class RouteService implements IRouteService {
     }
 
     public List<double[]> getRoutePath(final Long id) throws EntityNotFoundException {
-        Route route = this.routeRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(id, EntityType.ROUTE));
+        Route route = get(id);
         List<DrivingLocationIndex> locations = route.getLocations().stream().toList();
-
         List<double[]> points = new LinkedList<>();
-
-        IntStream.range(START_LIST_INDEX, locations.size()-1)
-                .forEach(index ->
-                {
-                    DrivingLocationIndex firstLocation = locations.get(index);
-                    DrivingLocationIndex secondLocation = locations.get(index + 1);
-                    PossibleRouteDTO path = null;
-                    try {
-                        path = getPossibleRoutesDTO(
-                                firstLocation.getLocation().getLat(),
-                                firstLocation.getLocation().getLon(),
-                                secondLocation.getLocation().getLat(),
-                                secondLocation.getLocation().getLon()
-                        ).get(firstLocation.getRouteIndex());
-                    } catch (EntityNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                    assert path != null;
-                    points.addAll(path.getPointList());
-                });
+        int index = 0;
+        while (index < locations.size() - 1) {
+            PossibleRouteDTO path = formPath(locations, index);
+            if (path != null) {
+                points.addAll(path.getPointList());
+            }
+            index += 1;
+        }
 
         return points;
+    }
+
+    private PossibleRouteDTO formPath(List<DrivingLocationIndex> locations, int index) throws EntityNotFoundException {
+        DrivingLocationIndex firstLocation = locations.get(index);
+        DrivingLocationIndex secondLocation = locations.get(index + 1);
+
+        return getPossibleRoutesDTO(
+                firstLocation.getLocation().getLat(),
+                firstLocation.getLocation().getLon(),
+                secondLocation.getLocation().getLat(),
+                secondLocation.getLocation().getLon()
+        ).get(firstLocation.getRouteIndex());
     }
 
     public SortedSet<DrivingLocationIndex> getLocationsForRoute(Long id) {
@@ -272,16 +269,11 @@ public class RouteService implements IRouteService {
     }
 
     private double getDistance(List<String> distances) {
-        double maxDistance = Double.parseDouble(distances.get(1).split(",")[0].replace("}", "").replace("{", "").replace(" ", "").replace("]", "").replace("[", ""));
-        for (String distance: distances.subList(2, distances.size())) {
-            double distanceValue = Double.parseDouble(distance.split(",")[0].replace("}", "").replace("{", "").replace(" ", "").replace("]", "").replace("[", ""));
 
-            if (maxDistance< distanceValue){
-                maxDistance = distanceValue;
-            }
-        }
-
-        return maxDistance;
+        return distances.stream()
+                .mapToDouble(distance -> Double.parseDouble(distance.split(",")[0].replaceAll("[\\[\\]{} ]", "")))
+                .max()
+                .orElse(0);
     }
 
     private void fromSteps(List<double[]> locations, List<String> steps) {

@@ -10,6 +10,7 @@ import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.model.user.DriverUpdateApproval;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -35,7 +36,7 @@ public interface IDriverService {
     DriverDTO updateActivityStatus(final Long id, boolean active)
             throws EntityNotFoundException, ActivityStatusCannotBeChangedException;
     boolean blockDriver(final Long id, final String reason)
-            throws EntityNotFoundException, EntityUpdateException;
+            throws EntityNotFoundException, EntityUpdateException, IOException;
     boolean getIsBlocked(Long id);
     List<DriverPageDTO> getDriversWithPagination(int pageNumber, int pageSize);
 

@@ -1,13 +1,11 @@
 package com.example.serbUber.service;
 
 import com.example.serbUber.dto.ReservationDTO;
-import com.example.serbUber.model.Reservation;
 import com.example.serbUber.model.Route;
 import com.example.serbUber.repository.ReservationRepository;
 import com.example.serbUber.service.interfaces.IReservationService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;

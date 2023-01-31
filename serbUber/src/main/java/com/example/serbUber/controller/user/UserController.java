@@ -16,6 +16,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.io.IOException;
 import java.util.List;
 
 import static com.example.serbUber.exception.ErrorMessagesConstants.*;
@@ -114,7 +115,7 @@ public class UserController {
     @GetMapping("/send-reset-password-link/{email}")
     @ResponseStatus(HttpStatus.OK)
     public boolean sendResetPasswordLink(@Valid @PathVariable("email") UserEmailRequest userEmailRequest)
-        throws EntityNotFoundException {
+            throws EntityNotFoundException, IOException {
 
         return userService.sendEmailForResetPassword(userEmailRequest.getEmail());
     }
@@ -130,7 +131,7 @@ public class UserController {
     @PutMapping("/block")
     @ResponseStatus(HttpStatus.OK)
     public boolean block(@Valid @RequestBody BlockingRequest blockingRequest)
-            throws EntityNotFoundException, EntityUpdateException {
+            throws EntityNotFoundException, EntityUpdateException, IOException {
 
         return userService.block(
                 blockingRequest.getUserId(),

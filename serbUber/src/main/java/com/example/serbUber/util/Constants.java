@@ -15,6 +15,7 @@ public class Constants {
 
     public static final String PHOTOS_FILE_PATH = "src/main/resources/static/images/";
     public static final String TARGET_PHOTO_FILE_PATH = "./src/main/resources/static/images/";
+    public static final String TEMPLATE_FILE_PATH = "./src/main/resources/static/emailTemplates/";
     public static final double EMPTY_BANK_ACCOUNT = 0.0;
     public static final int MAX_LENGTH_OF_MESSAGE = 100;
     public static final int MIN_RATE = 0;

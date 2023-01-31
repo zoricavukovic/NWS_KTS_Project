@@ -5,7 +5,6 @@ import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.ExcessiveNumOfPassengersException;
 import com.example.serbUber.exception.InvalidChosenTimeForReservationException;
 import com.example.serbUber.exception.PassengerNotHaveTokensException;
-import com.example.serbUber.model.DrivingNotification;
 import com.example.serbUber.request.DrivingNotificationRequest;
 import com.example.serbUber.service.DrivingNotificationService;
 import com.google.maps.errors.NotFoundException;
@@ -18,8 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
-
-import java.util.List;
 
 import static com.example.serbUber.exception.ErrorMessagesConstants.*;
 
@@ -44,7 +41,7 @@ public class DrivingNotificationController {
         NotFoundException
     {
 
-        return this.drivingNotificationService.createDrivingNotificationDTO(
+        return this.drivingNotificationService.createDrivingRequest(
             drivingNotificationRequest.getRoute(),
             drivingNotificationRequest.getSenderEmail(),
             drivingNotificationRequest.getPrice(),

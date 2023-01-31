@@ -96,7 +96,7 @@ public class DrivingNotificationService implements IDrivingNotificationService {
         webSocketService.passengerNotAcceptDrivingNotification(regularUsers, userEmail, senderEmail);
     }
 
-    public DrivingNotificationDTO createDrivingNotificationDTO(
+    public DrivingNotificationDTO createDrivingRequest (
             final RouteRequest routeRequest,
             final String senderEmail,
             final double price,
@@ -108,25 +108,9 @@ public class DrivingNotificationService implements IDrivingNotificationService {
             final LocalDateTime chosenDateTime,
             final boolean isReservation
     ) throws EntityNotFoundException, ExcessiveNumOfPassengersException, PassengerNotHaveTokensException, InvalidChosenTimeForReservationException, NotFoundException {
-        RegularUser sender = regularUserService.getRegularByEmail(senderEmail);
-
-        Map<RegularUser, Integer> receiversReviewed = new HashMap<>();
-        for (String passengerEmail : passengers){
-            receiversReviewed.put(regularUserService.getRegularByEmail(passengerEmail), NotificationReviewedType.NOT_REVIEWED.ordinal());
-        }
-        VehicleTypeInfo vehicleTypeInfo = vehicleTypeInfoService.get(VehicleType.getVehicleType(vehicleType));
-
-        if(!vehicleTypeInfoService.isCorrectNumberOfSeats(vehicleTypeInfo, passengers.size()+1)) {
-            throw new ExcessiveNumOfPassengersException(vehicleType);
-        }
-
-        Route route = routeService.createRoute(routeRequest.getLocations(), routeRequest.getTimeInMin(), routeRequest.getDistance(), routeRequest.getRoutePathIndex());
-        LocalDateTime startedDateTime = getStartedDate(chosenDateTime, isReservation);
-        DrivingNotification notification = createDrivingNotification(
-            route, price, receiversReviewed, sender, startedDateTime,
-            duration, babySeat, petFriendly, vehicleTypeInfo, isReservation
-        );
-
+        DrivingNotification notification = getCreatedDrivingNotification(
+                routeRequest, senderEmail, price, passengers, duration,
+                babySeat, petFriendly, vehicleType, chosenDateTime, isReservation);
         if(passengers.size() > 0){
             sendWebSocketForDrivingNotification(
                 notification.getId(),
@@ -141,6 +125,32 @@ public class DrivingNotificationService implements IDrivingNotificationService {
 
         return new DrivingNotificationDTO(notification);
     }
+
+    private DrivingNotification getCreatedDrivingNotification(RouteRequest routeRequest, String senderEmail, double price, List<String> passengers, double duration, boolean babySeat, boolean petFriendly, String vehicleType, LocalDateTime chosenDateTime, boolean isReservation) throws EntityNotFoundException, ExcessiveNumOfPassengersException, InvalidChosenTimeForReservationException {
+        RegularUser sender = regularUserService.getRegularByEmail(senderEmail);
+        Map<RegularUser, Integer> receiversReviewed = new HashMap<>();
+        for (String passengerEmail : passengers){
+            receiversReviewed.put(regularUserService.getRegularByEmail(passengerEmail), NotificationReviewedType.NOT_REVIEWED.ordinal());
+        }
+        VehicleTypeInfo vehicleTypeInfo = vehicleTypeInfoService.get(VehicleType.getVehicleType(vehicleType));
+        checkNumberOfPassengers(passengers, vehicleTypeInfo);
+
+        Route route = routeService.createRoute(routeRequest.getLocations(), routeRequest.getTimeInMin(), routeRequest.getDistance(), routeRequest.getRoutePathIndex());
+        LocalDateTime startedDateTime = getStartedDate(chosenDateTime, isReservation);
+
+        return createDrivingNotification(
+                route, price, receiversReviewed, sender, startedDateTime,
+                duration, babySeat, petFriendly, vehicleTypeInfo, isReservation
+        );
+
+    }
+
+    private void checkNumberOfPassengers(List<String> passengers, VehicleTypeInfo vehicleTypeInfo) throws ExcessiveNumOfPassengersException {
+        if(!vehicleTypeInfoService.isCorrectNumberOfSeats(vehicleTypeInfo, passengers.size()+1)) {
+            throw new ExcessiveNumOfPassengersException(vehicleTypeInfo.getVehicleType().toString());
+        }
+    }
+
 
     private void sendWebSocketForDrivingNotification(
         final Long notificationId,
@@ -337,18 +347,21 @@ public class DrivingNotificationService implements IDrivingNotificationService {
 
     private double secondTryPayment(Map<Long, Double> updatedUsersTokens, double missingTokens) {
         for(Map.Entry<Long, Double> passengerTokens : updatedUsersTokens.entrySet()) {
-            if (passengerTokens.getValue() > 0 && missingTokens > 0) {
-                if (passengerTokens.getValue() >= missingTokens) {
-                    passengerTokens.setValue(passengerTokens.getValue() - missingTokens);
-                    missingTokens = 0;
-                    break;
-                } else {
-                    missingTokens -= passengerTokens.getValue();
-                    passengerTokens.setValue(WITHOUT_TOKENS);
-                }
+            if (passengerShouldPayMissingTokens(passengerTokens.getValue(), missingTokens)) {
+                passengerTokens.setValue(passengerTokens.getValue() - missingTokens);
+                return 0;
             }
+            missingTokens -= passengerTokens.getValue();
+            passengerTokens.setValue(WITHOUT_TOKENS);
         }
+
         return missingTokens;
+    }
+
+    private boolean passengerShouldPayMissingTokens(double passengerTokens, double missingTokens){
+
+        return passengerTokens > 0 && missingTokens > 0
+                && passengerTokens >= missingTokens;
     }
 
     private double getMissingTokens(RegularUser user, double priceForUser, Map<Long, Double> updatedUsersTokens, double missingTokens) throws EntityNotFoundException {

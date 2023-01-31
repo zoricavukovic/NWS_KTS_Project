@@ -459,44 +459,53 @@ public class DrivingService implements IDrivingService {
     }
 
     public DrivingDTO createDrivingToDeparture(Driver driver, Location currentStop, Route nextRoute, Set<RegularUser> users) {
-
-        List<DrivingLocationIndexRequest> drivingLocationIndexRequestList = new LinkedList<>();
         DrivingLocationIndexRequest firstLocation = new DrivingLocationIndexRequest(
                 new LocationRequest(currentStop.getLon(), currentStop.getLat()), 1);
-
         Location nextLocation = nextRoute.getLocations().first().getLocation();
         DrivingLocationIndexRequest secondLocation = new DrivingLocationIndexRequest(
                 new LocationRequest(nextLocation.getCity(), nextLocation.getStreet(), nextLocation.getNumber(), nextLocation.getZipCode(), nextLocation.getLon(), nextLocation.getLat()), 2
         );
 
-        drivingLocationIndexRequestList.add(firstLocation);
-        drivingLocationIndexRequestList.add(secondLocation);
+        Driving driving = saveDrivingOnWayToDeparture(driver, firstLocation, secondLocation);
+        addDrivingToUserDrivings(users, driving);
+        updateDriverInfo(driving, driver);
 
+        return new DrivingDTO(driving);
+    }
+
+    private Driving saveDrivingOnWayToDeparture(Driver driver, DrivingLocationIndexRequest firstLocation, DrivingLocationIndexRequest secondLocation) {
         double minutes = this.routeService.calculateMinutesForDistance(
             firstLocation.getLocation().getLat(),
             firstLocation.getLocation().getLon(),
             secondLocation.getLocation().getLat(),
             secondLocation.getLocation().getLon()
         );
+        List<DrivingLocationIndexRequest> drivingLocationIndexRequestList = new LinkedList<>();
+        drivingLocationIndexRequestList.add(firstLocation);
+        drivingLocationIndexRequestList.add(secondLocation);
         Route route = this.routeService.createRoute(drivingLocationIndexRequestList, minutes, routeService.getDistanceInKmFromTime(minutes), List.of(0));
         Driving driving = new Driving((int) minutes, LocalDateTime.now(), LocalDateTime.now().plusMinutes((long) minutes), route, DrivingStatus.ON_WAY_TO_DEPARTURE, driver, 0);
         driving.setActive(true); //ovo treba prilikom kreiranja, on ce tada krenuti kao
 
-        Driving createdDriving = drivingRepository.save(driving);
+        return drivingRepository.save(driving);
+    }
+
+    private void addDrivingToUserDrivings(final Set<RegularUser> users, Driving createdDriving){
         users.forEach(user -> {
             List<Driving> drivings = getAllDrivingsForUserEmail(user.getEmail());
             drivings.add(createdDriving);
             user.setDrivings(drivings);
             userService.saveUser(user);
         });
+    }
+    private void updateDriverInfo(final Driving driving, final Driver driver){
         driver.getVehicle().setActiveRoute(driving.getRoute());
         driver.getVehicle().setCurrentLocationIndex(0);
         driver.getVehicle().setCrossedWaypoints(0);
         driver.getVehicle().setCurrentStop(driving.getRoute().getLocations().first().getLocation());
         driver.setDrive(true);
-        return new DrivingDTO(createdDriving);
+        userService.saveDriver(driver);
     }
-
     private boolean drivingShouldNotStartYet(Driving driving) {
 
         return ChronoUnit.MINUTES.between(LocalDateTime.now(), driving.getStarted()) > FIVE_MINUTES;

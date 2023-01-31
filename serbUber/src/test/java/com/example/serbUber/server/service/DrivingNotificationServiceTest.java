@@ -133,7 +133,7 @@ public class DrivingNotificationServiceTest {
     @DisplayName("T3-Should throw not found exception when user is not found")
     public void createDrivingNotificationDTO_throwEntityNotFoundExceptionForRegularUser() throws EntityNotFoundException {
         when(regularUserService.getRegularByEmail(NOT_EXIST_USER_EMAIL)).thenThrow(EntityNotFoundException.class);
-        assertThrows(EntityNotFoundException.class, () -> drivingNotificationService.createDrivingNotificationDTO(
+        assertThrows(EntityNotFoundException.class, () -> drivingNotificationService.createDrivingRequest(
                 new RouteRequest(), NOT_EXIST_USER_EMAIL, PRICE, new ArrayList<>(), DURATION,
                 false, false, "SUV", null, false));
         verify(vehicleTypeInfoService, times(0)).isCorrectNumberOfSeats(any(VehicleTypeInfo.class), anyInt());
@@ -146,7 +146,7 @@ public class DrivingNotificationServiceTest {
         when(regularUserService.getRegularByEmail(NOT_EXIST_USER_EMAIL)).thenThrow(EntityNotFoundException.class);
         List<String> users = new ArrayList<>();
         users.add(NOT_EXIST_USER_EMAIL);
-        assertThrows(EntityNotFoundException.class, () -> drivingNotificationService.createDrivingNotificationDTO(
+        assertThrows(EntityNotFoundException.class, () -> drivingNotificationService.createDrivingRequest(
                 new RouteRequest(), FIRST_USER_EMAIL, PRICE, users, DURATION,
                 false, false, SUV, null, false));
         verify(routeService, times(0)).createRoute(anyList(), anyDouble(), anyDouble(), anyList());
@@ -158,7 +158,7 @@ public class DrivingNotificationServiceTest {
         when(vehicleTypeInfoService.get(VehicleType.SUV)).thenThrow(EntityNotFoundException.class);
         List<String> users = new ArrayList<>();
         users.add(SECOND_USER_EMAIL);
-        assertThrows(EntityNotFoundException.class, () -> drivingNotificationService.createDrivingNotificationDTO(
+        assertThrows(EntityNotFoundException.class, () -> drivingNotificationService.createDrivingRequest(
             new RouteRequest(), FIRST_USER_EMAIL, PRICE, users, DURATION,
             false, false, SUV, null, false));
         verify(vehicleTypeInfoService, times(0)).isCorrectNumberOfSeats(any(VehicleTypeInfo.class), anyInt());
@@ -173,7 +173,7 @@ public class DrivingNotificationServiceTest {
 
         List<String> passengers = Arrays.asList(SECOND_USER_EMAIL, SECOND_USER_EMAIL);
         assertThrows(ExcessiveNumOfPassengersException.class,
-            () -> drivingNotificationService.createDrivingNotificationDTO(
+            () -> drivingNotificationService.createDrivingRequest(
                 new RouteRequest(), FIRST_USER_EMAIL, PRICE, passengers, DURATION, false, false, SUV, null, false
             )
         );
@@ -213,7 +213,7 @@ public class DrivingNotificationServiceTest {
         mockRoute();
         List<String> passengers = List.of(SECOND_USER_EMAIL);
 
-        assertThrows(InvalidChosenTimeForReservationException.class, () -> drivingNotificationService.createDrivingNotificationDTO(
+        assertThrows(InvalidChosenTimeForReservationException.class, () -> drivingNotificationService.createDrivingRequest(
                 createRouteRequest(), FIRST_USER_EMAIL, PRICE, passengers, DURATION,
                 false, false, SUV, chosenDateTime, true));
     }
@@ -230,7 +230,7 @@ public class DrivingNotificationServiceTest {
         DrivingNotification drivingNotification = mockAndGetDrivingNotification(FIRST_USER, receiversReviewed, LocalDateTime.now(), false);
         doNothing().when(webSocketService).sendPassengerAgreementNotification(any(DrivingNotificationWebSocketDTO.class), anyMap());
 
-        DrivingNotificationDTO drivingNotificationDTO = drivingNotificationService.createDrivingNotificationDTO(createRouteRequest(), FIRST_USER_EMAIL, PRICE, passengers, DURATION,
+        DrivingNotificationDTO drivingNotificationDTO = drivingNotificationService.createDrivingRequest(createRouteRequest(), FIRST_USER_EMAIL, PRICE, passengers, DURATION,
                 false, false, SUV, null, false);
 
         Assertions.assertEquals(drivingNotification.getRoute(), drivingNotificationDTO.getRoute());
@@ -274,7 +274,7 @@ public class DrivingNotificationServiceTest {
         doNothing().when(webSocketService).sendDrivingStatus(anyString(), anyString(), anyMap());
         doNothing().when(drivingNotificationRepository).deleteById(drivingNotification.getId());
 
-        DrivingNotificationDTO drivingNotificationDTO = drivingNotificationService.createDrivingNotificationDTO(createRouteRequest(), FIRST_USER_EMAIL, PRICE, new ArrayList<>(), DURATION,
+        DrivingNotificationDTO drivingNotificationDTO = drivingNotificationService.createDrivingRequest(createRouteRequest(), FIRST_USER_EMAIL, PRICE, new ArrayList<>(), DURATION,
             false, false, SUV, null, false);
 
         Assertions.assertEquals(drivingNotification.getRoute(), drivingNotificationDTO.getRoute());
@@ -298,7 +298,7 @@ public class DrivingNotificationServiceTest {
         DrivingNotification drivingNotification = mockAndGetDrivingNotification(FIRST_USER, new HashMap<>(), chosenTimeForReservation, true);
         doNothing().when(webSocketService).sendSuccessfulCreateReservation(anySet());
 
-        DrivingNotificationDTO drivingNotificationDTO = drivingNotificationService.createDrivingNotificationDTO(createRouteRequest(), FIRST_USER_EMAIL, PRICE, new ArrayList<>(), DURATION,
+        DrivingNotificationDTO drivingNotificationDTO = drivingNotificationService.createDrivingRequest(createRouteRequest(), FIRST_USER_EMAIL, PRICE, new ArrayList<>(), DURATION,
             false, false, SUV, chosenTimeForReservation, true);
 
         Assertions.assertEquals(drivingNotification.getRoute(), drivingNotificationDTO.getRoute());
@@ -326,7 +326,7 @@ public class DrivingNotificationServiceTest {
         when(tokenBankService.getTokensForUser(THIRD_USER_ID)).thenThrow(EntityNotFoundException.class);
 
         assertThrows(EntityNotFoundException.class, () ->
-                drivingNotificationService.createDrivingNotificationDTO(
+                drivingNotificationService.createDrivingRequest(
                     createRouteRequest(), THIRD_USER_EMAIL, PRICE, new ArrayList<>(), DURATION,
                 false, false, SUV, null, false
                 )
@@ -363,7 +363,7 @@ public class DrivingNotificationServiceTest {
         doNothing().when(webSocketService).sendNewDrivingNotification(any(DrivingStatusNotificationDTO.class), anyString());
         doNothing().when(drivingNotificationRepository).deleteById(drivingNotification.getId());
 
-        drivingNotificationService.createDrivingNotificationDTO(createRouteRequest(), FIRST_USER_EMAIL, PRICE, new ArrayList<>(), DURATION,
+        drivingNotificationService.createDrivingRequest(createRouteRequest(), FIRST_USER_EMAIL, PRICE, new ArrayList<>(), DURATION,
             false, false, SUV, null, false);
 
         verify(drivingNotificationRepository).deleteById(anyLong());
@@ -395,7 +395,7 @@ public class DrivingNotificationServiceTest {
         doNothing().when(webSocketService).sendDrivingStatus(anyString(), anyString(), anyMap());
 
         assertThrows(PassengerNotHaveTokensException.class, () ->
-            drivingNotificationService.createDrivingNotificationDTO(
+            drivingNotificationService.createDrivingRequest(
                 createRouteRequest(), SECOND_USER_EMAIL, PRICE, new ArrayList<>(), DURATION,
                 false, false, SUV, null, false
             )

@@ -1,6 +1,5 @@
 package com.example.serbUber.dto;
 
-import com.example.serbUber.model.Reservation;
 import com.example.serbUber.model.Route;
 import com.example.serbUber.model.user.RegularUser;
 

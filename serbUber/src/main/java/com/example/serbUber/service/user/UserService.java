@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -198,7 +199,7 @@ public class UserService implements IUserService {
         return new UserDTO(user);
     }
 
-    public boolean sendEmailForResetPassword(String email) throws EntityNotFoundException {
+    public boolean sendEmailForResetPassword(String email) throws EntityNotFoundException, IOException {
         User user = getUserByEmail(email);
         emailService.sendResetPasswordMail(user.getEmail(), String.format("%s%s", FRONT_RESET_PASSWORD_URL, email));
 
@@ -318,8 +319,7 @@ public class UserService implements IUserService {
     }
 
     public boolean block(final Long id, final String reason)
-            throws EntityNotFoundException, EntityUpdateException
-    {
+            throws EntityNotFoundException, EntityUpdateException, IOException {
         User user = getUserById(id);
         if (user.getRole().isAdmin()) {
             throw new EntityUpdateException("Admin cannot be blocked.");
@@ -327,6 +327,11 @@ public class UserService implements IUserService {
 
         return (user.getRole().isDriver()) ? driverService.blockDriver(id, reason)
                 : regularUserService.blockRegular(id, reason);
+    }
+
+    public void saveDriver(Driver driver){
+
+        driverService.save(driver);
     }
 
     private boolean checkDriverApprovalData(final VehicleType vehicleType) {

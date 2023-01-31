@@ -34,10 +34,7 @@ public class SchedulerDriver {
         List<Driver> activeDrivers = driverService.getActiveDrivers();
         for (Driver driver : activeDrivers) {
             Driving nextDriving = drivingService.driverHasFutureDriving(driver.getId());
-            if (driver.isDrive() && nextDriving != null) {
-
-                continue;
-            } else if (nextDriving != null && driverService.isTimeToGoToDeparture(driver, nextDriving)) {
+            if (!driver.isDrive() && nextDriving != null && driverService.isTimeToGoToDeparture(driver, nextDriving)) {
                 DrivingDTO drivingDTO = drivingService.createDrivingToDeparture(driver, driver.getVehicle().getCurrentStop(), nextDriving.getRoute(), nextDriving.getUsers());
                 webSocketService.startDrivingToDeparture(nextDriving.getUsers(), drivingDTO.getDuration());
             }

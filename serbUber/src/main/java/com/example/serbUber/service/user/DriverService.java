@@ -20,6 +20,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -201,6 +203,9 @@ public class DriverService implements IDriverService{
         return minutesToStartDriving - minutesFromCurrentLocationToStartDriving <= 2;
     }
 
+    public void save(Driver driver){
+        driverRepository.save(driver);
+    }
     private Driver findMatchesDriver(
         final List<Driver> drivers,
         final double lonStart,
@@ -374,7 +379,7 @@ public class DriverService implements IDriverService{
             }
 
             if(matches && futureDrivings.size() > 0){
-                double minutesToArrival = calculateMinutesToArrivalForFreeDriversWithFutureDrivings(startLat, startLng, futureDrivings, start);
+                double minutesToArrival = calculateMinutesToArrivalForFreeDriversWithFutureDrivings(driver, startLat, startLng, futureDrivings, start);
                 LocalDateTime endOfDriving = start.plusMinutes((long) (duration + minutesToArrival));
                 matches = isNotSoonEndShiftForDriver(endOfDriving, driver.getWorkingMinutes());
 
@@ -396,7 +401,56 @@ public class DriverService implements IDriverService{
         return routeService.calculateMinutesForDistance(driverLocation.getLat(), driverLocation.getLon(), startLat, startLng);
     }
 
-    private double calculateMinutesToArrivalForFreeDriversWithFutureDrivings(final double startLat, final double startLng, List<Driving> futureDrivings, LocalDateTime start){
+//    private double calculateMinutesToArrivalForFreeDriversWithFutureDrivings(final double startLat, final double startLng, List<Driving> futureDrivings, LocalDateTime start){
+//        Driving lastDrivingBeforeOurDriving = futureDrivings.get(0);
+//        LocalDateTime minDateTime = lastDrivingBeforeOurDriving.getStarted().plusMinutes((int) lastDrivingBeforeOurDriving.getDuration());
+//        for(Driving futureDriving : futureDrivings){
+//            LocalDateTime endDateOfFutureDriving = futureDriving.getStarted().plusMinutes((int) futureDriving.getDuration());
+//            if(endDateOfFutureDriving.isBefore(start) && endDateOfFutureDriving.isAfter(minDateTime)){
+//                minDateTime = endDateOfFutureDriving;
+//                lastDrivingBeforeOurDriving = futureDriving;
+//            }
+//        }
+//        Location drivingLocation = lastDrivingBeforeOurDriving.getRoute().getLocations().last().getLocation();
+//
+//        return routeService.calculateMinutesForDistance(drivingLocation.getLat(), drivingLocation.getLon(), startLat, startLng);
+//    }
+
+    private double calculateMinutesToArrivalForFreeDriversWithFutureDrivings(
+            final Driver driver,
+            final double startLat,
+            final double startLng,
+            final List<Driving> futureDrivings,
+            final LocalDateTime start
+    ){
+        if (futureDrivings.size() > 0) {
+            Driving lastDrivingBeforeOurDriving = getLastDrivingBeforeOurDriving(futureDrivings, start);
+            Location drivingLocation = lastDrivingBeforeOurDriving.getRoute().getLocations().last().getLocation();
+
+            return checkIfDrivingIsBeforeOur(lastDrivingBeforeOurDriving, start)?
+                    routeService.calculateMinutesForDistance(drivingLocation.getLat(), drivingLocation.getLon(), startLat, startLng):
+                    addMinutesIfDriverHasNotDrivingBeforeOurDriving(driver, startLat, startLng);
+        }
+
+        return addMinutesIfDriverHasNotDrivingBeforeOurDriving(driver, startLat, startLng);
+    }
+
+    private boolean checkIfDrivingIsBeforeOur(Driving lastDrivingBeforeOurDriving, LocalDateTime start) {
+
+        return lastDrivingBeforeOurDriving.getStarted().plusMinutes((int) lastDrivingBeforeOurDriving.getDuration())
+                .isBefore(start);
+    }
+
+    private double addMinutesIfDriverHasNotDrivingBeforeOurDriving(
+            final Driver driver,
+            final double startLat,
+            final double startLng
+    ) {
+
+        return routeService.calculateMinutesForDistance(driver.getVehicle().getCurrentStop().getLat(), driver.getVehicle().getCurrentStop().getLon(), startLat, startLng);
+    }
+
+    private Driving getLastDrivingBeforeOurDriving(List<Driving> futureDrivings, LocalDateTime start) {
         Driving lastDrivingBeforeOurDriving = futureDrivings.get(0);
         LocalDateTime minDateTime = lastDrivingBeforeOurDriving.getStarted().plusMinutes((int) lastDrivingBeforeOurDriving.getDuration());
         for(Driving futureDriving : futureDrivings){
@@ -406,9 +460,18 @@ public class DriverService implements IDriverService{
                 lastDrivingBeforeOurDriving = futureDriving;
             }
         }
-        Location drivingLocation = lastDrivingBeforeOurDriving.getRoute().getLocations().last().getLocation();
 
-        return routeService.calculateMinutesForDistance(drivingLocation.getLat(), drivingLocation.getLon(), startLat, startLng);
+//        Driving lastDrivingBeforeOurDriving = futureDrivings.stream()
+//                .filter(d -> d.getStarted().plusMinutes((int) d.getDuration()).isBefore(start))
+//                .max(Comparator.comparing(d -> d.getStarted().plusMinutes((int) d.getDuration())));
+//
+//        futureDrivings.stream()
+//                .filter(driving -> {
+//                    LocalDateTime endDateOfFutureDriving = driving.getStarted().plusMinutes((int) driving.getDuration());
+//                    return endDateOfFutureDriving.isBefore(start);
+//                }).min(Comparator.comparing(d -> d.getStarted().plusMinutes((int) d.getDuration())));
+
+        return lastDrivingBeforeOurDriving;
     }
 
     private double calculateMinutesToArrivalForBusyDriversWithoutFutureDrivings(
@@ -468,7 +531,7 @@ public class DriverService implements IDriverService{
             return calculateMinutesToArrivalForFreeDriversWithoutFutureDrivings(driver, drivingLocation.getLat(), drivingLocation.getLon());
         }
         else if(!driver.isDrive() && hasFutureDrivings(driver)){
-            return calculateMinutesToArrivalForFreeDriversWithFutureDrivings(drivingLocation.getLat(), drivingLocation.getLon(), getFutureDrivings(driver), driving.getStarted());
+            return calculateMinutesToArrivalForFreeDriversWithFutureDrivings(driver, drivingLocation.getLat(), drivingLocation.getLon(), getFutureDrivings(driver), driving.getStarted());
         }
         else{
             return calculateMinutesToArrivalForBusyDriversWithoutFutureDrivings(driver, drivingLocation.getLat(), drivingLocation.getLon());
@@ -578,8 +641,7 @@ public class DriverService implements IDriverService{
     }
 
     public boolean blockDriver(final Long id, final String reason)
-            throws EntityNotFoundException, EntityUpdateException
-    {
+            throws EntityNotFoundException, EntityUpdateException, IOException {
         Driver driver = getDriverById(id);
         if (checkIfDrivingInProgress(driver.getDrivings())) {
             throw new EntityUpdateException("Driver cannot be blocked until he finishes his driving.");

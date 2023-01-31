@@ -43,18 +43,21 @@ public class ScheduleAllPassengersReviewCallForRide {
         List<DrivingNotification> allDrivingNotifications = drivingNotificationService.getAllReservation();
         for(DrivingNotification drivingNotification : allDrivingNotifications){
             if (drivingNotificationService.checkIfUsersReviewed(drivingNotification)){
-                if (drivingNotificationService.checkTimeOfStartingReservationRide(drivingNotification.getStarted())){
-                    drivingNotificationService.findDriverNow(drivingNotification);
-
-                }else if (drivingNotificationService.checkTimeOfStartingReservationIsSoonRide(drivingNotification.getStarted())){
-                    drivingNotificationService.deleteOutdatedReservationWithoutDriverNotification(drivingNotification);
-                }
-            } else {
-                if(drivingNotificationService.checkIfDrivingNotificationIsOutdated(drivingNotification)){
-                    drivingNotificationService.deleteOutdatedNotification(drivingNotification);
-                }
+              allUsersAreReviewed(drivingNotification);
+            }
+            else if(drivingNotificationService.checkIfDrivingNotificationIsOutdated(drivingNotification)){
+                drivingNotificationService.deleteOutdatedNotification(drivingNotification);
             }
         }
 
+    }
+
+    private void allUsersAreReviewed(DrivingNotification drivingNotification) throws PassengerNotHaveTokensException, EntityNotFoundException {
+        if (drivingNotificationService.checkTimeOfStartingReservationRide(drivingNotification.getStarted())){
+            drivingNotificationService.findDriverNow(drivingNotification);
+
+        }else if (drivingNotificationService.checkTimeOfStartingReservationIsSoonRide(drivingNotification.getStarted())){
+            drivingNotificationService.deleteOutdatedReservationWithoutDriverNotification(drivingNotification);
+        }
     }
 }

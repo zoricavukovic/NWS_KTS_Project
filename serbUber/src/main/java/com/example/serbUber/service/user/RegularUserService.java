@@ -25,6 +25,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -160,8 +161,7 @@ public class RegularUserService implements IRegularUserService {
     }
 
     public boolean blockRegular(final Long id, final String reason)
-            throws EntityNotFoundException, EntityUpdateException
-    {
+            throws EntityNotFoundException, EntityUpdateException, IOException {
         RegularUser regularUser = getRegularById(id);
         if (regularUserInActiveDriving(regularUser.getDrivings())) {
             throw new EntityUpdateException("Regular user cannot be blocked while in active driving.");
