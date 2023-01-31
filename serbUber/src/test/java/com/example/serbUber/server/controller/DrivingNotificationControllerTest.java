@@ -9,6 +9,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,6 +58,29 @@ public class DrivingNotificationControllerTest {
                         assertTrue(result.getResolvedException() instanceof EntityNotFoundException)
                 )
                 .andExpect(result -> assertEquals(errorMessage, Objects.requireNonNull(result.getResolvedException()).getMessage()));
+    }
+
+    @Test
+    @DisplayName("T1 - Should throw entity bad request exception, email is not valid when making PUT request to endpoint - /update-status/{id}/{accepted}/{email}")
+    @WithMockUser(roles="REGULAR_USER")
+    @Rollback(true)
+    public void acceptDriving_throwBadRequestException_emailInvalid() throws Exception {
+
+        MvcResult result = this.mockMvc.perform(MockMvcRequestBuilders.put(
+                String.format("%s/update-status/%d/%s/%s", DRIVING_NOTIFICATION_URL_PREFIX, EXIST_ID, "true", INVALID_EMAIL))
+                .contentType(contentType).content("")).andExpect(status().isBadRequest()).andReturn();
+        Assertions.assertEquals("acceptDriving.email: Email is not in the right format.", result.getResponse().getContentAsString());
+    }
+
+    @Test
+    @DisplayName("T1 - Should return updated driving notification when making PUT request to endpoint - /update-status/{id}/{accepted}/{email}")
+    @WithMockUser(roles="REGULAR_USER")
+    @Rollback(true)
+    public void acceptDriving_returnUpdatedDrivingNotification() throws Exception {
+
+        this.mockMvc.perform(MockMvcRequestBuilders.put(String.format("%s/update-status/%d/%s/%s", DRIVING_NOTIFICATION_URL_PREFIX, DRIVING_NOTIFICATION_ID, "true", USER_MIKI_EMAIL))
+                        .contentType(contentType)).andExpect(status().isOk())
+                .andExpect(jsonPath("$.passengers[1].email").value(USER_MIKI_EMAIL));
     }
     @DisplayName("T2 - Should successfully get driving notification when making GET request to endpoint - /driving-notifications/{id}")
     @WithMockUser(roles="REGULAR_USER")

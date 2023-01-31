@@ -1,9 +1,6 @@
 package com.example.serbUber.selenium.pages;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
@@ -113,14 +110,24 @@ public class SelectPassengersAndVehicleRideRequestPage {
         this.actions.moveToElement(passengerAutocompleteOption).click().perform();
     }
 
-    public void selectReservationTime(String hour, String minutes) {
-        scheduleHourInput.clear();
-        scheduleHourInput.sendKeys(hour);
-        scheduleHourInput.sendKeys(Keys.ENTER);
+    public void selectReservationTime(String hour, String minutes) throws InterruptedException {
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//input[@ng-reflect-name='hour']")));
 
+        ((JavascriptExecutor) driver).executeScript("document.getElementByXpath(\"//input[@ng-reflect-name='hour']\").value='12'");
+        Thread.sleep(5000);
+        actions.moveToElement(scheduleHourInput).click().sendKeys("").perform();
+        Thread.sleep(5000);
+//        scheduleHourInput.clear();
+//        scheduleHourInput.sendKeys(hour);
+        scheduleHourInput.sendKeys(Keys.RETURN);
+
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//input[@ng-reflect-name='minute']")));
         scheduleMinuteInput.clear();
         scheduleMinuteInput.sendKeys(minutes);
-        scheduleHourInput.sendKeys(Keys.ENTER);
+        scheduleMinuteInput.sendKeys(Keys.RETURN);
+
     }
 
     public void clickOnVanVehicleType(){

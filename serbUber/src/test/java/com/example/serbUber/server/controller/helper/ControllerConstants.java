@@ -3,7 +3,6 @@ package com.example.serbUber.server.controller.helper;
 import com.example.serbUber.request.*;
 import org.springframework.http.MediaType;
 
-import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,7 +12,9 @@ public class ControllerConstants {
     public static final MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
         MediaType.APPLICATION_JSON.getSubtype());
     public static final Long NOT_EXIST_ENTITY = 100L;
-    public static final Long EXIST_DRIVING_ID = 1L;
+    public static final Long EXIST_ID = 1L;
+
+    public static final String INVALID_EMAIL = "ana";
 
     public static final String USER_EMAIL_ACTIVE_DRIVING = "milos@gmail.com";
     public static final String USER_EMAIL_DRIVING = "srki@gmail.com";
@@ -42,4 +43,6 @@ public class ControllerConstants {
 
     public static final List<LongLatRequest> LONG_LAT_REQUESTS_TWO_ELEMENTS_WRONG_LAT = Arrays.asList(FIRST_LONG_LAT_REQUESTS, LONG_LAT_REQUESTS_WRONG_LAT);
 
+    public static final Long DRIVING_NOTIFICATION_ID = 2L;
+    public static final String USER_MIKI_EMAIL = "miki@gmail.com";
 }

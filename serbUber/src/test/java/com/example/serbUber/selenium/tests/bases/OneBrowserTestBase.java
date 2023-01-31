@@ -17,7 +17,8 @@ public class OneBrowserTestBase {
 
     @BeforeEach
     public void setup() {
-        System.setProperty("webdriver.chrome.driver", "srdjanchromedriver");
+        System.setProperty("webdriver.chrome.driver", "chromedriver");
+//        System.setProperty("webdriver.chrome.driver", "srdjanchromedriver");
         chromeDriver = new ChromeDriver();
 //        chromeDriver.manage().deleteAllCookies();
         chromeDriver.manage().window();
