@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,9 +22,8 @@ import static com.example.serbUber.selenium.helper.Util.getMinutes;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-//@TestMethodOrder(MethodOrderer.DisplayName.class)
-//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-//@DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
+
+@Transactional
 public class RideRequestOnePassengerTest extends OneBrowserTestBase {
 
     @Test

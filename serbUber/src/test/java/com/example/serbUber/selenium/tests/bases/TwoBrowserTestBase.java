@@ -10,7 +10,7 @@ import org.springframework.test.annotation.Rollback;
 import javax.transaction.Transactional;
 
 
-//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest
 @TestMethodOrder(MethodOrderer.DisplayName.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TwoBrowserTestBase {

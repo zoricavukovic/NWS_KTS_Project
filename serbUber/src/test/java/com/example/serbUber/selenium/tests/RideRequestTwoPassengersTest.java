@@ -6,6 +6,7 @@ import com.example.serbUber.selenium.tests.bases.TwoBrowserTestBase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,7 @@ import static com.example.serbUber.selenium.helper.Constants.*;
 import static com.example.serbUber.selenium.helper.Constants.DRIVER_NAME_RIDE_TWO_LOCATIONS_ONE_PASSENGER;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Transactional
 public class RideRequestTwoPassengersTest extends TwoBrowserTestBase {
 
     @Test
