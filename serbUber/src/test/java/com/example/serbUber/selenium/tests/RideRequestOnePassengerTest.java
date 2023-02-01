@@ -47,7 +47,12 @@ public class RideRequestOnePassengerTest extends OneBrowserTestBase {
         List<String> locations = new ArrayList<>();
         locations.add(START_POINT);
         locations.add(END_POINT);
-        rideRequestPage.enterLocations(locations);
+
+        for(int i=0; i < locations.size(); i++){
+            rideRequestPage.sendDataToLocationInput(i, locations.get(i));
+            rideRequestPage.selectFirstLocationOption(WANTED_LOCATION_INDEX);
+        }
+
         assertTrue(rideRequestPage.allLocationsAreSelected());
         rideRequestPage.clickOnViewPossibleRoutesButton();
         rideRequestPage.clickOnRequestNowButton();
@@ -68,7 +73,12 @@ public class RideRequestOnePassengerTest extends OneBrowserTestBase {
         List<String> locations = new ArrayList<>();
         locations.add(START_POINT);
         locations.add(END_POINT);
-        rideRequestPage.enterLocations(locations);
+
+        for(int i=0; i < locations.size(); i++){
+            rideRequestPage.sendDataToLocationInput(i, locations.get(i));
+            rideRequestPage.selectFirstLocationOption(WANTED_LOCATION_INDEX);
+        }
+
         assertTrue(rideRequestPage.allLocationsAreSelected());
         rideRequestPage.clickOnViewPossibleRoutesButton();
         rideRequestPage.clickOnRequestNowButton();
@@ -90,7 +100,12 @@ public class RideRequestOnePassengerTest extends OneBrowserTestBase {
         List<String> locations = new ArrayList<>();
         locations.add(START_POINT);
         locations.add(END_POINT);
-        rideRequestPage.enterLocations(locations);
+
+        for(int i=0; i < locations.size(); i++){
+            rideRequestPage.sendDataToLocationInput(i, locations.get(i));
+            rideRequestPage.selectFirstLocationOption(WANTED_LOCATION_INDEX);
+        }
+
         assertTrue(rideRequestPage.allLocationsAreSelected());
         rideRequestPage.clickOnViewPossibleRoutesButton();
         rideRequestPage.clickOnRequestNowButton();
@@ -118,7 +133,12 @@ public class RideRequestOnePassengerTest extends OneBrowserTestBase {
         List<String> locations = new ArrayList<>();
         locations.add(START_POINT);
         locations.add(END_POINT);
-        rideRequestPage.enterLocations(locations);
+
+        for(int i=0; i < locations.size(); i++){
+            rideRequestPage.sendDataToLocationInput(i, locations.get(i));
+            rideRequestPage.selectFirstLocationOption(WANTED_LOCATION_INDEX);
+        }
+
         assertTrue(rideRequestPage.allLocationsAreSelected());
         rideRequestPage.clickOnViewPossibleRoutesButton();
         rideRequestPage.scrollRouteDiv();
@@ -145,7 +165,12 @@ public class RideRequestOnePassengerTest extends OneBrowserTestBase {
         List<String> locations = new ArrayList<>();
         locations.add(START_POINT_TWO_ROUTES);
         locations.add(END_POINT_TWO_ROUTES);
-        rideRequestPage.enterLocations(locations);
+
+        for(int i=0; i < locations.size(); i++){
+            rideRequestPage.sendDataToLocationInput(i, locations.get(i));
+            rideRequestPage.selectFirstLocationOption(WANTED_LOCATION_INDEX);
+        }
+
         assertTrue(rideRequestPage.allLocationsAreSelected());
         rideRequestPage.clickOnViewPossibleRoutesButton();
         rideRequestPage.scrollRouteDiv();
@@ -173,7 +198,12 @@ public class RideRequestOnePassengerTest extends OneBrowserTestBase {
         List<String> locations = new ArrayList<>();
         locations.add(START_POINT);
         locations.add(END_POINT);
-        rideRequestPage.enterLocations(locations);
+
+        for(int i=0; i < locations.size(); i++){
+            rideRequestPage.sendDataToLocationInput(i, locations.get(i));
+            rideRequestPage.selectFirstLocationOption(WANTED_LOCATION_INDEX);
+        }
+
         assertTrue(rideRequestPage.allLocationsAreSelected());
         rideRequestPage.clickOnViewPossibleRoutesButton();
         rideRequestPage.scrollRouteDiv();

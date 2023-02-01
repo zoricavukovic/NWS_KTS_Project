@@ -38,7 +38,7 @@ public class RideRequestPage {
     @FindBy(how = How.ID, using = "route-div")
     private WebElement routeDiv;
 
-    @FindBy(how = How.CSS, using = ".pac-item-query")
+    @FindBy(how = How.CSS, using = ".pac-item")
     private List<WebElement> placesAutocompleteOptions;
 
     @FindBy(how = How.XPATH, using="//p-carousel/div/div/div/button[2]")
@@ -68,29 +68,13 @@ public class RideRequestPage {
         return webElement != null;
     }
 
-    public void enterLocations(List<String> locations) {
+    public void sendDataToLocationInput(int index, String location) {
         new WebDriverWait(driver, Duration.ofSeconds(5))
-                .until(ExpectedConditions.visibilityOf(locationInputFields.get(0)));
-        if(locations.size() > 2){
-            addMoreLocations(locations.size() - 2);
-        }
+                .until(ExpectedConditions.visibilityOf(locationInputFields.get(index)));
 
-        for(int i=0; i<locations.size(); i++){
-            actions.moveToElement(locationInputFields.get(i)).click().perform();
-            locationInputFields.get(i).clear();
-            locationInputFields.get(i).sendKeys(locations.get(i));
-            this.selectFirstLocationOption();
-        }
-
-        actions.moveToElement(requestNowTitle).click().perform();
-    }
-
-    public void addMoreLocations(int numberOfLocations){
-        int i = 0;
-        while(i < numberOfLocations){
-            clickOnAddToLocationButton();
-            i += 1;
-        }
+        actions.moveToElement(locationInputFields.get(index)).click().perform();
+        locationInputFields.get(index).clear();
+        locationInputFields.get(index).sendKeys(location);
     }
 
     public void clickOnAddToLocationButton(){
@@ -127,14 +111,15 @@ public class RideRequestPage {
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", routeDiv);
     }
 
-    private void selectFirstLocationOption() {
+    public void selectFirstLocationOption(int index) {
         new WebDriverWait(driver, Duration.ofSeconds(5))
-                .until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(".pac-item-query")));
+                .until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(".pac-item")));
 
         new WebDriverWait(driver, Duration.ofSeconds(5))
-                .until(ExpectedConditions.elementToBeClickable(placesAutocompleteOptions.get(0)));
+                .until(ExpectedConditions.elementToBeClickable(placesAutocompleteOptions.get(index)));
 
-        this.actions.moveToElement(placesAutocompleteOptions.get(0)).click().perform();
+        placesAutocompleteOptions.get(index).click();
+        actions.moveToElement(requestNowTitle).click().perform();
     }
 
     public void clickOnSecondRouteButton(){

@@ -87,7 +87,7 @@
         - root (starting point for frontend)
         - shared (components used by multiple user roles, interceptors, pipes)
         - user (components that are generly used by all user roles)
-* Note* All user based elements are consistring of pages, components and services
+* Note* All user based elements are consisting of pages, components and services
 
 
 ## 📎 Useful links:

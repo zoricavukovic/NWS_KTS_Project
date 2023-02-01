@@ -62,7 +62,7 @@ public class FacebookLoginPage {
     }
 
     public boolean isFacebookPageLoaded(String facebookWelcomeMessage){
-        WebElement visibleBanner = new WebDriverWait(driver, Duration.ofSeconds(5))
+        WebElement visibleBanner = new WebDriverWait(driver, Duration.ofSeconds(10))
             .until(ExpectedConditions.visibilityOfElementLocated(
                 By.xpath(String.format("//span[contains(text(), '%s')]", facebookWelcomeMessage))
             ));

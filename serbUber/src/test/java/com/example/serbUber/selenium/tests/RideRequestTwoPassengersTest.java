@@ -5,6 +5,7 @@ import com.example.serbUber.selenium.pages.*;
 import com.example.serbUber.selenium.tests.bases.TwoBrowserTestBase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +33,12 @@ public class RideRequestTwoPassengersTest extends TwoBrowserTestBase {
         List<String> locations = new ArrayList<>();
         locations.add(START_POINT);
         locations.add(END_POINT);
-        rideRequestPage.enterLocations(locations);
+
+        for(int i=0; i < locations.size(); i++){
+            rideRequestPage.sendDataToLocationInput(i, locations.get(i));
+            rideRequestPage.selectFirstLocationOption(WANTED_LOCATION_INDEX);
+        }
+
         assertTrue(rideRequestPage.allLocationsAreSelected());
         rideRequestPage.clickOnViewPossibleRoutesButton();
         rideRequestPage.clickOnRequestNowButton();
@@ -50,6 +56,7 @@ public class RideRequestTwoPassengersTest extends TwoBrowserTestBase {
         drivingNotificationPageLinkedPassenger.clickOnRejectRideButton();
         Assertions.assertTrue(drivingNotificationPageLinkedPassenger.isVisibleRideIsRejectedToast(RIDE_IS_REJECTED_TOAST_MESSAGE));
     }
+
     @Test
     @DisplayName("T2-Ride created successfully with two passengers and three locations chosen suv")
     public void rideCreatedSuccessfullyWithTwoPassengersAndThreeLocationsChosenSuvTest() {
@@ -61,7 +68,14 @@ public class RideRequestTwoPassengersTest extends TwoBrowserTestBase {
         locations.add("Bulevar Cara Lazara 10");
         locations.add("Bulevar Evrope 20");
         locations.add("Futoski put 103");
-        rideRequestPage.enterLocations(locations);
+
+        rideRequestPage.clickOnAddToLocationButton();
+
+        for(int i=0; i<locations.size(); i++){
+            rideRequestPage.sendDataToLocationInput(i, locations.get(i));
+            rideRequestPage.selectFirstLocationOption(WANTED_LOCATION_INDEX);
+        }
+
         assertTrue(rideRequestPage.allLocationsAreSelected());
         rideRequestPage.clickOnViewPossibleRoutesButton();
         rideRequestPage.scrollRouteDiv();

@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 
 import javax.transaction.Transactional;
+import java.util.concurrent.TimeUnit;
 
 
 @SpringBootTest
@@ -22,12 +23,14 @@ public class TwoBrowserTestBase {
 //        System.setProperty("webdriver.chrome.driver", "chromedriver");
         System.setProperty("webdriver.chrome.driver", "srdjanchromedriver");
         chromeDriver = new ChromeDriver();
+        chromeDriver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 //        chromeDriver.manage().deleteAllCookies();
         chromeDriver.manage().window();
 
 //        System.setProperty("webdriver.edge.driver", "msedgedriver");
         System.setProperty("webdriver.edge.driver", "srdjanedgedriver.exe");
         edgeDriver = new EdgeDriver();
+        edgeDriver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 //        edgeDriver.manage().deleteAllCookies();
         edgeDriver.manage().window();
     }
