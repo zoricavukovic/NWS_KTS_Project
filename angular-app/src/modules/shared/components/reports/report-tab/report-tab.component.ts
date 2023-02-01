@@ -121,6 +121,7 @@ export class ReportTabComponent implements OnInit, OnDestroy {
               'Chart cannot be shown right now, please try later.',
               'Error happened!'
             );
+            console.log(err);
           }
         );
     } else {
@@ -142,6 +143,7 @@ export class ReportTabComponent implements OnInit, OnDestroy {
               'Chart cannot be shown right now, please try later.',
               'Error happened!'
             );
+            console.log(err);
           }
         );
     }
@@ -161,11 +163,10 @@ export class ReportTabComponent implements OnInit, OnDestroy {
 
   loadAllUsers() {
     this.userSubscription = this.userService.getAllVerified().subscribe(res => {
-      for (let user of res) {
+      for (const user of res) {
         this.tempListOfUserEmails.push(user.email);
         this.allUsersObj.push(user);
       }
-      console.log(this.tempListOfUserEmails);
 
       this.filteredRegularUsers = this.userCtrl.valueChanges.pipe(
         startWith(''),
@@ -178,7 +179,7 @@ export class ReportTabComponent implements OnInit, OnDestroy {
     if (email === 'All users') {
       this.selectedUserId = -1;
     } else {
-      for (let user of this.allUsersObj) {
+      for (const user of this.allUsersObj) {
         if (user.email === email) {
           this.selectedUserId = user.id;
         }

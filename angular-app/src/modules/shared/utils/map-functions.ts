@@ -143,8 +143,7 @@ function calculateMinutesToDestination(
     destination: destination,
     travelMode: google.maps.TravelMode.DRIVING,
   };
-  console.log(destination);
-  console.log(source);
+
   directionService.route(request, (response, status) => {
     if (status === google.maps.DirectionsStatus.OK) {
       const distanceInfo = response.routes[0].legs[0];
@@ -319,10 +318,9 @@ export function drawPolylineWithClickOption(
   const polyline: google.maps.Polyline = drawPolylineOnMap(map, latLongs, color, weight);
   polyline.setOptions({ clickable: true });
   drawPolylineList[indexOfSelectedPath] = polyline;
+
   google.maps.event.addListener(polyline, 'click', function () {
-    (rideRequestForm.get('routePathIndex')?.value)[
-      indexOfRouteInPossibleRoutes
-      ] = indexOfSelectedPath;
+    (rideRequestForm.get('routePathIndex').value)[indexOfRouteInPossibleRoutes] = indexOfSelectedPath;
     drawPolylineList.forEach(p => {
       p.setOptions({
         strokeColor: '#cdd1d3',
@@ -438,7 +436,6 @@ export function updateVehiclePosition(
     );
     marker.setTitle(getTitle(vehicleCurrentLocation, storeDriving));
 
-    console.log(vehicleCurrentLocation);
     if (vehicleCurrentLocation.inDrive) {
       marker.setPosition({
         lat: vehicleCurrentLocation.currentLocation.lat,

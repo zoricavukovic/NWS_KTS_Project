@@ -212,7 +212,6 @@ export class MapPageComponent implements OnInit, OnDestroy {
   updateIfDriverChooseWrongRoute(
     vehicleCurrentLocation: VehicleCurrentLocation
   ) {
-    console.log(vehicleCurrentLocation);
     if (
       this.storedDrivingNotification?.vehicleId === vehicleCurrentLocation.id &&
       this.authService.userIsRegular
@@ -221,16 +220,12 @@ export class MapPageComponent implements OnInit, OnDestroy {
         this.storedDrivingNotification.route.locations.at(
           vehicleCurrentLocation.crossedWaypoints
         ).routeIndex;
-      console.log(correctRouteIndex);
-      console.log(vehicleCurrentLocation.chosenRouteIdx);
-      console.log(vehicleCurrentLocation.id);
       if (
         correctRouteIndex !== vehicleCurrentLocation.chosenRouteIdx &&
         this.storedDrivingNotification.vehicleId ===
           vehicleCurrentLocation.id &&
         !this.storedDrivingNotification.wrongRoute
       ) {
-        console.log('trueee');
         this.store.dispatch(new UpdateIfDriverChooseWrongRoute(true));
       }
     }

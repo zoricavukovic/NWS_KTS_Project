@@ -61,10 +61,6 @@ export class DrivingDetailsActionsComponent implements OnInit, OnDestroy {
       });
   }
 
-  setFavouriteRouteEmitter() {
-    this.setFavouriteRouteEvent.emit(this.favouriteRoute);
-  }
-
   canAcceptOrDeclineRide(): boolean {
     return this._router.url.includes('driving');
   }

@@ -1,5 +1,3 @@
-
-
 export interface BellNotification {
     id: number;
     message: string;

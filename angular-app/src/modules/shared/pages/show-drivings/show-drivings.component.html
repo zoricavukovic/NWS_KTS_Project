@@ -42,10 +42,8 @@
   </div>
 
     <app-pagination class="paginator" [totalPages]="totalPages" [currentPage]="currentPage"
-    (onPageSelected)="changePage($event)" *ngIf="drivings.length>0">
+    (pageIsSelected)="changePage($event)" *ngIf="drivings.length>0">
   </app-pagination>
 </div>
 
-<util-message
-message="User don't have any drivings."
-*ngIf="drivings.length === 0"></util-message>
+<util-message message="User don't have any drivings." *ngIf="drivings.length === 0"></util-message>

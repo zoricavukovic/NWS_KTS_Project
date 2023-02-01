@@ -40,5 +40,4 @@ export class ReportsHistoryComponent implements OnInit, OnDestroy {
       this.reportSubscription.unsubscribe();
     }
   }
-
 }

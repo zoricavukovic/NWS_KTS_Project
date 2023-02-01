@@ -1,5 +1,4 @@
 import { Component, Input } from '@angular/core';
-import {ChartSumData} from './../../../models/chart/chart-data'
 
 @Component({
   selector: 'app-report-statistics',
@@ -11,7 +10,7 @@ export class ReportStatisticsComponent {
   @Input() sum: number;
 
   @Input() average: number;
- 
+
   constructor() {
     this.sum = 0;
     this.average = 0;

@@ -1,18 +1,14 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { Router } from '@angular/router';
 import { Select, Store } from '@ngxs/store';
 import { ToastrService } from 'ngx-toastr';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import {
-  ClearStore,
-  UpdateDrivingNotification,
+  ClearStore
 } from 'src/modules/shared/actions/driving-notification.action';
 import { RatingDialogComponent } from 'src/modules/shared/components/rating-dialog/rating-dialog.component';
-import { SimpleDrivingInfo } from 'src/modules/shared/models/driving/simple-driving-info';
 import { DrivingNotification } from 'src/modules/shared/models/notification/driving-notification';
 import { User } from 'src/modules/shared/models/user/user';
-import { DrivingService } from 'src/modules/shared/services/driving-service/driving.service';
 import { DrivingNotificationState } from 'src/modules/shared/state/driving-notification.state';
 
 @Component({
@@ -59,6 +55,7 @@ export class RateDrivingOrSkipComponent implements OnInit {
       },
       error => {
         this.toast.error('Review creation failed');
+        console.log(error);
       }
     );
   }

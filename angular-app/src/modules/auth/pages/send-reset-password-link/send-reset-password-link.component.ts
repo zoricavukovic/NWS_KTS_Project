@@ -24,6 +24,7 @@ export class SendResetPasswordEmailComponent implements OnDestroy {
         .sendResetPasswordEmail(this.enterEmailForm.get('email').value)
         .subscribe(
           response => {
+            console.log(response);
             this.toast.success(
               'Reset link is sent to email successfully.',
               'Reset link sent'

@@ -37,7 +37,6 @@ export class ActiveDriveContainerComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.currentDrivingNotification.subscribe(response => {
-      console.log(response);
       this.storedDrivingNotification = response;
     });
     this.drivingSubscription = this._drivingService
@@ -49,8 +48,6 @@ export class ActiveDriveContainerComponent implements OnInit, OnDestroy {
             .getTimeForDriving(driving.drivingId)
             .subscribe(time => {
               driving.started = time;
-              console.log(time);
-              console.log(driving);
               this.store
                 .dispatch(new UpdateDrivingNotification(driving))
                 .subscribe();

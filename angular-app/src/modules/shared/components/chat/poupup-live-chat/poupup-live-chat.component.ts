@@ -56,7 +56,6 @@ export class PoupupLiveChatComponent implements OnInit, OnDestroy {
       });
   }
 
-  //ako je resolved kreiraj novu
   checkIfResolved() {
     if (this.chatRoom.resolved) {
       this.toast.success('Problem solved!', 'Thank you for using live chat.');
@@ -65,8 +64,8 @@ export class PoupupLiveChatComponent implements OnInit, OnDestroy {
   }
 
   setMessagesAsSeen() {
-    let changed: boolean = false;
-    for (let message of this.chatRoom.messages) {
+    let changed = false;
+    for (const message of this.chatRoom.messages) {
       if (this.chatRoomService.adminMessageNotSeen(message)) {
         message.seen = true;
         changed = true;
@@ -84,6 +83,7 @@ export class PoupupLiveChatComponent implements OnInit, OnDestroy {
       .subscribe(
         res => {
           this.messagesSeenEvent.emit();
+          console.log(res);
         },
         error => console.log(error)
       );
@@ -140,22 +140,20 @@ export class PoupupLiveChatComponent implements OnInit, OnDestroy {
             this.newMessage = '';
             this.chatService.sendMessage(res, true);
           },
-          error =>
+          error => {
             this.toast.error(
               'Message cannot be sent!',
               'All our operators are currently busy! Try later.'
-            )
+            );
+            console.log(error);
+          }
         );
     }
   }
 
   showDescTag(message: MessageResponse): boolean {
     if (this.previousMessage) {
-      if (!this.previousMessage.adminResponse && message.adminResponse) {
-        this.changedRole = true;
-      } else {
-        this.changedRole = false;
-      }
+      this.changedRole = !this.previousMessage.adminResponse && message.adminResponse;
     } else if (message.adminResponse) {
       this.changedRole = true;
     }

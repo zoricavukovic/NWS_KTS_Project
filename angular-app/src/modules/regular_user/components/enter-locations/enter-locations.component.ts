@@ -109,9 +109,9 @@ export class EnterLocationsComponent implements OnDestroy {
     indexOfSelectedPath: number,
     indexOfRouteInPossibleRoutes: number
   ): void {
-    (this.rideRequestForm.get('routePathIndex')?.value)[
-      indexOfRouteInPossibleRoutes
-    ] = indexOfSelectedPath;
+    if (this.rideRequestForm.get('routePathIndex')?.value) {
+      (this.rideRequestForm.get('routePathIndex').value)[indexOfRouteInPossibleRoutes] = indexOfSelectedPath;
+    }
 
     if (this.hasOneDestination()) {
       swapColorsOfRoutes(indexOfSelectedPath, this.drawPolylineList);
@@ -261,8 +261,10 @@ export class EnterLocationsComponent implements OnDestroy {
       const indexOfSelectedPath = this.possibleRoutesViaPoints
         .at(0)
         .possibleRouteDTOList.indexOf(minTimePath);
-      (this.rideRequestForm.get('routePathIndex')?.value)[0] =
-        indexOfSelectedPath;
+      if (this.rideRequestForm.get('routePathIndex')?.value){
+        (this.rideRequestForm.get('routePathIndex').value)[0] =
+          indexOfSelectedPath;
+      }
       swapColorsOfRoutes(indexOfSelectedPath, this.drawPolylineList);
     } else {
       this.drawPolylineList = removeAllPolyline(this.drawPolylineList);
@@ -294,8 +296,9 @@ export class EnterLocationsComponent implements OnDestroy {
       const indexOfSelectedPath = this.possibleRoutesViaPoints
         .at(0)
         .possibleRouteDTOList.indexOf(minTimePath);
-      (this.rideRequestForm.get('routePathIndex')?.value)[0] =
-        indexOfSelectedPath;
+      if (this.rideRequestForm.get('routePathIndex')?.value){
+        (this.rideRequestForm.get('routePathIndex').value)[0] = indexOfSelectedPath;
+      }
       swapColorsOfRoutes(indexOfSelectedPath, this.drawPolylineList);
     } else {
       this.drawPolylineList = removeAllPolyline(this.drawPolylineList);
@@ -303,11 +306,10 @@ export class EnterLocationsComponent implements OnDestroy {
         const minDistancePath = route.possibleRouteDTOList.reduce((a, b) =>
           a.distance < b.distance ? a : b
         );
-        const indexOfSelectedPath =
-          route.possibleRouteDTOList.indexOf(minDistancePath);
-        (this.rideRequestForm.get('routePathIndex')?.value)[
-          this.possibleRoutesViaPoints.indexOf(route)
-        ] = indexOfSelectedPath;
+        const indexOfSelectedPath = route.possibleRouteDTOList.indexOf(minDistancePath);
+        if (this.rideRequestForm.get('routePathIndex')?.value) {
+          (this.rideRequestForm.get('routePathIndex').value)[this.possibleRoutesViaPoints.indexOf(route)] = indexOfSelectedPath;
+        }
         const routeCoordinates = getRouteCoordinates(
           route.possibleRouteDTOList.at(indexOfSelectedPath)
         );

@@ -57,6 +57,7 @@ export class DrivingRowComponent implements OnInit, OnDestroy {
         )
         .subscribe(res => {
           this.favouriteRoute = false;
+          console.log(res);
         });
     } else {
       this.regularUserService
@@ -68,6 +69,7 @@ export class DrivingRowComponent implements OnInit, OnDestroy {
         )
         .subscribe(res => {
           this.favouriteRoute = true;
+          console.log(res);
         });
     }
   }
@@ -110,6 +112,7 @@ export class DrivingRowComponent implements OnInit, OnDestroy {
       },
       error => {
         this.toast.error('Review creation failed');
+        console.log(error);
       }
     );
   }

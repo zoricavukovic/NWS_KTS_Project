@@ -13,7 +13,7 @@ import { Route } from '../../../shared/models/route/route';
 export class FavoriteRoutesDataComponent implements OnInit, OnDestroy {
 
   @Input() userId: number;
-  
+
   favouriteRoutesSubscription: Subscription;
   favoriteRoutes: Route[];
 
@@ -34,7 +34,6 @@ export class FavoriteRoutesDataComponent implements OnInit, OnDestroy {
         .getFavouriteRoutesForUser(this.userId)
         .subscribe(res => {
           this.favoriteRoutes = res;
-          console.log(this.favoriteRoutes)
         });
     }
   }
@@ -47,9 +46,10 @@ export class FavoriteRoutesDataComponent implements OnInit, OnDestroy {
       .subscribe(response => {
         this.favoriteRoutes = this.favoriteRoutes.filter((item) => {
           return item.id !== routeId
-        })
+        });
+        console.log(response);
       });
-      
+
       event.stopPropagation();
   }
 

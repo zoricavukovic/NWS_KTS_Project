@@ -15,7 +15,7 @@ export class ReviewRowComponent {
 
   constructor(
     private configService: ConfigService,
-    private router: Router    
+    private router: Router
   ) {
     this.review = null;
     this.numOfReviews = 0;
@@ -24,11 +24,6 @@ export class ReviewRowComponent {
   goToUserProfile(id: number): void {
     this.router.navigateByUrl('/', {skipLocationChange: true}).then(()=>
     this.router.navigate([`/serb-uber/user/user-profile/${id}`]));
-  }
-
-  getBase64Prefix(): string {
-
-    return this.configService.BASE64_PHOTO_PREFIX;
   }
 
   getAverageRate(review: Review): number {

@@ -46,11 +46,13 @@ export class MessagesBoxComponent implements OnDestroy {
             this.selectedChatRoom = res;
             this.chatService.sendMessage(res, false);
           },
-          error =>
+          error =>{
+            console.log(error);
             this.toast.error(
               'Message cannot be sent!',
               'Error occured, try again later.'
-            )
+            );
+          }
         );
     }
   }

@@ -66,7 +66,7 @@ export class WebSocketService {
       const ws = new SockJS(serverUrl);
       this.stompClient = Stomp.over(ws);
 
-      let that = this;
+      const that = this;
 
       this.stompClient.connect({}, function () {
         that.chatNotification();
@@ -124,7 +124,6 @@ export class WebSocketService {
     );
   }
 
-  //za ovaj treba i na klik da moze da ode
   passengerAgreementNotification() {
     this.stompClient.subscribe(
       environment.publisherUrl +
@@ -159,7 +158,6 @@ export class WebSocketService {
     );
   }
 
-  //ovo isto moze da vodi kao i ono prvo, a i ne mora
   successfulCreatedDrivingNotification() {
     this.stompClient.subscribe(
       environment.publisherUrl +
@@ -175,7 +173,6 @@ export class WebSocketService {
           drivingId: drivingStatusNotification.drivingId,
           vehicleId: drivingStatusNotification.vehicleId,
         };
-        console.log(updatedDriving);
         this.toast.info('Driving created successfully!');
         this.store.dispatch(new GetDrivingNotification());
         this.store.dispatch(
@@ -237,7 +234,6 @@ export class WebSocketService {
             drivingStatus: 'ACCEPTED',
           })
         );
-        console.log(drivingNotificationDetails);
         this.store.dispatch(
           new UpdateIdDrivingNotification({
             drivingId: drivingNotificationDetails.drivingId,
@@ -293,7 +289,6 @@ export class WebSocketService {
     );
   }
 
-  //ovo treba
   rejectDrivingNotification() {
     this.stompClient.subscribe(
       environment.publisherUrl +
@@ -367,7 +362,6 @@ export class WebSocketService {
           (message !== null && message !== undefined) ||
           message?.body !== null
         ) {
-          console.log(message.body);
           const vehicleCurrentLocation: VehicleCurrentLocation = JSON.parse(
             message.body
           );
@@ -431,12 +425,9 @@ export class WebSocketService {
       message => {
         this.toast.info('Your ride is rejected because of delay.');
         const user = JSON.parse(localStorage.getItem('user'));
-        console.log(user);
-        console.log('tu sammm');
         if (user.role.name === 'ROLE_DRIVER') {
           this.store.dispatch(new RemoveDriving(message.body));
         } else {
-          console.log('userrrr');
           this.store.dispatch(new ClearStore());
         }
       }
@@ -514,7 +505,6 @@ export class WebSocketService {
         this.drivingService
           .get(drivingStatusNotification.drivingId)
           .subscribe((response: Driving) => {
-            console.log('LJUBAVI');
             this.toast
               .info('You have new ride. Tap to see details.', 'New ride.')
               .onTap.subscribe(action => {

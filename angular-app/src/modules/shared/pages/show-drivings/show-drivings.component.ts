@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { PageEvent } from '@angular/material/paginator';
 import {Driving} from "../../models/driving/driving";
 import {User} from "../../models/user/user";
 import {AuthService} from "../../../auth/services/auth-service/auth.service";
@@ -42,7 +41,6 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
   drivingsSubscription: Subscription;
   reviewSubscription: Subscription;
   reviewedDrivingsSubscription: Subscription;
-  drivingCountSubscription: Subscription;
 
   constructor(
     private authService: AuthService,
@@ -132,7 +130,6 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
       )
       .subscribe((response: Driving[]) => {
         this.drivings = response;
-        console.log(this.totalPages);
       });
   }
 

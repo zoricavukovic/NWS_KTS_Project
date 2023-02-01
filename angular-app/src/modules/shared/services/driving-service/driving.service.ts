@@ -85,20 +85,6 @@ export class DrivingService extends GenericService<Driving> {
     );
   }
 
-  getVehicleDetails(
-    drivingId: number
-  ): BehaviorSubject<VehicleCurrentLocation> {
-    this.http
-      .get<VehicleCurrentLocation>(
-        this.configService.vehicleCurrentLocation(drivingId)
-      )
-      .subscribe(vehiclesCurrentLocation => {
-        this.ride$.next(vehiclesCurrentLocation);
-      });
-
-    return this.ride$;
-  }
-
   updateRide(vehicleCurrentLocation: VehicleCurrentLocation) {
     this.ride$.next(vehicleCurrentLocation);
   }

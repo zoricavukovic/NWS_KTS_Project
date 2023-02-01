@@ -23,5 +23,4 @@ export class PayingInfoService extends GenericService<PayingInfo> {
       maxNumOfTokensPerTransaction: maxNumOfTokens
     }
   }
-
 }

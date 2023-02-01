@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import {DrivingLocation} from "../../../shared/models/route/driving-location";
 import {Vehicle} from "../../../shared/models/vehicle/vehicle";
 import {User} from "../../../shared/models/user/user";
@@ -8,13 +8,9 @@ import {User} from "../../../shared/models/user/user";
   templateUrl: './accepting-driving-view.component.html',
   styleUrls: ['./accepting-driving-view.component.css'],
 })
-export class AcceptingDrivingViewComponent implements OnInit {
+export class AcceptingDrivingViewComponent {
   @Input() locations: DrivingLocation[];
   @Input() price: number;
   @Input() passengers: User[];
   @Input() vehicle: Vehicle;
-
-  ngOnInit(): void {
-    console.log("Doslo je ovde");
-  }
 }

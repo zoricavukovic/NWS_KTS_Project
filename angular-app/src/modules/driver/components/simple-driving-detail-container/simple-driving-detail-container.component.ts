@@ -56,10 +56,6 @@ export class SimpleDrivingDetailContainerComponent {
     this.finishDriving.emit();
   }
 
-  showOnMapDriving(driving: Driving):void {
-    console.log("prikaz", driving);
-  }
-
   onStartDriving():void {
     this.startDriving.emit();
   }
