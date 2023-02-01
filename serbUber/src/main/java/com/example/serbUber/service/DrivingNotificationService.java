@@ -16,6 +16,7 @@ import com.example.serbUber.service.user.RegularUserService;
 import com.google.maps.errors.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
@@ -207,10 +208,13 @@ public class DrivingNotificationService implements IDrivingNotificationService {
         webSocketService.sendDrivingStatus(DRIVER_NOT_FOUND_PATH, DRIVER_NOT_FOUND_MESSAGE, receiversReviewed);
     }
 
-//    @Transactional
     private Driving handleFoundDriver(DrivingNotification drivingNotification, Map<RegularUser, Integer> receiversReviewed, Driver driver) throws EntityNotFoundException, PassengerNotHaveTokensException {
         Set<RegularUser> passengers = getListOfUsers(receiversReviewed);
-        driver.setLocked(false);
+        if (driver.isLocked()) {
+            throw new OptimisticLockingFailureException("Conflict situation.");
+        }
+
+        driver.setLocked(true);
         driverService.save(driver);
         Driving driving = drivingService.create(
             drivingNotification.getRoute().getTimeInMin(),
@@ -222,6 +226,8 @@ public class DrivingNotificationService implements IDrivingNotificationService {
             drivingNotification.getPrice()
         );
 
+        driver.setLocked(false);
+        driverService.save(driver);
         passengers.remove(drivingNotification.getSender());
 
         if (isUnsuccessfullyPaidDriving(driving.getPrice(), passengers, drivingNotification.getSender())){
