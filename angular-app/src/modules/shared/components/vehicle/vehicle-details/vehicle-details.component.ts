@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
 import {Vehicle} from "../../../models/vehicle/vehicle";
-import {VehicleTypeInfo} from "../../../models/vehicle/vehicle-type-info";
 
 @Component({
   selector: 'vehicle-details',

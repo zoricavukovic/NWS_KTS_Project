@@ -1,4 +1,3 @@
-
 export interface BlockNotification {
     userId?: number;
     reason?: string;

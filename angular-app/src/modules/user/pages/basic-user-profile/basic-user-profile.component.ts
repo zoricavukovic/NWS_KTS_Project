@@ -85,6 +85,7 @@ export class BasicUserProfileComponent implements OnInit, OnDestroy {
           `User with id ${this.userId} not found.`,
           'User not found'
         );
+        console.log(error);
       }
     );
   }
@@ -172,6 +173,7 @@ export class BasicUserProfileComponent implements OnInit, OnDestroy {
                 `User with id ${this.userId} is successfully blocked.`,
                 'User blocked!'
               );
+              console.log(res);
               this.userBlocked = true;
             },
             error => {
@@ -193,6 +195,7 @@ export class BasicUserProfileComponent implements OnInit, OnDestroy {
               'User unblocked!'
             );
             this.userBlocked = false;
+            console.log(res);
           },
           error => {
             this.toast.error(error.error, 'User cannot be unblocked!');
@@ -203,7 +206,7 @@ export class BasicUserProfileComponent implements OnInit, OnDestroy {
 
   reportUser(): void {
     if (this.currentUser?.role.name === this.configService.ROLE_DRIVER) {
-      const dialogRef = this.dialogBlockReason.open(BehaviourReportDialogComponent, {
+      this.dialogBlockReason.open(BehaviourReportDialogComponent, {
         data: {currentUser: this.currentUser, driver: null, userToReport: this.user},
       });
     }

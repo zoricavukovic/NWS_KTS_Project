@@ -4,7 +4,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import {VerifyService} from "../../services/verify.service";
 
-
 @Component({
   selector: 'app-verify',
   templateUrl: './verify.component.html',
@@ -74,6 +73,7 @@ export class VerifyComponent implements OnInit, OnDestroy {
         )
         .subscribe(
           res => {
+            console.log(res);
             this.toast.success(
               'You became a new member of SerbUber!',
               'Verification successfully'
@@ -91,8 +91,10 @@ export class VerifyComponent implements OnInit, OnDestroy {
         .sendCodeAgain(Number(this.verifyId))
         .subscribe(
           res => (this.showForm = !this.showForm),
-          error =>
-            this.toast.error('Email cannot be sent.', 'Code cannot be sent')
+          error =>{
+            console.log(error);
+            this.toast.error('Email cannot be sent.', 'Code cannot be sent');
+          }
         );
     } else {
       this.toast.error(

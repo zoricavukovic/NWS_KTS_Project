@@ -57,6 +57,7 @@ export class ProcessingPaymentComponent implements OnInit, OnDestroy {
             'Payment completed!!'
             );
           this.route.navigate(['/serb-uber/regular-user/payment/status/1']);
+          console.log(response);
         },
         error => {
           this.showLoadingScreen = false;
@@ -76,12 +77,12 @@ export class ProcessingPaymentComponent implements OnInit, OnDestroy {
 
   checkPayPalArguments(): boolean {
 
-    return (this.payerId !== '' && this.payerId && this.paymentId !== '' && this.paymentId) ? true : false;
+    return !!(this.payerId !== '' && this.payerId && this.paymentId !== '' && this.paymentId);
   }
 
   checkTokenBankArguments(): boolean {
 
-    return (this.numOfTokens && this.tokenBankId) ? true : false;
+    return !!(this.numOfTokens && this.tokenBankId);
   }
 
   ngOnDestroy(): void {

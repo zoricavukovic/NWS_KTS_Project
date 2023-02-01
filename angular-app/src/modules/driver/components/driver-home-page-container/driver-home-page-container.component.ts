@@ -39,12 +39,10 @@ export class DriverHomePageContainerComponent implements OnInit, OnDestroy {
     this.activeDrivings.subscribe(response => {
       this.nowAndFutureDrivings = response;
     })
-    console.log(this.nowAndFutureDrivings);
     this.drivingSubscription = this.drivingService
       .getDrivingsForDriver(this.driverId)
       .subscribe((drivings: Driving[]) => {
         this.store.dispatch(new AddDrivings(drivings));
-        // this.nowAndFutureDrivings = drivings;
       });
   }
 
@@ -59,6 +57,7 @@ export class DriverHomePageContainerComponent implements OnInit, OnDestroy {
       res => {
         this.removeDriving(drivingIndex);
         this.toast.success("Successfully finished driving");
+        console.log(res);
       },
       error => this.toast.error(error.error, 'Finishing driving failed')
     );
@@ -100,6 +99,7 @@ export class DriverHomePageContainerComponent implements OnInit, OnDestroy {
       response => {
         this.removeDriving(index);
         this.toast.success("Successfully reject driving");
+        console.log(response);
       },
       error => this.toast.error(error.error, 'Reject driving failed')
     );

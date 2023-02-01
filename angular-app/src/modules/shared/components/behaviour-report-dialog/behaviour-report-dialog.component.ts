@@ -42,7 +42,8 @@ export class BehaviourReportDialogComponent implements OnDestroy {
 
     this.reportSubscription = this.reportService.createReport(senderId, receiverId, this.reason).subscribe(
       res => {
-        this.toast.success("Thank you for your feedback.", 'Your report is created!')
+        this.toast.success("Thank you for your feedback.", 'Your report is created!');
+        console.log(res);
       },
       error => {
         this.toast.error(error.error, 'Report creation failed!')

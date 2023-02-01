@@ -1,4 +1,3 @@
-
 export interface CreatePayment {
     tokenBankId: number;
     numOfTokens: number;

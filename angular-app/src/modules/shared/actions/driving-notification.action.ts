@@ -105,10 +105,6 @@ export class AddDrivings {
   constructor(public payload: Driving[]) {}
 }
 
-export class GetDrivings {
-  static readonly type = '[Drivings] GetDrivings';
-}
-
 export class UpdateDrivings {
   static readonly type = '[Drivings] UpdateDrivings';
 

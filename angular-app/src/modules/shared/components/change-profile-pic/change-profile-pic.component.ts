@@ -49,16 +49,20 @@ export class ChangeProfilePicComponent implements OnDestroy {
     this.profilePicUpdateSubscription = this.userService
       .updateProfilePicture(updateProfilePicture)
       .subscribe(
-        res =>
+        res => {
           this.toast.success(
             'Profile picture is changed successfully!',
             'Profile picture changed'
-          ),
-        error =>
+          );
+          console.log(res);
+        },
+        error => {
           this.toast.error(
             'Update failed, please select image!',
             'Profile picture changing failed'
-          )
+          );
+          console.log(error);
+        }
       );
   }
 

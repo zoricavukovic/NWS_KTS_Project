@@ -118,6 +118,7 @@ export class ChatRoomService {
         )
         .onTap.subscribe(res => {
           this.router.navigate(['/serb-uber/admin/messages']);
+          console.log(res);
         });
     }
   }

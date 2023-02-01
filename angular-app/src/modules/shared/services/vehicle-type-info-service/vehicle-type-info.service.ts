@@ -21,10 +21,4 @@ export class VehicleTypeInfoService extends GenericService<VehicleTypeInfo> {
       this.configService.priceForRouteAndVehicleUrl(type, kilometers)
     );
   }
-
-  getAveragePriceForRoute(kilometers: number): Observable<number> {
-    return this.http.get<number>(
-      this.configService.averagePriceForRoute(kilometers)
-    );
-  }
 }

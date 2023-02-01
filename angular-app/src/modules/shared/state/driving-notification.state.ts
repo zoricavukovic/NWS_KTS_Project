@@ -52,7 +52,6 @@ export class DrivingNotificationState {
       ...state,
       currentDrivingNotification: payload,
     });
-    console.log(state);
   }
 
   @Action(UpdateMinutesStatusDrivingNotification)
@@ -60,7 +59,6 @@ export class DrivingNotificationState {
     { getState, setState }: StateContext<DrivingNotificationStateModel>,
     { payload }: UpdateMinutesStatusDrivingNotification
   ) {
-    console.log('updateMinutesDrivingNotification');
     const state = getState();
     state.currentDrivingNotification.minutes = payload.minutes;
     state.currentDrivingNotification.drivingStatus = payload.drivingStatus;
@@ -107,7 +105,6 @@ export class DrivingNotificationState {
         ...state,
         currentDrivingNotification: state.currentDrivingNotification,
       });
-      console.log(state);
     } catch (error) {
       console.log('Error');
     }
@@ -154,7 +151,6 @@ export class DrivingNotificationState {
     { payload }: SimpleUpdateDrivingNotification
   ) {
     const state = getState();
-    console.log(payload.route);
     state.currentDrivingNotification.active = payload.active;
     state.currentDrivingNotification.drivingStatus = payload.drivingStatus;
     state.currentDrivingNotification.vehicleId = payload.vehicleId;
@@ -218,8 +214,6 @@ export class DrivingNotificationState {
       ...state,
       currentDrivingNotification: state.currentDrivingNotification,
     });
-
-    console.log(state);
   }
 
   @Action(UpdateIfDriverChooseWrongRoute)
@@ -233,8 +227,6 @@ export class DrivingNotificationState {
       ...state,
       currentDrivingNotification: state.currentDrivingNotification,
     });
-
-    console.log(state);
   }
 
   @Selector()
@@ -261,11 +253,8 @@ export class DrivingNotificationState {
     { getState, setState }: StateContext<DrivingNotificationStateModel>,
     { payload }: UpdateDrivings
   ) {
-    console.log(payload);
     const state = getState();
-    console.log(state);
     state.activeDrivings.push(payload);
-    console.log(state);
     setState({
       ...state,
       activeDrivings: state.activeDrivings,
@@ -277,7 +266,6 @@ export class DrivingNotificationState {
     { getState, setState }: StateContext<DrivingNotificationStateModel>,
     { payload }: RemoveDriving
   ) {
-    console.log(payload);
     const state = getState();
     for (const driving of state.activeDrivings) {
       if (driving.id === payload) {
@@ -286,7 +274,6 @@ export class DrivingNotificationState {
       }
     }
 
-    console.log(state);
     setState({
       ...state,
       activeDrivings: state.activeDrivings,

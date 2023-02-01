@@ -1,5 +1,3 @@
-
-
 export interface DriverUpdateApproval {
     id: number;
     userEmail: string;

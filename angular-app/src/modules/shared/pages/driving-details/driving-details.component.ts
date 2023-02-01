@@ -31,7 +31,6 @@ import { BehaviourReportDialogComponent } from '../../components/behaviour-repor
 import { MatDialog } from '@angular/material/dialog';
 import {
   AddDrivingNotification,
-  UpdateDrivingNotification,
 } from '../../actions/driving-notification.action';
 
 @Component({
@@ -188,7 +187,7 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
 
   reportDriveBehaviour() {
     if (this.loggedUser) {
-      const dialogRef = this._dialogRef.open(BehaviourReportDialogComponent, {
+      this._dialogRef.open(BehaviourReportDialogComponent, {
         data: {
           currentUser: this.loggedUser,
           driver: this.driver,
@@ -214,32 +213,6 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
     });
 
     return routePathIndex;
-  }
-
-  setFavouriteRoute(favourite: boolean) {
-    if (favourite) {
-      this.regularUserService
-        .updateFavouriteRoutes(
-          this.regularUserService.createFavouriteRequest(
-            this.authService.getCurrentUserId,
-            this.driving.route.id
-          )
-        )
-        .subscribe(res => {
-          this.favouriteRoute = false;
-        });
-    } else {
-      this.regularUserService
-        .addToFavouriteRoutes(
-          this.regularUserService.createFavouriteRequest(
-            this.authService.getCurrentUserId,
-            this.driving.route.id
-          )
-        )
-        .subscribe(res => {
-          this.favouriteRoute = true;
-        });
-    }
   }
 
   canAcceptOrDeclineRide(): boolean {

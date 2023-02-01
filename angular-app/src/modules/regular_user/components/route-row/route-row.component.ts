@@ -26,10 +26,6 @@ export class RouteRowComponent implements OnInit {
       ')';
   }
 
-  chooseRoute() {
-    this.chosenRouteEvent.emit('changed');
-  }
-
   private incrementShadeOfColor(index: number, number: number) {
     return this.rgbDeepBlue[number] + index;
   }
