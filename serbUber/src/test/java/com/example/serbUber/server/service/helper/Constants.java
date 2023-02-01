@@ -80,5 +80,4 @@ public class Constants {
     public static DrivingNotification RESERVATION_DRIVING_NOTIFICATION = new DrivingNotification(
             ROUTE, 4.0, new RegularUser(), LocalDateTime.now(), DURATION, false, false, VEHICLE_TYPE_INFO_DEFINED, new HashMap<>(), true
     );
-
 }

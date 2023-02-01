@@ -27,7 +27,6 @@ public class DriverConstants {
     public static Vehicle EXIST_VEHICLE = new Vehicle(EXIST_VEHICLE_ID, false, false, VEHICLE_TYPE_INFO_DEFINED, RATE);
     public static Driver EXIST_DRIVER = new Driver(DRIVER_ID, EXIST_DRIVER_EMAIL, Constants.EXIST_PASSWORD, NAME, SURNAME, PHONE_NUMBER, LocationHelper.CITY, PROFILE_PICTURE, EXIST_VEHICLE, ROLE_DRIVER);
     public static Driving NOT_REJECTED_DRIVING = new Driving(Constants.EXIST_OBJECT_ID, Constants.DURATION, Constants.STARTED, Constants.END, new Route(), DrivingStatus.PENDING, EXIST_DRIVER, Constants.PRICE);
-    public static DrivingStatusNotification REJECTED_DRIVING_STATUS_NOTIFICATION = new DrivingStatusNotification(Constants.DRIVING_REJECTION_REASON, DrivingStatus.REJECTED, NOT_REJECTED_DRIVING);
 
     public static Long VEHICLE_ID_1 = 1L;
     public static Vehicle VEHICLE_1 = new Vehicle(VEHICLE_ID_1, false, false, VehicleTypeInfoConstants.VEHICLE_TYPE_INFO_SUV, RATE);
@@ -43,7 +42,7 @@ public class DriverConstants {
     public static Vehicle VEHICLE_3 = new Vehicle(VEHICLE_ID_3, false, false, VehicleTypeInfoConstants.VEHICLE_TYPE_INFO_SUV, RATE);
     public static Long DRIVER_ID_3 = 3L;
     public static String DRIVER_EMAIL_3 = "driver3@gmail.com";
-    public static Driver DRIVER_3 = new Driver(DRIVER_ID_3, DRIVER_EMAIL_3, Constants.EXIST_PASSWORD, NAME, SURNAME, PHONE_NUMBER, LocationHelper.CITY, PROFILE_PICTURE, VEHICLE_3, ROLE_DRIVER);
+
     public static Long DRIVER_ID_4 = 4L;
 
     public static Driver createDriver(

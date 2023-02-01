@@ -256,25 +256,18 @@ public class DriverService implements IDriverService{
         Location startLocation = drivingNotification.getRoute().getLocations().first().getLocation();
         List<Driver> drivers = driverRepository.getActiveDriversWhichVehicleMatchParams(drivingNotification.getVehicleTypeInfo().getVehicleType());
 
-        Driver driver = drivers.size() > 0 ?
-                findMatchesDriver(
-                        drivers,
-                        startLocation.getLon(),
-                        startLocation.getLat(),
-                        drivingNotification.isBabySeat(),
-                        drivingNotification.isPetFriendly(),
-                        startDate,
-                        endDate,
-                        drivingNotification.getDuration()
-                )
-                : null;
-
-        if (driver != null) {
-            driver.setLocked(!driver.isLocked());
-            driver = driverRepository.save(driver);
-        }
-
-        return driver;
+        return drivers.size() > 0 ?
+            findMatchesDriver(
+                drivers,
+                startLocation.getLon(),
+                startLocation.getLat(),
+                drivingNotification.isBabySeat(),
+                drivingNotification.isPetFriendly(),
+                startDate,
+                endDate,
+                drivingNotification.getDuration()
+            )
+            : null;
     }
 
     @Transactional
@@ -320,8 +313,8 @@ public class DriverService implements IDriverService{
         return null;
     }
 
-    public void save(Driver driver) {
-        driverRepository.save(driver);
+    public Driver save(Driver driver) {
+        return driverRepository.save(driver);
     }
 
     public double calculateMinutesToStartDriving(Driver driver, Driving driving){

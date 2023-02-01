@@ -2,7 +2,6 @@ package com.example.serbUber.server.service;
 
 import com.example.serbUber.dto.SimpleDrivingInfoDTO;
 import com.example.serbUber.model.Driving;
-import com.example.serbUber.model.Location;
 import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.server.service.helper.Constants;
 import com.example.serbUber.service.DrivingService;
@@ -35,7 +34,6 @@ public class ScheduleVehicleArriveNotificationTest {
     @Mock
     private DriverService driverService;
 
-
     @Mock
     private DrivingService drivingService;
 
@@ -51,7 +49,7 @@ public class ScheduleVehicleArriveNotificationTest {
     }
 
     @Test
-    @DisplayName("Should send arrive notification")
+    @DisplayName("T1-Should send arrive notification")
     public void shouldSendArriveNotification() {
         Driver activeDriver = createDriver(DRIVER_ID, DRIVER_1.getEmail(), VEHICLE_1, LOCATION);
         Driving onWayDriving = new Driving(EXIST_OBJECT_ID, DURATION, LocalDateTime.now(), null, ROUTE, ACCEPTED, activeDriver, PRICE, null);
@@ -73,7 +71,7 @@ public class ScheduleVehicleArriveNotificationTest {
     }
 
     @Test
-    @DisplayName("Should not send arrive notification due to missing on my way")
+    @DisplayName("T2-Should not send arrive notification due to missing on my way")
     public void shouldNotSendArriveNotificationMissingOnMyWayDriving() {
         Driver activeDriver = createDriver(DRIVER_ID, DRIVER_1.getEmail(), VEHICLE_1, LOCATION);
 
@@ -91,7 +89,7 @@ public class ScheduleVehicleArriveNotificationTest {
     }
 
     @Test
-    @DisplayName("Should send arrive notification due to vehicle not yet arrived")
+    @DisplayName("T3-Should send arrive notification due to vehicle not yet arrived")
     public void shouldNotSendArriveNotificationDueToVehicleNotYetArrived() {
         Driver activeDriver = createDriver(DRIVER_ID, DRIVER_1.getEmail(), VEHICLE_1, THIRD_LOCATION);
         Driving onWayDriving = new Driving(EXIST_OBJECT_ID, DURATION, LocalDateTime.now(), null, ROUTE, ACCEPTED, activeDriver, PRICE, null);
@@ -108,5 +106,4 @@ public class ScheduleVehicleArriveNotificationTest {
         verify(drivingService, times(0)).save(onWayDriving);
         verify(webSocketService, times(0)).sendVehicleArriveNotification(any(SimpleDrivingInfoDTO.class), anySet(), anyString());
     }
-
 }

@@ -1,7 +1,5 @@
 package com.example.serbUber.server.controller;
 
-
-import com.example.serbUber.exception.PassengerNotHaveTokensException;
 import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.repository.user.DriverRepository;
 import org.junit.jupiter.api.MethodOrderer;
@@ -20,7 +18,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import static com.example.serbUber.server.controller.helper.ControllerConstants.DRIVER_ID_FOR_ACTIVE_DRIVING;
-import static com.example.serbUber.server.controller.helper.ControllerConstants.EXIST_ID;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -32,6 +29,7 @@ public class OptimisticLockTest {
     @Autowired
     private DriverRepository driverRepository;
 
+    //TODO: SRKIIIIIII OVO ISPRAAVITI JER SE ISPISUJE GRESKA, NADJI NACIN DA SE UHVATI TAJ OPTIMISTIC LOCK!!!!!!!!!!!!
     @Test
     @Rollback(true)
     public void shouldThrowOptimisticLockingException() throws Throwable {
@@ -74,5 +72,4 @@ public class OptimisticLockTest {
         }
         executor.shutdown();
     }
-
 }
