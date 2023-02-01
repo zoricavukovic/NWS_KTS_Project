@@ -1,5 +1,6 @@
 package com.example.serbUber.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import com.example.serbUber.model.Driving;
@@ -14,6 +15,7 @@ public class ScheduleReservationReminder {
     private DrivingService drivingService;
     private WebSocketService webSocketService;
 
+    @Autowired
     public ScheduleReservationReminder(final DrivingService drivingService, final WebSocketService webSocketService){
         this.drivingService = drivingService;
         this.webSocketService = webSocketService;

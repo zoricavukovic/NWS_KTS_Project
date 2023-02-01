@@ -3,6 +3,7 @@ package com.example.serbUber.service;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.PassengerNotHaveTokensException;
 import com.example.serbUber.model.DrivingNotification;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 
@@ -11,8 +12,9 @@ import java.util.List;
 @Controller
 public class ScheduleAllPassengersReviewCallForRide {
 
-    private final DrivingNotificationService drivingNotificationService;
+    private DrivingNotificationService drivingNotificationService;
 
+    @Autowired
     public ScheduleAllPassengersReviewCallForRide(final DrivingNotificationService drivingNotificationService){
         this.drivingNotificationService = drivingNotificationService;
     }

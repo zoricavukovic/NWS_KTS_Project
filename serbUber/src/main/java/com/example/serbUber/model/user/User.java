@@ -42,6 +42,12 @@ public abstract class User {
     @JoinColumn(name="verified", nullable = false)
     private boolean verified = false;
 
+    @Version
+    @Column(name="version", unique=false, nullable=false)
+    private int version;
+
+    @Column(name = "locked", columnDefinition = "boolean DEFAULT false", nullable = false)
+    private boolean locked;
 
     public User() {}
 
@@ -183,5 +189,21 @@ public abstract class User {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
     }
 }

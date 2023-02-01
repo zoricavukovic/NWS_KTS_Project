@@ -2,14 +2,16 @@ package com.example.serbUber.server.service.helper;
 
 import com.example.serbUber.model.*;
 import com.example.serbUber.model.user.Driver;
+import com.example.serbUber.model.user.RegularUser;
 import com.example.serbUber.model.user.Role;
+import com.example.serbUber.request.DrivingNotificationRequest;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
+import static com.example.serbUber.server.controller.helper.ControllerConstants.NOT_EXIST_USER_EMAIL;
+import static com.example.serbUber.server.controller.helper.VehicleConstants.VEHICLE_TYPE_SUV;
 import static org.mockito.ArgumentMatchers.any;
 
 public class Constants {
@@ -62,4 +64,21 @@ public class Constants {
     public static final int EXPECTED_CURRENT_LOCATION_INDEX_FOR_FINISHED_DRIVING = -1;
     public static final int EXPECTED_CROSSED_WAYPOINTS = 0;
     public static final int CHOSEN_ROUTE_IDX = 1;
+
+    public static DrivingNotification NOT_RESERVATION_DRIVING_NOTIFICATION_OUTDATED = new DrivingNotification(
+            ROUTE, 4.0, new RegularUser(), LocalDateTime.now().minusDays(1), DURATION, false, false, VEHICLE_TYPE_INFO_DEFINED, new HashMap<>(), false
+    );
+
+    public static DrivingNotification NOT_RESERVATION_DRIVING_NOTIFICATION = new DrivingNotification(
+            ROUTE, 4.0, new RegularUser(), LocalDateTime.now(), DURATION, false, false, VEHICLE_TYPE_INFO_DEFINED, new HashMap<>(), false
+    );
+
+    public static DrivingNotification RESERVATION_DRIVING_NOTIFICATION_OUTDATED = new DrivingNotification(
+            ROUTE, 4.0, new RegularUser(), LocalDateTime.now().minusDays(1), DURATION, false, false, VEHICLE_TYPE_INFO_DEFINED, new HashMap<>(), true
+    );
+
+    public static DrivingNotification RESERVATION_DRIVING_NOTIFICATION = new DrivingNotification(
+            ROUTE, 4.0, new RegularUser(), LocalDateTime.now(), DURATION, false, false, VEHICLE_TYPE_INFO_DEFINED, new HashMap<>(), true
+    );
+
 }
