@@ -541,7 +541,7 @@ public class DrivingServiceTest {
         Driving driving = createFutureDriving(10,
                 createDriver(DRIVER_ID_1, DRIVER_EMAIL_1, VEHICLE_1, FIRST_LOCATION));
         when(drivingRepository.save(any(Driving.class))).thenReturn(driving);
-        assertEquals(driving.getDriver().getId(), drivingService.save(driving).getDriverId());
+        assertEquals(driving.getDriver().getId(), drivingService.save(driving).getDriver().getId());
     }
 
     @Test

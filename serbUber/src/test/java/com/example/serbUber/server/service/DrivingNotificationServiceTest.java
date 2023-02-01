@@ -358,7 +358,7 @@ public class DrivingNotificationServiceTest {
         driving.setDrivingStatus(DrivingStatus.ACCEPTED);
 
         when(driverService.calculateMinutesToStartDriving(EXIST_DRIVER, driving)).thenReturn(TIME_IN_MIN);
-        when(drivingService.save(driving)).thenReturn(new DrivingDTO(driving));
+        when(drivingService.save(driving)).thenReturn(driving);
         doNothing().when(webSocketService).sendSuccessfulDriving(any(DrivingStatusNotificationDTO.class), anyMap());
         doNothing().when(webSocketService).sendNewDrivingNotification(any(DrivingStatusNotificationDTO.class), anyString());
         doNothing().when(drivingNotificationRepository).deleteById(drivingNotification.getId());
@@ -527,7 +527,7 @@ public class DrivingNotificationServiceTest {
         when(driverService.calculateMinutesToStartDriving(EXIST_DRIVER, driving)).thenReturn(TIME_IN_MIN);
         driving.setDrivingStatus(DrivingStatus.ACCEPTED);
         driving.setStarted(drivingNotification.getStarted());
-        when(drivingService.save(any(Driving.class))).thenReturn(new DrivingDTO(driving));
+        when(drivingService.save(any(Driving.class))).thenReturn(driving);
 
         doNothing().when(drivingNotificationRepository).deleteById(drivingNotification.getId());
         doNothing().when(webSocketService).sendSuccessfulDriving(any(DrivingStatusNotificationDTO.class), anyMap());
@@ -568,7 +568,7 @@ public class DrivingNotificationServiceTest {
         when(tokenBankService.getTokensForUser(FIRST_USER.getId())).thenReturn(2d);
         when(tokenBankService.updateNumOfTokens(FIRST_USER.getId(), 0)).thenReturn(getTokenBankForFirstUser());
         when(driverService.calculateMinutesToStartDriving(EXIST_DRIVER, driving)).thenReturn(TIME_IN_MIN);
-        when(drivingService.save(any(Driving.class))).thenReturn(new DrivingDTO(driving));
+        when(drivingService.save(any(Driving.class))).thenReturn(driving);
 
         doNothing().when(webSocketService).sendSuccessfulDriving(any(DrivingStatusNotificationDTO.class), anyMap());
         doNothing().when(webSocketService).sendNewDrivingNotification(any(DrivingStatusNotificationDTO.class), anyString());
@@ -656,7 +656,7 @@ public class DrivingNotificationServiceTest {
         when(tokenBankService.updateNumOfTokens(anyLong(), anyDouble())).thenReturn(getTokenBankForFirstUser());
 
         when(driverService.calculateMinutesToStartDriving(EXIST_DRIVER, driving)).thenReturn(TIME_IN_MIN);
-        when(drivingService.save(any(Driving.class))).thenReturn(new DrivingDTO(driving));
+        when(drivingService.save(any(Driving.class))).thenReturn(driving);
 
         doNothing().when(drivingNotificationRepository).deleteById(drivingNotification.getId());
         doNothing().when(webSocketService).sendSuccessfulDriving(any(DrivingStatusNotificationDTO.class), anyMap());
@@ -709,7 +709,7 @@ public class DrivingNotificationServiceTest {
         when(tokenBankService.getTokensForUser(FIRST_USER.getId())).thenReturn(2d);
         when(tokenBankService.updateNumOfTokens(FIRST_USER.getId(), 0)).thenReturn(getTokenBankForFirstUser());
         when(driverService.calculateMinutesToStartDriving(EXIST_DRIVER, driving)).thenReturn(TIME_IN_MIN);
-        when(drivingService.save(any(Driving.class))).thenReturn(new DrivingDTO(driving));
+        when(drivingService.save(any(Driving.class))).thenReturn(driving);
         doNothing().when(webSocketService).sendSuccessfulDriving(any(DrivingStatusNotificationDTO.class), anyMap());
         doNothing().when(webSocketService).sendNewDrivingNotification(any(DrivingStatusNotificationDTO.class), anyString());
 
