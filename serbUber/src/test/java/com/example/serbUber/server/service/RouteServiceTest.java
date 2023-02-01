@@ -55,7 +55,6 @@ public class RouteServiceTest {
     public void shouldCreateRoute() {
         List<DrivingLocationIndexRequest> drivingLocationIndexRequests = createDrivingLocationIndexRequests();
         SortedSet<DrivingLocationIndex> drivingLocationIndexList = createDrivingLocationIndex();
-
         double time = 5.2;
         double distance = 4.7;
         List<Integer> routePathIndex = Arrays.asList(1, 2);
@@ -64,11 +63,8 @@ public class RouteServiceTest {
 
         doReturn(SECOND_LOCATION).when(locationService).create(CITY, STREET_2, NUMBER_2, ZIP_CODE, LOCATION_LON_LAT_2[0], LOCATION_LON_LAT_2[1]);
 
-        when(drivingLocationIndexService.create(
-            FIRST_LOCATION,
-            routePathIndex.get(0),
-            1
-        )).thenReturn(drivingLocationIndexList.first());
+        when(drivingLocationIndexService.create(FIRST_LOCATION, routePathIndex.get(0), 1))
+            .thenReturn(drivingLocationIndexList.first());
 
         when(drivingLocationIndexService.create(
             SECOND_LOCATION,
@@ -94,9 +90,7 @@ public class RouteServiceTest {
     @Test
     @DisplayName("T2-Should return before last index of list")
     public void shouldGetBeforeLastIndexOfList() {
-
         assertEquals(-1, getBeforeLastIndexOfList(new ArrayList<>()));
-
         List<LongLatRequest> oneElementList = new ArrayList<>();
         oneElementList.add(new LongLatRequest(1, 2));
         assertEquals(0, getBeforeLastIndexOfList(oneElementList));
@@ -146,5 +140,4 @@ public class RouteServiceTest {
         assertEquals(1, result.size());
         assertEquals(result.get(0).getPossibleRouteDTOList().get(0).getAveragePrice(), 4.0);
     }
-
 }

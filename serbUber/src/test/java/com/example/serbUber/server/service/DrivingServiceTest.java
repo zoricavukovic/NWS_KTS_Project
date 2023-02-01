@@ -12,7 +12,6 @@ import com.example.serbUber.model.user.RegularUser;
 import com.example.serbUber.repository.DrivingRepository;
 import com.example.serbUber.service.DrivingService;
 import com.example.serbUber.service.DrivingStatusNotificationService;
-import com.example.serbUber.service.RouteService;
 import com.example.serbUber.service.WebSocketService;
 import com.example.serbUber.service.user.UserService;
 import org.junit.jupiter.api.*;
@@ -32,7 +31,6 @@ import static com.example.serbUber.server.service.helper.Constants.*;
 import static com.example.serbUber.server.service.helper.DriverConstants.*;
 import static com.example.serbUber.server.service.helper.DriverConstants.EXIST_DRIVER;
 import static com.example.serbUber.server.service.helper.DriverConstants.EXIST_DRIVER_EMAIL;
-import static com.example.serbUber.server.service.helper.DrivingConstants.*;
 import static com.example.serbUber.server.service.helper.LocationHelper.FIRST_LOCATION;
 import static com.example.serbUber.server.service.helper.RegularUserConstants.FIRST_USER;
 import static com.example.serbUber.server.service.helper.UserConstants.*;
@@ -59,14 +57,8 @@ public class DrivingServiceTest {
     @Mock
     private DrivingStatusNotificationService drivingStatusNotificationService;
 
-    @Mock
-    private RouteService routeService;
-
     @Captor
     private ArgumentCaptor<Driving> drivingArgumentCaptor;
-
-    @Captor
-    private ArgumentCaptor<DrivingDTO> drivingDTOArgumentCaptor;
 
     @InjectMocks
     private DrivingService drivingService;

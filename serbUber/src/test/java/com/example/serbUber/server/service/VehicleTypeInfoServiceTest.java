@@ -7,11 +7,13 @@ import com.example.serbUber.model.VehicleTypeInfo;
 import com.example.serbUber.repository.VehicleTypeInfoRepository;
 import com.example.serbUber.service.VehicleTypeInfoService;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +23,7 @@ import static com.example.serbUber.server.service.helper.VehicleTypeInfoConstant
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-//@ExtendWith(MockitoExtension.class)
+@ExtendWith(MockitoExtension.class)
 @TestMethodOrder(MethodOrderer.DisplayName.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class VehicleTypeInfoServiceTest {
@@ -36,9 +38,8 @@ public class VehicleTypeInfoServiceTest {
     }
 
     @Test
-    @DisplayName("T1 - Should throw vehicle type info not found exception")
+    @DisplayName("T1-Should throw vehicle type info not found exception")
     public void getVehicleTypeInfoByName_throwEntityNotFoundException() {
-
         when(vehicleTypeInfoRepository.getVehicleTypeInfoByName(VehicleType.SUV))
                 .thenReturn(Optional.empty());
 
@@ -47,9 +48,8 @@ public class VehicleTypeInfoServiceTest {
     }
 
     @Test
-    @DisplayName("T2 - Should return false, number of passengers is greater than number of seats")
+    @DisplayName("T2-Should return false, number of passengers is greater than number of seats")
     public void isCorrectNumberOfSeats_returnFalse() {
-
         VehicleTypeInfo vehicleTypeInfo = new VehicleTypeInfo(VehicleType.SUV, 100, 4);
         when(vehicleTypeInfoRepository.getVehicleTypeInfoByName(VehicleType.SUV))
                 .thenReturn(Optional.of(vehicleTypeInfo));
@@ -60,7 +60,7 @@ public class VehicleTypeInfoServiceTest {
     }
 
     @ParameterizedTest
-    @DisplayName("T3 - Should return true, number of seats is greater than number of passengers")
+    @DisplayName("T3-Should return true, number of seats is greater than number of passengers")
     @ValueSource(ints = {1, 2})
     public void isCorrectNumberOfSeats_returnTrue(int numberOfPassengers) {
         when(vehicleTypeInfoRepository.getVehicleTypeInfoByName(VehicleType.SUV))
@@ -71,18 +71,16 @@ public class VehicleTypeInfoServiceTest {
     }
 
     @Test
-    @DisplayName("T4 - Should return correct calculated prices for vehicle types")
+    @DisplayName("T4-Should return correct calculated prices for vehicle types")
     public void getPriceForVehicleAndChosenRoute_returnCorrectCalculatedPricesForVehicleTypes() throws EntityNotFoundException {
-
         when(vehicleTypeInfoRepository.getVehicleTypeInfoByName(VehicleType.SUV))
                 .thenReturn(Optional.of(VEHICLE_TYPE_INFO_SUV));
         assertEquals(6, vehicleTypeInfoService.getPriceForVehicleAndChosenRoute(3000, VehicleType.SUV));
     }
 
     @Test
-    @DisplayName("T5 - Should throw exception, not found vehicle type")
+    @DisplayName("T5-Should throw exception, not found vehicle type")
     public void getPriceForVehicleAndChosenRoute_throwEntityNotFoundException()  {
-
         when(vehicleTypeInfoRepository.getVehicleTypeInfoByName(VehicleType.SUV))
                 .thenReturn(Optional.empty());
         assertThrows(EntityNotFoundException.class,
@@ -90,7 +88,7 @@ public class VehicleTypeInfoServiceTest {
     }
 
     @Test
-    @DisplayName("T6 - Should return price for vehicle type")
+    @DisplayName("T6-Should return price for vehicle type")
     public void getPriceForVehicle_returnPrice() throws EntityNotFoundException {
         when(vehicleTypeInfoRepository.getVehicleTypeInfoByName(VehicleType.SUV))
                 .thenReturn(Optional.of(VEHICLE_TYPE_INFO_SUV));
@@ -98,7 +96,7 @@ public class VehicleTypeInfoServiceTest {
     }
 
     @Test
-    @DisplayName("T7 - Should throw exception, not found vehicle type")
+    @DisplayName("T7-Should throw exception, not found vehicle type")
     public void getPriceForVehicle_throwEntityNotFoundException()  {
 
         when(vehicleTypeInfoRepository.getVehicleTypeInfoByName(VehicleType.SUV))
@@ -108,7 +106,7 @@ public class VehicleTypeInfoServiceTest {
     }
 
     @Test
-    @DisplayName("T8 - Should return vehicle type for get vehicle type")
+    @DisplayName("T8-Should return vehicle type for get vehicle type")
     public void get_returnVehicleType() throws EntityNotFoundException {
         when(vehicleTypeInfoRepository.getVehicleTypeInfoByName(VehicleType.SUV))
                 .thenReturn(Optional.of(VEHICLE_TYPE_INFO_SUV));
@@ -116,15 +114,15 @@ public class VehicleTypeInfoServiceTest {
     }
 
     @Test
-    @DisplayName("T9 - Should throw exception for get vehicle type")
-    public void get_throwEntityNotFoundException() throws EntityNotFoundException {
+    @DisplayName("T9-Should throw exception for get vehicle type")
+    public void get_throwEntityNotFoundException() {
         when(vehicleTypeInfoRepository.getVehicleTypeInfoByName(VehicleType.SUV))
                 .thenReturn(Optional.empty());
        assertThrows(EntityNotFoundException.class, () -> vehicleTypeInfoService.get(VehicleType.SUV));
     }
 
     @Test
-    @DisplayName("T10 - Should return all vehicle types")
+    @DisplayName("T10-Should return all vehicle types")
     public void getAll_returnAllVehicleTypes() {
         List<VehicleTypeInfo> vehicleTypeInfoList = new ArrayList<>();
         vehicleTypeInfoList.add(VEHICLE_TYPE_INFO_CAR);
@@ -140,7 +138,7 @@ public class VehicleTypeInfoServiceTest {
     }
 
     @Test
-    @DisplayName("T11 - Should return empty list of vehicle types")
+    @DisplayName("T11-Should return empty list of vehicle types")
     public void getAll_returnEmptyList() {
         List<VehicleTypeInfo> vehicleTypeInfoList = new ArrayList<>();
         when(vehicleTypeInfoRepository.findAll())
@@ -149,6 +147,4 @@ public class VehicleTypeInfoServiceTest {
 
         assertEquals(vehicleTypeInfoDTOS.size(),0);
     }
-
-
 }

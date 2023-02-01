@@ -30,16 +30,7 @@ public class VehicleServiceTest {
     private VehicleRepository vehicleRepository;
 
     @Mock
-    private VehicleTypeInfoService vehicleTypeInfoService;
-
-    @Mock
     private WebSocketService webSocketService;
-
-    @Mock
-    private RouteService routeService;
-
-    @Mock
-    private LocationService locationService;
 
     @Captor
     private ArgumentCaptor<Vehicle> vehicleArgumentCaptor;
@@ -103,8 +94,8 @@ public class VehicleServiceTest {
         Assertions.assertThrows(EntityNotFoundException.class,
                 () -> vehicleService.updateCurrentPosition(NOT_EXIST_OBJECT_ID, LON, LAT, EXPECTED_CROSSED_WAYPOINTS, 0));
 
-        verify(vehicleRepository, times(0)).save(any(Vehicle.class));
-        verify(webSocketService, times(0)).sendVehicleCurrentLocation(any(VehicleCurrentLocationDTO.class));
+        verify(vehicleRepository, never()).save(any(Vehicle.class));
+        verify(webSocketService, never()).sendVehicleCurrentLocation(any(VehicleCurrentLocationDTO.class));
     }
 
     @ParameterizedTest
@@ -129,8 +120,8 @@ public class VehicleServiceTest {
 
         VehicleCurrentLocationForLocustDTO response = vehicleService.updateCurrentPosition(EXIST_OBJECT_ID, NEW_LON, NEW_LAT, EXPECTED_CROSSED_WAYPOINTS, CHOSEN_ROUTE_IDX);
 
-        verify(vehicleRepository, times(1)).save(vehicleArgumentCaptor.capture());
-        verify(webSocketService, times(1)).sendVehicleCurrentLocation(any(VehicleCurrentLocationDTO.class));
+        verify(vehicleRepository).save(vehicleArgumentCaptor.capture());
+        verify(webSocketService).sendVehicleCurrentLocation(any(VehicleCurrentLocationDTO.class));
         Assertions.assertEquals(NEW_LAT, vehicleArgumentCaptor.getValue().getCurrentStop().getLat());
         Assertions.assertEquals(NEW_LON, vehicleArgumentCaptor.getValue().getCurrentStop().getLon());
         Assertions.assertEquals(EXPECTED_CROSSED_WAYPOINTS, response.getCrossedWaypoints());
@@ -140,7 +131,7 @@ public class VehicleServiceTest {
 
     @Test
     @DisplayName("T7-Should throw driver not found exception when calling update current position")
-    public void shouldThrowDriverNotFoundExceptionWhenCallingUpdateCurrentPosition() throws EntityNotFoundException {
+    public void shouldThrowDriverNotFoundExceptionWhenCallingUpdateCurrentPosition() {
         Vehicle vehicle = EXIST_VEHICLE;
         vehicle.setCurrentLocationIndex(EXPECTED_CURRENT_LOCATION_INDEX_FOR_STARTED_DRIVING);
         vehicle.setCurrentStop(LOCATION);
@@ -154,8 +145,8 @@ public class VehicleServiceTest {
         Assertions.assertThrows(EntityNotFoundException.class,
                 () -> vehicleService.updateCurrentPosition(EXIST_OBJECT_ID, LON, LAT, EXPECTED_CROSSED_WAYPOINTS, 0));
 
-        verify(vehicleRepository, times(0)).save(any(Vehicle.class));
-        verify(webSocketService, times(0)).sendVehicleCurrentLocation(any(VehicleCurrentLocationDTO.class));
+        verify(vehicleRepository, never()).save(any(Vehicle.class));
+        verify(webSocketService, never()).sendVehicleCurrentLocation(any(VehicleCurrentLocationDTO.class));
     }
 
     private Vehicle updateVehicle(Vehicle vehicle, double lat, double lng, int crossedWaypoints) {
@@ -183,11 +174,9 @@ public class VehicleServiceTest {
         Assertions.assertEquals(LOCATION, vehicleCurrentLocationDTO.getCurrentLocation());
     }
 
-
     @Test
     @DisplayName("T9-VehicleCurrentLocationDTO creation, should set not in drive when don't have active route")
     public void shouldSetNotInDriveWhenNotActiveRoute() {
-
         VehicleWithDriverId vehicleWithDriverId = new VehicleWithDriverId(EXIST_VEHICLE, EXIST_OBJECT_ID, true);
         vehicleWithDriverId.getVehicle().setActiveRoute(null);
 
@@ -222,5 +211,4 @@ public class VehicleServiceTest {
         Assertions.assertEquals(1, vehicleCurrentLocationForLocustDTO.getWaypoints().size());
         Assertions.assertEquals(1, vehicleCurrentLocationForLocustDTO.getChosenRouteIdx().size());
     }
-
 }

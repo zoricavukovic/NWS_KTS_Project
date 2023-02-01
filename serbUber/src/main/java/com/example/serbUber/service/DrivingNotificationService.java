@@ -38,7 +38,6 @@ public class DrivingNotificationService implements IDrivingNotificationService {
     private TokenBankService tokenBankService;
     private VehicleTypeInfoService vehicleTypeInfoService;
 
-
     @Autowired
     public DrivingNotificationService(
         final DrivingNotificationRepository drivingNotificationRepository,

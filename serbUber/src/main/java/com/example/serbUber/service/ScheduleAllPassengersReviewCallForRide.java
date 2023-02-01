@@ -28,9 +28,7 @@ public class ScheduleAllPassengersReviewCallForRide {
                 drivingNotificationService.createDrivingIfFoundDriverAndSuccessfullyPaid(drivingNotification);
                 drivingNotificationService.delete(drivingNotification);
             }
-
         }
-
     }
 
     @Scheduled(cron = "*/30 * * * * *")
@@ -44,12 +42,11 @@ public class ScheduleAllPassengersReviewCallForRide {
                 drivingNotificationService.deleteOutdatedNotification(drivingNotification);
             }
         }
-
     }
 
     private void allUsersAreReviewed(DrivingNotification drivingNotification) throws PassengerNotHaveTokensException, EntityNotFoundException {
         if (drivingNotificationService.checkTimeOfStartingReservationRide(drivingNotification.getStarted())){
-            drivingNotificationService. createDrivingIfFoundDriverAndSuccessfullyPaid(drivingNotification);
+            drivingNotificationService.createDrivingIfFoundDriverAndSuccessfullyPaid(drivingNotification);
 
         }else if (drivingNotificationService.checkTimeOfStartingReservationIsSoonRide(drivingNotification.getStarted())){
             drivingNotificationService.deleteOutdatedReservationWithoutDriverNotification(drivingNotification);

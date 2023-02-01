@@ -24,24 +24,6 @@ public class RegularUserServiceTest {
     @Mock
     private RegularUserRepository regularUserRepository;
 
-    @Mock
-    private VerifyService verifyService;
-
-    @Mock
-    private RoleService roleService;
-
-    @Mock
-    private RouteService routeService;
-
-    @Mock
-    private WebSocketService webSocketService;
-
-    @Mock
-    private TokenBankService tokenBankService;
-
-    @Mock
-    private EmailService emailService;
-
     @InjectMocks
     private RegularUserService regularUserService;
 
