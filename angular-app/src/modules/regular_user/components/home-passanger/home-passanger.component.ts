@@ -105,10 +105,13 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
     this.currentDrivingNotification.subscribe(response => {
       this.storedDrivingNotification = response;
       this.routeChoiceView = true;
+      console.log('blalfldf');
+      console.log(this.routeChoiceView);
       if (!response?.active) {
         this.activeRide = null;
       }
     });
+    console.log(this.routeChoiceView);
 
     if (this.currentUser) {
       this.drivingSubscription = this.drivingService

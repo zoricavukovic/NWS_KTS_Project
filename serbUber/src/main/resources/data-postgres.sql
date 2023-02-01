@@ -71,7 +71,7 @@ insert into drivings (active, driver_id, driving_status, duration, price, starte
                     (true, 18, 2, 10, 3, CURRENT_TIMESTAMP - INTERVAL '2 minutes', null, 1, null, false),
                     (false, 14, 3, 8, 3, to_timestamp('25.01.2023. 22:40', 'DD.MM.YYYY HH24:MI'), to_timestamp('25.01.2023. 22:40', 'DD.MM.YYYY HH24:MI'), 2, null, false),
                     (false, null, 2, 5, 5, CURRENT_TIMESTAMP + INTERVAL '50 minutes', null, 3, null, true),
-                    (true, 19, 2, 7, 5, CURRENT_TIMESTAMP - INTERVAL '3 minutes', null, 2, null, false);
+                    (true, 19, 2, 20, 5, CURRENT_TIMESTAMP - INTERVAL '3 minutes', null, 2, null, false);
 
 
 insert into driving_locations(location_id, index, route_id, route_index) values
@@ -79,10 +79,8 @@ insert into driving_locations(location_id, index, route_id, route_index) values
       (10, 2, 1, 0),
       (7, 3, 1, 0),
       (14, 4, 1, 0),
-      (7,1,2, 1),
+      (7,1,2, 0),
       (15,2,2,0),
-      (4,3,2, 0),
-      (16,4,2, 0),
       (4,1,3, 0),
       (1,2,3, 0),
       (5, 1,4, 0),
@@ -91,7 +89,7 @@ insert into driving_locations(location_id, index, route_id, route_index) values
 
 insert into drivings_users(driving_id, user_id) values
     (1, 8),
-    (2, 10),
+    (2, 3),
     (3, 12),
     (4, 3);
 

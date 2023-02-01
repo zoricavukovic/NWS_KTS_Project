@@ -6,7 +6,7 @@
     mat-raised-button
     (click)="goToEnterLocations()"
     class="button-back"
-    *ngIf="!router.url.includes('favourite-route')">
+    *ngIf="actRoute.snapshot.paramMap.get('id') === '-1'">
     <mat-icon style="color: var(--deep-blue)">arrow_back</mat-icon>
   </button>
   <driver-vehicle

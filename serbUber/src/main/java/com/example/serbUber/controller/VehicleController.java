@@ -55,7 +55,7 @@ public class VehicleController {
     @PutMapping(value = "update-current-location/{id}")
     @ResponseStatus(HttpStatus.OK)
     public VehicleCurrentLocationForLocustDTO updateCurrentPosition(
-        @Valid @NotNull(message = MISSING_ID) @PathVariable final long id,
+        @PathVariable final long id,
         @Valid @RequestBody VehicleCurrentPositionRequest vehicleCurrentPositionRequest
         ) throws EntityNotFoundException {
 
@@ -70,8 +70,8 @@ public class VehicleController {
     @GetMapping(value = "check-vehicle-activity/{id}/{chosenRouteIdx}")
     @ResponseStatus(HttpStatus.OK)
     public VehicleCurrentLocationForLocustDTO checkStateOfVehicle(
-        @Valid @NotNull(message = MISSING_ID) @PathVariable final long id,
-        @Valid @NotNull(message = "Chosen route index cannot be null") @PathVariable final int chosenRouteIdx
+        @PathVariable final long id,
+        @PathVariable final int chosenRouteIdx
         ) throws EntityNotFoundException {
 
         return this.vehicleService.checkStateOfVehicle(id, chosenRouteIdx);

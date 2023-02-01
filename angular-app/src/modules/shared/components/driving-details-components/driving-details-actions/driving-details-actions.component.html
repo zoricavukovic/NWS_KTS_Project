@@ -3,7 +3,14 @@
     !canAcceptOrDeclineRide() && currentUser.role.name === 'ROLE_REGULAR_USER'
   "
   style="min-height: 2rem">
-  <div style="float: left" *ngIf="!storedDrivingNotification">
+  <div
+    style="float: left"
+    *ngIf="
+      showButtons &&
+      (!storedDrivingNotification ||
+        storedDrivingNotification.drivingStatus === 'FINISHED' ||
+        storedDrivingNotification.justFinished)
+    ">
     <button
       mat-raised-button
       (click)="requestNow()"

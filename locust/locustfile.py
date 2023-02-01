@@ -38,7 +38,7 @@ class QuickStartUser(HttpUser):
                 f'https://routing.openstreetmap.de/routed-car/route/v1/driving/{first_point["lng"]},{first_point["lat"]};{second_point["lng"]},{second_point["lat"]}?geometries=geojson&overview=false&alternatives=true&steps=true')
 
         routeGeoJSON = response.json()
-        print(routeGeoJSON)
+
 
         chosenRouteIdx = vehicle["chosenRouteIdx"][vehicle["crossedWaypoints"]]
         coordinates = []

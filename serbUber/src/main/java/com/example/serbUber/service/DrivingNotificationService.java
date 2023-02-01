@@ -392,13 +392,18 @@ public class DrivingNotificationService implements IDrivingNotificationService {
     }
 
     private double secondTryPayment(Map<Long, Double> updatedUsersTokens, double missingTokens) {
+        if(missingTokens == 0){
+            return 0;
+        }
         for(Map.Entry<Long, Double> passengerTokens : updatedUsersTokens.entrySet()) {
             if (passengerShouldPayMissingTokens(passengerTokens.getValue(), missingTokens)) {
                 passengerTokens.setValue(passengerTokens.getValue() - missingTokens);
                 return 0;
             }
-            missingTokens -= passengerTokens.getValue();
-            passengerTokens.setValue(WITHOUT_TOKENS);
+            if(passengerHasSomeTokensToPay(passengerTokens.getValue(), missingTokens)) {
+                missingTokens -= passengerTokens.getValue();
+                passengerTokens.setValue(WITHOUT_TOKENS);
+            }
         }
 
         return missingTokens;
@@ -406,8 +411,13 @@ public class DrivingNotificationService implements IDrivingNotificationService {
 
     private boolean passengerShouldPayMissingTokens(double passengerTokens, double missingTokens){
 
-        return passengerTokens > 0 && missingTokens > 0
+        return passengerHasSomeTokensToPay(passengerTokens, missingTokens)
                 && passengerTokens >= missingTokens;
+    }
+
+    private boolean passengerHasSomeTokensToPay(double passengerTokens, double missingTokens){
+
+        return passengerTokens > 0 && missingTokens > 0;
     }
 
     private double getMissingTokens(RegularUser user, double priceForUser, Map<Long, Double> updatedUsersTokens, double missingTokens) throws EntityNotFoundException {

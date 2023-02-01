@@ -77,11 +77,13 @@ export class DrivingNotificationState {
     { payload }: UpdateOnlyMinutesStatus
   ) {
     const state = getState();
-    state.currentDrivingNotification.minutes = payload.minutes;
-    setState({
-      ...state,
-      currentDrivingNotification: state.currentDrivingNotification,
-    });
+    if (state.currentDrivingNotification !== null) {
+      state.currentDrivingNotification.minutes = payload.minutes;
+      setState({
+        ...state,
+        currentDrivingNotification: state.currentDrivingNotification,
+      });
+    }
   }
 
   @Action(UpdateStatusDrivingNotification)
@@ -95,6 +97,10 @@ export class DrivingNotificationState {
       state.currentDrivingNotification.drivingStatus = payload.drivingStatus;
       if (payload.started) {
         state.currentDrivingNotification.started = payload.started;
+      }
+
+      if (payload.justFinished) {
+        state.currentDrivingNotification.justFinished = payload.justFinished;
       }
 
       setState({
@@ -251,7 +257,10 @@ export class DrivingNotificationState {
   }
 
   @Action(UpdateDrivings)
-  updateDrivings({ getState, setState }: StateContext<DrivingNotificationStateModel>, { payload }: UpdateDrivings) {
+  updateDrivings(
+    { getState, setState }: StateContext<DrivingNotificationStateModel>,
+    { payload }: UpdateDrivings
+  ) {
     console.log(payload);
     const state = getState();
     console.log(state);

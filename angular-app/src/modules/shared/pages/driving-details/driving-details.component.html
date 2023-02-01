@@ -19,7 +19,7 @@
         <b>Accept ride</b>
       </h1>
       <div
-        *ngIf="indexOfVehicleForDriving >= 0 && driving.active"
+        *ngIf="indexOfVehicleForDriving >= 0 && driving.active && isRegularUser"
         style="margin-left: 10rem">
         <h2
           style="
@@ -46,10 +46,17 @@
       [driver]="driver"
       (setFilterVehicleViewEvent)="showFilterVehicleView($event)"
       [driving]="driving"
-      *ngIf="!storedDrivingNotification"></app-driving-details-actions>
+      *ngIf="
+        !storedDrivingNotification ||
+        storedDrivingNotification.drivingStatus === 'FINISHED' ||
+        storedDrivingNotification.justFinished
+      "></app-driving-details-actions>
     <br />
     <app-filter-vehicle-view
-      *ngIf="filterVehicleView"
+      *ngIf="
+        filterVehicleView &&
+        storedDrivingNotification?.drivingStatus === 'FINISHED'
+      "
       [requestLater]="requestLater"></app-filter-vehicle-view>
     <app-waiting-for-accept-ride-container
       *ngIf="
@@ -75,7 +82,13 @@
         *ngIf="!isRegularUser"
         [users]="driving.users"
         [base64Prefix]="base64Prefix"></app-driving-details-passengers>
-      <div *ngIf="storedDrivingNotification.wrongRoute">
+      <div
+        *ngIf="
+          isRegularUser &&
+          storedDrivingNotification.wrongRoute &&
+          storedDrivingNotification.drivingStatus === 'ACCEPTED' &&
+          storedDrivingNotification.active
+        ">
         <button
           mat-raised-button
           (click)="reportDriveBehaviour()"

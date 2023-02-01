@@ -57,7 +57,12 @@ export class UpdateStatusDrivingNotification {
   static readonly type = '[DrivingNotification] UpdateStatus';
 
   constructor(
-    public payload: { active: boolean; drivingStatus: string; started?: Date }
+    public payload: {
+      active: boolean;
+      drivingStatus: string;
+      started?: Date;
+      justFinished?: boolean;
+    }
   ) {}
 }
 

@@ -266,7 +266,7 @@ public class RouteService implements IRouteService {
 
     private double getDistance(List<String> distances) {
 
-        return distances.stream()
+        return distances.stream().skip(1)
                 .mapToDouble(distance -> Double.parseDouble(distance.split(",")[0].replaceAll("[\\[\\]{} ]", "")))
                 .max()
                 .orElse(0);

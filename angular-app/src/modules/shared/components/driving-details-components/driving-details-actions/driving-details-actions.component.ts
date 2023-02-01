@@ -1,15 +1,22 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Select } from '@ngxs/store';
-import {Observable, Subscription} from "rxjs";
+import { Observable, Subscription } from 'rxjs';
 import { Driving } from 'src/modules/shared/models/driving/driving';
 import { DrivingNotification } from 'src/modules/shared/models/notification/driving-notification';
 import { Driver } from 'src/modules/shared/models/user/driver';
 import { User } from 'src/modules/shared/models/user/user';
 import { Vehicle } from 'src/modules/shared/models/vehicle/vehicle';
 import { DrivingNotificationState } from 'src/modules/shared/state/driving-notification.state';
-import {AuthService} from "../../../../auth/services/auth-service/auth.service";
-import {DrivingNotificationService} from "../../../services/driving-notification-service/driving-notification.service";
+import { AuthService } from '../../../../auth/services/auth-service/auth.service';
+import { DrivingNotificationService } from '../../../services/driving-notification-service/driving-notification.service';
 
 @Component({
   selector: 'app-driving-details-actions',
@@ -17,10 +24,11 @@ import {DrivingNotificationService} from "../../../services/driving-notification
   styleUrls: ['./driving-details-actions.component.css'],
 })
 export class DrivingDetailsActionsComponent implements OnInit, OnDestroy {
-  @Select(DrivingNotificationState.getDrivingNotification) currentDrivingNotification: Observable<DrivingNotification>;
+  @Select(DrivingNotificationState.getDrivingNotification)
+  currentDrivingNotification: Observable<DrivingNotification>;
   storedDrivingNotification: DrivingNotification;
   @Input() favouriteRoute: boolean;
-  @Input() driver: Driver
+  @Input() driver: Driver;
   @Input() driving: Driving;
   @Input() vehicle: Vehicle;
   @Output() setFilterVehicleViewEvent = new EventEmitter<boolean>();
@@ -29,6 +37,7 @@ export class DrivingDetailsActionsComponent implements OnInit, OnDestroy {
   currentUser: User;
   authSubscription: Subscription;
   drivingId: number;
+  showButtons: boolean;
 
   constructor(
     private _authService: AuthService,
@@ -40,9 +49,10 @@ export class DrivingDetailsActionsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.showButtons = true;
     this.currentDrivingNotification.subscribe(response => {
       this.storedDrivingNotification = response;
-    })
+    });
     this.drivingId = +this._activeRoute.snapshot.paramMap.get('id');
     this.authSubscription = this._authService
       .getSubjectCurrentUser()
@@ -55,33 +65,38 @@ export class DrivingDetailsActionsComponent implements OnInit, OnDestroy {
     this.setFavouriteRouteEvent.emit(this.favouriteRoute);
   }
 
-  canAcceptOrDeclineRide(): boolean{
-
-    return this._router.url.includes("driving");
+  canAcceptOrDeclineRide(): boolean {
+    return this._router.url.includes('driving');
   }
 
   acceptRide() {
-    this._drivingNotificationService.updateRideStatus(this.drivingId, true, this.currentUser.email).subscribe(res => {
-      console.log(res);
-    });
+    this._drivingNotificationService
+      .updateRideStatus(this.drivingId, true, this.currentUser.email)
+      .subscribe(res => {
+        console.log(res);
+      });
   }
 
   declineRide() {
-    this._drivingNotificationService.updateRideStatus(this.drivingId, false, this.currentUser.email).subscribe(res => {
-      console.log(res);
-    });
+    this._drivingNotificationService
+      .updateRideStatus(this.drivingId, false, this.currentUser.email)
+      .subscribe(res => {
+        console.log(res);
+      });
   }
 
-  requestNow(){
+  requestNow() {
     this.setFilterVehicleViewEvent.emit(false);
+    this.showButtons = false;
   }
 
-  requestLater(){
+  requestLater() {
     this.setFilterVehicleViewEvent.emit(true);
+    this.showButtons = false;
   }
 
   ngOnDestroy(): void {
-    if (this.authSubscription){
+    if (this.authSubscription) {
       this.authSubscription.unsubscribe();
     }
   }

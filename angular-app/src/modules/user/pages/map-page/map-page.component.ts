@@ -212,19 +212,27 @@ export class MapPageComponent implements OnInit, OnDestroy {
   updateIfDriverChooseWrongRoute(
     vehicleCurrentLocation: VehicleCurrentLocation
   ) {
-    const correctRouteIndex = this.storedDrivingNotification.route.locations.at(
-      vehicleCurrentLocation.crossedWaypoints
-    ).routeIndex;
-    console.log(correctRouteIndex);
-    console.log(vehicleCurrentLocation.chosenRouteIdx);
-    console.log(vehicleCurrentLocation.id)
+    console.log(vehicleCurrentLocation);
     if (
-      correctRouteIndex !== vehicleCurrentLocation.chosenRouteIdx &&
-      this.storedDrivingNotification.vehicleId === vehicleCurrentLocation.id &&
-      !this.storedDrivingNotification.wrongRoute
+      this.storedDrivingNotification?.vehicleId === vehicleCurrentLocation.id &&
+      this.authService.userIsRegular
     ) {
-      console.log('trueee');
-      this.store.dispatch(new UpdateIfDriverChooseWrongRoute(true));
+      const correctRouteIndex =
+        this.storedDrivingNotification.route.locations.at(
+          vehicleCurrentLocation.crossedWaypoints
+        ).routeIndex;
+      console.log(correctRouteIndex);
+      console.log(vehicleCurrentLocation.chosenRouteIdx);
+      console.log(vehicleCurrentLocation.id);
+      if (
+        correctRouteIndex !== vehicleCurrentLocation.chosenRouteIdx &&
+        this.storedDrivingNotification.vehicleId ===
+          vehicleCurrentLocation.id &&
+        !this.storedDrivingNotification.wrongRoute
+      ) {
+        console.log('trueee');
+        this.store.dispatch(new UpdateIfDriverChooseWrongRoute(true));
+      }
     }
   }
 

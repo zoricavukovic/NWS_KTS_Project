@@ -19,4 +19,5 @@ export interface DrivingNotification {
   reservation?: boolean;
   duration?: number;
   wrongRoute?: boolean;
+  justFinished?: boolean;
 }

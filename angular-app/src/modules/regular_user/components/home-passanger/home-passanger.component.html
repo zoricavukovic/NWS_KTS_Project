@@ -1,6 +1,11 @@
 <form
   [formGroup]="rideRequestForm"
-  *ngIf="!storedDrivingNotification?.active && !storedDrivingNotification">
+  *ngIf="
+    !storedDrivingNotification?.active &&
+    (!storedDrivingNotification ||
+      storedDrivingNotification.drivingStatus === 'FINISHED') &&
+    !storedDrivingNotification?.justFinished
+  ">
   <app-enter-locations
     *ngIf="routeChoiceView"
     [currentUser]="currentUser"
@@ -32,6 +37,4 @@
   "></app-active-drive-container>
 <app-rate-driving-or-skip
   [currentUser]="currentUser"
-  *ngIf="
-    storedDrivingNotification?.drivingStatus === 'FINISHED'
-  "></app-rate-driving-or-skip>
+  *ngIf="storedDrivingNotification?.justFinished"></app-rate-driving-or-skip>

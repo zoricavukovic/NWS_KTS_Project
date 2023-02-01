@@ -100,7 +100,7 @@ function calculateMinutesToDestination(
           })
         )
         .subscribe(() => {
-          console.log(storedDrivingNotification.minutes);
+          console.log(storedDrivingNotification);
         });
     }
   });

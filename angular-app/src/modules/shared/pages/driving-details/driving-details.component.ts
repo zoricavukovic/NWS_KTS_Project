@@ -29,6 +29,10 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { getTime } from '../../utils/time';
 import { BehaviourReportDialogComponent } from '../../components/behaviour-report-dialog/behaviour-report-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import {
+  AddDrivingNotification,
+  UpdateDrivingNotification,
+} from '../../actions/driving-notification.action';
 
 @Component({
   selector: 'app-driving-details',
@@ -125,6 +129,19 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
       .get(this.id)
       .subscribe((driving: Driving) => {
         this.driving = driving;
+        if (this.storedDrivingNotification === null) {
+          this.store.dispatch(
+            new AddDrivingNotification({
+              drivingId: driving.id,
+              drivingStatus: driving.drivingStatus,
+              price: driving.price,
+              active: driving.active,
+              route: driving.route,
+              started: driving.started,
+              wrongRoute: false,
+            })
+          );
+        }
         driving.route.routePathIndex = this.getRoutePathIndex(driving.route);
         this.rideRequestForm.get('selectedRoute').setValue(driving.route);
 
