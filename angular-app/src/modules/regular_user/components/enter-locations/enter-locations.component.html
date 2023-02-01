@@ -1,5 +1,5 @@
 <div *ngIf="rideRequestForm" [formGroup]="rideRequestForm">
-  <h1><strong>Request a ride now</strong></h1>
+  <h1 class="request-now-title"><strong>Request a ride now</strong></h1>
   <div formArrayName="searchingRoutesForm">
     <div
       *ngFor="let addedLocation of searchingForm; let i = index"

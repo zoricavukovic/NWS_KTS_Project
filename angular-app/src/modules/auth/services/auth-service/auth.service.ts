@@ -40,14 +40,14 @@ export class AuthService {
 
   loginWithGoogle(token: string): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(
-      this.configService.GOOGLE_LOGIN_URL,
+      this.configService.getGoogleLoginUrl(),
       { token }
     );
   }
 
   loginWithFacebook(token: string): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(
-      this.configService.FACEBOOK_LOGIN_URL,
+      this.configService.getFacebookLoginUrl(),
       { token }
     );
   }

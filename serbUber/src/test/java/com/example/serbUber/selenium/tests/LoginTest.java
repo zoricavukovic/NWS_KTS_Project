@@ -21,9 +21,7 @@ import static com.example.serbUber.selenium.helper.Constants.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestMethodOrder(MethodOrderer.DisplayName.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Transactional
 public class LoginTest extends OneBrowserTestBase {
 
     private HomePage homePage;

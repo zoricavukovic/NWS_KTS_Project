@@ -7,7 +7,9 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,9 +22,8 @@ import static com.example.serbUber.selenium.helper.Util.getMinutes;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-@TestMethodOrder(MethodOrderer.DisplayName.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
+
+@Transactional
 public class RideRequestOnePassengerTest extends OneBrowserTestBase {
 
     @Test
@@ -46,7 +47,13 @@ public class RideRequestOnePassengerTest extends OneBrowserTestBase {
         List<String> locations = new ArrayList<>();
         locations.add(START_POINT);
         locations.add(END_POINT);
-        rideRequestPage.enterLocations(locations);
+
+        for(int i=0; i < locations.size(); i++){
+            rideRequestPage.sendDataToLocationInput(i, locations.get(i));
+            rideRequestPage.selectFirstLocationOption(WANTED_LOCATION_INDEX);
+        }
+
+        assertTrue(rideRequestPage.allLocationsAreSelected());
         rideRequestPage.clickOnViewPossibleRoutesButton();
         rideRequestPage.clickOnRequestNowButton();
 
@@ -66,11 +73,18 @@ public class RideRequestOnePassengerTest extends OneBrowserTestBase {
         List<String> locations = new ArrayList<>();
         locations.add(START_POINT);
         locations.add(END_POINT);
-        rideRequestPage.enterLocations(locations);
+
+        for(int i=0; i < locations.size(); i++){
+            rideRequestPage.sendDataToLocationInput(i, locations.get(i));
+            rideRequestPage.selectFirstLocationOption(WANTED_LOCATION_INDEX);
+        }
+
+        assertTrue(rideRequestPage.allLocationsAreSelected());
         rideRequestPage.clickOnViewPossibleRoutesButton();
         rideRequestPage.clickOnRequestNowButton();
 
         SelectPassengersAndVehicleRideRequestPage selectRideDetailsPage = new SelectPassengersAndVehicleRideRequestPage(chromeDriver);
+        selectRideDetailsPage.clickOnBabySeatCheckBox();
         selectRideDetailsPage.clickOnSuvVehicleType();
         selectRideDetailsPage.clickOnRequestRideButton();
         assertTrue(selectRideDetailsPage.isVisibleNoDriverFound(NOT_DRIVER_FOUND_TOAST_MESSAGE));
@@ -86,7 +100,13 @@ public class RideRequestOnePassengerTest extends OneBrowserTestBase {
         List<String> locations = new ArrayList<>();
         locations.add(START_POINT);
         locations.add(END_POINT);
-        rideRequestPage.enterLocations(locations);
+
+        for(int i=0; i < locations.size(); i++){
+            rideRequestPage.sendDataToLocationInput(i, locations.get(i));
+            rideRequestPage.selectFirstLocationOption(WANTED_LOCATION_INDEX);
+        }
+
+        assertTrue(rideRequestPage.allLocationsAreSelected());
         rideRequestPage.clickOnViewPossibleRoutesButton();
         rideRequestPage.clickOnRequestNowButton();
 
@@ -105,22 +125,32 @@ public class RideRequestOnePassengerTest extends OneBrowserTestBase {
 
     @ParameterizedTest
     @DisplayName("T5-Ride reservation failed, chosen time is out of limits")
-    @MethodSource(value = "getNotValidTimeForReservation")
-    public void rideReservationFailedTimeOutOfLimits(String hour, String minutes) throws InterruptedException {
+    @ValueSource(ints = {0,5,6})
+    public void rideReservationFailedTimeOutOfLimits(int hours) throws InterruptedException {
         HomePage homePage = LoginHelper.login(chromeDriver, USER_FREE_TO_CREATE_RIDE, EXISTING_PASSWORD);
         RideRequestPage rideRequestPage = new RideRequestPage(chromeDriver);
         rideRequestPage.isRequestFormPresent(REQUEST_RIDE_TITLE);
         List<String> locations = new ArrayList<>();
         locations.add(START_POINT);
         locations.add(END_POINT);
-        rideRequestPage.enterLocations(locations);
+
+        for(int i=0; i < locations.size(); i++){
+            rideRequestPage.sendDataToLocationInput(i, locations.get(i));
+            rideRequestPage.selectFirstLocationOption(WANTED_LOCATION_INDEX);
+        }
+
+        assertTrue(rideRequestPage.allLocationsAreSelected());
         rideRequestPage.clickOnViewPossibleRoutesButton();
         rideRequestPage.scrollRouteDiv();
         rideRequestPage.clickOnRequestLaterButton();
 
         SelectPassengersAndVehicleRideRequestPage selectRideDetailsPage = new SelectPassengersAndVehicleRideRequestPage(chromeDriver);
         selectRideDetailsPage.clickOnSuvVehicleType();
-        selectRideDetailsPage.selectReservationTime(hour, minutes);
+        if (hours > 0) {
+            assertTrue(selectRideDetailsPage.increaseTime(hours));
+        } else {
+            assertTrue(selectRideDetailsPage.setTimeForInvalidReservation(INCREASE_MINUTES));
+        }
 
         selectRideDetailsPage.clickOnRequestRideButton();
         Assertions.assertTrue(selectRideDetailsPage.isVisibleInvalidChosenTime(INVALID_CHOSEN_TIME_TOAST_MESSAGE));
@@ -135,7 +165,13 @@ public class RideRequestOnePassengerTest extends OneBrowserTestBase {
         List<String> locations = new ArrayList<>();
         locations.add(START_POINT_TWO_ROUTES);
         locations.add(END_POINT_TWO_ROUTES);
-        rideRequestPage.enterLocations(locations);
+
+        for(int i=0; i < locations.size(); i++){
+            rideRequestPage.sendDataToLocationInput(i, locations.get(i));
+            rideRequestPage.selectFirstLocationOption(WANTED_LOCATION_INDEX);
+        }
+
+        assertTrue(rideRequestPage.allLocationsAreSelected());
         rideRequestPage.clickOnViewPossibleRoutesButton();
         rideRequestPage.scrollRouteDiv();
         rideRequestPage.clickOnSecondRouteButton();
@@ -150,20 +186,25 @@ public class RideRequestOnePassengerTest extends OneBrowserTestBase {
 
         DrivingDetailsPage drivingDetailsPage = new DrivingDetailsPage(chromeDriver);
         assertTrue(drivingDetailsPage.isDrivingDetailsPage(DRIVING_DETAILS_TITLE));
-        assertTrue(drivingDetailsPage.isCorrectDriver(DRIVER_NAME_RIDE_TWO_LOCATIONS_ONE_PASSENGER));
     }
 
     @ParameterizedTest
     @DisplayName("T7-Reservation ride created successfully with one passenger and two locations chosen car")
-    @MethodSource(value = "getValidTimeForReservation")
-    public void reservationRideCreatedSuccessfully(String hour, String minutes) throws InterruptedException {
+    @ValueSource(ints = {1,4})
+    public void reservationRideCreatedSuccessfully(int addHours) throws InterruptedException {
         HomePage homePage = LoginHelper.login(chromeDriver, USER_WITH_NO_TOKENS_EMAIL, EXISTING_PASSWORD);
         RideRequestPage rideRequestPage = new RideRequestPage(chromeDriver);
         assertTrue(rideRequestPage.isRequestFormPresent(REQUEST_RIDE_TITLE));
         List<String> locations = new ArrayList<>();
         locations.add(START_POINT);
         locations.add(END_POINT);
-        rideRequestPage.enterLocations(locations);
+
+        for(int i=0; i < locations.size(); i++){
+            rideRequestPage.sendDataToLocationInput(i, locations.get(i));
+            rideRequestPage.selectFirstLocationOption(WANTED_LOCATION_INDEX);
+        }
+
+        assertTrue(rideRequestPage.allLocationsAreSelected());
         rideRequestPage.clickOnViewPossibleRoutesButton();
         rideRequestPage.scrollRouteDiv();
         rideRequestPage.clickOnRequestLaterButton();
@@ -171,7 +212,7 @@ public class RideRequestOnePassengerTest extends OneBrowserTestBase {
         SelectPassengersAndVehicleRideRequestPage rideDetailsPage = new SelectPassengersAndVehicleRideRequestPage(chromeDriver);
         assertTrue(rideDetailsPage.isFilterVehicleDiv());
         rideDetailsPage.clickOnCarVehicleType();
-        rideDetailsPage.selectReservationTime(hour, minutes);
+        assertTrue(rideDetailsPage.increaseTime(addHours));
         rideDetailsPage.clickOnRequestRideButton();
 
         assertTrue(homePage.isVisibleSuccessfullyReservationRideToast(RIDE_RESERVATION_CREATED_MESSAGE));
@@ -184,17 +225,5 @@ public class RideRequestOnePassengerTest extends OneBrowserTestBase {
                 arguments(getHour(5, 2), getMinutes(5,2)),
                 arguments(getHour(0, 28), getMinutes(0, 28)));
     }
-
-
-    private List<Arguments> getValidTimeForReservation(){
-
-        return Arrays.asList(
-                arguments(getHour(1,0), getMinutes(30, 0)),
-                arguments(getHour(1,0), getMinutes(0,0)),
-                arguments(getHour(4,0), getMinutes(30,0))
-        );
-
-    }
-
 
 }

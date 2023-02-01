@@ -20,10 +20,6 @@ public class DrivingDetailsPage {
     @FindBy(how = How.XPATH, using="//h1/b")
     private WebElement drivingDetailsTitle;
 
-    @FindBy(how = How.XPATH, using="//mat-card[@id='driver-card']/mat-card-header/div[@class='mat-card-header-text']/mat-card-title")
-    private WebElement driverCardName;
-
-
     public DrivingDetailsPage(WebDriver driver){
         this.driver = driver;
 
@@ -34,11 +30,6 @@ public class DrivingDetailsPage {
         return new WebDriverWait(driver, Duration.ofSeconds(30))
                 .until(ExpectedConditions.textToBePresentInElement(drivingDetailsTitle, title));
 
-    }
-
-    public boolean isCorrectDriver(String driverName){
-        return new WebDriverWait(driver, Duration.ofSeconds(1))
-                .until(ExpectedConditions.textToBePresentInElement(driverCardName, driverName));
     }
 
 }

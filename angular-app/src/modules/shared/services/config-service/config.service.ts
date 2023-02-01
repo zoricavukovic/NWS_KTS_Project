@@ -33,6 +33,14 @@ export class ConfigService {
     return this.LOGIN_URL;
   }
 
+  getGoogleLoginUrl(): string {
+    return this.GOOGLE_LOGIN_URL;
+  }
+
+  getFacebookLoginUrl(): string {
+    return this.FACEBOOK_LOGIN_URL;
+  }
+
   GOOGLE_LOGIN_URL = `${this.LOGIN_URL}/google`;
   FACEBOOK_LOGIN_URL = `${this.LOGIN_URL}/facebook`;
   LOGOUT_URL = `${this.AUTH_URL}/logout`;

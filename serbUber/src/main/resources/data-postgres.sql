@@ -137,7 +137,7 @@ insert into paying_info(currency, token_price, max_num_of_tokens_per_transaction
     ('EUR', 1, 20);
 
 insert into token_banks(user_id, num_of_tokens, total_token_amount_spent, total_money_amount_spent, paying_info_id) values
-                        (3, 18, 0, 4, 1),
+                        (3, 20, 0, 4, 1),
                         (4, 8, 0, 8, 1),
                         (5, 5, 1, 6, 1),
                         (6, 3, 0, 3, 1),
