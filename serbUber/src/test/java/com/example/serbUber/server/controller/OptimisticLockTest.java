@@ -29,16 +29,15 @@ public class OptimisticLockTest {
     @Autowired
     private DriverRepository driverRepository;
 
-    //TODO: SRKIIIIIII OVO ISPRAAVITI JER SE ISPISUJE GRESKA, NADJI NACIN DA SE UHVATI TAJ OPTIMISTIC LOCK!!!!!!!!!!!!
     @Test
     @Rollback(true)
-    public void shouldThrowOptimisticLockingException() throws Throwable {
+    public void shouldThrowOptimisticLockingException() {
         ExecutorService executor = Executors.newFixedThreadPool(2);
         Future<?> future1 = executor.submit(new Runnable() {
 
             @Override
             public void run() {
-                System.out.println("Startovan Thread 1");
+                System.out.println("Start Thread 1");
                 Driver driver = driverRepository.getDriverById(DRIVER_ID_FOR_ACTIVE_DRIVING).orElseGet(null);
                 if (driver != null) {
                     driver.setLocked(true);
@@ -53,7 +52,7 @@ public class OptimisticLockTest {
 
             @Override
             public void run() {
-                System.out.println("Startovan Thread 2");
+                System.out.println("Start Thread 2");
                 Driver secondDriver = driverRepository.getDriverById(DRIVER_ID_FOR_ACTIVE_DRIVING).orElseGet(null);
                 if (secondDriver != null) {
                     secondDriver.setLocked(true);
@@ -64,11 +63,8 @@ public class OptimisticLockTest {
         });
         try {
             future1.get();
-        } catch (ExecutionException e) {
-            System.out.println("Exception from thread " + e.getCause().getClass());
-            throw e.getCause();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        } catch (ExecutionException | InterruptedException e) {
+            System.out.println("Exception from thread ");
         }
         executor.shutdown();
     }

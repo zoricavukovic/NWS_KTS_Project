@@ -31,7 +31,7 @@ public class RegularUserControllerTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
-    @BeforeAll
+    @BeforeEach
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }

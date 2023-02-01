@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { Options } from 'ngx-google-places-autocomplete/objects/options/options';
@@ -84,34 +84,17 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
     this.filterVehicleView = false;
     this.requestLater = false;
     this.rideIsRequested = false;
-    this.rideRequestForm = new FormGroup({
-      searchingRoutesForm: this.formBuilder.array([
-        this.createEmptySearchForm(),
-        this.createEmptySearchForm(),
-      ]),
-      selectedRoute: new FormControl(this.createEmptyRoute()),
-      routePathIndex: new FormControl([]),
-      petFriendly: new FormControl(false),
-      babySeat: new FormControl(false),
-      vehicleType: new FormControl(''),
-      price: new FormControl(0),
-      senderEmail: new FormControl(''),
-      selectedPassengers: new FormControl([]),
-      chosenDateTime: new FormControl(null),
-    });
+    this.createRideRequestForm();
   }
 
   ngOnInit(): void {
     this.currentDrivingNotification.subscribe(response => {
       this.storedDrivingNotification = response;
       this.routeChoiceView = true;
-      console.log('blalfldf');
-      console.log(this.routeChoiceView);
       if (!response?.active) {
         this.activeRide = null;
       }
     });
-    console.log(this.routeChoiceView);
 
     if (this.currentUser) {
       this.drivingSubscription = this.drivingService
@@ -164,5 +147,23 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
     this.filterVehicleView = true;
     this.requestLater = false;
     removeAllPolyline(drawPolylineList);
+  }
+
+  private createRideRequestForm() {
+    this.rideRequestForm = new FormGroup({
+      searchingRoutesForm: this.formBuilder.array([
+        this.createEmptySearchForm(),
+        this.createEmptySearchForm(),
+      ]),
+      selectedRoute: new FormControl(this.createEmptyRoute()),
+      routePathIndex: new FormControl([]),
+      petFriendly: new FormControl(false),
+      babySeat: new FormControl(false),
+      vehicleType: new FormControl(''),
+      price: new FormControl(0),
+      senderEmail: new FormControl(''),
+      selectedPassengers: new FormControl([]),
+      chosenDateTime: new FormControl(null),
+    });
   }
 }
