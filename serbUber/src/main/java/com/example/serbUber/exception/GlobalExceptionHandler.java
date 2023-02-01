@@ -1,5 +1,6 @@
 package com.example.serbUber.exception;
 
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import static com.example.serbUber.exception.ErrorMessagesConstants.OPTIMISTIC_LOCKING_FAILURE_MESSAGE;
 import static com.example.serbUber.exception.ErrorMessagesConstants.UNAUTHORIZED_MESSAGE;
 
 @RestControllerAdvice
@@ -154,6 +156,13 @@ public class GlobalExceptionHandler {
     public String constraintViolationException(ConstraintViolationException ex) {
 
         return ex.getMessage();
+    }
+
+    @ExceptionHandler(value = OptimisticLockingFailureException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public String optimisticLockingFailureException(OptimisticLockingFailureException optimisticLockingFailureException) {
+
+        return OPTIMISTIC_LOCKING_FAILURE_MESSAGE;
     }
 
 }

@@ -94,6 +94,29 @@ public class Driving {
         this.price = price;
     }
 
+    public Driving(
+            final Long id,
+            final double duration,
+            final LocalDateTime started,
+            final LocalDateTime end,
+            final Route route,
+            final DrivingStatus drivingStatus,
+            final Driver driver,
+            final double price,
+            final LocalDateTime lastReminder
+    ) {
+        this.id = id;
+        this.duration = duration;
+        this.started = started;
+        this.end = end;
+        this.route = route;
+        this.drivingStatus = drivingStatus;
+        this.driver = driver;
+        this.price = price;
+        this.lastReminder = lastReminder;
+        this.setUsers(new HashSet<>());
+    }
+
     public Long getId() {
         return id;
     }

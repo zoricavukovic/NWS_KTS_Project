@@ -6,6 +6,7 @@ import com.example.serbUber.model.Location;
 import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.model.Driving;
 import com.example.serbUber.service.user.DriverService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,10 +16,11 @@ import java.util.List;
 @Service
 public class ScheduleVehicleArriveNotification {
 
-    private final DriverService driverService;
-    private final DrivingService drivingService;
-    private final WebSocketService webSocketService;
+    private DriverService driverService;
+    private DrivingService drivingService;
+    private WebSocketService webSocketService;
 
+    @Autowired
     public ScheduleVehicleArriveNotification(
             final DriverService driverService,
             final DrivingService drivingService,

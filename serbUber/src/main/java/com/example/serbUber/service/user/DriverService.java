@@ -254,10 +254,9 @@ public class DriverService implements IDriverService{
         LocalDateTime startDate = drivingNotification.getStarted();
         LocalDateTime endDate = drivingNotification.getStarted().plusMinutes((int) drivingNotification.getDuration());
         Location startLocation = drivingNotification.getRoute().getLocations().first().getLocation();
-
         List<Driver> drivers = driverRepository.getActiveDriversWhichVehicleMatchParams(drivingNotification.getVehicleTypeInfo().getVehicleType());
 
-        return drivers.size() > 0 ?
+        Driver driver = drivers.size() > 0 ?
                 findMatchesDriver(
                         drivers,
                         startLocation.getLon(),
@@ -269,6 +268,13 @@ public class DriverService implements IDriverService{
                         drivingNotification.getDuration()
                 )
                 : null;
+
+        if (driver != null) {
+            driver.setLocked(!driver.isLocked());
+            driver = driverRepository.save(driver);
+        }
+
+        return driver;
     }
 
     @Transactional
