@@ -57,7 +57,7 @@ public class RegularUserController {
     @GetMapping("/favourite-route/{routeId}/{userId}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DRIVER', 'ROLE_REGULAR_USER')")
-    public boolean isFavouriteRoute(@Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable Long routeId, @Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable Long userId){
+    public boolean isFavouriteRoute(@Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable Long routeId, @Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable Long userId) throws EntityNotFoundException {
         return regularUserService.isFavouriteRoute(routeId, userId);
     }
 

@@ -22,8 +22,10 @@ public class DrivingDTO {
     private Set<RegularUser> users;
     private Map<Long, Boolean> usersPaid = new HashMap<>();
     private double price;
-
     private boolean hasReviewForUser = false;
+
+    private boolean isFavourite = false;
+
 
     public DrivingDTO() {}
 
@@ -43,6 +45,25 @@ public class DrivingDTO {
         this.users = setPictureForUsers(driving.getUsers());
         this.price = driving.getPrice();
         this.hasReviewForUser = false;
+    }
+
+    public DrivingDTO(Driving driving, boolean isFavourite){
+        this.id = driving.getId();
+        this.active = driving.isActive();
+        this.duration = driving.getDuration();
+        this.started = driving.getStarted();
+        this.route = driving.getRoute();
+        this.drivingStatus = driving.getDrivingStatus();
+        if(driving.getDriver() == null){
+            this.driverId = null;
+        }
+        else {
+            this.driverId = driving.getDriver().getId();
+        }
+        this.users = setPictureForUsers(driving.getUsers());
+        this.price = driving.getPrice();
+        this.hasReviewForUser = false;
+        this.isFavourite = isFavourite;
     }
 
     private Set<RegularUser> setPictureForUsers(Set<RegularUser> users){

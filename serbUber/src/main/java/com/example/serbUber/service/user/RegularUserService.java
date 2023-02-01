@@ -7,6 +7,8 @@ import com.example.serbUber.dto.user.RegularUserDTO;
 import com.example.serbUber.dto.user.RegularUserPageDTO;
 import com.example.serbUber.exception.*;
 import com.example.serbUber.model.Driving;
+import com.example.serbUber.model.DrivingLocationIndex;
+import com.example.serbUber.model.Location;
 import com.example.serbUber.model.Route;
 import com.example.serbUber.model.user.RegularUser;
 import com.example.serbUber.repository.user.RegularUserRepository;
@@ -22,6 +24,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import java.util.*;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -132,30 +135,62 @@ public class RegularUserService implements IRegularUserService {
     public boolean updateFavouriteRoutes(final Long userId, final Long routeId) throws EntityNotFoundException {
         RegularUser user = getRegularById(userId);
         Route route  = routeService.get(routeId);
-        List<Route> favouriteRoutes = user.getFavouriteRoutes();
-        if(favouriteRoutes.contains(route)){
-            favouriteRoutes.remove(route);
-        }
-        else{
+        Set<Route> favouriteRoutes = new HashSet<>(user.getFavouriteRoutes());
+        if(shouldAddToUniqueFavourites(route, favouriteRoutes)){
             favouriteRoutes.add(route);
         }
-        user.setFavouriteRoutes(favouriteRoutes);
+        else{
+            favouriteRoutes.removeIf(favourite -> isSameRoutes(favourite, route));
+        }
+
+        user.setFavouriteRoutes(new ArrayList<>(favouriteRoutes));
         regularUserRepository.save(user);
         return true;
     }
 
 
-    public boolean isFavouriteRoute(final Long routeId, final Long userId) {
+    public boolean isFavouriteRoute(final Long routeId, final Long userId) throws EntityNotFoundException {
         RegularUser u = regularUserRepository.getUserWithFavouriteRouteId(routeId, userId);
+        if(u == null){
+            Route route = routeService.get(routeId);
+            List<Route> favouriteRoutes = get(userId).getFavourites();
+            Route favouriteRoute = favouriteRoutes.stream()
+                    .filter(r -> isSameRoutes(route, r))
+                    .findFirst()
+                    .orElse(null);
+
+            if (favouriteRoute != null) {
+                updateFavouriteRoutes(userId, routeId);
+                return true;
+            }
+        }
         return u != null;
     }
 
     public List<RouteDTO> getFavouriteRoutes(final Long id) throws EntityNotFoundException {
-        Optional<RegularUser> u = regularUserRepository.findById(id);
-        if(u.isPresent()){
-            return fromRoutes(u.get().getFavouriteRoutes());
+        RegularUserDTO regularUser = get(id);
+        Set<Route> favouritesRoutesSet = new HashSet<>(regularUser.getFavourites());
+        Set<Route> uniqueFavouriteRoutes = new HashSet<>();
+
+        for(Route route : favouritesRoutesSet){
+            if(shouldAddToUniqueFavourites(route, uniqueFavouriteRoutes)){
+                uniqueFavouriteRoutes.add(route);
+            }
         }
-        throw new EntityNotFoundException(id, EntityType.USER);
+
+        return fromRoutes(new ArrayList<>(uniqueFavouriteRoutes));
+    }
+
+
+    private boolean shouldAddToUniqueFavourites(Route route, Set<Route> uniqueFavouriteRoutes){
+        boolean toAdd = true;
+        for(Route uniqueRoute : uniqueFavouriteRoutes){
+            if(isSameRoutes(uniqueRoute, route)){
+                toAdd = false;
+            }
+        }
+
+        return toAdd;
     }
 
     public boolean blockRegular(final Long id, final String reason)
@@ -191,6 +226,17 @@ public class RegularUserService implements IRegularUserService {
         regularUserRepository.save(regularUser);
 
         return true;
+    }
+
+    private boolean isSameRoutes(Route route, Route favouriteRoute){
+        return route.getLocations().stream()
+                .anyMatch(location -> favouriteRoute.getLocations().stream()
+                .anyMatch(favouriteRouteLocation -> isSameLonAndLat(location.getLocation().getLon(), location.getLocation().getLat(),favouriteRouteLocation.getLocation().getLon(), favouriteRouteLocation.getLocation().getLat())));
+    }
+
+    private boolean isSameLonAndLat(double lon1, double lat1, double lon2, double lat2){
+
+        return lon1 == lon2 && lat1 == lat2;
     }
 
     private boolean regularUserInActiveDriving(final List<Driving> drivings) {

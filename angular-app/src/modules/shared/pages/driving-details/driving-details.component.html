@@ -2,14 +2,40 @@
   <div *ngIf="driving" id="route-div" class="box mat-elevation-z1">
     <div style="display: flex; flex-direction: row">
       <h1 *ngIf="router.url.includes('favourite-route')">Favourite route</h1>
-      <h1
+      <div
         *ngIf="
           !canAcceptOrDeclineRide() &&
           storedDrivingNotification?.drivingStatus !== 'PAYING' &&
           !router.url.includes('favourite-route')
-        ">
-        <b>Driving</b>
-      </h1>
+        "
+        style="display: flex; flex-direction: row">
+        <h1 style="margin-top: 0.3rem; margin-right: 0.2rem">
+          <b>Driving</b>
+        </h1>
+
+        <button
+          *ngIf="isRegularUser"
+          mat-icon-button
+          color="warn"
+          (click)="setFavouriteRoute(favouriteRoute)">
+          <mat-icon
+            *ngIf="!favouriteRoute"
+            matTooltip="Add to favourite routes"
+            matTooltipClass="tooltip"
+            matTooltipHideDelay="1000"
+            class="icon"
+            >favorite_border</mat-icon
+          >
+          <mat-icon
+            *ngIf="favouriteRoute"
+            matTooltip="Remove from favourite routes"
+            matTooltipClass="tooltip"
+            matTooltipHideDelay="1000"
+            class="icon"
+            >favorite</mat-icon
+          >
+        </button>
+      </div>
       <h1
         *ngIf="
           canAcceptOrDeclineRide() &&
@@ -39,8 +65,6 @@
         *ngIf="storedDrivingNotification?.drivingStatus !== 'PAYING'"
         [locations]="driving.route.locations"></app-driving-details-route>
     </div>
-
-    <br />
     <app-driving-details-actions
       [favouriteRoute]="favouriteRoute"
       [driver]="driver"
@@ -51,7 +75,6 @@
         storedDrivingNotification.drivingStatus === 'FINISHED' ||
         storedDrivingNotification.justFinished
       "></app-driving-details-actions>
-    <br />
     <app-filter-vehicle-view
       *ngIf="
         filterVehicleView &&
@@ -64,13 +87,14 @@
         !storedDrivingNotification?.active &&
         storedDrivingNotification?.drivingStatus === 'PAYING'
       "></app-waiting-for-accept-ride-container>
-    <br />
     <div
       *ngIf="
         !router.url.includes('favourite-route') &&
         !filterVehicleView &&
-        !requestLater
-      ">
+        !requestLater &&
+        storedDrivingNotification?.drivingStatus !== 'PAYING'
+      "
+      style="margin-top: 1rem">
       <vehicle-details [vehicle]="driver?.vehicle"></vehicle-details>
       <br />
       <app-driving-details-driver

@@ -43,8 +43,12 @@
   position: relative;
 }
 
-#route-div{
+#route-div {
   overflow: auto;
   max-height: 40rem;
   /* min-width: 20rem; */
+}
+
+.icon {
+  transform: scale(1.5);
 }

@@ -31,7 +31,8 @@ insert into routes (distance, time) values
                     (3, 5),
                     (5, 2),
                     (6, 6),
-                    (3200, 3);
+                    (3200, 3),
+                    (3, 5);
 
 insert into vehicles (baby_seat, pet_friendly, rate, vehicle_type_id, active_route_id, current_location_index, current_stop_location_id, crossed_waypoints) values
             (true, false, 0, 1, null, 0, 2, 0),
@@ -71,7 +72,10 @@ insert into drivings (active, driver_id, driving_status, duration, price, starte
                     (true, 18, 2, 10, 3, CURRENT_TIMESTAMP - INTERVAL '2 minutes', null, 1, null, false),
                     (false, 14, 3, 8, 3, to_timestamp('25.01.2023. 22:40', 'DD.MM.YYYY HH24:MI'), to_timestamp('25.01.2023. 22:40', 'DD.MM.YYYY HH24:MI'), 2, null, false),
                     (false, null, 2, 5, 5, CURRENT_TIMESTAMP + INTERVAL '50 minutes', null, 3, null, true),
-                    (true, 19, 2, 20, 5, CURRENT_TIMESTAMP - INTERVAL '3 minutes', null, 2, null, false);
+                    (true, 19, 2, 20, 5, CURRENT_TIMESTAMP - INTERVAL '3 minutes', null, 2, null, false),
+                    --izmena
+                    (false, 14, 3, 8, 3, to_timestamp('24.01.2023. 22:40', 'DD.MM.YYYY HH24:MI'), to_timestamp('25.01.2023. 22:40', 'DD.MM.YYYY HH24:MI'), 4, null, false),
+                    (false, 14, 3, 8, 3, to_timestamp('24.01.2023. 22:40', 'DD.MM.YYYY HH24:MI'), to_timestamp('25.01.2023. 22:40', 'DD.MM.YYYY HH24:MI'), 5, null, false);
 
 
 insert into driving_locations(location_id, index, route_id, route_index) values
@@ -83,15 +87,22 @@ insert into driving_locations(location_id, index, route_id, route_index) values
       (15,2,2,0),
       (4,1,3, 0),
       (1,2,3, 0),
-      (5, 1,4, 0),
-      (15, 2, 4, 0),
-      (3, 3, 4, 0);
+      (7,1,4, 0),
+      (15,2,4,0),
+      (7,1,5, 0),
+      (15,2,5,0);
+
+--       (5, 1,4, 0),
+--       (15, 2, 4, 0),
+--       (3, 3, 4, 0);
 
 insert into drivings_users(driving_id, user_id) values
     (1, 8),
     (2, 3),
     (3, 12),
-    (4, 3);
+    (4, 4),
+    (5, 3),
+    (6, 3);
 
 insert into chat_rooms(client_id, admin_id, resolved) values
     (3, 1, true);
@@ -130,8 +141,8 @@ insert into reports(id, admin_email, answered, sender_id, receiver_id, message, 
     (nextval('notifications_id_gen'), null, false, 5, 16,'Ana je prosula sok po sedistu!', '2022-12-01 13:25');
 
 
-insert into favourite_routes (user_id, route_id) values
-    (3,1);
+-- insert into favourite_routes (user_id, route_id) values
+--     (3,2);
 
 insert into paying_info(currency, token_price, max_num_of_tokens_per_transaction) values
     ('EUR', 1, 20);

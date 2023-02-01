@@ -67,7 +67,7 @@ public interface IDrivingService {
     SimpleDrivingInfoDTO checkUserHasActiveDriving(final Long userId);
     VehicleCurrentLocationDTO getVehicleCurrentLocation(final Long id) throws EntityNotFoundException;
 
-    Long getDrivingByFavouriteRoute(final Long routeId) throws EntityNotFoundException;
+    Long getDrivingByFavouriteRoute(final Long routeId);
 
     boolean checkIfPassengersAreBusy(final List<String> passengersEmail, final LocalDateTime started)
             throws EntityNotFoundException;
@@ -77,4 +77,6 @@ public interface IDrivingService {
     ChartDataDTO getAdminChartData(final Long id, final ChartType chartType, final LocalDate startDate, final LocalDate endDate) throws EntityNotFoundException;
 
     LocalDateTime getTimeForDriving(final Long drivingId) throws EntityNotFoundException;
+
+    DrivingDTO getDrivingForUser(Long id, Long userId) throws EntityNotFoundException;
 }

@@ -1,4 +1,11 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  OnDestroy,
+  Output,
+  EventEmitter,
+} from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -17,6 +24,7 @@ import { AuthService } from 'src/modules/auth/services/auth-service/auth.service
 export class DrivingRowComponent implements OnInit, OnDestroy {
   @Input() driving: Driving;
   @Input() user: User;
+  @Output() favouriteRouteChangeEmit = new EventEmitter();
   isRegularUser = true;
   favouriteRoute = false;
 
@@ -33,43 +41,10 @@ export class DrivingRowComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.isRegularUser = this.authService.userIsRegular();
-    this.favouriteRouteSubscription = this.regularUserService
-      .isFavouriteRouteForUser(this.driving.route.id, this.user.id)
-      .subscribe(response => {
-        if (response) {
-          this.favouriteRoute = true;
-        }
-      });
   }
 
   goToDetailsPage(id: number) {
     this.router.navigate([`/serb-uber/user/map-page-view/${id}`]);
-  }
-
-  setFavouriteRoute(favourite: boolean) {
-    if (favourite) {
-      this.regularUserService
-        .updateFavouriteRoutes(
-          this.regularUserService.createFavouriteRequest(
-            this.authService.getCurrentUserId,
-            this.driving.route.id
-          )
-        )
-        .subscribe(res => {
-          this.favouriteRoute = false;
-        });
-    } else {
-      this.regularUserService
-        .addToFavouriteRoutes(
-          this.regularUserService.createFavouriteRequest(
-            this.authService.getCurrentUserId,
-            this.driving.route.id
-          )
-        )
-        .subscribe(res => {
-          this.favouriteRoute = true;
-        });
-    }
   }
 
   isDisabledBtnRate(date): boolean {

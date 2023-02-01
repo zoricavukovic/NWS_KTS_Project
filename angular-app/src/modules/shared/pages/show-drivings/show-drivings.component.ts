@@ -2,11 +2,11 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { PageEvent } from '@angular/material/paginator';
-import {Driving} from "../../models/driving/driving";
-import {User} from "../../models/user/user";
-import {AuthService} from "../../../auth/services/auth-service/auth.service";
-import {DrivingService} from "../../services/driving-service/driving.service";
-import {ReviewService} from "../../services/review-service/review.service";
+import { Driving } from '../../models/driving/driving';
+import { User } from '../../models/user/user';
+import { AuthService } from '../../../auth/services/auth-service/auth.service';
+import { DrivingService } from '../../services/driving-service/driving.service';
+import { ReviewService } from '../../services/review-service/review.service';
 
 @Component({
   selector: 'app-show-drivings',
@@ -61,11 +61,11 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.userId = +this.route.snapshot.paramMap.get('id');
-    this.currentUserSubscription = this.authService.getSubjectCurrentUser().subscribe(
-      user => {
+    this.currentUserSubscription = this.authService
+      .getSubjectCurrentUser()
+      .subscribe(user => {
         this.currentUser = user;
-      }
-    );
+      });
 
     this.drivingsSubscription = this.drivingService
       .getDrivingsForUser(
@@ -77,7 +77,7 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
       )
       .subscribe((response: Driving[]) => {
         this.drivings = response;
-        this.totalPages = response.length === 0 ? 1: response.at(0).pageNumber;
+        this.totalPages = response.length === 0 ? 1 : response.at(0).pageNumber;
         this.reviewedDrivingsSubscription = this.reviewService
           .getReviewedDrivingsForUser(this.userId)
           .subscribe((reviewedDrivings: number[]) => {
@@ -133,6 +133,22 @@ export class ShowDrivingsComponent implements OnInit, OnDestroy {
       .subscribe((response: Driving[]) => {
         this.drivings = response;
         console.log(this.totalPages);
+      });
+  }
+
+  reloadFavouriteRoutes() {
+    console.log('blalalala');
+    this.reviewedDrivingsSubscription = this.reviewService
+      .getReviewedDrivingsForUser(this.userId)
+      .subscribe((reviewedDrivings: number[]) => {
+        console.log(reviewedDrivings);
+        for (const driving of this.drivings) {
+          if (reviewedDrivings.includes(driving.id)) {
+            driving.hasReviewForUser = true;
+          } else {
+            driving.hasReviewForUser = false;
+          }
+        }
       });
   }
 

@@ -78,6 +78,14 @@ public class DrivingController {
         return drivingService.getDrivingDto(id);
     }
 
+    @GetMapping("/{id}/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_REGULAR_USER')")
+    public DrivingDTO getDrivingForUser(@PathVariable Long id, @PathVariable Long userId) throws EntityNotFoundException {
+
+        return drivingService.getDrivingForUser(id, userId);
+    }
+
     @PutMapping("/finish-driving/{id}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ROLE_DRIVER')")
@@ -125,7 +133,6 @@ public class DrivingController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyRole('ROLE_REGULAR_USER')")
     public Long getDrivingByFavouriteRoute(@Valid @NotNull(message = NOT_NULL_MESSAGE) @PathVariable Long routeId)
-            throws EntityNotFoundException
     {
 
         return drivingService.getDrivingByFavouriteRoute(routeId);

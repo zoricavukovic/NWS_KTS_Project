@@ -13,6 +13,7 @@ import com.example.serbUber.repository.DrivingRepository;
 import com.example.serbUber.request.DrivingLocationIndexRequest;
 import com.example.serbUber.request.LocationRequest;
 import com.example.serbUber.service.interfaces.IDrivingService;
+import com.example.serbUber.service.user.RegularUserService;
 import com.example.serbUber.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -44,19 +45,23 @@ public class DrivingService implements IDrivingService {
     private DrivingStatusNotificationService drivingStatusNotificationService;
     private RouteService routeService;
 
+    private RegularUserService regularUserService;
+
     @Autowired
     public DrivingService(
         final DrivingRepository drivingRepository,
         final UserService userService,
         final WebSocketService webSocketService,
         final DrivingStatusNotificationService drivingStatusNotificationService,
-        final RouteService routeService
+        final RouteService routeService,
+        final RegularUserService regularUserService
     ) {
         this.drivingRepository = drivingRepository;
         this.userService = userService;
         this.webSocketService = webSocketService;
         this.drivingStatusNotificationService = drivingStatusNotificationService;
         this.routeService = routeService;
+        this.regularUserService = regularUserService;
     }
 
     public Driving create(
@@ -137,6 +142,8 @@ public class DrivingService implements IDrivingService {
 
 
     public DrivingDTO getDrivingDto(final Long id) throws EntityNotFoundException {
+//        Driving driving = getDriving(id);
+//        regularUserService.isFavouriteRoute(driving.getRoute().getId());
 
         return new DrivingDTO(getDriving(id));
     }
@@ -194,6 +201,7 @@ public class DrivingService implements IDrivingService {
         return new DrivingDTO(driving);
     }
 
+    @Transactional
     public void rejectOutdatedDrivings(){
         List<Driving> drivings = getAcceptedNotActiveDrivings();
         for(Driving driving : drivings){
@@ -218,10 +226,9 @@ public class DrivingService implements IDrivingService {
         return vehicleCurrentLocationDTO;
     }
 
-    public Long getDrivingByFavouriteRoute(final Long routeId) throws EntityNotFoundException {
+    public Long getDrivingByFavouriteRoute(final Long routeId) {
 
-        return drivingRepository.findDrivingByFavouriteRoute(routeId)
-                .orElseThrow(() -> new EntityNotFoundException(routeId, EntityType.DRIVING));
+        return drivingRepository.findDrivingsByFavouriteRoute(routeId).get(0);
     }
 
     public boolean checkIfPassengersAreBusy(final List<String> passengersEmail, final LocalDateTime started) throws EntityNotFoundException {
@@ -295,6 +302,13 @@ public class DrivingService implements IDrivingService {
         Driving driving = getDriving(drivingId);
 
         return driving.getStarted();
+    }
+
+    public DrivingDTO getDrivingForUser(Long id, Long userId) throws EntityNotFoundException {
+        Driving driving = getDriving(id);
+        boolean isFavourite = regularUserService.isFavouriteRoute(driving.getRoute().getId(), userId);
+
+        return new DrivingDTO(driving, isFavourite);
     }
 
     public Driving driverHasFutureDriving(final Long id) {

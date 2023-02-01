@@ -18,7 +18,7 @@ public interface IRegularUserService {
     RegularUserDTO get(final Long id) throws EntityNotFoundException;
     RegularUser getRegularById(final Long id) throws EntityNotFoundException;
     boolean updateFavouriteRoutes(final Long userId, final Long routeId) throws EntityNotFoundException;
-    boolean isFavouriteRoute(final Long routeId, final Long userId);
+    boolean isFavouriteRoute(final Long routeId, final Long userId) throws EntityNotFoundException;
     List<RouteDTO> getFavouriteRoutes(final Long id) throws EntityNotFoundException;
     boolean blockRegular(final Long id, final String reason) throws IOException, EntityNotFoundException, EntityUpdateException, MailCannotBeSentException;
     public RegistrationDTO registerRegularUser(

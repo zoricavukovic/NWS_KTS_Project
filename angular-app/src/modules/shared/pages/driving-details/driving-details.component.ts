@@ -29,10 +29,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { getTime } from '../../utils/time';
 import { BehaviourReportDialogComponent } from '../../components/behaviour-report-dialog/behaviour-report-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import {
-  AddDrivingNotification,
-  UpdateDrivingNotification,
-} from '../../actions/driving-notification.action';
+import { AddDrivingNotification } from '../../actions/driving-notification.action';
 
 @Component({
   selector: 'app-driving-details',
@@ -182,6 +179,18 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
             this.loggedUser = user;
             this.isRegularUser = this.authService.userIsRegular();
             this.isDriver = this.authService.userIsDriver();
+
+            this.favouriteRouteSubscription = this.regularUserService
+              .isFavouriteRouteForUser(
+                this.driving.route.id,
+                this.loggedUser.id
+              )
+              .subscribe(response => {
+                console.log(response);
+                if (response) {
+                  this.favouriteRoute = true;
+                }
+              });
           });
       });
   }

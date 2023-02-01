@@ -8,12 +8,11 @@ import { Route } from '../../../shared/models/route/route';
 @Component({
   selector: 'app-favorite-routes-data',
   templateUrl: './favorite-routes-data.component.html',
-  styleUrls: ['./favorite-routes-data.component.css']
+  styleUrls: ['./favorite-routes-data.component.css'],
 })
 export class FavoriteRoutesDataComponent implements OnInit, OnDestroy {
-
   @Input() userId: number;
-  
+
   favouriteRoutesSubscription: Subscription;
   favoriteRoutes: Route[];
 
@@ -34,7 +33,7 @@ export class FavoriteRoutesDataComponent implements OnInit, OnDestroy {
         .getFavouriteRoutesForUser(this.userId)
         .subscribe(res => {
           this.favoriteRoutes = res;
-          console.log(this.favoriteRoutes)
+          console.log(this.favoriteRoutes);
         });
     }
   }
@@ -45,20 +44,21 @@ export class FavoriteRoutesDataComponent implements OnInit, OnDestroy {
         this.regularUserService.createFavouriteRequest(this.userId, routeId)
       )
       .subscribe(response => {
-        this.favoriteRoutes = this.favoriteRoutes.filter((item) => {
-          return item.id !== routeId
-        })
+        this.favoriteRoutes = this.favoriteRoutes.filter(item => {
+          return item.id !== routeId;
+        });
       });
-      
-      event.stopPropagation();
+
+    event.stopPropagation();
   }
 
   goToDetails(routeId: number) {
-    this.drivingSubscription = this.drivingService.getDrivingByFavouriteRoute(routeId).subscribe(
-      res => {
-        this.router.navigate(["serb-uber/user/favourite-route", res]);
-      }
-    );
+    this.drivingSubscription = this.drivingService
+      .getDrivingByFavouriteRoute(routeId)
+      .subscribe(res => {
+        console.log(res);
+        this.router.navigate(['serb-uber/user/favourite-route', res]);
+      });
   }
 
   ngOnDestroy(): void {
@@ -70,5 +70,4 @@ export class FavoriteRoutesDataComponent implements OnInit, OnDestroy {
       this.drivingSubscription.unsubscribe();
     }
   }
-
 }

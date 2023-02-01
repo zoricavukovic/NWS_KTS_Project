@@ -1,4 +1,4 @@
-<div class="allDrivings"  *ngIf="drivings.length !== 0">
+<div class="allDrivings" *ngIf="drivings.length !== 0">
   <div class="sortDiv">
     <div>
       <label id="sort-order-radio-group-label">Pick sort order</label>
@@ -38,14 +38,19 @@
   <div *ngFor="let driving of drivings; let i = index" class="div">
     <driving-row
       [driving]="driving"
-      [user]="currentUser"></driving-row>
+      [user]="currentUser"
+      (favouriteRouteChangeEmit)="reloadFavouriteRoutes()"></driving-row>
   </div>
 
-    <app-pagination class="paginator" [totalPages]="totalPages" [currentPage]="currentPage"
-    (onPageSelected)="changePage($event)" *ngIf="drivings.length>0">
+  <app-pagination
+    class="paginator"
+    [totalPages]="totalPages"
+    [currentPage]="currentPage"
+    (onPageSelected)="changePage($event)"
+    *ngIf="drivings.length > 0">
   </app-pagination>
 </div>
 
 <util-message
-message="User don't have any drivings."
-*ngIf="drivings.length === 0"></util-message>
+  message="User don't have any drivings."
+  *ngIf="drivings.length === 0"></util-message>

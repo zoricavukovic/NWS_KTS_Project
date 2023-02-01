@@ -42,8 +42,8 @@ public interface DrivingRepository extends JpaRepository<Driving, Long> {
         "where driver.id=?1 and d.drivingStatus = 2 and d.started > current_timestamp order by d.started asc")
     List<Driving> driverHasFutureDriving(final Long id);
 
-    @Query("select distinct d.id from Driving d where d.route.id = ?1")
-    Optional<Long> findDrivingByFavouriteRoute(final Long routeId);
+    @Query("select d.id from Driving d where d.route.id = ?1")
+    List<Long> findDrivingsByFavouriteRoute(final Long routeId);
 
     @Query("select d from Driving d left join d.users u where u.email = ?1")
     List<Driving> getAllDrivingsForUserEmail(final String email);
