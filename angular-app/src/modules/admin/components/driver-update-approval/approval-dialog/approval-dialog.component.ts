@@ -25,7 +25,7 @@ export class ApprovalDialogComponent implements OnDestroy {
   approveChanges() {
     this.updateApprovalSubscription = this.driverUpdateApprovalService.approve(this.request.id).subscribe(
       res => {
-        console.log("cao");
+        console.log(res);
         this.toast.success("Request is approved!", "Success")
       },
       err => {
@@ -40,7 +40,7 @@ export class ApprovalDialogComponent implements OnDestroy {
   rejectChanges() {
     this.updateApprovalSubscription = this.driverUpdateApprovalService.reject(this.request.id).subscribe(
       res => {
-        console.log("reject");
+        console.log(res);
         this.toast.success("Request is rejected!", "Rejected")
       },
       err => {

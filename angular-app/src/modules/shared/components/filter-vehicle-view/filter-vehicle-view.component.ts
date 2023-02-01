@@ -101,7 +101,6 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
       .getAll()
       .subscribe(regularUsersResponse => {
         for (const user of regularUsersResponse) {
-          console.log(user.email);
           if (
             !this.rideRequestForm
               .get('selectedPassengers')
@@ -225,8 +224,7 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
     ) {
       return;
     }
-    const timeZone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
-    console.log(timeZone);
+
     this.passengerSubscription = this.drivingService
       .havePassengersAlreadyRide(this.selectedPassengers, started)
       .subscribe(response => {

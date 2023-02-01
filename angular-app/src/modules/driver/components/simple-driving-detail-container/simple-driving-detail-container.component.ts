@@ -1,15 +1,14 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {Router} from "@angular/router";
-import {Driving} from "../../../shared/models/driving/driving";
-import {ConfigService} from "../../../shared/services/config-service/config.service";
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Router } from '@angular/router';
+import { Driving } from '../../../shared/models/driving/driving';
+import { ConfigService } from '../../../shared/services/config-service/config.service';
 
 @Component({
   selector: 'app-simple-driving-detail-container',
   templateUrl: './simple-driving-detail-container.component.html',
-  styleUrls: ['./simple-driving-detail-container.component.css']
+  styleUrls: ['./simple-driving-detail-container.component.css'],
 })
 export class SimpleDrivingDetailContainerComponent {
-
   @Input() driving: Driving;
   @Input() index: number;
   @Output() finishDriving = new EventEmitter();
@@ -18,7 +17,7 @@ export class SimpleDrivingDetailContainerComponent {
 
   maxNumberOfShowedUsers: number;
 
-  constructor(public configService: ConfigService,  private router: Router) {
+  constructor(public configService: ConfigService, private router: Router) {
     this.maxNumberOfShowedUsers = 3;
   }
 
@@ -28,9 +27,11 @@ export class SimpleDrivingDetailContainerComponent {
 
   getDrivingDestination(driving: Driving) {
     return `${
-      driving.route.locations[driving.route.locations.length - 1].location?.street
+      driving.route.locations[driving.route.locations.length - 1].location
+        ?.street
     }, ${
-      driving.route.locations[driving.route.locations.length - 1].location?.number
+      driving.route.locations[driving.route.locations.length - 1].location
+        ?.number
     }`;
   }
 
@@ -45,26 +46,22 @@ export class SimpleDrivingDetailContainerComponent {
   }
 
   goToUserProfile(id: number): void {
-    this.router.navigate([`/serb-uber/user/user-profile/${id}/status`]);
+    this.router.navigate([`/serb-uber/user/user-profile/${id}`]);
   }
 
   getNumOfNotShowedUsers(driving: Driving): string {
     return `+${driving.users.length - this.maxNumberOfShowedUsers}`;
   }
 
-  onFinishDriving():void {
+  onFinishDriving(): void {
     this.finishDriving.emit();
   }
 
-  showOnMapDriving(driving: Driving):void {
-    console.log("prikaz", driving);
-  }
-
-  onStartDriving():void {
+  onStartDriving(): void {
     this.startDriving.emit();
   }
 
-  onRejectDriving():void {
+  onRejectDriving(): void {
     this.rejectDriving.emit();
   }
 }

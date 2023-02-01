@@ -46,7 +46,6 @@ public class GoogleLoginPage {
             .until(ExpectedConditions.visibilityOf(emailInput));
         emailInput.clear();
         emailInput.sendKeys(email);
-        emailInput.sendKeys(Keys.RETURN);
     }
 
     public void setPassword(String password) {
@@ -54,7 +53,6 @@ public class GoogleLoginPage {
             .until(ExpectedConditions.visibilityOf(passwordInput));
         passwordInput.clear();
         passwordInput.sendKeys(password);
-        passwordInput.sendKeys(Keys.RETURN);
     }
 
     public void clickOnNextButton(String buttonLabel){

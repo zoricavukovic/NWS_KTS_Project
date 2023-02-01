@@ -48,7 +48,7 @@ public class DrivingNotificationControllerTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
-    @BeforeAll
+    @BeforeEach
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
@@ -95,6 +95,7 @@ public class DrivingNotificationControllerTest {
     @Test
     @DisplayName("T4-Should successfully get driving notification when making GET request to endpoint - /driving-notifications/{id}")
     @WithMockUser(roles="REGULAR_USER")
+    @Rollback(true)
     public void shouldSuccessfullyGetDrivingNotification() throws Exception {
         Long drivingNotificationId = 1L;
         this.mockMvc.perform(MockMvcRequestBuilders.get(String.format("%s/%d", DRIVING_NOTIFICATION_URL_PREFIX, drivingNotificationId))

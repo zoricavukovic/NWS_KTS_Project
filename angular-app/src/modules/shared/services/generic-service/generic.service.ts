@@ -2,10 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export abstract class GenericService<T> {
-  constructor(
-    protected _http: HttpClient,
-    protected actionUrl: string
-  ) {}
+  constructor(protected _http: HttpClient, protected actionUrl: string) {}
 
   getAll(): Observable<T[]> {
 

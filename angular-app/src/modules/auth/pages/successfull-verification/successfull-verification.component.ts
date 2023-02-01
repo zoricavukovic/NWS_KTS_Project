@@ -13,5 +13,4 @@ export class SuccessfullVerificationComponent {
   redirectToLogin() {
     this.router.navigate(['/serb-uber/auth/login']);
   }
-
 }

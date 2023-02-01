@@ -3,13 +3,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
-import {AuthService} from "../../../auth/services/auth-service/auth.service";
-import {User} from "../../../shared/models/user/user";
-import {UserService} from "../../../shared/services/user-service/user.service";
-import {ConfigService} from "../../../shared/services/config-service/config.service";
-import {
-  ConfirmBlockingDialogComponent
-} from "../../../shared/components/confirm-blocking-dialog/confirm-blocking-dialog.component";
+import { AuthService } from '../../../auth/services/auth-service/auth.service';
+import { User } from '../../../shared/models/user/user';
+import { UserService } from '../../../shared/services/user-service/user.service';
+import { ConfigService } from '../../../shared/services/config-service/config.service';
+import { ConfirmBlockingDialogComponent } from '../../../shared/components/confirm-blocking-dialog/confirm-blocking-dialog.component';
 import { DriverService } from 'src/modules/shared/services/driver-service/driver.service';
 import { Driver } from 'src/modules/shared/models/user/driver';
 import { BehaviourReportDialogComponent } from 'src/modules/shared/components/behaviour-report-dialog/behaviour-report-dialog.component';
@@ -33,7 +31,6 @@ export class BasicUserProfileComponent implements OnInit, OnDestroy {
   isDriver: boolean;
   isRegular: boolean;
   loggedAdmin: boolean;
-  status: boolean;
   currentUserIsLogged: boolean;
   authSubscription: Subscription;
   driverSubscription: Subscription;
@@ -48,7 +45,7 @@ export class BasicUserProfileComponent implements OnInit, OnDestroy {
     private dialogBlockReason: MatDialog,
     private toast: ToastrService,
     private router: Router,
-    private driverService: DriverService,
+    private driverService: DriverService
   ) {
     this.userBlocked = false;
     this.isDriver = false;
@@ -57,15 +54,11 @@ export class BasicUserProfileComponent implements OnInit, OnDestroy {
     this.user = null;
     this.driverStatus = false;
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
-    this.status = false;
     this.currentUser = null;
   }
 
   ngOnInit(): void {
     this.userId = +this.route.snapshot.paramMap.get('id');
-    if (this.route.snapshot.paramMap.get('status')) {
-      this.status = true;
-    }
     this.userSubscription = this.userService.get(this.userId).subscribe(
       (user: User) => {
         this.user = user;
@@ -85,14 +78,17 @@ export class BasicUserProfileComponent implements OnInit, OnDestroy {
           `User with id ${this.userId} not found.`,
           'User not found'
         );
+        console.log(error);
       }
     );
   }
 
   loadDriver(): void {
-    this.driverSubscription = this.driverService.get(this.user.id).subscribe((response: Driver) => {
-      this.driverStatus = response.active;
-    });
+    this.driverSubscription = this.driverService
+      .get(this.user.id)
+      .subscribe((response: Driver) => {
+        this.driverStatus = response.active;
+      });
   }
 
   changeDriverStatus() {
@@ -116,14 +112,14 @@ export class BasicUserProfileComponent implements OnInit, OnDestroy {
   }
 
   checkIfUserIsCurrent(): void {
-    this.authSubscription = this.authService.getSubjectCurrentUser().subscribe(
-      user => {
+    this.authSubscription = this.authService
+      .getSubjectCurrentUser()
+      .subscribe(user => {
         if (user) {
-          this.currentUserIsLogged = user.email === this.user.email
+          this.currentUserIsLogged = user.email === this.user.email;
           this.currentUser = user;
         }
-      }
-    );
+      });
   }
 
   loadBlocked(): void {
@@ -172,6 +168,7 @@ export class BasicUserProfileComponent implements OnInit, OnDestroy {
                 `User with id ${this.userId} is successfully blocked.`,
                 'User blocked!'
               );
+              console.log(res);
               this.userBlocked = true;
             },
             error => {
@@ -193,6 +190,7 @@ export class BasicUserProfileComponent implements OnInit, OnDestroy {
               'User unblocked!'
             );
             this.userBlocked = false;
+            console.log(res);
           },
           error => {
             this.toast.error(error.error, 'User cannot be unblocked!');
@@ -203,8 +201,12 @@ export class BasicUserProfileComponent implements OnInit, OnDestroy {
 
   reportUser(): void {
     if (this.currentUser?.role.name === this.configService.ROLE_DRIVER) {
-      const dialogRef = this.dialogBlockReason.open(BehaviourReportDialogComponent, {
-        data: {currentUser: this.currentUser, driver: null, userToReport: this.user},
+      this.dialogBlockReason.open(BehaviourReportDialogComponent, {
+        data: {
+          currentUser: this.currentUser,
+          driver: null,
+          userToReport: this.user,
+        },
       });
     }
   }

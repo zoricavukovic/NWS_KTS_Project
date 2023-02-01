@@ -12,6 +12,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
+
+import static com.example.serbUber.server.controller.helper.ControllerConstants.contentType;
 import static com.example.serbUber.server.controller.helper.VehicleConstants.NUM_OF_SEATS_SUV;
 import static com.example.serbUber.server.controller.helper.VehicleConstants.VEHICLE_TYPE_SUV;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -26,16 +28,11 @@ public class VehicleTypeInfoControllerTest {
     private static final String VEHICLE_TYPE_INFO_URL_PREFIX = "/vehicle-type-infos";
 
     private MockMvc mockMvc;
-    private final MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
-            MediaType.APPLICATION_JSON.getSubtype());
 
     @Autowired
     private WebApplicationContext webApplicationContext;
 
-    @Autowired
-    private TestRestTemplate restTemplate;
-
-    @BeforeAll
+    @BeforeEach
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
@@ -63,5 +60,4 @@ public class VehicleTypeInfoControllerTest {
                 .andExpect(jsonPath("$.numOfSeats").value(NUM_OF_SEATS_SUV))
                 .andExpect(jsonPath("$.vehicleType").value(VEHICLE_TYPE_SUV));
     }
-
 }

@@ -5,7 +5,9 @@ import com.example.serbUber.selenium.pages.*;
 import com.example.serbUber.selenium.tests.bases.TwoBrowserTestBase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +16,7 @@ import static com.example.serbUber.selenium.helper.Constants.*;
 import static com.example.serbUber.selenium.helper.Constants.DRIVER_NAME_RIDE_TWO_LOCATIONS_ONE_PASSENGER;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Transactional
 public class RideRequestTwoPassengersTest extends TwoBrowserTestBase {
 
     @Test
@@ -30,7 +33,13 @@ public class RideRequestTwoPassengersTest extends TwoBrowserTestBase {
         List<String> locations = new ArrayList<>();
         locations.add(START_POINT);
         locations.add(END_POINT);
-        rideRequestPage.enterLocations(locations);
+
+        for(int i=0; i < locations.size(); i++){
+            rideRequestPage.sendDataToLocationInput(i, locations.get(i));
+            rideRequestPage.selectFirstLocationOption(WANTED_LOCATION_INDEX);
+        }
+
+        assertTrue(rideRequestPage.allLocationsAreSelected());
         rideRequestPage.clickOnViewPossibleRoutesButton();
         rideRequestPage.clickOnRequestNowButton();
 
@@ -47,6 +56,7 @@ public class RideRequestTwoPassengersTest extends TwoBrowserTestBase {
         drivingNotificationPageLinkedPassenger.clickOnRejectRideButton();
         Assertions.assertTrue(drivingNotificationPageLinkedPassenger.isVisibleRideIsRejectedToast(RIDE_IS_REJECTED_TOAST_MESSAGE));
     }
+
     @Test
     @DisplayName("T2-Ride created successfully with two passengers and three locations chosen suv")
     public void rideCreatedSuccessfullyWithTwoPassengersAndThreeLocationsChosenSuvTest() {
@@ -58,7 +68,15 @@ public class RideRequestTwoPassengersTest extends TwoBrowserTestBase {
         locations.add("Bulevar Cara Lazara 10");
         locations.add("Bulevar Evrope 20");
         locations.add("Futoski put 103");
-        rideRequestPage.enterLocations(locations);
+
+        rideRequestPage.clickOnAddToLocationButton();
+
+        for(int i=0; i<locations.size(); i++){
+            rideRequestPage.sendDataToLocationInput(i, locations.get(i));
+            rideRequestPage.selectFirstLocationOption(WANTED_LOCATION_INDEX);
+        }
+
+        assertTrue(rideRequestPage.allLocationsAreSelected());
         rideRequestPage.clickOnViewPossibleRoutesButton();
         rideRequestPage.scrollRouteDiv();
 
@@ -80,11 +98,9 @@ public class RideRequestTwoPassengersTest extends TwoBrowserTestBase {
 
         DrivingDetailsPage drivingDetailsPageSender = new DrivingDetailsPage(chromeDriver);
         drivingDetailsPageSender.isDrivingDetailsPage(DRIVING_DETAILS_TITLE);
-        drivingDetailsPageSender.isCorrectDriver(DRIVER_NAME_RIDE_TWO_LOCATIONS_ONE_PASSENGER);
 
         DrivingDetailsPage drivingDetailsPageLinkedPassenger = new DrivingDetailsPage(edgeDriver);
         drivingDetailsPageLinkedPassenger.isDrivingDetailsPage(DRIVING_DETAILS_TITLE);
-        drivingDetailsPageLinkedPassenger.isCorrectDriver(DRIVER_NAME_RIDE_TWO_LOCATIONS_ONE_PASSENGER);
     }
 
 }

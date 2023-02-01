@@ -33,7 +33,6 @@ export class FavoriteRoutesDataComponent implements OnInit, OnDestroy {
         .getFavouriteRoutesForUser(this.userId)
         .subscribe(res => {
           this.favoriteRoutes = res;
-          console.log(this.favoriteRoutes);
         });
     }
   }
@@ -47,8 +46,8 @@ export class FavoriteRoutesDataComponent implements OnInit, OnDestroy {
         this.favoriteRoutes = this.favoriteRoutes.filter(item => {
           return item.id !== routeId;
         });
+        console.log(response);
       });
-
     event.stopPropagation();
   }
 

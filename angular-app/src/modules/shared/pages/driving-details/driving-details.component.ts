@@ -23,7 +23,6 @@ import { DrivingNotificationState } from '../../state/driving-notification.state
 import { DrivingNotification } from '../../models/notification/driving-notification';
 import { Select, Store } from '@ngxs/store';
 import { RegularUserService } from '../../services/regular-user-service/regular-user.service';
-
 import { CurrentVehiclePosition } from '../../models/vehicle/current-vehicle-position';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { getTime } from '../../utils/time';
@@ -180,24 +179,24 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
             this.isRegularUser = this.authService.userIsRegular();
             this.isDriver = this.authService.userIsDriver();
 
-            this.favouriteRouteSubscription = this.regularUserService
-              .isFavouriteRouteForUser(
-                this.driving.route.id,
-                this.loggedUser.id
-              )
-              .subscribe(response => {
-                console.log(response);
-                if (response) {
-                  this.favouriteRoute = true;
-                }
-              });
+            // this.favouriteRouteSubscription = this.regularUserService
+            //   .isFavouriteRouteForUser(
+            //     this.driving.route.id,
+            //     this.loggedUser.id
+            //   )
+            //   .subscribe(response => {
+            //     console.log(response);
+            //     if (response) {
+            //       this.favouriteRoute = true;
+            //     }
+            //   });
           });
       });
   }
 
   reportDriveBehaviour() {
     if (this.loggedUser) {
-      const dialogRef = this._dialogRef.open(BehaviourReportDialogComponent, {
+      this._dialogRef.open(BehaviourReportDialogComponent, {
         data: {
           currentUser: this.loggedUser,
           driver: this.driver,
@@ -225,6 +224,10 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
     return routePathIndex;
   }
 
+  canAcceptOrDeclineRide(): boolean {
+    return this.router.url.includes('driving');
+  }
+
   setFavouriteRoute(favourite: boolean) {
     if (favourite) {
       this.regularUserService
@@ -236,6 +239,7 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
         )
         .subscribe(res => {
           this.favouriteRoute = false;
+          console.log(res);
         });
     } else {
       this.regularUserService
@@ -247,12 +251,9 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
         )
         .subscribe(res => {
           this.favouriteRoute = true;
+          console.log(res);
         });
     }
-  }
-
-  canAcceptOrDeclineRide(): boolean {
-    return this.router.url.includes('driving');
   }
 
   ngOnDestroy(): void {
@@ -261,8 +262,12 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
         hideMarker(vehicle.marker)
       );
     } else {
-      removeLine(this.routePolyline);
-      removeAllMarkersFromList(this.markers);
+      if (this.routePolyline) {
+        removeLine(this.routePolyline);
+      }
+      if (this.markers) {
+        removeAllMarkersFromList(this.markers);
+      }
       this.vehiclesCurrentPosition.forEach(vehicle =>
         visibleMarker(vehicle.marker)
       );

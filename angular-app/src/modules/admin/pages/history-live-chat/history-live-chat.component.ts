@@ -69,7 +69,7 @@ export class HistoryLiveChatComponent implements OnInit, OnDestroy {
     this.selectedChatRoom = this.chatRooms[index];
     let changed = false;
 
-    for (let message of this.chatRooms[index].messages) {
+    for (const message of this.chatRooms[index].messages) {
       if (this.chatRoomService.clientMessageNotSeen(message)) {
         message.seen = true;
         changed = true;

@@ -1,5 +1,5 @@
 <div *ngIf="rideRequestForm" [formGroup]="rideRequestForm">
-  <h1><strong>Request a ride now</strong></h1>
+  <h1 class="request-now-title"><strong>Request a ride now</strong></h1>
   <div formArrayName="searchingRoutesForm">
     <div
       *ngFor="let addedLocation of searchingForm; let i = index"
@@ -37,7 +37,7 @@
           location_on
         </mat-icon>
         <mat-icon *ngIf="i !== 0 && i !== searchingForm.length - 1" matSuffix>{{
-          getIconName(i)
+          getMatIconName(i)
         }}</mat-icon>
       </mat-form-field>
 

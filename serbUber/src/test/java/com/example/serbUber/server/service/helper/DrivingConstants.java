@@ -5,6 +5,7 @@ import com.example.serbUber.model.DrivingLocationIndex;
 import com.example.serbUber.model.DrivingStatus;
 import com.example.serbUber.model.Route;
 import com.example.serbUber.model.user.Driver;
+import net.bytebuddy.asm.Advice;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,6 +25,22 @@ public class DrivingConstants {
     public static final Driving DRIVING_2 = new Driving(Constants.DURATION, null, null, null, DrivingStatus.ACCEPTED, null, Constants.PRICE);
     public static final Driving DRIVING_3 = new Driving(Constants.DURATION, null, null, null, DrivingStatus.ACCEPTED, null, Constants.PRICE);
 
+    public static final Driving DRIVING_SHOULD_RECEIVE_FIRST_NOTIFICATION_1 = new Driving(EXIST_OBJECT_ID, DURATION, LocalDateTime.now().plusMinutes(15).plusSeconds(30), null, ROUTE,
+            ACCEPTED, EXIST_DRIVER, PRICE, null
+    );
+
+    public static final Driving DRIVING_SHOULD_RECEIVE_FIRST_NOTIFICATION_2 = new Driving(EXIST_OBJECT_ID+1, DURATION, LocalDateTime.now().plusMinutes(15).plusSeconds(30), null, ROUTE,
+            ACCEPTED, EXIST_DRIVER, PRICE, null
+    );
+
+    public static final Driving DRIVING_SHOULD_RECEIVE_FIRST_NOTIFICATION_3 = new Driving(EXIST_OBJECT_ID+2, DURATION, LocalDateTime.now().plusMinutes(15).plusSeconds(30), null, ROUTE,
+            ACCEPTED, EXIST_DRIVER, PRICE, LocalDateTime.now().minusMinutes(5).minusSeconds(30)
+    );
+
+    public static final Driving DRIVING_SHOULD_NOT_RECEIVE_REMINDER = new Driving(EXIST_OBJECT_ID+4, DURATION, LocalDateTime.now().plusMinutes(16).plusSeconds(30), null, ROUTE,
+            ACCEPTED, EXIST_DRIVER, PRICE, null
+    );
+
     public static Driving createActiveDriving(int minutesBefore, Driver driver){
         SortedSet<DrivingLocationIndex> locations = LocationHelper.createDrivingLocationIndex();
         Route route = new Route(locations, Constants.TIME_IN_MIN, Constants.DISTANCE);
@@ -36,9 +53,8 @@ public class DrivingConstants {
     public static Driving createFutureDriving(int minutesAfter, Driver driver){
         SortedSet<DrivingLocationIndex> locations = LocationHelper.createDrivingLocationIndex();
         Route route = new Route(locations, Constants.TIME_IN_MIN, Constants.DISTANCE);
-        Driving driving =  new Driving(Constants.DURATION, LocalDateTime.now().plusMinutes(minutesAfter), null, route, DrivingStatus.ACCEPTED, driver, Constants.PRICE);
 
-        return driving;
+        return new Driving(Constants.DURATION, LocalDateTime.now().plusMinutes(minutesAfter), null, route, DrivingStatus.ACCEPTED, driver, Constants.PRICE);
     }
 
     public static List<Driving> createDrivingList(int minutesForFirst, int minutesForSecond) {
@@ -86,4 +102,6 @@ public class DrivingConstants {
 
         return driving;
     }
+
+
 }

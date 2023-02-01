@@ -3,6 +3,7 @@ package com.example.serbUber.service;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.PassengerNotHaveTokensException;
 import com.example.serbUber.model.DrivingNotification;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 
@@ -11,8 +12,9 @@ import java.util.List;
 @Controller
 public class ScheduleAllPassengersReviewCallForRide {
 
-    private final DrivingNotificationService drivingNotificationService;
+    private DrivingNotificationService drivingNotificationService;
 
+    @Autowired
     public ScheduleAllPassengersReviewCallForRide(final DrivingNotificationService drivingNotificationService){
         this.drivingNotificationService = drivingNotificationService;
     }
@@ -28,9 +30,7 @@ public class ScheduleAllPassengersReviewCallForRide {
                 drivingNotificationService.createDrivingIfFoundDriverAndSuccessfullyPaid(drivingNotification);
                 drivingNotificationService.delete(drivingNotification);
             }
-
         }
-
     }
 
     @Scheduled(cron = "*/30 * * * * *")
@@ -44,12 +44,11 @@ public class ScheduleAllPassengersReviewCallForRide {
                 drivingNotificationService.deleteOutdatedNotification(drivingNotification);
             }
         }
-
     }
 
     private void allUsersAreReviewed(DrivingNotification drivingNotification) throws PassengerNotHaveTokensException, EntityNotFoundException {
         if (drivingNotificationService.checkTimeOfStartingReservationRide(drivingNotification.getStarted())){
-            drivingNotificationService. createDrivingIfFoundDriverAndSuccessfullyPaid(drivingNotification);
+            drivingNotificationService.createDrivingIfFoundDriverAndSuccessfullyPaid(drivingNotification);
 
         }else if (drivingNotificationService.checkTimeOfStartingReservationIsSoonRide(drivingNotification.getStarted())){
             drivingNotificationService.deleteOutdatedReservationWithoutDriverNotification(drivingNotification);

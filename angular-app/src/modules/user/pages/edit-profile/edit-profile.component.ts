@@ -78,10 +78,10 @@ export class EditProfileComponent implements OnInit, OnDestroy {
         if (user) {
           this.user = user
           this.isDriver = this.authService.userIsDriver();
-          this.editDataForm.get('nameFormControl').setValue(this.user.name),
-          this.editDataForm.get('surnameFormControl').setValue(this.user.surname),
-          this.editDataForm.get('phoneNumberFormControl').setValue(this.user.phoneNumber),
-          this.editDataForm.get('cityFormControl').setValue(this.user.city),
+          this.editDataForm.get('nameFormControl').setValue(this.user.name);
+          this.editDataForm.get('surnameFormControl').setValue(this.user.surname);
+          this.editDataForm.get('phoneNumberFormControl').setValue(this.user.phoneNumber);
+          this.editDataForm.get('cityFormControl').setValue(this.user.city);
           this.loadVehicle();
         }
       }
@@ -105,7 +105,6 @@ export class EditProfileComponent implements OnInit, OnDestroy {
       this.vehicleSubscription = this.vehicleService.getVehicleByDriver(this.user.id.toString()).subscribe(
         res => {
           this.vehicle = res;
-          console.log(this.vehicle);
           this.checkFormRequirements();
         }
       );

@@ -7,10 +7,8 @@
     </div>
   </div>
   <app-pagination class="paginator" [totalPages]="totalPages" [currentPage]="currentPage"
-			(onPageSelected)="changePage($event)">
+			(pageIsSelected)="changePage($event)">
 		</app-pagination>
 </div>
 
-<util-message message="Drivers are not found" *ngIf="drivers.length === 0">
-
-
+<util-message message="Drivers are not found" *ngIf="drivers.length === 0"></util-message>

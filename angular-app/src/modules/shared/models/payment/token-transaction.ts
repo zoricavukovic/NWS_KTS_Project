@@ -1,4 +1,3 @@
-
 export interface TokenTransaction {
     id: number;
     timeStamp: Date;

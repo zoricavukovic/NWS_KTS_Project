@@ -41,4 +41,5 @@ public class ErrorMessagesConstants {
     public static final String INVALID_CHOSEN_TIME_AFTER_FOR_RESERVATION_MESSAGE = "You can only schedule your ride for later 5 hours in advance.";
     public static final String DRIVING_SHOULD_NOT_START_YET = String.format("The max number of minutes before driving can start is %d.", FIVE_MINUTES);
     public static final String INVALID_CHOSEN_TIME_BEFORE_FOR_RESERVATION_MESSAGE = "You can only schedule your ride for later 30 minutes after this time.";
+    public static final String OPTIMISTIC_LOCKING_FAILURE_MESSAGE = "Error happened during proces. Try again later.";
 }

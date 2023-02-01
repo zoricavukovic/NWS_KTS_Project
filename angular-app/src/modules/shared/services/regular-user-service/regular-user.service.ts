@@ -4,8 +4,8 @@ import {GenericService} from "../generic-service/generic.service";
 import {ConfigService} from "../config-service/config.service";
 import {RegularUser} from "../../models/user/regular-user";
 import { FavouriteRouteRequest } from '../../models/route/favourite-route-request';
-import { Route } from '../../../shared/models/route/route';
 import { Observable } from 'rxjs';
+import {Route} from "../../models/route/route";
 
 @Injectable({
   providedIn: 'root',

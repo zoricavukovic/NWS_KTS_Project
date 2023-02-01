@@ -26,10 +26,4 @@ export class ReportRowComponent {
     this.router.navigateByUrl('/', {skipLocationChange: true}).then(()=>
     this.router.navigate([`/serb-uber/user/user-profile/${id}`]));
   }
-
-  getBase64Prefix(): string {
-
-    return this.configService.BASE64_PHOTO_PREFIX;
-  }
-
 }

@@ -49,6 +49,7 @@ export class PayingInfoBoxComponent implements OnDestroy {
         );
       },
       err => {
+        console.log(err);
         this._toast.error(
           'You cannot update paying info, check if data is valid.',
           'Paying info update failed.'

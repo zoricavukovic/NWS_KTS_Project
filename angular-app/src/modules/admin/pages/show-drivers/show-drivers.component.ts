@@ -28,12 +28,10 @@ export class ShowDriversComponent implements OnInit, OnDestroy {
         this.drivers = response;
         this.totalPages = response[0].pageNumber;
       });
-      console.log(this.drivers);
   }
 
   changePage(newPage: number) {
     this.currentPage = newPage;
-    console.log("trenutno" + this.currentPage);
     this.driverService
       .getWithPagination(this.currentPage, this.pageSize)
       .subscribe((response: Driver[]) => {

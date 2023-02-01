@@ -28,7 +28,8 @@ describe('LoginComponent', () => {
   const authServiceSpy = jasmine.createSpyObj('AuthService', [
     'login',
     'setLocalStorage',
-    'loginWithGoogle'
+    'loginWithGoogle',
+    'loginWithFacebook'
   ]);
 
   const toastrServiceMock = jasmine.createSpyObj('ToastrService', [
@@ -42,6 +43,8 @@ describe('LoginComponent', () => {
   const routerMock = {
     navigate: jasmine.createSpy('navigate'),
   };
+
+  const errorMessage = 'Email or password is not correct!';
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -302,7 +305,6 @@ describe('LoginComponent', () => {
 
     authServiceSpy.loginWithGoogle(user.idToken).subscribe({
       next(loggedUser: any): void {
-        let bla = loggedUser;
         authServiceSpy.setLocalStorage(loggedUser);
         routerMock.navigate(['/serb-uber/user/map-page-view/-1'])
       },
@@ -335,8 +337,6 @@ describe('LoginComponent', () => {
       response: ''
     }
 
-    const errorMessage = 'Email or password is not correct!';
-
     const socialAuthService = TestBed.get(SocialAuthService);
     spyOn(socialAuthService, 'authState').and.returnValue(of(user));
     authServiceSpy.loginWithGoogle.and.returnValue(throwError({errorMessage}));
@@ -356,4 +356,68 @@ describe('LoginComponent', () => {
 
     expect(toastrServiceMock.error).toHaveBeenCalledWith('Email or password is not correct!', 'Login failed');
   }));
+
+
+  it('should navigate to map page and connect to chat when login with facebook is successful', fakeAsync(() => {
+    authServiceSpy.login.calls.reset();
+    authServiceSpy.loginWithGoogle.calls.reset();
+    authServiceSpy.setLocalStorage.calls.reset();
+    routerMock.navigate.calls.reset();
+
+    let data = {authToken: 'token'}
+    const socialAuthService = TestBed.get(SocialAuthService);
+    authServiceSpy.loginWithFacebook.and.returnValue(of({} as LoginResponse));
+    spyOn(socialAuthService, 'signIn').and.returnValue(Promise.resolve({ data }));
+
+    componentForLogin.signInWithFB();
+
+    tick();
+
+    authServiceSpy.loginWithFacebook(data.authToken).subscribe({
+      next(): void {
+        authServiceSpy.setLocalStorage({});
+        webSocketServiceMock.connect();
+        routerMock.navigate(['/serb-uber/user/map-page-view/-1'])
+      },
+      error(error): void {
+        toastrServiceMock.error(error.errorMessage, 'Login failed');
+      }
+    });
+
+    expect(socialAuthService.signIn).toHaveBeenCalledWith(FacebookLoginProvider.PROVIDER_ID);
+    expect(authServiceSpy.loginWithFacebook).toHaveBeenCalledWith('token');
+    expect(webSocketServiceMock.connect).toHaveBeenCalled();
+    expect(authServiceSpy.setLocalStorage).toHaveBeenCalledWith({});
+    expect(routerMock.navigate).toHaveBeenCalledWith(['/serb-uber/user/map-page-view/-1']);
+  }));
+
+  it('should navigate to map page and connect to chat when login with facebook is successful', fakeAsync(() => {
+    authServiceSpy.login.calls.reset();
+    authServiceSpy.loginWithGoogle.calls.reset();
+    authServiceSpy.setLocalStorage.calls.reset();
+    routerMock.navigate.calls.reset();
+
+    let data = {authToken: 'token'}
+    const socialAuthService = TestBed.get(SocialAuthService);
+    authServiceSpy.loginWithFacebook.and.returnValue(throwError({errorMessage}));
+    spyOn(socialAuthService, 'signIn').and.returnValue(Promise.resolve({ data }));
+
+    componentForLogin.signInWithFB();
+
+    tick();
+
+    authServiceSpy.loginWithFacebook(data.authToken).subscribe({
+      next(): void {
+        //fail
+      },
+      error(error): void {
+        toastrServiceMock.error(error.errorMessage, 'Login failed');
+      }
+    });
+
+    expect(socialAuthService.signIn).toHaveBeenCalledWith(FacebookLoginProvider.PROVIDER_ID);
+    expect(authServiceSpy.loginWithFacebook).toHaveBeenCalledWith('token');
+    expect(toastrServiceMock.error).toHaveBeenCalledWith('Email or password is not correct!', 'Login failed');
+  }));
+
 });

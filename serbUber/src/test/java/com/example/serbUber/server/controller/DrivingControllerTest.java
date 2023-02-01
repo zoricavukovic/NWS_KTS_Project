@@ -49,7 +49,7 @@ public class DrivingControllerTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
-    @BeforeAll
+    @BeforeEach
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
@@ -122,10 +122,9 @@ public class DrivingControllerTest {
         this.mockMvc.perform(MockMvcRequestBuilders.put(String.format("%s/start/%d", DRIVING_URL_PREFIX, DRIVING_CANNOT_BE_STARTED_ID))
                         .contentType(contentType).content("")).andExpect(status().isBadRequest())
                 .andExpect(result ->
-                        assertTrue(result.getResolvedException() instanceof DriverAlreadyHasStartedDrivingException)
+                    assertTrue(result.getResolvedException() instanceof DriverAlreadyHasStartedDrivingException)
                 )
                 .andExpect(result -> assertEquals(DRIVER_ALREADY_HAS_STARTED_DRIVING_EXCEPTION, Objects.requireNonNull(result.getResolvedException()).getMessage()));
-
     }
 
     @Test

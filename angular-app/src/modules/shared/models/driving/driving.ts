@@ -6,14 +6,13 @@ export class Driving {
   active: boolean;
   duration: number;
   started: Date;
-  payingLimit: Date;
   route: Route;
   drivingStatus: string;
   driverId: number;
-  usersPaid: Map<number, boolean>;
   users: User[];
   price: number;
   hasReviewForUser: boolean;
   pageSize?: number;
   pageNumber?: number;
+  isFavourite?: boolean;
 }

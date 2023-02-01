@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -37,7 +38,6 @@ public class DrivingNotificationService implements IDrivingNotificationService {
     private RouteService routeService;
     private TokenBankService tokenBankService;
     private VehicleTypeInfoService vehicleTypeInfoService;
-
 
     @Autowired
     public DrivingNotificationService(
@@ -207,8 +207,11 @@ public class DrivingNotificationService implements IDrivingNotificationService {
         webSocketService.sendDrivingStatus(DRIVER_NOT_FOUND_PATH, DRIVER_NOT_FOUND_MESSAGE, receiversReviewed);
     }
 
+//    @Transactional
     private Driving handleFoundDriver(DrivingNotification drivingNotification, Map<RegularUser, Integer> receiversReviewed, Driver driver) throws EntityNotFoundException, PassengerNotHaveTokensException {
         Set<RegularUser> passengers = getListOfUsers(receiversReviewed);
+        driver.setLocked(false);
+        driverService.save(driver);
         Driving driving = drivingService.create(
             drivingNotification.getRoute().getTimeInMin(),
             drivingNotification.getStarted(),

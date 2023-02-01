@@ -161,6 +161,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
                   'Driver is created and waiting for verification!',
                   'Registration successfully'
                 );
+                console.log(res);
                 this.router.navigate(['/serb-uber/user/map-page-view/-1']);
               },
               error => this.toast.error(error.error, 'Registration failed')

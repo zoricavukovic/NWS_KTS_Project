@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-not-found-page',
@@ -8,8 +7,6 @@ import { Router } from '@angular/router';
 })
 export class NotFoundPageComponent implements OnInit, OnDestroy {
 
-  constructor(private router: Router) { }
-
   ngOnInit(): void {
     document.getElementById("button-live-chat").style.visibility = 'hidden';
   }
@@ -17,5 +14,4 @@ export class NotFoundPageComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void{
     document.getElementById("button-live-chat").style.visibility = 'visible';
   }
-
 }

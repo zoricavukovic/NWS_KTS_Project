@@ -16,6 +16,46 @@ import { Driver } from '../models/user/driver';
 import { UpdateOnlyMinutesStatus } from '../actions/driving-notification.action';
 import { Store } from '@ngxs/store';
 import { DrivingNotification } from '../models/notification/driving-notification';
+import {FormGroup} from "@angular/forms";
+import {Address} from "ngx-google-places-autocomplete/objects/address";
+
+export function createLocationFromAutocomplete(address: Address, index: number, rideRequestForm: FormGroup): Location {
+  let houseNumber = '';
+  let city = '';
+  let street = '';
+  let zipCode = '';
+  for (let i = 0; i < address.address_components.length; i++) {
+    const mapAddress = address.address_components[i];
+    if (mapAddress.long_name !== '') {
+      if (mapAddress.types[0] === 'street_number') {
+        houseNumber = mapAddress.long_name;
+      }
+      if (mapAddress.types[0] === 'route') {
+        street = mapAddress.long_name;
+      }
+
+      if (mapAddress.types[0] === 'locality') {
+        city = mapAddress.long_name;
+      }
+      if (mapAddress.types[0] === 'postal_code') {
+        zipCode = mapAddress.long_name;
+      }
+    }
+  }
+  const lng: number = address.geometry.location.lng();
+  const lat: number = address.geometry.location.lat();
+  const location: Location = {
+    city: city,
+    lon: lng,
+    lat: lat,
+    street: street,
+    number: houseNumber,
+    zipCode: zipCode,
+  };
+  rideRequestForm.get('searchingRoutesForm').value.at(index).location = location;
+
+  return location;
+}
 
 export function addMarker(
   map: google.maps.Map,
@@ -34,6 +74,24 @@ export function addMarker(
     title: 'Location',
     icon: customIcon,
   });
+}
+
+export function addMarkerWithCustomIcon(lat: number, lng: number, index: number, map: google.maps.Map, searchingForm)
+:google.maps.Marker {
+  const marker: google.maps.Marker = addMarker(map, {
+    lat: lat,
+    lng: lng,
+  });
+  marker.setIcon(getIconUrl(index, searchingForm));
+
+  return marker;
+}
+
+export function addMarkerWithLonLat(lat: number, lon: number, map: google.maps.Map, index: number, listToCheckIndex): google.maps.Marker {
+  const markerCoordinates: google.maps.LatLngLiteral = { lat: lat, lng: lon };
+  const marker: google.maps.Marker = addMarker(map, markerCoordinates);
+  marker.setIcon(getIconUrl(index, listToCheckIndex));
+  return marker;
 }
 
 export function drawAllMarkers(
@@ -85,8 +143,7 @@ function calculateMinutesToDestination(
     destination: destination,
     travelMode: google.maps.TravelMode.DRIVING,
   };
-  console.log(destination);
-  console.log(source);
+
   directionService.route(request, (response, status) => {
     if (status === google.maps.DirectionsStatus.OK) {
       const distanceInfo = response.routes[0].legs[0];
@@ -121,8 +178,6 @@ export function calculateTimeToDestination(
     storedDrivingNotification,
     store
   );
-
-  console.log(vehicle);
 }
 
 export function drawActiveRide(
@@ -180,13 +235,14 @@ export function visibleMarker(marker: google.maps.Marker) {
   marker.setVisible(true);
 }
 
-export function removeAllMarkers(markers: SearchingRoutesForm[]): void {
-  for (let i; i < markers.length; i++) {
-    if (markers.at(i).marker) {
-      removeMarker(markers.at(i).marker);
-    }
+export function removeMarkerAndAllPolyline(drawPolylineList: google.maps.Polyline[], formField): google.maps.Polyline[] {
+  if (formField.value?.marker) {
+    removeMarker(formField.value.marker);
+    return removeAllPolyline(drawPolylineList);
   }
+  return drawPolylineList;
 }
+
 
 export function hideAllMarkers(markers: SearchingRoutesForm[]): void {
   for (let i; i < markers.length; i++) {
@@ -200,15 +256,13 @@ export function removeAllMarkersFromList(markers: google.maps.Marker[]): void {
   markers.forEach(marker => removeMarker(marker));
 }
 
-export function polylineFound(polylines: google.maps.Polyline[]): boolean {
-  return polylines !== null && polylines !== undefined;
+export function polylineFound(polyline: google.maps.Polyline[]): boolean {
+  return polyline !== null && polyline !== undefined;
 }
 
-export function removeAllPolyline(
-  polylines: google.maps.Polyline[]
-): google.maps.Polyline[] {
-  if (polylineFound(polylines)) {
-    polylines.forEach(polyline => removeLine(polyline));
+export function removeAllPolyline(polyline: google.maps.Polyline[]): google.maps.Polyline[] {
+  if (polylineFound(polyline)) {
+    polyline.forEach(polyline => removeLine(polyline));
   }
 
   return [];
@@ -249,6 +303,36 @@ export function drawPolylineOnMap(
   addLine(map, polyline);
 
   return polyline;
+}
+
+export function drawPolylineWithClickOption(
+  indexOfSelectedPath: number,
+  indexOfRouteInPossibleRoutes: number,
+  latLongs: google.maps.LatLngLiteral[],
+  drawPolylineList: google.maps.Polyline[],
+  map: google.maps.Map,
+  rideRequestForm: FormGroup
+): void {
+  const color: string = indexOfSelectedPath === 0 ? '#283b50' : '#cdd1d3';
+  const weight: number = indexOfSelectedPath === 0 ? 9 : 7;
+  const polyline: google.maps.Polyline = drawPolylineOnMap(map, latLongs, color, weight);
+  polyline.setOptions({ clickable: true });
+  drawPolylineList[indexOfSelectedPath] = polyline;
+
+  google.maps.event.addListener(polyline, 'click', function () {
+    (rideRequestForm.get('routePathIndex').value)[indexOfRouteInPossibleRoutes] = indexOfSelectedPath;
+    drawPolylineList.forEach(p => {
+      p.setOptions({
+        strokeColor: '#cdd1d3',
+        strokeWeight: 7,
+      });
+
+      polyline.setOptions({
+        strokeColor: '#283b50',
+        strokeWeight: 9,
+      });
+    });
+  });
 }
 
 export function addLine(
@@ -352,7 +436,6 @@ export function updateVehiclePosition(
     );
     marker.setTitle(getTitle(vehicleCurrentLocation, storeDriving));
 
-    console.log(vehicleCurrentLocation);
     if (vehicleCurrentLocation.inDrive) {
       marker.setPosition({
         lat: vehicleCurrentLocation.currentLocation.lat,
@@ -393,4 +476,15 @@ export function calculateDistance(
   });
 
   return distance;
+}
+
+export function getIconUrl(index: number, listForCheckingIndex): string {
+  switch (index) {
+    case 0:
+      return '../../../assets/images/startMarker.png';
+    case listForCheckingIndex.length - 1:
+      return '../../../assets/images/endMarker.png';
+    default:
+      return '../../../assets/images/viaMarker.png';
+  }
 }

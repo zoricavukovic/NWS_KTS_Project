@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -65,7 +65,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
       res => {
         if (res) {
           this.userIsLogged = true;
-          this.user = this.user;
+          this.user = res;
         }
       });
   }

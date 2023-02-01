@@ -24,7 +24,6 @@ import java.util.Objects;
 import static com.example.serbUber.exception.EntityType.getEntityErrorMessage;
 import static com.example.serbUber.server.controller.helper.ControllerConstants.*;
 import static com.example.serbUber.server.controller.helper.RouteConstants.*;
-import static com.example.serbUber.server.controller.helper.VehicleConstants.*;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -44,7 +43,7 @@ public class RouteControllerTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
-    @BeforeAll
+    @BeforeEach
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }

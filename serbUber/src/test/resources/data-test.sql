@@ -42,30 +42,30 @@ insert into vehicles (baby_seat, pet_friendly, rate, vehicle_type_id, active_rou
         (false, true, 0, 3, null, 0, 7, 0);
 
 --sifra123@
-insert into admins (id, email, password, name, surname, phone_number, city, profile_picture, role_id, verified, online) values
-        (nextval('users_id_gen'), 'serbubernwtkts@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Pera', 'Peric', '012345678', 'Novi Sad', 'default-user.png', 1, true, false),
-        (nextval('users_id_gen'), 'admin@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Admin', 'Admin', '012345578', 'Novi Sad', 'default-user.png', 1, true, false);
+insert into admins (id, email, password, name, surname, phone_number, city, profile_picture, role_id, verified, online, version) values
+        (nextval('users_id_gen'), 'serbubernwtkts@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Pera', 'Peric', '012345678', 'Novi Sad', 'default-user.png', 1, true, false, 0),
+        (nextval('users_id_gen'), 'admin@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Admin', 'Admin', '012345578', 'Novi Sad', 'default-user.png', 1, true, false, 0);
 
-insert into regular_users (id, email, password, name, surname, phone_number, city, profile_picture, role_id, blocked, verified, online) values
-        (nextval('users_id_gen'), 'ana@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Ana', 'Ancic', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false),
-        (nextval('users_id_gen'), 'miki@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Miki', 'Mikic', '0651234567', 'Novi Sad', 'default-user.png',2, false, true, false),
-        (nextval('users_id_gen'), 'zoka200015@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Zorica', 'Vukovic', '0651234567', 'Novi Sad', 'default-user.png',2, false, true, false),
-        (nextval('users_id_gen'), 'anastasija@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Anastasija', 'Sam', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false),
-        (nextval('users_id_gen'), 'srki@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Srdjan', 'Djuric', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false),
-        (nextval('users_id_gen'), 'jovan@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Jovan', 'Jovic', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false),
-        (nextval('users_id_gen'), 'milos@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Milos', 'Milosevic', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false),
-        (nextval('users_id_gen'), 'zokili123@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Zorica', 'Zoric', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false),
-        (nextval('users_id_gen'), 'jana@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Jana', 'Janic', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false),
-        (nextval('users_id_gen'), 'anastasijas12@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Ana', 'Ancic', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false),
-        (nextval('users_id_gen'), 'serbuber2@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Ana', 'Ancic', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false);
+insert into regular_users (id, email, password, name, surname, phone_number, city, profile_picture, role_id, blocked, verified, online, version) values
+        (nextval('users_id_gen'), 'ana@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Ana', 'Ancic', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false, 0),
+        (nextval('users_id_gen'), 'miki@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Miki', 'Mikic', '0651234567', 'Novi Sad', 'default-user.png',2, false, true, false, 0),
+        (nextval('users_id_gen'), 'zoka200015@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Zorica', 'Vukovic', '0651234567', 'Novi Sad', 'default-user.png',2, false, true, false, 0),
+        (nextval('users_id_gen'), 'anastasija@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Anastasija', 'Sam', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false, 0),
+        (nextval('users_id_gen'), 'srki@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Srdjan', 'Djuric', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false, 0),
+        (nextval('users_id_gen'), 'jovan@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Jovan', 'Jovic', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false, 0),
+        (nextval('users_id_gen'), 'milos@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Milos', 'Milosevic', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false, 0),
+        (nextval('users_id_gen'), 'zokili123@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Zorica', 'Zoric', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false, 0),
+        (nextval('users_id_gen'), 'jana@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Jana', 'Janic', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false, 0),
+        (nextval('users_id_gen'), 'anastasijas12@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Ana', 'Ancic', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false, 0),
+        (nextval('users_id_gen'), 'serbuber2@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Ana', 'Ancic', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false, 0);
 
-insert into drivers (id, email, password, name, surname, phone_number, city, profile_picture, role_id, active, blocked, start_shift, end_shift, rate, working_minutes, verified, online, drive, vehicle_id) values
-            (nextval('users_id_gen'), 'mile@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Mile', 'Milic', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('18.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), 0, 20, true, true, false, 1),
-            (nextval('users_id_gen'), 'milan@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Milan', 'Milanovic', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('18.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), 0, 1, true, true, false, 2),
-            (nextval('users_id_gen'), 'eki@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Esad', 'Esadic', '012345678', 'Novi Sad', 'default-user.png', 3, false, false, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('18.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), 0, 0, true, false, false, 3),
-            (nextval('users_id_gen'), 'bole@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Bole', 'Sam', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('18.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), 0, 0, true, true, false, 4),
-            (nextval('users_id_gen'), 'uros@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Uros', 'Pejicc', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('18.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), 0, 0, true, true, true, 5),
-            (nextval('users_id_gen'), 'elo@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Elo', 'Elic', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('18.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), 0, 0, true, false, false, 6);
+insert into drivers (id, email, password, name, surname, phone_number, city, profile_picture, role_id, active, blocked, start_shift, end_shift, rate, working_minutes, verified, online, drive, vehicle_id, version) values
+            (nextval('users_id_gen'), 'mile@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Mile', 'Milic', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('18.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), 0, 20, true, true, false, 1, 0),
+            (nextval('users_id_gen'), 'milan@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Milan', 'Milanovic', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('18.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), 0, 1, true, true, false, 2, 0),
+            (nextval('users_id_gen'), 'eki@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Esad', 'Esadic', '012345678', 'Novi Sad', 'default-user.png', 3, false, false, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('18.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), 0, 0, true, false, false, 3, 0),
+            (nextval('users_id_gen'), 'bole@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Bole', 'Sam', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('18.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), 0, 0, true, true, false, 4, 0),
+            (nextval('users_id_gen'), 'uros@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Uros', 'Pejicc', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('18.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), 0, 0, true, true, true, 5, 0),
+            (nextval('users_id_gen'), 'elo@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'Elo', 'Elic', '012345678', 'Novi Sad', 'default-user.png', 3, true, false, to_timestamp('17.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), to_timestamp('18.01.2023. 14:20', 'DD.MM.YYYY HH24:MI'), 0, 0, true, false, false, 6, 0);
 
 
 insert into drivings (active, driver_id, driving_status, duration, price, started, end_date, route_id, last_reminder, reservation) values
@@ -183,5 +183,5 @@ insert into bell_notifications(message, redirect_id, seen, should_redirect, time
          ('Driver accepted driving.', null, false, false, '2022-12-01 14:03', 4);
 
 
-insert into regular_users (id, email, password, name, surname, phone_number, city, profile_picture, role_id, blocked, verified, online) values
-    (nextval('users_id_gen'), 'userwithoutbank@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'No', 'Bank', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false);
+insert into regular_users (id, email, password, name, surname, phone_number, city, profile_picture, role_id, blocked, verified, online, version) values
+    (nextval('users_id_gen'), 'userwithoutbank@gmail.com', '$2a$10$8TWonhaYGbjZ1C69pQwB0uWBOANl1FCwz0wxH9z2LsKXIhTM1hUay', 'No', 'Bank', '012345678', 'Novi Sad', 'default-user.png', 2, false, true, false, 0);

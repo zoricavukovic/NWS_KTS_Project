@@ -63,6 +63,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   refreshToken(): void {
     this.authService.refreshAuthToken(GoogleLoginProvider.PROVIDER_ID);
   }
+
   signInWithFB(): void {
     const router = this.router;
     const toast = this.toast;

@@ -45,5 +45,5 @@ public interface IDriverService {
     List<Driver> getActiveDrivers();
 
     Driving getActiveDriving(List<Driving> drivings);
-    void save(Driver driver);
+    Driver save(Driver driver);
 }

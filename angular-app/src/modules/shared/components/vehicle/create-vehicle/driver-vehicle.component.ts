@@ -88,10 +88,8 @@ export class DriverVehicleComponent implements OnInit, OnDestroy {
   }
   getIndexOfSelectedVehicleType(): number {
     let vehicleType = this.rideRequestForm.get('vehicleType').value;
-    console.log(this.vehicle);
     if (this.vehicle !== null) {
       vehicleType = this.vehicle.vehicleTypeInfo.vehicleType;
-      console.log(vehicleType);
     }
     switch (vehicleType) {
       case 'VAN':

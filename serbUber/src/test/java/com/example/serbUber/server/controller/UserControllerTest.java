@@ -35,7 +35,7 @@ public class UserControllerTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
-    @BeforeAll
+    @BeforeEach
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }

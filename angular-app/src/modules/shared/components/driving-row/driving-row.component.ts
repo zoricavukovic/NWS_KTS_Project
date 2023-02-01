@@ -85,6 +85,7 @@ export class DrivingRowComponent implements OnInit, OnDestroy {
       },
       error => {
         this.toast.error('Review creation failed');
+        console.log(error);
       }
     );
   }

@@ -19,7 +19,7 @@
           color="warn"
           (click)="setFavouriteRoute(favouriteRoute)">
           <mat-icon
-            *ngIf="!favouriteRoute"
+            *ngIf="!driving.isFavourite"
             matTooltip="Add to favourite routes"
             matTooltipClass="tooltip"
             matTooltipHideDelay="1000"
@@ -27,7 +27,7 @@
             >favorite_border</mat-icon
           >
           <mat-icon
-            *ngIf="favouriteRoute"
+            *ngIf="driving.isFavourite"
             matTooltip="Remove from favourite routes"
             matTooltipClass="tooltip"
             matTooltipHideDelay="1000"

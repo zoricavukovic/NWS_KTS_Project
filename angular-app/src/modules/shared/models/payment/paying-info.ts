@@ -1,4 +1,3 @@
-
 export interface PayingInfo {
     id?: number;
     currency?: string;
