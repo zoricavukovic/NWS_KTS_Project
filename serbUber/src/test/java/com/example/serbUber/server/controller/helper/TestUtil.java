@@ -13,5 +13,4 @@ public class TestUtil {
 
         return mapper.writeValueAsString(object);
     }
-
 }

@@ -15,6 +15,7 @@ public class Constants {
 
     public static final String PHOTOS_FILE_PATH = "src/main/resources/static/images/";
     public static final String TARGET_PHOTO_FILE_PATH = "./src/main/resources/static/images/";
+    public static final String TEMPLATE_FILE_PATH = "./src/main/resources/static/emailTemplates/";
     public static final double EMPTY_BANK_ACCOUNT = 0.0;
     public static final int MAX_LENGTH_OF_MESSAGE = 100;
     public static final int MIN_RATE = 0;
@@ -57,6 +58,7 @@ public class Constants {
     public static final String DRIVER_DATA_UPDATE_REJECTION = "Admin rejected your profile data changes.";
     public static final String UNSUCCESSFUL_PAYMENT_PATH = "/unsuccessful-payment";
     public static final String DRIVER_NOT_FOUND_PATH = "/driver-not-found";
+    public static final String EMPTY_STRING = "";
     public static final double WITHOUT_TOKENS = 0.0;
     public static final double START_MISSING_NUM_OF_TOKENS = 0;
     public static final int HALF_AN_HOUR = 30;

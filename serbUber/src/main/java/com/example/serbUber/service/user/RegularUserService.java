@@ -2,13 +2,11 @@ package com.example.serbUber.service.user;
 
 import com.example.serbUber.dto.RouteDTO;
 import com.example.serbUber.dto.VerifyDTO;
-import com.example.serbUber.dto.chart.ChartItemDTO;
 import com.example.serbUber.dto.user.RegistrationDTO;
 import com.example.serbUber.dto.user.RegularUserDTO;
 import com.example.serbUber.dto.user.RegularUserPageDTO;
 import com.example.serbUber.exception.*;
 import com.example.serbUber.model.Driving;
-import com.example.serbUber.model.DrivingStatus;
 import com.example.serbUber.model.Route;
 import com.example.serbUber.model.user.RegularUser;
 import com.example.serbUber.repository.user.RegularUserRepository;
@@ -25,6 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -106,7 +105,7 @@ public class RegularUserService implements IRegularUserService {
             final String phoneNumber,
             final String city,
             final String profilePicture
-    ) throws MailCannotBeSentException, EntityAlreadyExistsException, EntityNotFoundException {
+    ) throws EntityAlreadyExistsException, EntityNotFoundException {
         try {
             String hashedPassword = getHashedNewUserPassword(password);
             RegularUser regularUser = regularUserRepository.save(new RegularUser(
@@ -160,8 +159,7 @@ public class RegularUserService implements IRegularUserService {
     }
 
     public boolean blockRegular(final Long id, final String reason)
-            throws EntityNotFoundException, EntityUpdateException
-    {
+            throws IOException, EntityNotFoundException, EntityUpdateException, MailCannotBeSentException {
         RegularUser regularUser = getRegularById(id);
         if (regularUserInActiveDriving(regularUser.getDrivings())) {
             throw new EntityUpdateException("Regular user cannot be blocked while in active driving.");

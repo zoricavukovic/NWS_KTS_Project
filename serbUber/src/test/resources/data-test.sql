@@ -84,13 +84,12 @@ insert into drivings (active, driver_id, driving_status, duration, price, starte
 
 insert into driving_notifications(route_id, price, sender_id, started, duration, baby_seat, pet_friendly, vehicle_type_info, is_reservation) values
             (3, 10, 12, CURRENT_TIMESTAMP, 5, true, true, 1, false);
+
 insert into driving_notifications(route_id, price, sender_id, started, duration, baby_seat, pet_friendly, vehicle_type_info, is_reservation) values
     (3, 10, 12, CURRENT_TIMESTAMP, 5, true, true, 1, false);
 
 insert into driving_notification_receivers_reviewed(driving_notification_id, receivers_reviewed, receivers_reviewed_key) values
             (2, 2, 4);
-
---DATEADD(MINUTE, -15, GETDATE())
 
 insert into driving_locations(location_id, index, route_id, route_index) values
          (5, 1, 1, 0),

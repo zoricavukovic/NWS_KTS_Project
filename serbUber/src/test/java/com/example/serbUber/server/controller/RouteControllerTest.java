@@ -23,6 +23,8 @@ import java.util.Objects;
 
 import static com.example.serbUber.exception.EntityType.getEntityErrorMessage;
 import static com.example.serbUber.server.controller.helper.ControllerConstants.*;
+import static com.example.serbUber.server.controller.helper.RouteConstants.*;
+import static com.example.serbUber.server.controller.helper.VehicleConstants.*;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -49,6 +51,7 @@ public class RouteControllerTest {
 
     @Test
     @DisplayName("T1-Should successfully get route path when making GET request to endpoint - /routes/path/{id}")
+    @Rollback(true)
     public void shouldSuccessfullyGetRoutePath() throws Exception {
         Long routeId = 1L;
         this.mockMvc.perform(MockMvcRequestBuilders.get(String.format("%s/path/%d", ROUTE_URL_PREFIX, routeId))
@@ -58,9 +61,10 @@ public class RouteControllerTest {
 
     @Test
     @DisplayName("T2-Should throw entity not found (not found route) when making GET request to endpoint - /routes/path/{id}")
+    @Rollback(true)
     public void shouldThrowEntityNotFoundGetRoutePath() throws Exception {
-        String errorMessage = getEntityErrorMessage(NOT_EXIST_ENTITY.toString(), EntityType.ROUTE);
-        this.mockMvc.perform(MockMvcRequestBuilders.get(String.format("%s/path/%d", ROUTE_URL_PREFIX, NOT_EXIST_ENTITY))
+        String errorMessage = getEntityErrorMessage(NOT_EXIST_ID.toString(), EntityType.ROUTE);
+        this.mockMvc.perform(MockMvcRequestBuilders.get(String.format("%s/path/%d", ROUTE_URL_PREFIX, NOT_EXIST_ID))
                         .contentType(contentType)).andExpect(status().isNotFound())
                 .andExpect(result ->
                         assertTrue(result.getResolvedException() instanceof EntityNotFoundException)

@@ -12,9 +12,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
-
-import static com.example.serbUber.server.controller.helper.ControllerConstants.NUM_OF_SEATS_SUV;
-import static com.example.serbUber.server.controller.helper.ControllerConstants.VEHICLE_TYPE_SUV;
+import static com.example.serbUber.server.controller.helper.VehicleConstants.NUM_OF_SEATS_SUV;
+import static com.example.serbUber.server.controller.helper.VehicleConstants.VEHICLE_TYPE_SUV;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -64,6 +63,5 @@ public class VehicleTypeInfoControllerTest {
                 .andExpect(jsonPath("$.numOfSeats").value(NUM_OF_SEATS_SUV))
                 .andExpect(jsonPath("$.vehicleType").value(VEHICLE_TYPE_SUV));
     }
-
 
 }

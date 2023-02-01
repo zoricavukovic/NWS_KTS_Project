@@ -22,5 +22,4 @@ public class TokenTransactionService implements ITokenTransactionService {
 
         return new TokenTransaction(LocalDateTime.now(), numOfTokens, numOfTokens * pricePerToken);
     }
-
 }

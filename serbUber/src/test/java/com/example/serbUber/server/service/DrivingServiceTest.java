@@ -486,7 +486,7 @@ public class DrivingServiceTest {
                 .thenReturn(drivings);
         List<String> passengers = new ArrayList<>();
         passengers.add(USER_EMAIL_1);
-        assertTrue(drivingService.isPassengersAlreadyHaveRide(passengers, LocalDateTime.now()));
+        assertTrue(drivingService.checkIfPassengersAreBusy(passengers, LocalDateTime.now()));
     }
 
     @Test
@@ -499,7 +499,7 @@ public class DrivingServiceTest {
                 .thenReturn(drivings);
         List<String> passengers = new ArrayList<>();
         passengers.add(USER_EMAIL_1);
-        assertFalse(drivingService.isPassengersAlreadyHaveRide(passengers, LocalDateTime.now()));
+        assertFalse(drivingService.checkIfPassengersAreBusy(passengers, LocalDateTime.now()));
     }
 
     @Test
@@ -514,7 +514,7 @@ public class DrivingServiceTest {
                 .thenReturn(drivings);
         List<String> passengers = new ArrayList<>();
         passengers.add(USER_EMAIL_1);
-        assertFalse(drivingService.isPassengersAlreadyHaveRide(passengers, LocalDateTime.now().plusMinutes(40)));
+        assertFalse(drivingService.checkIfPassengersAreBusy(passengers, LocalDateTime.now().plusMinutes(40)));
     }
 
     @Test

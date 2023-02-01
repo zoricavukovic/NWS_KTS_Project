@@ -29,7 +29,6 @@ public class VehicleService implements IVehicleService {
     private VehicleRepository vehicleRepository;
     private VehicleTypeInfoService vehicleTypeInfoService;
     private WebSocketService webSocketService;
-    private RouteService routeService;
     private LocationService locationService;
 
     @Autowired
@@ -37,13 +36,11 @@ public class VehicleService implements IVehicleService {
             final VehicleRepository vehicleRepository,
             final VehicleTypeInfoService vehicleTypeInfoService,
             final WebSocketService webSocketService,
-            final RouteService routeService,
             final LocationService locationService
     ) {
         this.vehicleRepository = vehicleRepository;
         this.vehicleTypeInfoService = vehicleTypeInfoService;
         this.webSocketService = webSocketService;
-        this.routeService = routeService;
         this.locationService = locationService;
     }
 
@@ -109,46 +106,6 @@ public class VehicleService implements IVehicleService {
             .orElseThrow(() -> new EntityNotFoundException(vehicleId, EntityType.VEHICLE));
     }
 
-
-    private void saveCurrentVehicleLocation(Vehicle vehicle, List<double[]> vehicleRoutePath) {
-        int currentLocationIndex = vehicle.getCurrentLocationIndex();
-
-        int nextLocationIndex = (vehicleRoutePath.size() - 1 == currentLocationIndex)?
-            currentLocationIndex :
-            currentLocationIndex + 1;
-        vehicle.setCurrentLocationIndex(nextLocationIndex);
-        if (vehicle.hasRoute()){
-            vehicle.setCurrentStop(vehicle.getActiveRoute().getLocations().last().getLocation());
-        }
-
-        vehicleRepository.save(vehicle);
-    }
-
-    public Vehicle getVehicleByType(String vehicleType){
-        VehicleType type = VehicleType.getVehicleType(vehicleType.toLowerCase());
-        return vehicleRepository.getVehicleByType(type);
-    }
-
-    public VehicleDTO getVehicleDTOByVehicleType(String vehicleType){
-        return new VehicleDTO(getVehicleByType(vehicleType));
-    }
-
-    public double getLatOfCurrentVehiclePosition(final Vehicle vehicle) throws EntityNotFoundException {
-        List<double[]> coordinatesList = routeService.getRoutePath(vehicle.getActiveRoute().getId());
-        return (coordinatesList.size() >= vehicle.getCurrentLocationIndex())?
-            coordinatesList.get(vehicle.getCurrentLocationIndex())[1]:
-            -1;
-
-    }
-
-    public double getLonOfCurrentVehiclePosition(final Vehicle vehicle) throws EntityNotFoundException {
-        List<double[]> coordinatesList = routeService.getRoutePath(vehicle.getActiveRoute().getId());
-        return (coordinatesList.size() >= vehicle.getCurrentLocationIndex())?
-            coordinatesList.get(vehicle.getCurrentLocationIndex())[0]:
-            -1;
-
-    }
-
     public List<VehicleCurrentLocationForLocustDTO> getAllVehicleCurrentLocationForLocustDTO()
         throws EntityNotFoundException
     {
@@ -177,13 +134,9 @@ public class VehicleService implements IVehicleService {
         final int chosenRouteIdx
     ) throws EntityNotFoundException {
         Vehicle vehicle = getVehicleById(id);
-        Location location = vehicle.getCurrentStop();
-        location.setLat(lat);
-        location.setLon(lng);
+        Location location = updateCurrentStopLocation(lng, lat, vehicle);
         vehicle.setCurrentStop(location);
-        if (vehicle.getCurrentLocationIndex() == 0){
-            vehicle.setCurrentStop(new Location(lat, lng));
-        }
+        setLocationToExist(lng, lat, vehicle);
         vehicle.setCrossedWaypoints(crossedWaypoints);
         vehicle.setCurrentLocationIndex(vehicle.getCurrentLocationIndex() + 1);
         Driver driver = getDriverByVehicleId(vehicle.getId());
@@ -206,5 +159,18 @@ public class VehicleService implements IVehicleService {
     public VehicleTypeInfo driverUpdateApprovalVehicle(final VehicleType vehicleType) throws EntityNotFoundException {
 
         return this.vehicleTypeInfoService.get(vehicleType);
+    }
+
+    private Location updateCurrentStopLocation(double lng, double lat, Vehicle vehicle) {
+        Location location = vehicle.getCurrentStop();
+        location.setLat(lat);
+        location.setLon(lng);
+        return location;
+    }
+
+    private void setLocationToExist(final double lng, final double lat, final Vehicle vehicle) {
+        if (vehicle.getCurrentLocationIndex() == 0){
+            vehicle.setCurrentStop(new Location(lat, lng));
+        }
     }
 }

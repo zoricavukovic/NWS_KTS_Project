@@ -112,9 +112,9 @@ public class PayPalService implements IPayPalService {
     private Map<String, String> createResponse(final Payment payment)
             throws PayPalPaymentException
     {
-        Map<String, String> response = new HashMap<String, String>();
+        Map<String, String> response = new HashMap<>();
         try {
-            response = populateResponseWithLink(payment, response);
+            populateResponseWithLink(payment, response);
         } catch (PayPalRESTException e) {
             throw new PayPalPaymentException();
         }

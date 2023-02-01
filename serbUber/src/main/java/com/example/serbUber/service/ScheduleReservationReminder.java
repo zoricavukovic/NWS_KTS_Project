@@ -23,18 +23,23 @@ public class ScheduleReservationReminder {
     @Transactional
     public void remindPassengerForReservation(){
         List<Driving> allReservations = drivingService.getAllReservations();
-        for(Driving reservation : allReservations){
+        allReservations.forEach((reservation) -> {
             long minutesToStartDriving = ChronoUnit.MINUTES.between(LocalDateTime.now(), reservation.getStarted());
-            if(minutesToStartDriving == 15 && reservation.getLastReminder() == null){
+            if(isTimeToRemind(reservation, minutesToStartDriving)){
                 setLastReminder(reservation, (int) minutesToStartDriving);
             }
-            else if(reservation.getLastReminder() != null){
-                long minutesFromLastReminderToNow = ChronoUnit.MINUTES.between(reservation.getLastReminder(), LocalDateTime.now());
-                if(minutesFromLastReminderToNow == 5){
-                    setLastReminder(reservation, (int) minutesToStartDriving);
-                }
-            }
-        }
+        });
+    }
+
+    private boolean isTimeToRemind(Driving reservation, long minutesToStartDriving){
+
+        return (minutesToStartDriving == 15 && reservation.getLastReminder() == null) ||
+                (reservation.getLastReminder() != null && getMinutesFromLastReminderToNow(reservation.getLastReminder()) == 5);
+    }
+
+    private long getMinutesFromLastReminderToNow(LocalDateTime lastReminder) {
+
+        return ChronoUnit.MINUTES.between(lastReminder, LocalDateTime.now());
     }
 
     private void setLastReminder(final Driving reservation, final int minutesToStartDriving){

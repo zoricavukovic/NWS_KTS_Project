@@ -1,6 +1,8 @@
 package com.example.serbUber.util;
 
 public class EmailConstants {
+    public static final String EMAIL = "serbUberNWTKTS@gmail.com";
+
     public static final String FRONT_VERIFY_URL = "http://localhost:4200/serb-uber/auth/verify/";
     public static final String FRONT_RESET_PASSWORD_URL = "http://localhost:4200/serb-uber/user/reset-password/";
 
