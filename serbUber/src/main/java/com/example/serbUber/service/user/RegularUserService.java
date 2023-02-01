@@ -2,13 +2,11 @@ package com.example.serbUber.service.user;
 
 import com.example.serbUber.dto.RouteDTO;
 import com.example.serbUber.dto.VerifyDTO;
-import com.example.serbUber.dto.chart.ChartItemDTO;
 import com.example.serbUber.dto.user.RegistrationDTO;
 import com.example.serbUber.dto.user.RegularUserDTO;
 import com.example.serbUber.dto.user.RegularUserPageDTO;
 import com.example.serbUber.exception.*;
 import com.example.serbUber.model.Driving;
-import com.example.serbUber.model.DrivingStatus;
 import com.example.serbUber.model.Route;
 import com.example.serbUber.model.user.RegularUser;
 import com.example.serbUber.repository.user.RegularUserRepository;
@@ -18,12 +16,14 @@ import com.example.serbUber.service.VerifyService;
 import com.example.serbUber.service.WebSocketService;
 import com.example.serbUber.service.interfaces.IRegularUserService;
 import com.example.serbUber.service.payment.TokenBankService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -42,14 +42,15 @@ import static com.example.serbUber.util.PictureHandler.convertPictureToBase64ByN
 @Qualifier("regularUserServiceConfiguration")
 public class RegularUserService implements IRegularUserService {
 
-    private final RegularUserRepository regularUserRepository;
-    private final VerifyService verifyService;
-    private final RoleService roleService;
-    private final RouteService routeService;
-    private final WebSocketService webSocketService;
-    private final TokenBankService tokenBankService;
-    private final EmailService emailService;
+    private RegularUserRepository regularUserRepository;
+    private VerifyService verifyService;
+    private RoleService roleService;
+    private RouteService routeService;
+    private WebSocketService webSocketService;
+    private TokenBankService tokenBankService;
+    private EmailService emailService;
 
+    @Autowired
     public RegularUserService(
             final RegularUserRepository regularUserRepository,
             final VerifyService verifyService,
@@ -91,6 +92,7 @@ public class RegularUserService implements IRegularUserService {
     }
 
     public RegularUser getRegularByEmail(final String email) throws EntityNotFoundException {
+
         return regularUserRepository.getRegularUserByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException(email, EntityType.USER));
     }
@@ -103,7 +105,7 @@ public class RegularUserService implements IRegularUserService {
             final String phoneNumber,
             final String city,
             final String profilePicture
-    ) throws MailCannotBeSentException, EntityAlreadyExistsException, EntityNotFoundException {
+    ) throws EntityAlreadyExistsException, EntityNotFoundException {
         try {
             String hashedPassword = getHashedNewUserPassword(password);
             RegularUser regularUser = regularUserRepository.save(new RegularUser(
@@ -157,8 +159,7 @@ public class RegularUserService implements IRegularUserService {
     }
 
     public boolean blockRegular(final Long id, final String reason)
-            throws EntityNotFoundException, EntityUpdateException
-    {
+            throws IOException, EntityNotFoundException, EntityUpdateException, MailCannotBeSentException {
         RegularUser regularUser = getRegularById(id);
         if (regularUserInActiveDriving(regularUser.getDrivings())) {
             throw new EntityUpdateException("Regular user cannot be blocked while in active driving.");

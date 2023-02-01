@@ -1,14 +1,35 @@
 <div
   class="route-container"
+  id="possible-route"
   style="border-left: thick solid; padding-left: 1rem"
   [style.border-left-color]="[color]">
-  <p style="font-size: 1.4rem">
-    <strong>{{ route.timeInMin }} min</strong>
-  </p>
-  <p style="font-size: 1.2rem" *ngIf="route.distance / 1000 >= 0.1">
-    {{ route.distance / 1000 | number: '1.0-1' }} km
-  </p>
-  <p style="font-size: 1.2rem" *ngIf="route.distance / 1000 < 0.1">
-    {{ route.distance | number: '1.0-0' }} m
-  </p>
+  <div style="float: left">
+    <p style="font-size: 1.4rem">
+      <strong>{{ route.timeInMin }} min</strong>
+    </p>
+    <p style="font-size: 1.2rem" *ngIf="route.distance / 1000 >= 0.1">
+      {{ route.distance / 1000 | number : '1.0-1' }} km
+    </p>
+    <p style="font-size: 1.2rem" *ngIf="route.distance / 1000 < 0.1">
+      {{ route.distance | number : '1.0-0' }} m
+    </p>
+  </div>
+
+  <div
+    style="
+      float: right;
+      font-size: 1.7rem;
+      margin-top: 0.5rem;
+      margin-right: 1.5rem;
+      display: flex;
+      flex-direction: row;
+    "
+    *ngIf="user === null">
+    <img
+      src="../../../../assets/images/aproximately-equal.png"
+      width="22"
+      height="22" />
+    <b>{{ route.averagePrice }}</b>
+    <mat-icon>payments</mat-icon>
+  </div>
 </div>

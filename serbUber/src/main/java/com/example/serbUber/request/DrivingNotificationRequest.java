@@ -13,14 +13,11 @@ import static com.example.serbUber.exception.ErrorMessagesConstants.WRONG_EMAIL;
 public class DrivingNotificationRequest {
 
     private RouteRequest route;
-    @Valid
-//    @Positive(message = POSITIVE_MESSAGE)
+    @Positive(message = POSITIVE_MESSAGE)
     private double price;
-    @Valid
     @Email(message = WRONG_EMAIL)
     private String senderEmail;
     private List<String> passengers;
-
     private boolean babySeat;
     private boolean petFriendly;
     private String vehicleType;
@@ -30,7 +27,16 @@ public class DrivingNotificationRequest {
     public DrivingNotificationRequest() {
     }
 
-    public DrivingNotificationRequest(RouteRequest routeRequest, double price, String senderEmail, List<String> passengers, boolean babySeat, boolean petFriendly, String vehicleType, Timestamp chosenDateTime) {
+    public DrivingNotificationRequest(
+        final RouteRequest routeRequest,
+        final double price,
+        final String senderEmail,
+        final List<String> passengers,
+        final boolean babySeat,
+        final boolean petFriendly,
+        final String vehicleType,
+        final Timestamp chosenDateTime
+    ) {
         this.route = routeRequest;
         this.price = price;
         this.senderEmail = senderEmail;
@@ -39,6 +45,28 @@ public class DrivingNotificationRequest {
         this.petFriendly = petFriendly;
         this.vehicleType = vehicleType;
         this.chosenDateTime = chosenDateTime;
+    }
+
+    public DrivingNotificationRequest(
+        final RouteRequest routeRequest,
+        final double price,
+        final String senderEmail,
+        final List<String> passengers,
+        final boolean babySeat,
+        final boolean petFriendly,
+        final String vehicleType,
+        final Timestamp chosenDateTime,
+        final boolean isReservation
+    ) {
+        this.route = routeRequest;
+        this.price = price;
+        this.senderEmail = senderEmail;
+        this.passengers = passengers;
+        this.babySeat = babySeat;
+        this.petFriendly = petFriendly;
+        this.vehicleType = vehicleType;
+        this.chosenDateTime = chosenDateTime;
+        this.reservation = isReservation;
     }
 
     public double getPrice() {

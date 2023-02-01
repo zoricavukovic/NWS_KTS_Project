@@ -31,7 +31,7 @@ public interface IVehicleService {
 
     VehicleDTO getVehicleOfDriver(final Long driverId) throws EntityNotFoundException;
 
-    VehicleCurrentLocationForLocustDTO updateCurrentPosition(final Long id, final double lng, final double lat, final int crossedWaypoint) throws EntityNotFoundException;
+    VehicleCurrentLocationForLocustDTO updateCurrentPosition(final Long id, final double lng, final double lat, final int crossedWaypoint, final int chosenRouteIdx) throws EntityNotFoundException;
 
     VehicleTypeInfo driverUpdateApprovalVehicle(
             final VehicleType vehicleType

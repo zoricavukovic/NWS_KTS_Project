@@ -180,4 +180,8 @@ public abstract class User {
 
         return !password.equals(confirmationPassword);
     }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

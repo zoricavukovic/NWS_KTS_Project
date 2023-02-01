@@ -3,14 +3,10 @@ package com.example.serbUber.service;
 import com.example.serbUber.model.Driving;
 import com.example.serbUber.model.DrivingStatus;
 import com.example.serbUber.model.DrivingStatusNotification;
-import com.example.serbUber.model.user.RegularUser;
-import com.example.serbUber.model.user.User;
 import com.example.serbUber.repository.DrivingStatusNotificationRepository;
 import com.example.serbUber.service.interfaces.IDrivingStatusNotificationService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-
-import java.util.Set;
 
 @Component
 @Qualifier("drivingStatusNotificationService")
@@ -21,10 +17,12 @@ public class DrivingStatusNotificationService implements IDrivingStatusNotificat
     public DrivingStatusNotificationService(final DrivingStatusNotificationRepository drivingStatusNotificationRepository){
         this.drivingStatusNotificationRepository = drivingStatusNotificationRepository;
     }
+
     public DrivingStatusNotification create(
             final String reason,
             final DrivingStatus drivingStatus,
-            final Driving driving){
+            final Driving driving
+    ){
 
         return drivingStatusNotificationRepository.save(new DrivingStatusNotification(reason, drivingStatus, driving));
     }

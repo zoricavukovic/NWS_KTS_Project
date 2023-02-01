@@ -268,7 +268,8 @@ export class WebSocketService {
           .dispatch(
             new UpdateStatusDrivingNotification({
               active: false,
-              drivingStatus: 'FINISHED',
+              drivingStatus: drivingNotificationDetails.drivingStatus,
+              justFinished: true,
             })
           )
           .subscribe();
@@ -513,6 +514,7 @@ export class WebSocketService {
         this.drivingService
           .get(drivingStatusNotification.drivingId)
           .subscribe((response: Driving) => {
+            console.log('LJUBAVI');
             this.toast
               .info('You have new ride. Tap to see details.', 'New ride.')
               .onTap.subscribe(action => {

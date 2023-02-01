@@ -55,24 +55,26 @@ public class VehicleController {
     @PutMapping(value = "update-current-location/{id}")
     @ResponseStatus(HttpStatus.OK)
     public VehicleCurrentLocationForLocustDTO updateCurrentPosition(
-        @Valid @NotNull(message = MISSING_ID) @PathVariable final long id,
+        @PathVariable final long id,
         @Valid @RequestBody VehicleCurrentPositionRequest vehicleCurrentPositionRequest
         ) throws EntityNotFoundException {
 
         return this.vehicleService.updateCurrentPosition(
             id, vehicleCurrentPositionRequest.getLongLatRequest().getLon(),
             vehicleCurrentPositionRequest.getLongLatRequest().getLat(),
-            vehicleCurrentPositionRequest.getCrossedWaypoint()
+            vehicleCurrentPositionRequest.getCrossedWaypoints(),
+            vehicleCurrentPositionRequest.getChosenRouteIdx()
         );
     }
 
-    @GetMapping(value = "check-vehicle-activity/{id}")
+    @GetMapping(value = "check-vehicle-activity/{id}/{chosenRouteIdx}")
     @ResponseStatus(HttpStatus.OK)
     public VehicleCurrentLocationForLocustDTO checkStateOfVehicle(
-        @Valid @NotNull(message = MISSING_ID) @PathVariable final long id
-    ) throws EntityNotFoundException {
+        @PathVariable final long id,
+        @PathVariable final int chosenRouteIdx
+        ) throws EntityNotFoundException {
 
-        return this.vehicleService.checkStateOfVehicle(id);
+        return this.vehicleService.checkStateOfVehicle(id, chosenRouteIdx);
     }
 
     @DeleteMapping(value = "/{id}")

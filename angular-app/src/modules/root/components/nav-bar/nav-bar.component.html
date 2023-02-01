@@ -84,8 +84,8 @@
     routerLinkActive="active"
     mat-button
     color="primary"
-    >Log in</a
-  >
+    id="login"
+    >Log in</a>
   <a
     *ngIf="!loggedUser"
     [routerLink]="['/serb-uber/user/registration']"
@@ -153,7 +153,7 @@
   </mat-menu>
 
   <mat-menu class="bell-notifications-menu" #bellNotificationsMenu="matMenu">
-    <div 
+    <div
     *ngFor="let notification of bellNotifications; index as i"
     class="notification-content"
     >

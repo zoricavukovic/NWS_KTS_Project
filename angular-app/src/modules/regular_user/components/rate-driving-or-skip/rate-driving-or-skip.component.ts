@@ -4,7 +4,10 @@ import { Router } from '@angular/router';
 import { Select, Store } from '@ngxs/store';
 import { ToastrService } from 'ngx-toastr';
 import { Observable, Subscription } from 'rxjs';
-import { ClearStore, UpdateDrivingNotification } from 'src/modules/shared/actions/driving-notification.action';
+import {
+  ClearStore,
+  UpdateDrivingNotification,
+} from 'src/modules/shared/actions/driving-notification.action';
 import { RatingDialogComponent } from 'src/modules/shared/components/rating-dialog/rating-dialog.component';
 import { SimpleDrivingInfo } from 'src/modules/shared/models/driving/simple-driving-info';
 import { DrivingNotification } from 'src/modules/shared/models/notification/driving-notification';
@@ -15,25 +18,28 @@ import { DrivingNotificationState } from 'src/modules/shared/state/driving-notif
 @Component({
   selector: 'app-rate-driving-or-skip',
   templateUrl: './rate-driving-or-skip.component.html',
-  styleUrls: ['./rate-driving-or-skip.component.css']
+  styleUrls: ['./rate-driving-or-skip.component.css'],
 })
 export class RateDrivingOrSkipComponent implements OnInit {
-
-  @Select(DrivingNotificationState.getDrivingNotification) currentDrivingNotification: Observable<DrivingNotification>;
+  @Select(DrivingNotificationState.getDrivingNotification)
+  currentDrivingNotification: Observable<DrivingNotification>;
   @Input() currentUser: User;
   storedDrivingNotification: DrivingNotification;
-  constructor(private dialog: MatDialog,
-    private toast: ToastrService, private store: Store) { }
+  constructor(
+    private dialog: MatDialog,
+    private toast: ToastrService,
+    private store: Store
+  ) {}
 
   goToDrivingDetails() {
     return `/serb-uber/user/map-page-view/${this.storedDrivingNotification.drivingId}`;
   }
 
-  skipRate(){
+  skipRate() {
     this.store.dispatch(new ClearStore());
   }
 
-  rateDriving(){
+  rateDriving() {
     const dialogConfig = new MatDialogConfig();
 
     dialogConfig.disableClose = true;
@@ -48,7 +54,7 @@ export class RateDrivingOrSkipComponent implements OnInit {
       response => {
         if (response !== null) {
           this.toast.success('Review created');
-          this.store.dispatch(new ClearStore())
+          this.store.dispatch(new ClearStore());
         }
       },
       error => {
@@ -57,10 +63,9 @@ export class RateDrivingOrSkipComponent implements OnInit {
     );
   }
 
-  ngOnInit(){
+  ngOnInit() {
     this.currentDrivingNotification.subscribe(response => {
       this.storedDrivingNotification = response;
     });
   }
-
 }

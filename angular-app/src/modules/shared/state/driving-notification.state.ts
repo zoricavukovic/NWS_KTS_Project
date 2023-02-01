@@ -15,6 +15,7 @@ import {
   RemoveDriving,
   SimpleUpdateDrivingNotification,
   UpdateDurationDrivingNotification,
+  UpdateIfDriverChooseWrongRoute,
 } from '../actions/driving-notification.action';
 import { Observable } from 'rxjs';
 import { Driving } from '../models/driving/driving';
@@ -45,6 +46,8 @@ export class DrivingNotificationState {
     { payload }: AddDrivingNotification
   ) {
     const state = getState();
+    state.currentDrivingNotification = payload;
+    state.currentDrivingNotification.wrongRoute = false;
     setState({
       ...state,
       currentDrivingNotification: payload,
@@ -74,11 +77,13 @@ export class DrivingNotificationState {
     { payload }: UpdateOnlyMinutesStatus
   ) {
     const state = getState();
-    state.currentDrivingNotification.minutes = payload.minutes;
-    setState({
-      ...state,
-      currentDrivingNotification: state.currentDrivingNotification,
-    });
+    if (state.currentDrivingNotification !== null) {
+      state.currentDrivingNotification.minutes = payload.minutes;
+      setState({
+        ...state,
+        currentDrivingNotification: state.currentDrivingNotification,
+      });
+    }
   }
 
   @Action(UpdateStatusDrivingNotification)
@@ -90,6 +95,13 @@ export class DrivingNotificationState {
       const state = getState();
       state.currentDrivingNotification.active = payload.active;
       state.currentDrivingNotification.drivingStatus = payload.drivingStatus;
+      if (payload.started) {
+        state.currentDrivingNotification.started = payload.started;
+      }
+
+      if (payload.justFinished) {
+        state.currentDrivingNotification.justFinished = payload.justFinished;
+      }
 
       setState({
         ...state,
@@ -114,6 +126,7 @@ export class DrivingNotificationState {
       state.currentDrivingNotification.active = payload.active;
       state.currentDrivingNotification.vehicleId = payload.vehicleId;
       state.currentDrivingNotification.route = payload.route;
+      state.currentDrivingNotification.started = payload.started;
       setState({
         ...state,
         currentDrivingNotification: state.currentDrivingNotification,
@@ -141,6 +154,7 @@ export class DrivingNotificationState {
     { payload }: SimpleUpdateDrivingNotification
   ) {
     const state = getState();
+    console.log(payload.route);
     state.currentDrivingNotification.active = payload.active;
     state.currentDrivingNotification.drivingStatus = payload.drivingStatus;
     state.currentDrivingNotification.vehicleId = payload.vehicleId;
@@ -200,6 +214,21 @@ export class DrivingNotificationState {
   ) {
     const state = getState();
     state.currentDrivingNotification.drivingId = payload.drivingId;
+    setState({
+      ...state,
+      currentDrivingNotification: state.currentDrivingNotification,
+    });
+
+    console.log(state);
+  }
+
+  @Action(UpdateIfDriverChooseWrongRoute)
+  updateIfDriverChooseWrongRoute(
+    { getState, setState }: StateContext<DrivingNotificationStateModel>,
+    { payload }: UpdateIfDriverChooseWrongRoute
+  ) {
+    const state = getState();
+    state.currentDrivingNotification.wrongRoute = payload;
     setState({
       ...state,
       currentDrivingNotification: state.currentDrivingNotification,

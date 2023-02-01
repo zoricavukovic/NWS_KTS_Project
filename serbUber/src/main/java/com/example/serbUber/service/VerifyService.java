@@ -1,17 +1,13 @@
 package com.example.serbUber.service;
 
 import com.example.serbUber.dto.VerifyDTO;
-import com.example.serbUber.dto.user.UserDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.EntityType;
 import com.example.serbUber.exception.MailCannotBeSentException;
 import com.example.serbUber.exception.WrongVerifyTryException;
 import com.example.serbUber.model.Verify;
-import com.example.serbUber.model.user.Driver;
-import com.example.serbUber.model.user.User;
 import com.example.serbUber.repository.VerifyRepository;
 import com.example.serbUber.service.interfaces.IVerifyService;
-import com.example.serbUber.service.user.UserService;
 import com.example.serbUber.util.Constants;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -73,8 +69,6 @@ public class VerifyService implements IVerifyService {
           getExpirationTime()
         )));
     }
-
-
 
     public Verify update(final Long id, final int securityCode)
             throws EntityNotFoundException, WrongVerifyTryException

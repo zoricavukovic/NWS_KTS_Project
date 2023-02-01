@@ -1,6 +1,7 @@
 package com.example.serbUber.request;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 public class VehicleCurrentPositionRequest {
@@ -8,15 +9,23 @@ public class VehicleCurrentPositionRequest {
     @Valid
     LongLatRequest longLatRequest;
 
-    @NotNull(message = "Crossed waypoints value cannot be empty.")
-    int crossedWaypoint;
+    @Min(message = "Crossed waypoints value cannot be lower than -1.", value = -1)
+    int crossedWaypoints;
+
+    @Min(message = "Chosen route index cannot be lower than -1.", value = -1)
+    int chosenRouteIdx;
 
     public VehicleCurrentPositionRequest() {
     }
 
-    public VehicleCurrentPositionRequest(LongLatRequest longLatRequest, int crossedWaypoint) {
+    public VehicleCurrentPositionRequest(
+            final LongLatRequest longLatRequest,
+            final int crossedWaypoints,
+            final int chosenRouteIdx
+    ) {
         this.longLatRequest = longLatRequest;
-        this.crossedWaypoint = crossedWaypoint;
+        this.crossedWaypoints = crossedWaypoints;
+        this.chosenRouteIdx = chosenRouteIdx;
     }
 
     public LongLatRequest getLongLatRequest() {
@@ -27,11 +36,19 @@ public class VehicleCurrentPositionRequest {
         this.longLatRequest = longLatRequest;
     }
 
-    public int getCrossedWaypoint() {
-        return crossedWaypoint;
+    public int getCrossedWaypoints() {
+        return crossedWaypoints;
     }
 
-    public void setCrossedWaypoint(int crossedWaypoint) {
-        this.crossedWaypoint = crossedWaypoint;
+    public void setCrossedWaypoints(int crossedWaypoints) {
+        this.crossedWaypoints = crossedWaypoints;
+    }
+
+    public int getChosenRouteIdx() {
+        return chosenRouteIdx;
+    }
+
+    public void setChosenRouteIdx(int chosenRouteIdx) {
+        this.chosenRouteIdx = chosenRouteIdx;
     }
 }

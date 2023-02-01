@@ -32,7 +32,7 @@ public class DriverUpdateApprovalService implements IDriverUpdateApprovalService
             final DriverUpdateApprovalRepository driverUpdateApprovalRepository,
             final DriverService driverService,
             final WebSocketService webSocketService
-            ) {
+    ) {
         this.driverUpdateApprovalRepository = driverUpdateApprovalRepository;
         this.driverService = driverService;
         this.webSocketService = webSocketService;
@@ -82,7 +82,6 @@ public class DriverUpdateApprovalService implements IDriverUpdateApprovalService
             final boolean babySeat
     ) throws EntityUpdateException {
         try {
-
             return driverUpdateApprovalRepository.save(
                 new DriverUpdateApproval(email, name, surname, phoneNumber, city, vehicleType, petFriendly, babySeat));
         }catch (IllegalArgumentException  ex){
@@ -90,6 +89,4 @@ public class DriverUpdateApprovalService implements IDriverUpdateApprovalService
             throw new EntityUpdateException();
         }
     }
-
-
 }

@@ -1,6 +1,5 @@
 package com.example.serbUber.util;
 
-import com.example.serbUber.dto.PossibleRoutesViaPointsDTO;
 import com.example.serbUber.model.user.User;
 import com.example.serbUber.request.LongLatRequest;
 
@@ -16,6 +15,7 @@ public class Constants {
 
     public static final String PHOTOS_FILE_PATH = "src/main/resources/static/images/";
     public static final String TARGET_PHOTO_FILE_PATH = "./src/main/resources/static/images/";
+    public static final String TEMPLATE_FILE_PATH = "./src/main/resources/static/emailTemplates/";
     public static final double EMPTY_BANK_ACCOUNT = 0.0;
     public static final int MAX_LENGTH_OF_MESSAGE = 100;
     public static final int MIN_RATE = 0;
@@ -48,7 +48,7 @@ public class Constants {
     public static final String REDIRECT_URL_SUCCESS = "http://localhost:4200/serb-uber/regular-user/payment/process-payment";
     public static final String PAYPAL_APPROVAL_URL = "approval_url";
     public static final Long DEFAULT_PAYING_INFO_ID = 1L;
-    public static final int MAX_MINUTES_BEFORE_DRIVING_CAN_START = 5;
+    public static final int FIVE_MINUTES = 5;
     public static final Long TAXI_START_LOCATION_ID = 1L;
     public static final String DRIVER_NOT_FOUND_MESSAGE = "Ride is rejected because driver is not found.";
     public static final String UNSUCCESSFUL_PAYMENT_MESSAGE = "Ride is rejected because payment was not successful. Please, check your tokens!";
@@ -58,6 +58,7 @@ public class Constants {
     public static final String DRIVER_DATA_UPDATE_REJECTION = "Admin rejected your profile data changes.";
     public static final String UNSUCCESSFUL_PAYMENT_PATH = "/unsuccessful-payment";
     public static final String DRIVER_NOT_FOUND_PATH = "/driver-not-found";
+    public static final String EMPTY_STRING = "";
     public static final double WITHOUT_TOKENS = 0.0;
     public static final double START_MISSING_NUM_OF_TOKENS = 0;
     public static final int HALF_AN_HOUR = 30;
@@ -71,6 +72,10 @@ public class Constants {
     public static final double MINUTES_FOR_ONE_HOUR = 60;
     public static final double ZERO_DISTANCE = 0;
     public static final double ZERO_MINUTES = 0;
+
+    public static final double ONE_KILOMETER_TO_METER = 1000;
+
+    public static final int TOKEN_VALUE = 1;
 
     public static int generateSecurityCode() {
         return (int)(Math.random() * (Constants.MAX_SECURITY_NUM - Constants.MIN_SECURITY_NUM + 1) + Constants.MIN_SECURITY_NUM);

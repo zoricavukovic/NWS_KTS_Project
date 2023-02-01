@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, Output } from '@angular/core';
 import { EventEmitter } from '@angular/core';
-import {PossibleRoute} from "../../../shared/models/route/possible-routes";
+import { User } from 'src/modules/shared/models/user/user';
+import { PossibleRoute } from '../../../shared/models/route/possible-routes';
 
 @Component({
   selector: 'route-row',
@@ -9,6 +10,7 @@ import {PossibleRoute} from "../../../shared/models/route/possible-routes";
 })
 export class RouteRowComponent implements OnInit {
   @Input() route: PossibleRoute;
+  @Input() user: User;
   @Output() chosenRouteEvent = new EventEmitter<string>();
   color: string;
   rgbDeepBlue: number[] = [44, 75, 97];

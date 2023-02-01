@@ -1,11 +1,23 @@
-<div *ngIf="vehiclePassengersView && rideRequestForm" [formGroup]="rideRequestForm" style="min-width:25rem">
-  <button mat-raised-button (click)="goToEnterLocations()" class="button-back" *ngIf="!router.url.includes('favourite-route')"><mat-icon style="color: var(--deep-blue)">arrow_back</mat-icon></button>
-  <driver-vehicle (vehicleTypeEvent)="showPrice()"
-    [formGroup] = "rideRequestForm"></driver-vehicle>
+<div
+  *ngIf="vehiclePassengersView && rideRequestForm"
+  [formGroup]="rideRequestForm"
+  style="min-width: 25rem">
+  <button
+    mat-raised-button
+    (click)="goToEnterLocations()"
+    class="button-back"
+    *ngIf="actRoute.snapshot.paramMap.get('id') === '-1'">
+    <mat-icon style="color: var(--deep-blue)">arrow_back</mat-icon>
+  </button>
+  <driver-vehicle
+    (vehicleTypeEvent)="showPrice()"
+    [formGroup]="rideRequestForm"></driver-vehicle>
   <br />
   <mat-expansion-panel>
     <mat-expansion-panel-header>
-      <mat-panel-title style="font-size:1.1rem;"> Add other passengers </mat-panel-title>
+      <mat-panel-title style="font-size: 1.1rem">
+        Add other passengers
+      </mat-panel-title>
     </mat-expansion-panel-header>
     <mat-chip-list aria-label="Passenger selection">
       <mat-chip
@@ -21,6 +33,7 @@
     <mat-form-field appearance="fill">
       <mat-label>Email</mat-label>
       <input
+        name="passenger-email"
         type="text"
         matInput
         aria-label="State"
@@ -30,22 +43,34 @@
       <mat-autocomplete
         #auto="matAutocomplete"
         (optionSelected)="addSelectedPassenger($event.option.value)">
-        <mat-option *ngFor="let user of filteredRegularUsers | async" [value]="user">
+        <mat-option
+          *ngFor="let user of filteredRegularUsers | async"
+          [value]="user">
           <span>{{ user }}</span>
         </mat-option>
       </mat-autocomplete>
     </mat-form-field>
   </mat-expansion-panel>
-  <br/>
+  <br />
 
-  <app-request-later-time *ngIf="requestLater" [formGroup] = "rideRequestForm"></app-request-later-time>
+  <app-request-later-time
+    *ngIf="requestLater"
+    [formGroup]="rideRequestForm"></app-request-later-time>
 
-  <div style="float:left;  font-size: 1.7rem;display: flex;flex-direction: row;margin-top:0.2rem;">
-    <b>= {{rideRequestForm.get('price').value}}</b>
+  <div
+    style="
+      float: left;
+      font-size: 1.7rem;
+      display: flex;
+      flex-direction: row;
+      margin-top: 0.2rem;
+    ">
+    <b>= {{ rideRequestForm.get('price').value }}</b>
     <mat-icon class="token-icon">payments</mat-icon>
   </div>
 
   <button
+    id="request-ride"
     mat-raised-button
     class="findDriverBtn"
     *ngIf="rideRequestForm.get('vehicleType').value !== ''"

@@ -1,5 +1,6 @@
 package com.example.serbUber.service;
 
+import com.example.serbUber.exception.MailCannotBeSentException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
@@ -14,7 +15,7 @@ public class HTMLEmailService {
         this.mailSender = mailSender;
     }
 
-    public void sendMail(String from, String to, String subject, String msg) {
+    public void sendMail(String from, String to, String subject, String msg) throws MailCannotBeSentException {
         try {
 
             MimeMessage message = mailSender.createMimeMessage();
@@ -26,7 +27,7 @@ public class HTMLEmailService {
             helper.setText(msg, true);
             mailSender.send(message);
         } catch (MessagingException ex) {
-            System.out.println("l");
+            throw new MailCannotBeSentException(from);
         }
     }
 }

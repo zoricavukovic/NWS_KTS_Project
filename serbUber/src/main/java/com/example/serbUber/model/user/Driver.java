@@ -76,6 +76,22 @@ public class Driver extends User {
         this.vehicle = vehicle;
     }
 
+    public Driver(
+        final Long id,
+        final String email,
+        final String password,
+        final String name,
+        final String surname,
+        final String phoneNumber,
+        final String city,
+        final String profilePicture,
+        final Vehicle vehicle,
+        final Role role
+    ) {
+        super(id, email, password, name, surname, phoneNumber, city, profilePicture, role);
+        this.vehicle = vehicle;
+    }
+
     public Driver(Object user) {
     }
 

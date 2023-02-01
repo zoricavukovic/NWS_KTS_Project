@@ -56,7 +56,6 @@ public class ChatRoomService implements IChatRoomService {
                 .orElseThrow(() -> new EntityNotFoundException(id.toString(), EntityType.CHAT_ROOM));
     }
 
-
     public ChatRoomDTO create(
             final Long chatId,
             final String message,
@@ -148,5 +147,4 @@ public class ChatRoomService implements IChatRoomService {
 
         return !message.isSeen() && message.isAdminResponse();
     }
-
 }

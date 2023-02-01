@@ -9,6 +9,7 @@ import com.example.serbUber.exception.*;
 import com.example.serbUber.model.user.RegularUser;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -19,8 +20,7 @@ public interface IRegularUserService {
     boolean updateFavouriteRoutes(final Long userId, final Long routeId) throws EntityNotFoundException;
     boolean isFavouriteRoute(final Long routeId, final Long userId);
     List<RouteDTO> getFavouriteRoutes(final Long id) throws EntityNotFoundException;
-    boolean blockRegular(final Long id, final String reason)
-            throws EntityNotFoundException, EntityUpdateException;
+    boolean blockRegular(final Long id, final String reason) throws IOException, EntityNotFoundException, EntityUpdateException, MailCannotBeSentException;
     public RegistrationDTO registerRegularUser(
         final String email,
         final String password,

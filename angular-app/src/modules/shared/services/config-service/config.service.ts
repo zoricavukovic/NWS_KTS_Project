@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 
-
 @Injectable({
   providedIn: 'root',
 })
 export class ConfigService {
-
   API_URL = environment.apiUrl;
   BASE64_PHOTO_PREFIX = 'data:image/png;base64,';
   ROLE_DRIVER = 'ROLE_DRIVER';
@@ -30,6 +28,11 @@ export class ConfigService {
   ///////////////////AUTH///////////////////
   AUTH_URL = `${this.API_URL}/auth`;
   LOGIN_URL = `${this.AUTH_URL}/login`;
+
+  getLoginUrl(): string {
+    return this.LOGIN_URL;
+  }
+
   GOOGLE_LOGIN_URL = `${this.LOGIN_URL}/google`;
   FACEBOOK_LOGIN_URL = `${this.LOGIN_URL}/facebook`;
   LOGOUT_URL = `${this.AUTH_URL}/logout`;
@@ -39,41 +42,40 @@ export class ConfigService {
   DRIVERS_URL = `${this.API_URL}/drivers`;
   ACTIVITY_STATUS_DRIVERS_URL = `${this.DRIVERS_URL}/activity`;
 
-  driverByIdUrl(driverId: number): string{
+  driverByIdUrl(driverId: number): string {
     return `${this.DRIVERS_URL}/${driverId}`;
   }
 
-  blockedDriverByIdUrl(driverId: number): string{
+  blockedDriverByIdUrl(driverId: number): string {
     return `${this.DRIVERS_URL}/blocked-data/${driverId}`;
   }
 
-  driverRatingByIdUrl(driverId: number): string{
+  driverRatingByIdUrl(driverId: number): string {
     return `${this.DRIVERS_URL}/rating/${driverId}`;
   }
 
-  unblockDriverByIdUrl(driverId: number): string{
+  unblockDriverByIdUrl(driverId: number): string {
     return `${this.DRIVERS_URL}/unblock/${driverId}`;
   }
 
-
   ///////////////////REGULAR USER///////////////////
   REGULAR_USERS_URL = `${this.API_URL}/regular-users`;
-  SET_FAVOURITE_ROUTE_URL = `${this.REGULAR_USERS_URL}/favourite`
+  SET_FAVOURITE_ROUTE_URL = `${this.REGULAR_USERS_URL}/favourite`;
 
-  blockedUserByIdUrl(userId: number): string{
+  blockedUserByIdUrl(userId: number): string {
     return `${this.REGULAR_USERS_URL}/blocked-data/${userId}`;
   }
 
-  unblockUserByIdUrl(userId: number): string{
+  unblockUserByIdUrl(userId: number): string {
     return `${this.REGULAR_USERS_URL}/unblock/${userId}`;
   }
 
-  isFavouriteRouteUrl(routeId: number, userId: number): string{
+  isFavouriteRouteUrl(routeId: number, userId: number): string {
     return `${this.REGULAR_USERS_URL}/favourite-route/${routeId}/${userId}`;
   }
 
-  allFavouriteRoutesUrl(userId: number): string{
-    return `${this.REGULAR_USERS_URL}/favourite-routes/${userId}`
+  allFavouriteRoutesUrl(userId: number): string {
+    return `${this.REGULAR_USERS_URL}/favourite-routes/${userId}`;
   }
 
   ///////////////////USER///////////////////
@@ -88,25 +90,38 @@ export class ConfigService {
   CREATE_REGULAR_USER_URL = `${this.USERS_URL}/create/regular-user`;
   ALL_VERIFIED_URL = `${this.USERS_URL}/all-verified`;
 
-  userByIdUrl(id: number){
+  userByIdUrl(id: number) {
     return `${this.USERS_URL}/${id}`;
   }
 
-  userByEmailUrl(email: string): string{
+  userByEmailUrl(email: string): string {
     return `${this.USERS_URL}/byEmail/${email}`;
   }
 
-  sendResetPassword(email: string): string{
+  sendResetPassword(email: string): string {
     return `${this.USERS_URL}/send-reset-password-link/${email}`;
   }
 
+  getCreateRegularUserUrl(): string {
+    return this.CREATE_REGULAR_USER_URL;
+  }
+
+  getCreateDriverUrl(): string {
+    return this.CREATE_DRIVER_URL;
+  }
 
   ///////////////////DRIVING///////////////////
 
   DRIVINGS_URL = `${this.API_URL}/drivings`;
   HAVE_PASSENGERS_ALREADY_RIDE_URL = `${this.DRIVINGS_URL}/busy-passengers`;
 
-  drivingsSortPaginationUrl(userId: number, pageNumber: number, pageSize: number, parameter: string, sortOrder: string): string{
+  drivingsSortPaginationUrl(
+    userId: number,
+    pageNumber: number,
+    pageSize: number,
+    parameter: string,
+    sortOrder: string
+  ): string {
     return `${this.DRIVINGS_URL}/${userId}/${pageNumber}/${pageSize}/${parameter}/${sortOrder}`;
   }
 
@@ -114,47 +129,55 @@ export class ConfigService {
     return `${this.DRIVINGS_URL}/driving-by-favourite-route/${routeId}`;
   }
 
-  nowAndFutureDrivingsUrl(userId: number): string{
+  nowAndFutureDrivingsUrl(userId: number): string {
     return `${this.DRIVINGS_URL}/now-and-future/${userId}`;
   }
 
-  drivingByIdUrl(id: number): string{
+  drivingByIdUrl(id: number): string {
     return `${this.DRIVINGS_URL}/${id}`;
   }
 
-  finishDrivingUrl(id: number): string{
+  finishDrivingUrl(id: number): string {
     return `${this.DRIVINGS_URL}/finish-driving/${id}`;
   }
 
-  startDrivingUrl(id: number): string{
+  startDrivingUrl(id: number): string {
     return `${this.DRIVINGS_URL}/start/${id}`;
   }
 
-  rejectDrivingUrl(id: number): string{
+  rejectDrivingUrl(id: number): string {
     return `${this.DRIVINGS_URL}/reject/${id}`;
   }
 
-  hasUserActiveDriving(userId: number): string{
-    return `${this.DRIVINGS_URL}/has-active/user/${userId}`
+  hasUserActiveDriving(userId: number): string {
+    return `${this.DRIVINGS_URL}/has-active/user/${userId}`;
   }
 
-  vehicleCurrentLocation(drivingId: number): string{
+  vehicleCurrentLocation(drivingId: number): string {
     return `${this.DRIVINGS_URL}/vehicle-current-location/${drivingId}`;
   }
 
   getChartData(): string {
     return `${this.DRIVINGS_URL}/chart-data`;
-  } 
+  }
 
   getAdminChartData(): string {
     return `${this.DRIVINGS_URL}/admin-chart-data`;
-  } 
+  }
+
+  getTimeForDrivingUrl(drivingId: number): string {
+    return `${this.DRIVINGS_URL}/time-for-driving/${drivingId}`;
+  }
 
   ///////////////////DRIVING-NOTIFICATION///////////////////
 
   DRIVING_NOTIFICATIONS_URL = `${this.API_URL}/driving-notifications`;
 
-  acceptDrivingUrl(drivingNotificationId: number, accepted: boolean, userEmail: string): string{
+  acceptDrivingUrl(
+    drivingNotificationId: number,
+    accepted: boolean,
+    userEmail: string
+  ): string {
     return `${this.DRIVING_NOTIFICATIONS_URL}/update-status/${drivingNotificationId}/${accepted}/${userEmail}`;
   }
 
@@ -166,7 +189,7 @@ export class ConfigService {
 
   REPORTS_URL = `${this.API_URL}/reports`;
 
-  reportsForUserUrl(userId: number): string{
+  reportsForUserUrl(userId: number): string {
     return `${this.REPORTS_URL}/all-for-user/${userId}`;
   }
 
@@ -174,38 +197,36 @@ export class ConfigService {
 
   REVIEWS_URL = `${this.API_URL}/reviews`;
 
-  reviewsForDriverUrl(driverId: number): string{
+  reviewsForDriverUrl(driverId: number): string {
     return `${this.REVIEWS_URL}/all-for-driver/${driverId}`;
   }
 
-  deleteReviewUrl(id: number): string{
+  deleteReviewUrl(id: number): string {
     return `${this.REVIEWS_URL}/${id}`;
   }
 
-  reviewedDrivingsForUser(userId: number): string{
+  reviewedDrivingsForUser(userId: number): string {
     return `${this.REVIEWS_URL}/reviewedDrivings/${userId}`;
   }
-
 
   ///////////////////ROUTE///////////////////
 
   ROUTES_URL = `${this.API_URL}/routes`;
   POSSIBLE_ROUTES_URL = `${this.ROUTES_URL}/possible`;
 
-  routePathUrl(id: number): string{
+  routePathUrl(id: number): string {
     return `${this.ROUTES_URL}/path/${id}`;
   }
-
 
   ///////////////////DRIVER UPDATE APPROVAL/////
 
   DRIVER_UPDATE_APPROVAL = `${this.API_URL}/driver-update-approval`;
 
-  rejectDriverRequest(id: number): string{
+  rejectDriverRequest(id: number): string {
     return `${this.DRIVER_UPDATE_APPROVAL}/reject/${id}`;
   }
 
-  approveDriverRequest(id: number): string{
+  approveDriverRequest(id: number): string {
     return `${this.DRIVER_UPDATE_APPROVAL}/approve/${id}`;
   }
 
@@ -215,27 +236,31 @@ export class ConfigService {
   ACTIVE_VEHICLES_URL = `${this.VEHICLES_URL}/active`;
   UPDATE_CURRENT_LOCATION_URL = `${this.VEHICLES_URL}/update-current-location`;
 
-  deleteVehicleUrl(id: number): string{
+  deleteVehicleUrl(id: number): string {
     return `${this.VEHICLES_URL}/${id}`;
   }
 
-  ratingForVehicleUrl(id: number): string{
+  ratingForVehicleUrl(id: number): string {
     return `${this.VEHICLES_URL}/rating/${id}`;
   }
 
-  vehicleByVehicleTypeUrl(vehicleType: string): string{
+  vehicleByVehicleTypeUrl(vehicleType: string): string {
     return `${this.VEHICLES_URL}/${vehicleType}`;
   }
 
-  vehicleByDriverId(driverId: string): string{
+  vehicleByDriverId(driverId: string): string {
     return `${this.VEHICLES_URL}/vehicle-by-driver/${driverId}`;
   }
 
   ///////////////////VEHICLE TYPE INFOS///////////////////
   VEHICLE_TYPE_INFOS_URL = `${this.API_URL}/vehicle-type-infos`;
 
-  priceForRouteAndVehicleUrl(vehicleType: string, kilometers: number): string{
+  priceForRouteAndVehicleUrl(vehicleType: string, kilometers: number): string {
     return `${this.VEHICLE_TYPE_INFOS_URL}/price/${vehicleType}/${kilometers}`;
+  }
+
+  averagePriceForRoute(kilometers: number): string {
+    return `${this.VEHICLE_TYPE_INFOS_URL}/average-price/${kilometers}`;
   }
 
   ///////////////////VERIFY///////////////////
@@ -243,18 +268,17 @@ export class ConfigService {
   VERIFY_URL = `${this.API_URL}/verify`;
   SEND_CODE_AGAIN_URL = `${this.VERIFY_URL}/send-code-again`;
 
-
   ///////////////////CHAT ROOM///////////////////
 
   CHAT_ROOMS_URL = `${this.API_URL}/chat-rooms`;
   RESOLVE_CHAT_URL = `${this.CHAT_ROOMS_URL}/resolve`;
   SET_MESSAGE_SEEN_URL = `${this.CHAT_ROOMS_URL}/seen-messages`;
 
-  activeChatRoomsForUserUrl(userEmail: string): string{
+  activeChatRoomsForUserUrl(userEmail: string): string {
     return `${this.CHAT_ROOMS_URL}/${userEmail}`;
   }
 
-  allChatRoomsForUserUrl(userEmail: string): string{
+  allChatRoomsForUserUrl(userEmail: string): string {
     return `${this.CHAT_ROOMS_URL}/all/${userEmail}`;
   }
 
@@ -262,8 +286,8 @@ export class ConfigService {
 
   PAYING_INFOS_URL = `${this.API_URL}/paying-infos`;
 
-  payingInfoForUser(userId: number){
-    return `${this.PAYING_INFOS_URL}/${userId};`
+  payingInfoForUser(userId: number) {
+    return `${this.PAYING_INFOS_URL}/${userId};`;
   }
 
   ///////////////////PAYPAL///////////////////
@@ -277,10 +301,9 @@ export class ConfigService {
   TOKEN_BANKS_URL = `${this.API_URL}/token-banks`;
   SPENDING_TOKENS_URL = `${this.TOKEN_BANKS_URL}/in-app-spending`;
 
-  tokenBankForUser(userId: number): string{
+  tokenBankForUser(userId: number): string {
     return `${this.TOKEN_BANKS_URL}/${userId}`;
   }
-
 
   ///////////////////NOTIFICATION BELL///////////////////
   NOTIFICATION_BELL_URL = `${this.API_URL}/bell-notifications`;
@@ -295,7 +318,6 @@ export class ConfigService {
 
   // public role_driver = 'ROLE_DRIVER';
   // public role_regular_user = 'ROLE_REGULAR_USER';
-
 
   // private _drivings_url = `${this.api_url}/drivings`;
   // private _drivers_url = `${this.api_url}/drivers`;

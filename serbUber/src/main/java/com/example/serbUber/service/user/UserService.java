@@ -12,15 +12,16 @@ import com.example.serbUber.service.DriverUpdateApprovalService;
 import com.example.serbUber.service.EmailService;
 import com.example.serbUber.service.VerifyService;
 import com.example.serbUber.service.interfaces.IUserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
 import static com.example.serbUber.dto.user.UserDTO.fromUsers;
 import static com.example.serbUber.model.user.User.passwordsDontMatch;
-import static com.example.serbUber.util.Constants.ROLE_ADMIN;
 import static com.example.serbUber.util.EmailConstants.FRONT_RESET_PASSWORD_URL;
 import static com.example.serbUber.util.JwtProperties.getHashedNewUserPassword;
 import static com.example.serbUber.util.JwtProperties.oldPasswordsMatch;
@@ -31,13 +32,14 @@ import static com.example.serbUber.util.PictureHandler.convertPictureToBase64ByN
 @Qualifier("userServiceConfiguration")
 public class UserService implements IUserService {
 
-    private final UserRepository userRepository;
-    private final DriverUpdateApprovalService driverUpdateApprovalService;
-    private final EmailService emailService;
-    private final DriverService driverService;
-    private final RegularUserService regularUserService;
-    private final VerifyService verifyService;
+    private UserRepository userRepository;
+    private DriverUpdateApprovalService driverUpdateApprovalService;
+    private EmailService emailService;
+    private DriverService driverService;
+    private RegularUserService regularUserService;
+    private VerifyService verifyService;
 
+    @Autowired
     public UserService(
         final UserRepository userRepository,
         final DriverUpdateApprovalService driverUpdateApprovalService,
@@ -78,13 +80,12 @@ public class UserService implements IUserService {
             .orElseThrow(() -> new EntityNotFoundException(email, EntityType.USER));
     }
 
-    public Driver getDriverById(final long id) throws EntityNotFoundException {
+    public Driver getDriverById(final Long id) throws EntityNotFoundException {
 
         Object user = userRepository.getDriverById(id)
             .orElseThrow(() -> new EntityNotFoundException(id, EntityType.USER));
 
         return (Driver) user;
-
     }
 
     public UserDTO getUserDTOByEmail(String email) throws EntityNotFoundException {
@@ -196,7 +197,7 @@ public class UserService implements IUserService {
         return new UserDTO(user);
     }
 
-    public boolean sendEmailForResetPassword(String email) throws EntityNotFoundException {
+    public boolean sendEmailForResetPassword(String email) throws EntityNotFoundException, IOException, MailCannotBeSentException {
         User user = getUserByEmail(email);
         emailService.sendResetPasswordMail(user.getEmail(), String.format("%s%s", FRONT_RESET_PASSWORD_URL, email));
 
@@ -215,8 +216,6 @@ public class UserService implements IUserService {
 
         return new UserDTO(user);
     }
-
-
 
     public UserDTO setOnlineStatus(final String email) throws EntityNotFoundException {
         User user = getUserByEmail(email);
@@ -278,13 +277,13 @@ public class UserService implements IUserService {
         final String phoneNumber,
         final String city,
         final String profilePicture
-    ) throws PasswordsDoNotMatchException, EntityAlreadyExistsException, MailCannotBeSentException, EntityNotFoundException {
+    ) throws PasswordsDoNotMatchException, EntityAlreadyExistsException, EntityNotFoundException {
         if (passwordsDontMatch(password, confirmationPassword)) {
             throw new PasswordsDoNotMatchException();
         }
 
         if (checkIfUserAlreadyExists(email)) {
-            throw new EntityAlreadyExistsException(String.format("User with %s already exists.", email));
+            throw new EntityAlreadyExistsException(String.format("User with email %s already exists.", email));
         }
 
         return regularUserService.registerRegularUser(email, password, name, surname, phoneNumber, city, profilePicture);
@@ -308,7 +307,7 @@ public class UserService implements IUserService {
         }
 
         if (this.checkIfUserAlreadyExists(email)) {
-            throw new EntityAlreadyExistsException(String.format("User with %s already exists.", email));
+            throw new EntityAlreadyExistsException(String.format("User with email %s already exists.", email));
         }
 
         return driverService.create(email, password, confirmPassword, name, surname, phoneNumber,
@@ -316,8 +315,7 @@ public class UserService implements IUserService {
     }
 
     public boolean block(final Long id, final String reason)
-            throws EntityNotFoundException, EntityUpdateException
-    {
+            throws EntityNotFoundException, EntityUpdateException, IOException, MailCannotBeSentException {
         User user = getUserById(id);
         if (user.getRole().isAdmin()) {
             throw new EntityUpdateException("Admin cannot be blocked.");
@@ -325,6 +323,11 @@ public class UserService implements IUserService {
 
         return (user.getRole().isDriver()) ? driverService.blockDriver(id, reason)
                 : regularUserService.blockRegular(id, reason);
+    }
+
+    public void saveDriver(Driver driver){
+
+        driverService.save(driver);
     }
 
     private boolean checkDriverApprovalData(final VehicleType vehicleType) {
@@ -350,5 +353,4 @@ public class UserService implements IUserService {
             throw new PasswordsDoNotMatchException("Your old password is not correct.");
         }
     }
-
 }

@@ -7,6 +7,7 @@ import com.example.serbUber.model.VehicleType;
 import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.model.user.User;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface IUserService {
@@ -52,7 +53,8 @@ public interface IUserService {
             final String newPassword,
             final String confirmPassword
     ) throws PasswordsDoNotMatchException, EntityNotFoundException;
-    boolean sendEmailForResetPassword(String email) throws EntityNotFoundException;
+
+    boolean sendEmailForResetPassword(String email) throws EntityNotFoundException, IOException, MailCannotBeSentException;
     UserDTO resetPassword(String email, String newPassword, String confirmPassword)
             throws EntityNotFoundException, PasswordsDoNotMatchException;
     UserDTO setOnlineStatus(final String email) throws EntityNotFoundException;
@@ -62,7 +64,7 @@ public interface IUserService {
     boolean activate(final Long verifyId, final int securityCode)
             throws EntityNotFoundException, WrongVerifyTryException;
     boolean block(final Long id, final String reason)
-            throws EntityNotFoundException, EntityUpdateException;
+            throws EntityNotFoundException, EntityUpdateException, IOException, MailCannotBeSentException;
 
     RegistrationDTO createRegularUser(
         final String email,
@@ -74,6 +76,6 @@ public interface IUserService {
         final String city, final String profilePicture
     ) throws PasswordsDoNotMatchException, EntityAlreadyExistsException, MailCannotBeSentException, EntityNotFoundException;
 
-    Driver getDriverById(final long driverId) throws EntityNotFoundException;
+    Driver getDriverById(final Long driverId) throws EntityNotFoundException;
     User findAdminForReportHandling();
 }

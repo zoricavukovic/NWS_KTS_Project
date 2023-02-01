@@ -16,7 +16,7 @@ import java.util.List;
 @Service
 public interface IDrivingNotificationService {
 
-   DrivingNotificationDTO createDrivingNotificationDTO(
+   DrivingNotificationDTO createDrivingRequest(
        final RouteRequest routeRequest,
        final String senderEmail,
        final double price,

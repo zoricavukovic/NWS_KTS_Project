@@ -7,8 +7,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +24,7 @@ public interface DriverRepository extends JpaRepository<Driver, Long> {
 
     @Query("select distinct d from Driver d left join fetch d.drivings dr left join fetch d.vehicle v left join fetch v.vehicleTypeInfo typeInfo " +
         "where d.active=true and typeInfo.vehicleType=?1")
-    List<Driver> getActiveDriversWhichVehicleMatchParams1(final VehicleType vehicleType);
+    List<Driver> getActiveDriversWhichVehicleMatchParams(final VehicleType vehicleType);
 
     @Query("select distinct d from Driver d left join fetch d.drivings dr")
     List<Driver> getAllWithDrivings();

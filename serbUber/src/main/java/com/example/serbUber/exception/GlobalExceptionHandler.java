@@ -8,6 +8,11 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolationException;
+import java.io.IOException;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static com.example.serbUber.exception.ErrorMessagesConstants.UNAUTHORIZED_MESSAGE;
@@ -55,6 +60,13 @@ public class GlobalExceptionHandler {
     public String mailCannotBeSentException(MailCannotBeSentException mailCannotBeSentException) {
 
         return mailCannotBeSentException.getMessage();
+    }
+
+    @ExceptionHandler(value = NoSuchElementException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String noSuchElementException() {
+
+        return "Required element cannot be found.";
     }
 
     @ExceptionHandler(value = WrongVerifyTryException.class)
@@ -135,6 +147,13 @@ public class GlobalExceptionHandler {
     public String reportCannotBeCreatedException(ReportCannotBeCreatedException reportCannotBeCreatedException) {
 
         return reportCannotBeCreatedException.getMessage();
+    }
+
+    @ExceptionHandler(value = ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String constraintViolationException(ConstraintViolationException ex) {
+
+        return ex.getMessage();
     }
 
 }

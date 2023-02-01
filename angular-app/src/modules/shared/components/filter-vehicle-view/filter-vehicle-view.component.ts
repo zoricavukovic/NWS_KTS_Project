@@ -27,7 +27,7 @@ import { DrivingNotificationService } from '../../services/driving-notification-
 import { Route } from '../../models/route/route';
 import { DrivingService } from 'src/modules/shared/services/driving-service/driving.service';
 import moment from 'moment';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-filter-vehicle-view',
@@ -53,7 +53,7 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
 
   allRegularUsers: string[] = [];
   filteredRegularUsers: Observable<string[]>;
-  selectedPassengers: string[];
+  selectedPassengers: string[] = [];
   passengers: User[] = [];
 
   passengerCtrl: FormControl = new FormControl();
@@ -78,7 +78,8 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
     private controlContainer: ControlContainer,
     private store: Store,
     private drivingService: DrivingService,
-    public router: Router
+    public router: Router,
+    public actRoute: ActivatedRoute
   ) {
     this.rideRequestForm = <FormGroup>this.controlContainer.control;
     this.selectedPassengers =
@@ -267,12 +268,13 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
     this.drivingNotificationSubscription = this.drivingNotificationService
       .create(drivingNotification)
       .subscribe(
-        () => {
+        response => {
           this.store
             .dispatch(
               new UpdateStatusDrivingNotification({
                 active: false,
                 drivingStatus: 'ACCEPTED',
+                started: response.started,
               })
             )
             .subscribe(response => {

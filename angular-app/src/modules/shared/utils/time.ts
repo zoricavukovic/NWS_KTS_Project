@@ -20,6 +20,9 @@ export function getTime(
       return `${value}min`;
     }
     value = (storedDrivingNotification.minutes * 60)?.toFixed(1);
+    if (value === '0.0') {
+      return 'Arrived';
+    }
   }
 
   return `${value}sec`;

@@ -1,33 +1,30 @@
 import { HttpClient } from '@angular/common/http';
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import {GenericService} from "../generic-service/generic.service";
-import {User} from "../../models/user/user";
-import {PasswordUpdateRequest, UserProfilePictureRequest} from "../../models/user/user-profile-update";
-import {ConfigService} from "../config-service/config.service";
-import {UserDetails} from "../../models/user/user-details";
-import {BlockNotification} from "../../models/notification/block-notification";
-import {RegularUser} from "../../models/user/regular-user";
-import {RegistrationResponse} from "../../models/user/registration-response";
-import {Driver} from "../../models/user/driver";
-import {Role} from "../../models/user/role";
+import { GenericService } from '../generic-service/generic.service';
+import { User } from '../../models/user/user';
+import {
+  PasswordUpdateRequest,
+  UserProfilePictureRequest,
+} from '../../models/user/user-profile-update';
+import { ConfigService } from '../config-service/config.service';
+import { UserDetails } from '../../models/user/user-details';
+import { BlockNotification } from '../../models/notification/block-notification';
+import { RegularUser } from '../../models/user/regular-user';
+import { RegistrationResponse } from '../../models/user/registration-response';
+import { Driver } from '../../models/user/driver';
+import { Role } from '../../models/user/role';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService extends GenericService<User> {
-
-  constructor(
-    private http: HttpClient,
-    private configService: ConfigService
-  ) {
+  constructor(private http: HttpClient, private configService: ConfigService) {
     super(http, configService.USERS_URL);
   }
 
   sendResetPasswordEmail(email: string): Observable<boolean> {
-    return this.http.get<boolean>(
-      this.configService.sendResetPassword(email)
-    );
+    return this.http.get<boolean>(this.configService.sendResetPassword(email));
   }
 
   resetPassword(
@@ -40,12 +37,10 @@ export class UserService extends GenericService<User> {
   }
 
   updateProfileData(data: UserDetails): Observable<User> {
-
     return this.http.put<User>(this.configService.USERS_URL, data);
   }
 
   blockUser(data: BlockNotification): Observable<boolean> {
-
     return this.http.put<boolean>(this.configService.BLOCK_USER_URL, data);
   }
 
@@ -67,12 +62,13 @@ export class UserService extends GenericService<User> {
   }
 
   updateProfilePicture(data: UserProfilePictureRequest): Observable<User> {
-
-    return this.http.put<User>(this.configService.UPDATE_PROFILE_PICTURE_URL, data);
+    return this.http.put<User>(
+      this.configService.UPDATE_PROFILE_PICTURE_URL,
+      data
+    );
   }
 
   updatePassword(data: PasswordUpdateRequest): Observable<User> {
-
     return this.http.put<User>(this.configService.UPDATE_PASSWORD_URL, data);
   }
 
@@ -80,23 +76,23 @@ export class UserService extends GenericService<User> {
     registrationRequest: RegularUser
   ): Observable<RegistrationResponse> {
     return this.http.post<RegistrationResponse>(
-      this.configService.CREATE_REGULAR_USER_URL,
+      this.configService.getCreateRegularUserUrl(),
       registrationRequest
     );
   }
 
   registerDriver(driverRequest: Driver): Observable<User> {
-
-    return this.http.post<User>(this.configService.CREATE_DRIVER_URL, driverRequest);
+    return this.http.post<User>(
+      this.configService.getCreateDriverUrl(),
+      driverRequest
+    );
   }
 
   getUserByEmail(email: string): Observable<User> {
-
     return this.http.get<User>(this.configService.userByEmailUrl(email));
   }
 
   getAllVerified(): Observable<User[]> {
-
     return this.http.get<User[]>(this.configService.ALL_VERIFIED_URL);
   }
 
@@ -120,8 +116,7 @@ export class UserService extends GenericService<User> {
       role: role,
       petFriendly: petFriendly,
       babySeat: babySeat,
-      vehicleType: vehicleType
+      vehicleType: vehicleType,
     };
   }
-
 }

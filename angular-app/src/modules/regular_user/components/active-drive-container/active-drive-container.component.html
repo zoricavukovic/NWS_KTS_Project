@@ -26,14 +26,14 @@
     <img
       style="height: 10rem; width: 10rem; float: left"
       src="../../../../assets/images/{{
-        storedDrivingNotification?.vehicleType.toLowerCase()
+        storedDrivingNotification?.vehicleType?.toLowerCase()
       }}.png" />
     <p style="float: right; width: 10rem; margin-top: 3rem; font-size: 1.1rem">
       Driver has arrived on address
       <b
-        >{{ storedDrivingNotification?.route.locations.at(0).location.street }}
+        >{{ storedDrivingNotification?.route?.locations.at(0).location.street }}
         {{
-          storedDrivingNotification?.route.locations.at(0).location.number
+          storedDrivingNotification?.route?.locations.at(0).location.number
         }}</b
       >.
     </p>
@@ -46,7 +46,16 @@
       [mode]="'determinate'"
       [value]="100">
     </mat-progress-spinner>
-    <h2 style="margin-left: 6rem; margin-top: 2rem">{{ getTime() }}</h2>
+    <h2
+      style="margin-left: 6rem; margin-top: 2rem"
+      *ngIf="checkIfDrivingIsOnDepartureType() || checkIfDrivingIsActive()">
+      {{ getTime() }}
+    </h2>
+    <h2
+      style="margin-left: 6rem; margin-top: 2rem"
+      *ngIf="checkIfDrivingIsFuture()">
+      {{ storedDrivingNotification.started | dateFormat : 'HH:mm' }}
+    </h2>
   </div>
 
   <div style="display: flex; margin-top: 3rem" *ngIf="!checkIfVehicleArrive()">

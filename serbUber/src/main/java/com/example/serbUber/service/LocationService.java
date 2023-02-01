@@ -6,6 +6,7 @@ import com.example.serbUber.exception.EntityType;
 import com.example.serbUber.model.Location;
 import com.example.serbUber.repository.LocationRepository;
 import com.example.serbUber.service.interfaces.ILocationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -19,8 +20,9 @@ import static com.example.serbUber.dto.LocationDTO.fromLocations;
 @Qualifier("locationServiceConfiguration")
 public class LocationService implements ILocationService {
 
-    private final LocationRepository locationRepository;
+    private LocationRepository locationRepository;
 
+    @Autowired
     public LocationService(final LocationRepository locationRepository) {
         this.locationRepository = locationRepository;
     }
@@ -61,7 +63,7 @@ public class LocationService implements ILocationService {
         return locationRepository.save(new Location(city, street, number, zipCode, lon, lat));
     }
 
-    public Location tryToFindLocation(double lon, double lat) {
+    public Location tryToFindLocation(final double lon, final double lat) {
         List<Location> locations = locationRepository.findByLonAndLat(lon, lat);
 
         return locations.size() > 0 ? locations.get(0) : null;

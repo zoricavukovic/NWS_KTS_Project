@@ -12,11 +12,11 @@ import { map, startWith } from 'rxjs/operators';
 import { matchPasswordsValidator } from './confirm-password.validator';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
-import {Vehicle} from "../../../shared/models/vehicle/vehicle";
-import {Driver} from "../../../shared/models/user/driver";
-import {RegularUser} from "../../../shared/models/user/regular-user";
-import {UserService} from "../../../shared/services/user-service/user.service";
-import {AuthService} from "../../../auth/services/auth-service/auth.service";
+import { Vehicle } from '../../../shared/models/vehicle/vehicle';
+import { Driver } from '../../../shared/models/user/driver';
+import { RegularUser } from '../../../shared/models/user/regular-user';
+import { UserService } from '../../../shared/services/user-service/user.service';
+import { AuthService } from '../../../auth/services/auth-service/auth.service';
 
 @Component({
   selector: 'app-registration',
@@ -57,13 +57,30 @@ export class RegistrationComponent implements OnInit, OnDestroy {
       ]),
       babySeat: new FormControl(false),
       petFriendly: new FormControl(false),
-      vehicleType: new FormControl('', Validators.required)
+      vehicleType: new FormControl(''),
     },
     [matchPasswordsValidator()]
   );
 
   matcher = new MyErrorStateMatcher();
-  cities: string[] = ['Beograd', 'Novi Sad', 'Kraljevo', 'Kragujevac', 'Jagodina', 'Mladenovac', 'Subotica', 'Ruma', 'Priboj', 'Sabac', 'Leskovac', 'Vranje', 'Smederevo', 'Pozarevac', 'Zrenjanin', 'Sombor'];
+  cities: string[] = [
+    'Beograd',
+    'Novi Sad',
+    'Kraljevo',
+    'Kragujevac',
+    'Jagodina',
+    'Mladenovac',
+    'Subotica',
+    'Ruma',
+    'Priboj',
+    'Sabac',
+    'Leskovac',
+    'Vranje',
+    'Smederevo',
+    'Pozarevac',
+    'Zrenjanin',
+    'Sombor',
+  ];
   registrationSubscription: Subscription;
 
   submitted = false;
@@ -78,14 +95,14 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   authSubscription: Subscription;
 
   ngOnInit(): void {
-    this.authSubscription = this.authService.getSubjectCurrentUser().subscribe(
-      user => {
+    this.authSubscription = this.authService
+      .getSubjectCurrentUser()
+      .subscribe(user => {
         this.showDriverForm = this.authService.userIsAdmin();
-        if (!user){
+        if (!user) {
           this.removeUnnecessaryValidators();
         }
-      }
-    );
+      });
   }
 
   constructor(
@@ -115,66 +132,71 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   register() {
     if (this.registrationForm.hasError('mismatch')) {
       this.toast.error('Passwords not match');
-    }
-    if (!this.registrationForm.invalid) {
-      if (this.showDriverForm) {
-        const vehicle: Vehicle = {
-          petFriendly: this.registrationForm.get('petFriendly').value,
-          babySeat: this.registrationForm.get('babySeat').value,
-          vehicleType: this.registrationForm.get('vehicleType').value,
-        };
-        const driver: Driver = {
-          email: this.registrationForm.get('emailFormControl').value,
-          password: this.registrationForm.get('passwordFormControl').value,
-          confirmPassword: this.registrationForm.get('passwordAgainFormControl')
-            .value,
-          name: this.registrationForm.get('nameFormControl').value,
-          surname: this.registrationForm.get('surnameFormControl').value,
-          phoneNumber: this.registrationForm.get('phoneNumberFormControl')
-            .value,
-          city: this.registrationForm.get('cityFormControl').value,
-          vehicle: vehicle,
-        };
-        this.registrationSubscription = this.userService
-          .registerDriver(driver)
-          .subscribe(
-            res => {
-              this.toast.success(
-                'Driver is created and waiting for verification!',
-                'Registration successfully'
-              );
-              this.router.navigate(['/serb-uber/user/map-page-view/-1']);
-            },
-            error => this.toast.error(error.error, 'Registration failed')
-          );
+    } else {
+      if (!this.registrationForm.invalid) {
+        if (this.showDriverForm) {
+          const vehicle: Vehicle = {
+            petFriendly: this.registrationForm.get('petFriendly').value,
+            babySeat: this.registrationForm.get('babySeat').value,
+            vehicleType: this.registrationForm.get('vehicleType').value,
+          };
+          const driver: Driver = {
+            email: this.registrationForm.get('emailFormControl').value,
+            password: this.registrationForm.get('passwordFormControl').value,
+            confirmPassword: this.registrationForm.get(
+              'passwordAgainFormControl'
+            ).value,
+            name: this.registrationForm.get('nameFormControl').value,
+            surname: this.registrationForm.get('surnameFormControl').value,
+            phoneNumber: this.registrationForm.get('phoneNumberFormControl')
+              .value,
+            city: this.registrationForm.get('cityFormControl').value,
+            vehicle: vehicle,
+          };
+          this.registrationSubscription = this.userService
+            .registerDriver(driver)
+            .subscribe(
+              res => {
+                this.toast.success(
+                  'Driver is created and waiting for verification!',
+                  'Registration successfully'
+                );
+                this.router.navigate(['/serb-uber/user/map-page-view/-1']);
+              },
+              error => this.toast.error(error.error, 'Registration failed')
+            );
+        } else {
+          const regularUser: RegularUser = {
+            email: this.registrationForm.get('emailFormControl').value,
+            password: this.registrationForm.get('passwordFormControl').value,
+            confirmPassword: this.registrationForm.get(
+              'passwordAgainFormControl'
+            ).value,
+            name: this.registrationForm.get('nameFormControl').value,
+            surname: this.registrationForm.get('surnameFormControl').value,
+            phoneNumber: this.registrationForm.get('phoneNumberFormControl')
+              .value,
+            city: this.registrationForm.get('cityFormControl').value,
+          };
+          this.registrationSubscription = this.userService
+            .registerRegularUser(regularUser)
+            .subscribe(
+              response => {
+                this.toast.success(
+                  'Please go to ' + response.email + ' to verify account!',
+                  'Registration successfully'
+                );
+                this.router.navigate([`/verify/${response.verifyId}`]);
+              },
+              error => this.toast.error(error.error, 'Registration failed')
+            );
+        }
       } else {
-        const regularUser: RegularUser = {
-          email: this.registrationForm.get('emailFormControl').value,
-          password: this.registrationForm.get('passwordFormControl').value,
-          confirmPassword: this.registrationForm.get('passwordAgainFormControl')
-            .value,
-          name: this.registrationForm.get('nameFormControl').value,
-          surname: this.registrationForm.get('surnameFormControl').value,
-          phoneNumber: this.registrationForm.get('phoneNumberFormControl')
-            .value,
-          city: this.registrationForm.get('cityFormControl').value,
-        };
-        this.registrationSubscription = this.userService
-          .registerRegularUser(regularUser)
-          .subscribe(
-            response => {
-              this.toast.success(
-                'Please go to ' + response.email + ' to verify account!',
-                'Registration successfully'
-              );
-              this.router.navigate([`/verify/${response.verifyId}`]);
-            },
-            error => this.toast.error(error.error, 'Registration failed')
-          );
+        this.toast.error(
+          'Form is invalid. Check all fields.',
+          'Registration failed'
+        );
       }
-    }
-    else{
-      this.toast.error('Form is invalid. Check all fields.', 'Registration failed')
     }
   }
 
@@ -189,9 +211,9 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   }
 
   private removeUnnecessaryValidators() {
-    this.registrationForm.get("babySeat").setValidators(null);
-    this.registrationForm.get("vehicleType").setValidators(null);
-    this.registrationForm.get("petFriendly").setValidators(null);
+    this.registrationForm.get('babySeat').setValidators(null);
+    this.registrationForm.get('vehicleType').setValidators(null);
+    this.registrationForm.get('petFriendly').setValidators(null);
   }
 }
 

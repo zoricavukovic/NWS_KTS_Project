@@ -13,6 +13,8 @@ import com.example.serbUber.request.DrivingLocationIndexRequest;
 import com.example.serbUber.request.LocationsForRoutesRequest;
 import com.example.serbUber.request.LongLatRequest;
 import com.example.serbUber.service.interfaces.IRouteService;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -32,20 +34,22 @@ import static com.example.serbUber.util.Constants.*;
 @Qualifier("routeServiceConfiguration")
 public class RouteService implements IRouteService {
 
-    private final RouteRepository routeRepository;
-    private final LocationService locationService;
+    private RouteRepository routeRepository;
+    private LocationService locationService;
+    private VehicleTypeInfoService vehicleTypeInfoService;
+    private DrivingLocationIndexService drivingLocationIndexService;
 
-    private final DrivingLocationIndexService drivingLocationIndexService;
-
+    @Autowired
     public RouteService(
             final RouteRepository routeRepository,
             final LocationService locationService,
-            final DrivingLocationIndexService drivingLocationIndexService
+            final DrivingLocationIndexService drivingLocationIndexService,
+            final VehicleTypeInfoService vehicleTypeInfoService
     ) {
         this.routeRepository = routeRepository;
         this.locationService = locationService;
         this.drivingLocationIndexService = drivingLocationIndexService;
-
+        this.vehicleTypeInfoService = vehicleTypeInfoService;
     }
 
     public List<RouteDTO> getAll() {
@@ -55,19 +59,13 @@ public class RouteService implements IRouteService {
     }
 
     public Route get(Long id) throws EntityNotFoundException {
-        Optional<Route> route = routeRepository.findById(id);
-        if(route.isPresent()){
-            return route.get();
-        }
-        throw new EntityNotFoundException(id, ROUTE);
+
+        return routeRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(id, EntityType.ROUTE));
     }
 
 
-    public Route create(
-            final SortedSet<DrivingLocationIndex> locations,
-            final double distance,
-            final double time
-    ) {
+    public Route create(final SortedSet<DrivingLocationIndex> locations, final double distance, final double time) {
 
         return routeRepository.save(new Route(
                 locations,
@@ -76,52 +74,59 @@ public class RouteService implements IRouteService {
         ));
     }
 
+    private Optional<PossibleRoutesViaPointsDTO> addRouteViaPointSafely(
+        LocationsForRoutesRequest locationsForRouteRequest,
+        int index
+    ) {
+        try {
+            PossibleRoutesViaPointsDTO routeViaPoint = addPossibleRoutesViaPoints(
+                locationsForRouteRequest.getLocationsForRouteRequest(), index);
+
+            return Optional.of(routeViaPoint);
+        } catch (EntityNotFoundException e) {
+
+            return Optional.empty();
+        }
+    }
+
     public List<PossibleRoutesViaPointsDTO> getPossibleRoutes(LocationsForRoutesRequest locationsForRouteRequest) {
         List<PossibleRoutesViaPointsDTO> possibleRoutesViaPointsDTOs = new LinkedList<>();
 
-        IntStream.range(
-                        START_LIST_INDEX, getBeforeLastIndexOfList(locationsForRouteRequest.getLocationsForRouteRequest())
-                )
-                .forEach(index -> {
-                    try {
-                        addPossibleRoutesViaPoints(locationsForRouteRequest.getLocationsForRouteRequest(), possibleRoutesViaPointsDTOs, index);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
+        IntStream.range(START_LIST_INDEX, getBeforeLastIndexOfList(locationsForRouteRequest.getLocationsForRouteRequest()))
+            .mapToObj(index -> addRouteViaPointSafely(locationsForRouteRequest, index))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .forEach(possibleRoutesViaPointsDTOs::add);
 
         return possibleRoutesViaPointsDTOs;
     }
 
     public List<double[]> getRoutePath(final Long id) throws EntityNotFoundException {
-        Route route = this.routeRepository.findById(id)
-
-                .orElseThrow(() -> new EntityNotFoundException(id, EntityType.ROUTE));
+        Route route = get(id);
         List<DrivingLocationIndex> locations = route.getLocations().stream().toList();
-
         List<double[]> points = new LinkedList<>();
-
-        IntStream.range(START_LIST_INDEX, locations.size()-1)
-                .forEach(index ->
-                {
-                    DrivingLocationIndex firstLocation = locations.get(index);
-                    DrivingLocationIndex secondLocation = locations.get(index + 1);
-                    PossibleRouteDTO path = null;
-                    try {
-                        path = getPossibleRoutesDTO(
-                                firstLocation.getLocation().getLat(),
-                                firstLocation.getLocation().getLon(),
-                                secondLocation.getLocation().getLat(),
-                                secondLocation.getLocation().getLon()
-                        ).get(firstLocation.getRouteIndex());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    assert path != null;
-                    points.addAll(path.getPointList());
-                });
+        int index = 0;
+        while (index < locations.size() - 1) {
+            PossibleRouteDTO path = formPath(locations, index);
+            if (path != null) {
+                points.addAll(path.getPointList());
+            }
+            index += 1;
+        }
 
         return points;
+    }
+
+    private PossibleRouteDTO formPath(List<DrivingLocationIndex> locations, int index) throws EntityNotFoundException {
+        DrivingLocationIndex firstLocation = locations.get(index);
+        DrivingLocationIndex secondLocation = locations.get(index + 1);
+
+        return getPossibleRoutesDTO(
+                firstLocation.getLocation().getLat(),
+                firstLocation.getLocation().getLon(),
+                secondLocation.getLocation().getLat(),
+                secondLocation.getLocation().getLon()
+        ).get(firstLocation.getRouteIndex());
     }
 
     public SortedSet<DrivingLocationIndex> getLocationsForRoute(Long id) {
@@ -137,17 +142,7 @@ public class RouteService implements IRouteService {
     ){
         SortedSet<DrivingLocationIndex> drivingLocations = new TreeSet<>();
         locations.forEach(locationIndex -> {
-            Location location = locationService.tryToFindLocation(locationIndex.getLocation().getLon(), locationIndex.getLocation().getLat());
-            if (location == null){
-                location = locationService.create(
-                    locationIndex.getLocation().getCity(),
-                    locationIndex.getLocation().getStreet(),
-                    locationIndex.getLocation().getNumber(),
-                    locationIndex.getLocation().getZipCode(),
-                    locationIndex.getLocation().getLon(),
-                    locationIndex.getLocation().getLat()
-                );
-            }
+            Location location = createLocationIfDoesNotExist(locationIndex);
             DrivingLocationIndex drivingLocationIndex = drivingLocationIndexService.create(
                     location,
                     locationIndex.getIndex(),
@@ -158,6 +153,21 @@ public class RouteService implements IRouteService {
         });
 
         return create(drivingLocations, distance, time);
+    }
+
+    private Location createLocationIfDoesNotExist(final DrivingLocationIndexRequest locationIndex) {
+        Location location = locationService.tryToFindLocation(locationIndex.getLocation().getLon(), locationIndex.getLocation().getLat());
+        if (location == null){
+            location = locationService.create(
+                locationIndex.getLocation().getCity(),
+                locationIndex.getLocation().getStreet(),
+                locationIndex.getLocation().getNumber(),
+                locationIndex.getLocation().getZipCode(),
+                locationIndex.getLocation().getLon(),
+                locationIndex.getLocation().getLat()
+            );
+        }
+        return location;
     }
 
     public double getTimeFromDistance(final double distance) {
@@ -174,17 +184,15 @@ public class RouteService implements IRouteService {
 
         return indexOfLocation == numOfLocations - 1;
     }
-    private void addPossibleRoutesViaPoints(
-            List<LongLatRequest> longLatRequestList,
-            List<PossibleRoutesViaPointsDTO> possibleRoutesViaPointsDTOs,
-            int index
-    ) throws IOException {
 
-        possibleRoutesViaPointsDTOs.add(
-                new PossibleRoutesViaPointsDTO(
-                        getPossibleRoutesDTO(longLatRequestList.get(index).getLat(), longLatRequestList.get(index).getLon(),
-                                longLatRequestList.get(index + 1).getLat(), longLatRequestList.get(index + 1).getLon())
-                )
+    private PossibleRoutesViaPointsDTO addPossibleRoutesViaPoints(
+            List<LongLatRequest> longLatRequestList,
+            int index
+    ) throws EntityNotFoundException {
+
+        return new PossibleRoutesViaPointsDTO(
+            getPossibleRoutesDTO(longLatRequestList.get(index).getLat(), longLatRequestList.get(index).getLon(),
+                longLatRequestList.get(index + 1).getLat(), longLatRequestList.get(index + 1).getLon())
         );
     }
 
@@ -193,7 +201,7 @@ public class RouteService implements IRouteService {
             final double firstPointLng,
             final double secondPointLat,
             final double secondPointLng
-    ) throws IOException {
+    ) throws EntityNotFoundException {
 
         return fromOSMResponse(getOSMResult(firstPointLat, firstPointLng, secondPointLat, secondPointLng));
     }
@@ -231,13 +239,12 @@ public class RouteService implements IRouteService {
         return minutes;
     }
 
-
-    private List<PossibleRouteDTO> fromOSMResponse(String object) {
+    private List<PossibleRouteDTO> fromOSMResponse(String object) throws EntityNotFoundException {
 
         return fromLegs(object);
     }
 
-    private List<PossibleRouteDTO> fromLegs(String object) {
+    private List<PossibleRouteDTO> fromLegs(String object) throws EntityNotFoundException {
         List<PossibleRouteDTO> possibleRouteDTOs = new LinkedList<>();
         List<String> legs = Arrays.stream(object.split("legs=")).toList();
         fromLegs(possibleRouteDTOs, legs);
@@ -245,28 +252,24 @@ public class RouteService implements IRouteService {
         return possibleRouteDTOs;
     }
 
-    private void fromLegs(List<PossibleRouteDTO> possibleRouteDTOs, List<String> legs) {
+    private void fromLegs(List<PossibleRouteDTO> possibleRouteDTOs, List<String> legs) throws EntityNotFoundException {
         for (String leg: legs.subList(1, legs.size())){
             List<double[]> locations = new LinkedList<>();
             List<String> steps = Arrays.stream(leg.split("steps=")).toList();
             fromSteps(locations, steps);
             double distance = getDistance(Arrays.stream(leg.split("distance=")).toList());
             double minutes = getTimeFromDistance(distance);
-            possibleRouteDTOs.add(new PossibleRouteDTO(distance, locations, minutes));
+            double averagePrice = vehicleTypeInfoService.getAveragePriceForChosenRoute(distance/ONE_KILOMETER_TO_METER);
+            possibleRouteDTOs.add(new PossibleRouteDTO(distance, locations, minutes, averagePrice));
         }
     }
 
     private double getDistance(List<String> distances) {
-        double maxDistance = Double.parseDouble(distances.get(1).split(",")[0].replace("}", "").replace("{", "").replace(" ", "").replace("]", "").replace("[", ""));
-        for (String distance: distances.subList(2, distances.size())) {
-            double distanceValue = Double.parseDouble(distance.split(",")[0].replace("}", "").replace("{", "").replace(" ", "").replace("]", "").replace("[", ""));
 
-            if (maxDistance< distanceValue){
-                maxDistance = distanceValue;
-            }
-        }
-
-        return maxDistance;
+        return distances.stream().skip(1)
+                .mapToDouble(distance -> Double.parseDouble(distance.split(",")[0].replaceAll("[\\[\\]{} ]", "")))
+                .max()
+                .orElse(0);
     }
 
     private void fromSteps(List<double[]> locations, List<String> steps) {
@@ -303,7 +306,6 @@ public class RouteService implements IRouteService {
             String lat = secondPoint.replace("[","");
             lat = lat.replace("]","");
             locations.add(new double[]{Double.parseDouble(lat), Double.parseDouble(lng)});
-
         }
     }
 }

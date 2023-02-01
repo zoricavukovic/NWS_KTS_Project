@@ -1,10 +1,12 @@
 package com.example.serbUber.request;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class LinkedPassengersRequest {
-    private List<String> passengersEmail;
+    private List<String> passengersEmail = new LinkedList<>();
     private LocalDateTime started;
 
 
