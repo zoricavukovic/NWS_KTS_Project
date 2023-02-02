@@ -111,7 +111,7 @@ export class MapPageComponent implements OnInit, OnDestroy {
             vehicle,
             this.currentUser?.id,
             this.storedDrivingNotification,
-            this.currentUser.role.name === "ROLE_REGULAR_USER"
+            this.currentUser.role.name === 'ROLE_REGULAR_USER'
           ),
         };
         this.vehiclesCurrentPosition.push(newVehicle);
@@ -168,7 +168,7 @@ export class MapPageComponent implements OnInit, OnDestroy {
                 vehicleCurrentLocation,
                 this.currentUser?.id,
                 this.router.url.includes('-1'),
-                this.currentUser.role.name === "ROLE_REGULAR_USER"
+                this.currentUser.role.name === 'ROLE_REGULAR_USER'
               );
               this.iterator = updateTime(
                 this.storedDrivingNotification,
@@ -192,7 +192,7 @@ export class MapPageComponent implements OnInit, OnDestroy {
                   vehicleCurrentLocation,
                   this.currentUser?.id,
                   this.storedDrivingNotification,
-                  this.currentUser.role.name === "ROLE_REGULAR_USER"
+                  this.currentUser.role.name === 'ROLE_REGULAR_USER'
                 ),
               };
 
@@ -223,11 +223,14 @@ export class MapPageComponent implements OnInit, OnDestroy {
         this.storedDrivingNotification.route.locations.at(
           vehicleCurrentLocation.crossedWaypoints
         ).routeIndex;
+      console.log(correctRouteIndex);
+      console.log(vehicleCurrentLocation);
       if (
         correctRouteIndex !== vehicleCurrentLocation.chosenRouteIdx &&
         this.storedDrivingNotification.vehicleId ===
           vehicleCurrentLocation.id &&
-        !this.storedDrivingNotification.wrongRoute
+        !this.storedDrivingNotification.wrongRoute &&
+        this.storedDrivingNotification.drivingStatus === 'ACCEPTED'
       ) {
         this.store.dispatch(new UpdateIfDriverChooseWrongRoute(true));
       }
