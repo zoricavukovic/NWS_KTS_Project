@@ -646,11 +646,12 @@ public class DrivingNotificationServiceTest {
         DrivingNotification drivingNotification = getDrivingNotification(FIRST_USER, LocalDateTime.now(), true, PRICE, false);
         drivingNotification.setId(60L);
         doNothing().when(webSocketService).sendSuccessfulCreateReservation(anySet());
+        when(drivingNotificationRepository.save(drivingNotification)).thenReturn(drivingNotification);
 
         drivingNotificationService.shouldFindDriver(drivingNotification);
 
         verify(webSocketService).sendSuccessfulCreateReservation(anySet());
-        verify(driverService, never()).getDriverForDriving(any(DrivingNotification.class));
+        verify(drivingNotificationRepository).save(any(DrivingNotification.class));
     }
 
     @Test
@@ -732,6 +733,20 @@ public class DrivingNotificationServiceTest {
         verify(webSocketService).sendNewDrivingNotification(any(DrivingStatusNotificationDTO.class), anyString());
         verify(drivingNotificationRepository).deleteById(drivingNotification.getId());
         verify(drivingService, never()).removeDriver(anyLong());
+    }
+
+    @Test
+    @DisplayName("T29-Should not call any method when calling should not find driver")
+    public void shouldFindDriver_shouldNotCallAnyMethod() throws PassengerNotHaveTokensException, EntityNotFoundException {
+        DrivingNotification drivingNotification = getDrivingNotification(FIRST_USER, LocalDateTime.now(), true, PRICE, false);
+        drivingNotification.setId(60L);
+        drivingNotification.setReservation(true);
+        drivingNotification.setNotified(true);
+
+        drivingNotificationService.shouldFindDriver(drivingNotification);
+
+        verify(webSocketService, never()).sendSuccessfulCreateReservation(anySet());
+        verify(driverService, never()).getDriverForDriving(any(DrivingNotification.class));
     }
 
     @NotNull

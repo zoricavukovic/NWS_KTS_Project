@@ -143,9 +143,9 @@ public class ScheduleAllPassengersReviewCallForRideTest {
         when(drivingNotificationService.checkIfUsersReviewed(RESERVATION_DRIVING_NOTIFICATION_OUTDATED))
                 .thenReturn(false);
 
-        when(drivingNotificationService.checkIfDrivingNotificationIsOutdated(RESERVATION_DRIVING_NOTIFICATION_OUTDATED))
+        when(drivingNotificationService.checkIfDrivingNotificationReservationIsOutdated(RESERVATION_DRIVING_NOTIFICATION_OUTDATED))
                 .thenReturn(true);
-        when(drivingNotificationService.checkIfDrivingNotificationIsOutdated(RESERVATION_DRIVING_NOTIFICATION))
+        when(drivingNotificationService.checkIfDrivingNotificationReservationIsOutdated(RESERVATION_DRIVING_NOTIFICATION))
                 .thenReturn(false);
 
         doNothing().when(drivingNotificationService).deleteOutdatedNotification(RESERVATION_DRIVING_NOTIFICATION_OUTDATED);
