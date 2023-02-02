@@ -277,13 +277,13 @@ public class DrivingServiceTest {
 
         List<Driving> drivings = new LinkedList<>();
 
-        when(drivingRepository.driverHasFutureDriving(EXIST_DRIVER.getId()))
+        when(drivingRepository.driverHasFutureDriving(EXIST_DRIVER.getId(), LocalDateTime.now()))
             .thenReturn(drivings);
 
         Driving driving = drivingService.driverHasFutureDriving(EXIST_DRIVER.getId());
 
         assertNull(driving);
-        verify(drivingRepository).driverHasFutureDriving(EXIST_DRIVER.getId());
+        verify(drivingRepository).driverHasFutureDriving(anyLong(), any(LocalDateTime.class));
     }
 
     @Test
@@ -301,7 +301,7 @@ public class DrivingServiceTest {
         drivings.add(futureDriving1);
         drivings.add(futureDriving2);
 
-        when(drivingRepository.driverHasFutureDriving(EXIST_DRIVER.getId()))
+        when(drivingRepository.driverHasFutureDriving(EXIST_DRIVER.getId(), LocalDateTime.now()))
             .thenReturn(drivings);
 
         Driving driving = drivingService.driverHasFutureDriving(EXIST_DRIVER.getId());

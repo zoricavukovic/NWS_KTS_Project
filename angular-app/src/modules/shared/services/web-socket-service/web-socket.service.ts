@@ -419,7 +419,7 @@ export class WebSocketService {
         this.toast.info('Your ride is rejected because of delay.');
         const user = JSON.parse(localStorage.getItem('user'));
         if (user.role.name === 'ROLE_DRIVER') {
-          this.store.dispatch(new RemoveDriving(message.body));
+          this.store.dispatch(new RemoveDriving(+message.body));
         } else {
           this.store.dispatch(new ClearStore());
         }

@@ -8,10 +8,6 @@
         <div>
             <p class="name">
                 {{report.sender.name + ' ' +report.sender.surname}}
-                <span
-                [class]="report.sender.online ? 'online-status' : 'offline-status'">
-                    <span class="status"></span>&nbsp;&nbsp;{{report.sender.online ? 'Online' : 'Offline'}}
-                </span>
             </p>
         </div>
     </div>

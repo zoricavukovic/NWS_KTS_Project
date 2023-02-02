@@ -386,10 +386,11 @@ export function getRouteCoordinates(
 function getMarkerIcon(
   vehicleStatus: VehicleCurrentLocation,
   currentLoggedUserId: number,
-  storeDriving: DrivingNotification
+  storeDriving: DrivingNotification,
+  isRegularUser: boolean
 ) {
   const customIcon: google.maps.Icon =
-    vehicleStatus.id === storeDriving?.vehicleId &&
+    vehicleStatus.id === storeDriving?.vehicleId && isRegularUser &&
     (storeDriving?.drivingStatus === 'ON_WAY_TO_DEPARTURE' ||
       (storeDriving?.drivingStatus === 'ACCEPTED' && storeDriving?.active))
       ? {
@@ -418,12 +419,14 @@ export function addCarMarker(
   map,
   vehicleStatus: VehicleCurrentLocation,
   currentLoggedUserId: number,
-  storeDriving: DrivingNotification
+  storeDriving: DrivingNotification,
+  isRegularUser: boolean
 ): google.maps.Marker {
   const customIcon = getMarkerIcon(
     vehicleStatus,
     currentLoggedUserId,
-    storeDriving
+    storeDriving,
+    isRegularUser
   );
 
   return new google.maps.Marker({
@@ -454,7 +457,8 @@ export function updateVehiclePosition(
   marker: google.maps.Marker,
   vehicleCurrentLocation: VehicleCurrentLocation,
   currentLoggedUserId: number,
-  isHomePage: boolean
+  isHomePage: boolean,
+  isRegularUser: boolean
 ): google.maps.Marker {
   if (map !== undefined) {
     if (!marker.getVisible() && isHomePage) {
@@ -462,7 +466,7 @@ export function updateVehiclePosition(
     }
 
     marker.setIcon(
-      getMarkerIcon(vehicleCurrentLocation, currentLoggedUserId, storeDriving)
+      getMarkerIcon(vehicleCurrentLocation, currentLoggedUserId, storeDriving, isRegularUser)
     );
     marker.setTitle(getTitle(vehicleCurrentLocation, storeDriving));
 
