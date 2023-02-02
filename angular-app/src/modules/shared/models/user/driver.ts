@@ -18,3 +18,16 @@ export interface Driver {
   pageNumber?: number;
   pageSize?: number;
 }
+
+export interface DriverRegistrationRequest {
+  email: string;
+  name: string;
+  surname: string;
+  phoneNumber: string;
+  city: string;
+  password: string;
+  confirmPassword: string;
+  petFriendly: boolean;
+  babySeat: boolean;
+  vehicleType: string;
+}

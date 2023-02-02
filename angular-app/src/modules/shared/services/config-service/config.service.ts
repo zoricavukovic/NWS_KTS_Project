@@ -201,6 +201,14 @@ export class ConfigService {
 
   REPORTS_URL = `${this.API_URL}/reports`;
 
+    reportUrlForUser(): string {
+    return `${this.REPORTS_URL}/report-driver`
+  }
+
+  reportUrlForDriver(): string {
+    return `${this.REPORTS_URL}/report-regular`
+  }
+
   reportsForUserUrl(userId: number): string {
     return `${this.REPORTS_URL}/all-for-user/${userId}`;
   }

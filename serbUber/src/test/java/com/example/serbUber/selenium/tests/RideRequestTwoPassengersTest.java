@@ -106,15 +106,6 @@ public class RideRequestTwoPassengersTest extends TwoBrowserTestBase {
 
         DrivingDetailsPage drivingDetailsPageLinkedPassenger = new DrivingDetailsPage(edgeDriver);
         drivingDetailsPageLinkedPassenger.isDrivingDetailsPage(DRIVING_DETAILS_TITLE);
-
-        TakesScreenshot ts = (TakesScreenshot)chromeDriver;
-        File file = ts.getScreenshotAs(OutputType.FILE);
-        try {
-            //save the screenshot taken in destination path
-            FileUtils.copyFile(file, new File("./selenium-screenshots/request-two-passenger/Test2.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
 }

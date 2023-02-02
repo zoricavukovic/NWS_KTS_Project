@@ -8,7 +8,7 @@
                 <mat-label>Price per token(EUR)</mat-label>
                 <input formControlName="price" type="number" matInput>
                 <mat-error *ngIf="payingInfoForm.get('price').invalid">
-                    Price per token must be positive number
+                    Price per token must be positive number(1-6 digits)
                 </mat-error>
             </mat-form-field>
             

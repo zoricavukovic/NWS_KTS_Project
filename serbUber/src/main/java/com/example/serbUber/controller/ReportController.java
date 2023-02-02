@@ -3,6 +3,7 @@ package com.example.serbUber.controller;
 import com.example.serbUber.dto.ReportDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.ReportCannotBeCreatedException;
+import com.example.serbUber.request.BehaviourDriverReportRequest;
 import com.example.serbUber.request.BehaviourReportRequest;
 import com.example.serbUber.service.ReportService;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -34,9 +35,9 @@ public class ReportController {
         return this.reportService.getAllForUser(id);
     }
 
-    @PostMapping()
+    @PostMapping("report-driver")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyRole('ROLE_DRIVER', 'ROLE_REGULAR_USER')")
+    @PreAuthorize("hasAnyRole('ROLE_REGULAR_USER')")
     public boolean createReport(@Valid @RequestBody BehaviourReportRequest behaviourReportRequest)
             throws EntityNotFoundException, ReportCannotBeCreatedException
     {
@@ -44,6 +45,20 @@ public class ReportController {
         return this.reportService.createReport(
                 behaviourReportRequest.getSenderId(),
                 behaviourReportRequest.getReceiverId(),
+                behaviourReportRequest.getMessage()
+        );
+    }
+
+    @PostMapping("report-regular")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_DRIVER')")
+    public boolean createReport(@Valid @RequestBody BehaviourDriverReportRequest behaviourReportRequest)
+            throws EntityNotFoundException
+    {
+
+        return this.reportService.createReportDriver(
+                behaviourReportRequest.getSenderId(),
+                behaviourReportRequest.getDrivingId(),
                 behaviourReportRequest.getMessage()
         );
     }

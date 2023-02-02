@@ -3,6 +3,7 @@ package com.example.serbUber.service;
 import com.example.serbUber.dto.ReportDTO;
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.ReportCannotBeCreatedException;
+import com.example.serbUber.model.Driving;
 import com.example.serbUber.model.Report;
 import com.example.serbUber.model.user.Admin;
 import com.example.serbUber.model.user.User;
@@ -48,6 +49,21 @@ public class ReportService implements IReportService {
         return fromReports(reports);
     }
 
+    public boolean createReportDriver(
+            final Long senderId,
+            final Long drivingId,
+            final String message
+    ) throws EntityNotFoundException {
+        User sender = this.userService.getUserById(senderId);
+        Driving driving = this.drivingService.getDriving(drivingId);
+
+        for (User receiver : driving.getUsers()) {
+            this.saveAndSendMessage(sender, receiver, message);
+        }
+
+        return true;
+    }
+
     public boolean createReport(
             final Long senderId,
             final Long receiverId,
@@ -56,6 +72,18 @@ public class ReportService implements IReportService {
         User sender = this.userService.getUserById(senderId);
         User receiver = this.userService.getUserById(receiverId);
         checkIfReportCreationValid(sender, receiver);
+        this.saveAndSendMessage(sender, receiver, message);
+        this.sendMessageToAdmin(sender, receiver);
+
+        return true;
+    }
+
+    private User findAdminForReportHandling() {
+
+       return this.userService.findAdminForReportHandling();
+    }
+
+    private void saveAndSendMessage(User sender, User receiver, String message) {
         this.reportRepository.save(new Report(
                 message,
                 sender,
@@ -64,17 +92,15 @@ public class ReportService implements IReportService {
                 false
         ));
 
-        User admin = findAdminForReportHandling();
-        if (admin != null) {
-            this.webSocketService.sendReportNotification(admin.getId(), admin.getEmail(), getReportMessage(sender, receiver), receiver.getId());
-        }
-
-        return true;
+        this.sendMessageToAdmin(sender, receiver);
     }
 
-    private User findAdminForReportHandling() {
+    private void sendMessageToAdmin(User sender, User receiver) {
+        User admin = findAdminForReportHandling();
+        if (admin != null) {
 
-       return this.userService.findAdminForReportHandling();
+            this.webSocketService.sendReportNotification(admin.getId(), admin.getEmail(), getReportMessage(sender, receiver), receiver.getId());
+        }
     }
 
     private void checkIfReportCreationValid(final User sender, final User receiver) throws ReportCannotBeCreatedException {

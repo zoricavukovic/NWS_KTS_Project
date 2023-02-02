@@ -13,7 +13,7 @@ import { matchPasswordsValidator } from './confirm-password.validator';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { Vehicle } from '../../../shared/models/vehicle/vehicle';
-import { Driver } from '../../../shared/models/user/driver';
+import { Driver, DriverRegistrationRequest } from '../../../shared/models/user/driver';
 import { RegularUser } from '../../../shared/models/user/regular-user';
 import { UserService } from '../../../shared/services/user-service/user.service';
 import { AuthService } from '../../../auth/services/auth-service/auth.service';
@@ -135,12 +135,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     } else {
       if (!this.registrationForm.invalid) {
         if (this.showDriverForm) {
-          const vehicle: Vehicle = {
-            petFriendly: this.registrationForm.get('petFriendly').value,
-            babySeat: this.registrationForm.get('babySeat').value,
-            vehicleType: this.registrationForm.get('vehicleType').value,
-          };
-          const driver: Driver = {
+          const driver: DriverRegistrationRequest = {
             email: this.registrationForm.get('emailFormControl').value,
             password: this.registrationForm.get('passwordFormControl').value,
             confirmPassword: this.registrationForm.get(
@@ -151,7 +146,9 @@ export class RegistrationComponent implements OnInit, OnDestroy {
             phoneNumber: this.registrationForm.get('phoneNumberFormControl')
               .value,
             city: this.registrationForm.get('cityFormControl').value,
-            vehicle: vehicle,
+            petFriendly: this.registrationForm.get('petFriendly').value,
+            babySeat: this.registrationForm.get('babySeat').value,
+            vehicleType: this.registrationForm.get('vehicleType').value,
           };
           this.registrationSubscription = this.userService
             .registerDriver(driver)
@@ -164,7 +161,13 @@ export class RegistrationComponent implements OnInit, OnDestroy {
                 console.log(res);
                 this.router.navigate(['/serb-uber/user/map-page-view/-1']);
               },
-              error => this.toast.error(error.error, 'Registration failed')
+              error => {
+                if (this.registrationForm.get('vehicleType').value === "") {
+                  this.toast.error("Vehicle Type must be selected.", 'Registration failed')
+                } else {
+                  this.toast.error(error.error, 'Registration failed')
+                }
+              }
             );
         } else {
           const regularUser: RegularUser = {

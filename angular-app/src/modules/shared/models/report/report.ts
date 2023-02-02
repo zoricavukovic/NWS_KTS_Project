@@ -16,6 +16,7 @@ export interface BehaviourReportDialogData {
 
 export interface BehaviourReportRequest {
   senderId: number;
-  receiverId: number;
+  receiverId?: number;
+  drivingId?: number;
   message: string;
 }
