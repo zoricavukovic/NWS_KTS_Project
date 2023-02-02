@@ -225,5 +225,26 @@ public class ScheduleAllPassengersReviewCallForRideTest {
         verify(drivingNotificationService, times(1)).deleteOutdatedReservationWithoutDriverNotification(RESERVATION_DRIVING_NOTIFICATION_OUTDATED);
     }
 
+    @Test
+    @DisplayName("T8-Should call should find driver when calls find driver for ride")
+    public void shouldCallShouldFindDriverWhenFindDriverForRide() throws PassengerNotHaveTokensException, EntityNotFoundException {
+
+        when(drivingNotificationService.getAllReservation()).thenReturn(
+                Arrays.asList(RESERVATION_DRIVING_NOTIFICATION)
+        );
+        when(drivingNotificationService.checkIfUsersReviewed(RESERVATION_DRIVING_NOTIFICATION))
+                .thenReturn(true);
+
+        when(drivingNotificationService.checkTimeOfStartingReservationRide(RESERVATION_DRIVING_NOTIFICATION.getStarted()))
+                .thenReturn(false);
+        when(drivingNotificationService.checkTimeOfStartingReservationIsSoonRide(RESERVATION_DRIVING_NOTIFICATION.getStarted()))
+                .thenReturn(false);
+
+        doNothing().when(drivingNotificationService).shouldFindDriver(RESERVATION_DRIVING_NOTIFICATION);
+
+        allPassengersReviewCallForRide.reservationShouldFindDriverForRide();
+
+        verify(drivingNotificationService).shouldFindDriver(RESERVATION_DRIVING_NOTIFICATION);
+    }
 
 }
