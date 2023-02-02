@@ -71,7 +71,8 @@ export class ClearStore {
 }
 
 export class ClearStoreWhenPayingIsNotSuccessful {
-  static readonly type = '[DrivingNotification] ClearStoreWhenPayingIsNotSuccessful'
+  static readonly type =
+    '[DrivingNotification] ClearStoreWhenPayingIsNotSuccessful';
 }
 
 export class UpdateIdDrivingNotification {
@@ -87,8 +88,8 @@ export class UpdateDurationDrivingNotification {
   constructor(public payload: { duration: number }) {}
 }
 
-export class UpdateIfDriverChooseWrongRoute {
-  static readonly type = '[DrivingNotification] UpdateIfDriverChooseWrongRoute';
+export class UpdateIfReported {
+  static readonly type = '[DrivingNotification] UpdateIfReported';
 
   constructor(public payload: boolean) {}
 }

@@ -145,7 +145,7 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
                   active: driving.active,
                   route: driving.route,
                   started: driving.started,
-                  wrongRoute: false,
+                  reported: false,
                 })
               );
             }

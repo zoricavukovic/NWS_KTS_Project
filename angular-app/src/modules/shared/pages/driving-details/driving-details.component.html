@@ -110,7 +110,8 @@
         *ngIf="
           isRegularUser &&
           storedDrivingNotification.drivingStatus === 'ACCEPTED' &&
-          storedDrivingNotification.active
+          storedDrivingNotification.active &&
+          !storedDrivingNotification?.reported
         ">
         <button
           mat-raised-button
