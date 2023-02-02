@@ -101,7 +101,12 @@ public class DrivingServiceTest {
         driving.setDrivingStatus(DrivingStatus.REJECTED);
         driving.getDriver().getVehicle().setCurrentLocationIndex(-1);
         driving.getDriver().getVehicle().setActiveRoute(null);
+        Driving onWayToDepDriving = new Driving(EXIST_OBJECT_ID, DURATION, STARTED, END, new Route(),
+                ON_WAY_TO_DEPARTURE, EXIST_DRIVER, PRICE
+        );
 
+        when(drivingRepository.getOnWayToDepartureDriving(driving.getDriver().getId())).thenReturn(onWayToDepDriving);
+        when(drivingRepository.save(onWayToDepDriving)).thenReturn(onWayToDepDriving);
         when(drivingStatusNotificationService.create(DRIVING_REJECTION_REASON, DrivingStatus.REJECTED, driving))
                 .thenReturn(drivingStatusNotification);
 
@@ -111,12 +116,14 @@ public class DrivingServiceTest {
         Assertions.assertEquals(DrivingStatus.REJECTED, drivingDTO.getDrivingStatus());
         Assertions.assertEquals(EXIST_OBJECT_ID, drivingDTO.getId());
 
-        verify(drivingStatusNotificationService, times(1)).create(
+
+        verify(drivingRepository, times(2)).save(any(Driving.class));
+        verify(drivingStatusNotificationService).create(
                 DRIVING_REJECTION_REASON,
                 DrivingStatus.REJECTED,
                 driving
         );
-        verify(webSocketService, times(1)).sendRejectDriving(
+        verify(webSocketService).sendRejectDriving(
                 EXIST_DRIVER_EMAIL,
                 DRIVING_REJECTION_REASON,
                 driving.getUsers()
@@ -277,7 +284,7 @@ public class DrivingServiceTest {
 
         List<Driving> drivings = new LinkedList<>();
 
-        when(drivingRepository.driverHasFutureDriving(EXIST_DRIVER.getId(), LocalDateTime.now()))
+        when(drivingRepository.driverHasFutureDriving(anyLong(), any(LocalDateTime.class)))
             .thenReturn(drivings);
 
         Driving driving = drivingService.driverHasFutureDriving(EXIST_DRIVER.getId());
@@ -301,7 +308,7 @@ public class DrivingServiceTest {
         drivings.add(futureDriving1);
         drivings.add(futureDriving2);
 
-        when(drivingRepository.driverHasFutureDriving(EXIST_DRIVER.getId(), LocalDateTime.now()))
+        when(drivingRepository.driverHasFutureDriving(anyLong(), any(LocalDateTime.class)))
             .thenReturn(drivings);
 
         Driving driving = drivingService.driverHasFutureDriving(EXIST_DRIVER.getId());
@@ -576,6 +583,62 @@ public class DrivingServiceTest {
         verify(drivingRepository, times(0)).save(any(Driving.class));
     }
 
+    @Test
+    @DisplayName("T23 - Should return drivings for user")
+    public void getAllDrivingsForUserEmail_returnDrivingsForUser(){
+        List<Driving> drivings = new ArrayList<>();
+        Driving driving_1 = createFutureDriving(5, DRIVER_1);
+        Driving driving_2 = createActiveDriving(5, DRIVER_2);
+        drivings.add(driving_1);
+        drivings.add(driving_2);
+        when(drivingRepository.getAllDrivingsForUserEmail(USER_EMAIL_1)).thenReturn(drivings);
+
+        assertEquals(2, drivingService.getAllDrivingsForUserEmail(USER_EMAIL_1).size());
+    }
+
+    @Test
+    @DisplayName("T24-Should success reject driving without driving on way to departure")
+    public void shouldSuccessfullyRejectDrivingWithoutDrivingOnWayToDeparture() throws EntityNotFoundException {
+
+        Driving driving = new Driving(EXIST_OBJECT_ID, DURATION, STARTED, END, new Route(),
+                DrivingStatus.PENDING, EXIST_DRIVER, PRICE
+        );
+        DrivingStatusNotification drivingStatusNotification = new DrivingStatusNotification(
+                DRIVING_REJECTION_REASON, DrivingStatus.REJECTED, driving
+        );
+        when(drivingRepository.getDrivingById(EXIST_OBJECT_ID))
+                .thenReturn(Optional.of(driving));
+
+        when(drivingRepository.save(driving)).thenReturn(driving);
+
+        driving.setDrivingStatus(DrivingStatus.REJECTED);
+        driving.getDriver().getVehicle().setCurrentLocationIndex(-1);
+        driving.getDriver().getVehicle().setActiveRoute(null);
+
+        when(drivingRepository.getOnWayToDepartureDriving(driving.getDriver().getId())).thenReturn(null);
+        when(drivingStatusNotificationService.create(DRIVING_REJECTION_REASON, DrivingStatus.REJECTED, driving))
+                .thenReturn(drivingStatusNotification);
+
+        doNothing().when(webSocketService).sendRejectDriving(EXIST_DRIVER_EMAIL, DRIVING_REJECTION_REASON, driving.getUsers());
+        DrivingDTO drivingDTO = drivingService.rejectDriving(EXIST_OBJECT_ID, DRIVING_REJECTION_REASON);
+
+        Assertions.assertEquals(DrivingStatus.REJECTED, drivingDTO.getDrivingStatus());
+        Assertions.assertEquals(EXIST_OBJECT_ID, drivingDTO.getId());
+
+        verify(drivingRepository).save(any(Driving.class));
+        verify(drivingStatusNotificationService).create(
+                DRIVING_REJECTION_REASON,
+                DrivingStatus.REJECTED,
+                driving
+        );
+        verify(webSocketService).sendRejectDriving(
+                EXIST_DRIVER_EMAIL,
+                DRIVING_REJECTION_REASON,
+                driving.getUsers()
+        );
+    }
+
+
 
     private List<Arguments> getInvalidStartingTime(){
 
@@ -587,19 +650,6 @@ public class DrivingServiceTest {
 
         return Arrays.asList(arguments(LocalDateTime.now().plusMinutes(5)),
             arguments(LocalDateTime.now().plusMinutes(4)));
-    }
-
-    @Test
-    @DisplayName("T8 - Should return drivings for user")
-    public void getAllDrivingsForUserEmail_returnDrivingsForUser(){
-        List<Driving> drivings = new ArrayList<>();
-        Driving driving_1 = createFutureDriving(5, DRIVER_1);
-        Driving driving_2 = createActiveDriving(5, DRIVER_2);
-        drivings.add(driving_1);
-        drivings.add(driving_2);
-        when(drivingRepository.getAllDrivingsForUserEmail(USER_EMAIL_1)).thenReturn(drivings);
-
-        assertEquals(2, drivingService.getAllDrivingsForUserEmail(USER_EMAIL_1).size());
     }
 
 

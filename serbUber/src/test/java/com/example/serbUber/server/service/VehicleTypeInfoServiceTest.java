@@ -75,7 +75,7 @@ public class VehicleTypeInfoServiceTest {
     public void getPriceForVehicleAndChosenRoute_returnCorrectCalculatedPricesForVehicleTypes() throws EntityNotFoundException {
         when(vehicleTypeInfoRepository.getVehicleTypeInfoByName(VehicleType.SUV))
                 .thenReturn(Optional.of(VEHICLE_TYPE_INFO_SUV));
-        assertEquals(6, vehicleTypeInfoService.getPriceForVehicleAndChosenRoute(3, VehicleType.SUV));
+        assertEquals(6, vehicleTypeInfoService.getPriceForVehicleAndChosenRoute(3000, VehicleType.SUV));
     }
 
     @Test
@@ -84,7 +84,7 @@ public class VehicleTypeInfoServiceTest {
         when(vehicleTypeInfoRepository.getVehicleTypeInfoByName(VehicleType.SUV))
                 .thenReturn(Optional.empty());
         assertThrows(EntityNotFoundException.class,
-                () -> vehicleTypeInfoService.getPriceForVehicleAndChosenRoute(3, VehicleType.SUV));
+                () -> vehicleTypeInfoService.getPriceForVehicleAndChosenRoute(3000, VehicleType.SUV));
     }
 
     @Test
