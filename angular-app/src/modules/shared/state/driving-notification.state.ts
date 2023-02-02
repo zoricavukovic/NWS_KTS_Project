@@ -15,7 +15,7 @@ import {
   RemoveDriving,
   SimpleUpdateDrivingNotification,
   UpdateDurationDrivingNotification,
-  UpdateIfDriverChooseWrongRoute,
+  UpdateIfDriverChooseWrongRoute, ClearStoreWhenPayingIsNotSuccessful,
 } from '../actions/driving-notification.action';
 import { Observable } from 'rxjs';
 import { Driving } from '../models/driving/driving';
@@ -189,6 +189,22 @@ export class DrivingNotificationState {
       ...state,
       currentDrivingNotification: null,
     });
+  }
+
+  @Action(ClearStoreWhenPayingIsNotSuccessful)
+  clearStoreWhenPayingIsNotSuccessful({
+    getState,
+    setState,
+  }: StateContext<DrivingNotificationStateModel>) {
+    const state = getState();
+    console.log("CAO");
+    console.log(state);
+    if (state.currentDrivingNotification.drivingStatus === "PAYING") {
+      setState({
+        ...state,
+        currentDrivingNotification: null,
+      });
+    }
   }
 
   @Action(ResetVehicleInDrivingNotification)

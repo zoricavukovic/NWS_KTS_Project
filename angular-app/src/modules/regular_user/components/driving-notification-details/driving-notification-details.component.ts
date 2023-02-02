@@ -40,6 +40,7 @@ export class DrivingNotificationDetailsComponent implements OnInit, OnDestroy {
   answered: boolean;
   vehicle: Vehicle;
   drivingNotificationSubscription: Subscription;
+  drivingNotificationReviewedSubscription: Subscription;
   routeSubscription: Subscription;
   userSubscription: Subscription;
   authSubscription: Subscription;
@@ -68,6 +69,8 @@ export class DrivingNotificationDetailsComponent implements OnInit, OnDestroy {
       .getSubjectCurrentUser()
       .subscribe(user => {
         this.currentUser = user;
+        this.drivingNotificationReviewedSubscription = this.drivingNotificationService.isUserReviewed(this.id, user.id)
+          .subscribe(res => this.answered = res);
       });
 
     this.drivingNotificationSubscription = this.drivingNotificationService.getDrivingNotificationResponse(this.id).subscribe(
@@ -128,6 +131,10 @@ export class DrivingNotificationDetailsComponent implements OnInit, OnDestroy {
 
     if(this.drivingNotificationSubscription){
       this.drivingNotificationSubscription.unsubscribe();
+    }
+
+    if (this.drivingNotificationReviewedSubscription){
+      this.drivingNotificationReviewedSubscription.unsubscribe();
     }
 
     if(this.routeSubscription){

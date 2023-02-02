@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Component;
 
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -87,10 +86,15 @@ public class DrivingNotificationService implements IDrivingNotificationService {
         drivingNotificationRepository.deleteById(notification.getId());
     }
 
-    public DrivingNotificationDTO get(Long id) throws EntityNotFoundException {
+    public DrivingNotificationDTO getDTO(final Long id) throws EntityNotFoundException {
 
         return drivingNotificationRepository.findById(id).map(DrivingNotificationDTO::new)
                 .orElseThrow(() -> new EntityNotFoundException(id, EntityType.DRIVING_NOTIFICATION));
+    }
+
+    public DrivingNotification get(final Long id) {
+
+        return drivingNotificationRepository.findById(id).orElse(null);
     }
 
     public void sendPassengersNotAcceptDrivingNotification(Set<RegularUser> regularUsers, String userEmail, String senderEmail){
@@ -356,6 +360,20 @@ public class DrivingNotificationService implements IDrivingNotificationService {
                 receiversReviewed.put(key, accept ? 0 : 1); //true -> vrednost nula -> accepted
             }
         });
+    }
+
+    public boolean isUserReviewed(final Long notificationId, final Long userId) {
+        DrivingNotification drivingNotification = get(notificationId);
+        if (drivingNotification == null){
+            return false;
+        }
+        for (Map.Entry<RegularUser, Integer> receiver: drivingNotification.getReceiversReviewed().entrySet()){
+            if (receiver.getKey().getId() == userId){
+                return receiver.getValue() != 2;
+            }
+        }
+
+        return false;
     }
 
     private boolean checkIfUserReviewed(

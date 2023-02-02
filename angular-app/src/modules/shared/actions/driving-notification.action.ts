@@ -70,6 +70,10 @@ export class ClearStore {
   static readonly type = '[DrivingNotification] ClearDriving';
 }
 
+export class ClearStoreWhenPayingIsNotSuccessful {
+  static readonly type = '[DrivingNotification] ClearStoreWhenPayingIsNotSuccessful'
+}
+
 export class UpdateIdDrivingNotification {
   static readonly type = '[DrivingNotification] UpdateIdDrivingNotification';
 
