@@ -37,6 +37,7 @@ import { PossibleRoute } from '../../../shared/models/route/possible-routes';
 import { Route } from '../../../shared/models/route/route';
 import { DrivingLocation } from '../../../shared/models/route/driving-location';
 import { swapColorsOfRoutes } from '../../../shared/utils/color-change';
+import {createEmptySearchForm} from "../../../shared/utils/form-helper";
 
 @Component({
   selector: 'app-enter-locations',
@@ -128,7 +129,7 @@ export class EnterLocationsComponent implements OnDestroy {
 
     (this.rideRequestForm.get('searchingRoutesForm') as FormArray).insert(
       this.searchingForm.length - 1,
-      this.createEmptySearchForm()
+      createEmptySearchForm(this.formBuilder)
     );
   }
 
@@ -169,10 +170,6 @@ export class EnterLocationsComponent implements OnDestroy {
     const location: Location = this.searchingForm.at(index).value.location;
 
     return `${location.street} ${location.number}`;
-  }
-
-  createEmptySearchForm(): FormGroup {
-    return this.formBuilder.group(new SearchingRoutesForm());
   }
 
   public addressChange(address: Address, index: number) {

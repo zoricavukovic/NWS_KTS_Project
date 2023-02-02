@@ -189,7 +189,7 @@ public class DrivingService implements IDrivingService {
         driving.getDriver().getVehicle().setCurrentLocationIndex(-1);
         driving.getDriver().getVehicle().setActiveRoute(null);
         drivingRepository.save(driving);
-        rejectOnWayToDeparture(driving.getId());
+        rejectOnWayToDeparture(driving.getDriver().getId());
 
         DrivingStatusNotification drivingStatusNotification = drivingStatusNotificationService.create(
                 reason, DrivingStatus.REJECTED, driving);

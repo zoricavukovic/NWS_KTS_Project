@@ -6,7 +6,7 @@ import {
   Output,
   EventEmitter,
 } from '@angular/core';
-import { ControlContainer, FormControl, FormGroup } from '@angular/forms';
+import {ControlContainer, FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import { Select, Store } from '@ngxs/store';
 import { ToastrService } from 'ngx-toastr';
 import { map, Observable, startWith, Subscription } from 'rxjs';
@@ -28,6 +28,7 @@ import { Route } from '../../models/route/route';
 import { DrivingService } from 'src/modules/shared/services/driving-service/driving.service';
 import moment from 'moment';
 import { ActivatedRoute, Router } from '@angular/router';
+import {createEmptyRoute, createEmptySearchForm} from "../../utils/form-helper";
 
 @Component({
   selector: 'app-filter-vehicle-view',
@@ -79,7 +80,8 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
     private store: Store,
     private drivingService: DrivingService,
     public router: Router,
-    public actRoute: ActivatedRoute
+    public actRoute: ActivatedRoute,
+    private formBuilder: FormBuilder
   ) {
     this.rideRequestForm = <FormGroup>this.controlContainer.control;
     this.selectedPassengers =
@@ -256,7 +258,22 @@ export class FilterVehicleViewComponent implements OnInit, OnDestroy {
       chosenDateTime: started,
       reservation: this.rideRequestForm.get('chosenDateTime').value != null,
     };
-    this.rideRequestForm.reset();
+
+    this.rideRequestForm.reset({
+      searchingRoutesForm: [
+        createEmptySearchForm(this.formBuilder),
+        createEmptySearchForm(this.formBuilder),
+      ],
+      selectedRoute: createEmptyRoute(),
+      routePathIndex: [],
+      petFriendly: false,
+      babySeat: false,
+      vehicleType: '',
+      price: 0,
+      senderEmail: '',
+      selectedPassengers: [],
+      chosenDateTime: null
+    })
     this.store
       .dispatch(new AddDrivingNotification(drivingNotification))
       .subscribe(response => {

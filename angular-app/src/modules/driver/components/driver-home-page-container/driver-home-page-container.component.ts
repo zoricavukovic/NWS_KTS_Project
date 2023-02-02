@@ -10,6 +10,9 @@ import {RejectDrivingComponent} from "../reject-driving/reject-driving.component
 import { Select, Store } from '@ngxs/store';
 import { DrivingNotificationState } from 'src/modules/shared/state/driving-notification.state';
 import { AddDrivings } from 'src/modules/shared/actions/driving-notification.action';
+import { ReportService } from 'src/modules/admin/services/report-service/report.service';
+import { AuthService } from 'src/modules/auth/services/auth-service/auth.service';
+import { User } from 'src/modules/shared/models/user/user';
 
 @Component({
   selector: 'app-driver-home-container',
@@ -22,6 +25,8 @@ export class DriverHomePageContainerComponent implements OnInit, OnDestroy {
   drivingSubscription: Subscription;
   nowAndFutureDrivings: Driving[];
   reasonForRejectingDriving: string;
+  reportSubscription: Subscription;
+  loggedUser: User;
 
   constructor(
     public configService: ConfigService,
@@ -29,7 +34,9 @@ export class DriverHomePageContainerComponent implements OnInit, OnDestroy {
     private router: Router,
     private dialog: MatDialog,
     private toast: ToastrService,
-    private store: Store
+    private store: Store,
+    private reportService: ReportService,
+    private authService: AuthService
   ) {
     this.nowAndFutureDrivings = [];
     this.reasonForRejectingDriving = '';
@@ -44,12 +51,12 @@ export class DriverHomePageContainerComponent implements OnInit, OnDestroy {
       .subscribe((drivings: Driving[]) => {
         this.store.dispatch(new AddDrivings(drivings));
       });
-  }
 
-  ngOnDestroy(): void {
-    if (this.drivingSubscription) {
-      this.drivingSubscription.unsubscribe();
-    }
+      this.authService.getSubjectCurrentUser().subscribe(
+        res => {
+          if (res) {this.loggedUser = res;}
+        }
+      );
   }
 
   finishDriving(drivingIndex: number): void {
@@ -98,6 +105,7 @@ export class DriverHomePageContainerComponent implements OnInit, OnDestroy {
     this.drivingSubscription = this.drivingService.rejectDriving(drivingId, reason).subscribe(
       response => {
         this.removeDriving(index);
+        this.sendReport(drivingId, reason);
         this.toast.success("Successfully reject driving");
         console.log(response);
       },
@@ -105,7 +113,31 @@ export class DriverHomePageContainerComponent implements OnInit, OnDestroy {
     );
   }
 
+  private sendReport(drivingId: number, reason: string) {
+    if (reason !== "I do not feel well" && reason !== "There is no passenger at the departure point" )
+      this.reportService.createReportDriver(this.loggedUser.id, drivingId, reason).subscribe(
+        res => {
+          this.toast.success("Report is sent to admin.", 'Reported!');
+        },
+        err => {
+          this.toast.error("Report cannot be sent.", 'Error occured!')
+        }
+    );
+  }
+
   private removeDriving(drivingIndex: number): void {
     this.nowAndFutureDrivings.splice(drivingIndex, 1);
   }
+
+  ngOnDestroy(): void {
+    if (this.drivingSubscription) {
+      this.drivingSubscription.unsubscribe();
+    }
+
+    if (this.reportSubscription) {
+      this.reportSubscription.unsubscribe();
+    }
+  }
+
+
 }

@@ -89,6 +89,7 @@ a {
 .notification-row {
   border-radius: 0.4rem;
   padding: 0.2rem;
+  cursor: pointer;
 }
 
 .notification-row:hover {

@@ -12,7 +12,7 @@ import { UserDetails } from '../../models/user/user-details';
 import { BlockNotification } from '../../models/notification/block-notification';
 import { RegularUser } from '../../models/user/regular-user';
 import { RegistrationResponse } from '../../models/user/registration-response';
-import { Driver } from '../../models/user/driver';
+import { Driver, DriverRegistrationRequest } from '../../models/user/driver';
 import { Role } from '../../models/user/role';
 
 @Injectable({
@@ -81,7 +81,7 @@ export class UserService extends GenericService<User> {
     );
   }
 
-  registerDriver(driverRequest: Driver): Observable<User> {
+  registerDriver(driverRequest: DriverRegistrationRequest): Observable<User> {
     return this.http.post<User>(
       this.configService.getCreateDriverUrl(),
       driverRequest

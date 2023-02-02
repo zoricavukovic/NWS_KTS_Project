@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
 
 import static com.example.serbUber.exception.ErrorMessagesConstants.*;
 
@@ -60,7 +59,15 @@ public class DrivingNotificationController {
     @PreAuthorize("hasAnyRole('ROLE_REGULAR_USER')")
     public DrivingNotificationDTO get(@PathVariable final Long id) throws EntityNotFoundException {
 
-        return drivingNotificationService.get(id);
+        return drivingNotificationService.getDTO(id);
+    }
+
+    @GetMapping("/user-reviewed/{notificationId}/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAnyRole('ROLE_REGULAR_USER')")
+    public boolean isUserReviewed(@PathVariable final Long notificationId, @PathVariable final Long userId){
+
+        return drivingNotificationService.isUserReviewed(notificationId, userId);
     }
 
     @PutMapping("/update-status/{id}/{accepted}/{email}")

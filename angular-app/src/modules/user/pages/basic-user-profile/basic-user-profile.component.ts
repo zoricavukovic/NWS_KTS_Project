@@ -105,7 +105,7 @@ export class BasicUserProfileComponent implements OnInit, OnDestroy {
           this.driverService.setGlobalDriver(response);
         },
         error => {
-          this.driverStatus = !this.driverStatus;
+          this.driverStatus = this.driverStatus;
           this.toast.error(error.error, 'Changing activity status failed');
         }
       );

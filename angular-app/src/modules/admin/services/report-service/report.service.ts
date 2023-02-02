@@ -18,8 +18,14 @@ export class ReportService {
 
   createReport(senderId: number, receiverId: number, message: string): Observable<boolean> {
 
-    return this.http.post<boolean>(this.configService.REPORTS_URL, 
+    return this.http.post<boolean>(this.configService.reportUrlForUser(), 
       this.createBehaviourReportRequest(senderId, receiverId, message));
+  }
+
+  createReportDriver(senderId: number, drivingId: number, message: string): Observable<boolean> {
+
+    return this.http.post<boolean>(this.configService.reportUrlForDriver(), 
+      this.createBehaviourDriverReportRequest(senderId, drivingId, message));
   }
   
   createBehaviourReportRequest(senderId: number, receiverId: number, message: string): BehaviourReportRequest {
@@ -27,6 +33,15 @@ export class ReportService {
     return {
       senderId: senderId,
       receiverId: receiverId,
+      message: message
+    }
+  }
+
+  createBehaviourDriverReportRequest(senderId: number, drivingId: number, message: string): BehaviourReportRequest {
+   
+    return {
+      senderId: senderId,
+      drivingId: drivingId,
       message: message
     }
   }

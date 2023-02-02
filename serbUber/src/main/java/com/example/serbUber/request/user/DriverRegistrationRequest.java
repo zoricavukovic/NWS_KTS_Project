@@ -1,5 +1,6 @@
 package com.example.serbUber.request.user;
 
+import com.example.serbUber.model.VehicleType;
 import com.example.serbUber.request.VehicleRequest;
 import com.example.serbUber.util.Constants;
 
@@ -17,9 +18,14 @@ public class DriverRegistrationRequest extends UserRequest {
             message = WRONG_PASSWORD)
     private final String confirmPassword;
 
-    @NotNull(message = "Vehicle data must be added.")
-    @Valid
-    private VehicleRequest vehicle;
+    @NotNull(message = "Pet friendly option must be selected!")
+    private boolean petFriendly;
+
+    @NotNull(message = "Baby seat option must be selected!")
+    private boolean babySeat;
+
+    @NotNull(message = "Vehicle type must be selected!")
+    private VehicleType vehicleType;
 
     public DriverRegistrationRequest(
             final String email,
@@ -30,18 +36,42 @@ public class DriverRegistrationRequest extends UserRequest {
             final String city,
             final String profilePicture,
             final String confirmPassword,
-            final VehicleRequest vehicle
+            final boolean petFriendly,
+            final boolean babySeat,
+            final VehicleType vehicleType
     ) {
         super(email, password, name, surname, phoneNumber, city, profilePicture);
         this.confirmPassword = confirmPassword;
-        this.vehicle = vehicle;
+        this.petFriendly = petFriendly;
+        this.babySeat = babySeat;
+        this.vehicleType = vehicleType;
     }
 
     public String getConfirmPassword() {
         return confirmPassword;
     }
 
-    public VehicleRequest getVehicle() {
-        return vehicle;
+    public boolean isPetFriendly() {
+        return petFriendly;
+    }
+
+    public void setPetFriendly(boolean petFriendly) {
+        this.petFriendly = petFriendly;
+    }
+
+    public boolean isBabySeat() {
+        return babySeat;
+    }
+
+    public void setBabySeat(boolean babySeat) {
+        this.babySeat = babySeat;
+    }
+
+    public VehicleType getVehicleType() {
+        return vehicleType;
+    }
+
+    public void setVehicleType(VehicleType vehicleType) {
+        this.vehicleType = vehicleType;
     }
 }

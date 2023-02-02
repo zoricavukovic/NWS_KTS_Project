@@ -201,6 +201,14 @@ export class ConfigService {
 
   REPORTS_URL = `${this.API_URL}/reports`;
 
+    reportUrlForUser(): string {
+    return `${this.REPORTS_URL}/report-driver`
+  }
+
+  reportUrlForDriver(): string {
+    return `${this.REPORTS_URL}/report-regular`
+  }
+
   reportsForUserUrl(userId: number): string {
     return `${this.REPORTS_URL}/all-for-user/${userId}`;
   }
@@ -326,5 +334,9 @@ export class ConfigService {
 
   setAllNotificationsAsSeen(userId: number): string {
     return `${this.NOTIFICATION_BELL_URL}/seen/${userId}`;
+  }
+
+  isUserReviewedUrl(notificationId: number, userId: number) {
+    return `${this.DRIVING_NOTIFICATIONS_URL}/user-reviewed/${notificationId}/${userId}`;
   }
 }

@@ -153,9 +153,9 @@ public class UserController {
                 driverRegistrationRequest.getPhoneNumber(),
                 driverRegistrationRequest.getCity(),
                 driverRegistrationRequest.getProfilePicture(),
-                driverRegistrationRequest.getVehicle().isPetFriendly(),
-                driverRegistrationRequest.getVehicle().isBabySeat(),
-                driverRegistrationRequest.getVehicle().getVehicleType()
+                driverRegistrationRequest.isPetFriendly(),
+                driverRegistrationRequest.isBabySeat(),
+                driverRegistrationRequest.getVehicleType()
         );
     }
 

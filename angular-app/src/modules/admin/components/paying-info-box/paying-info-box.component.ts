@@ -21,11 +21,11 @@ export class PayingInfoBoxComponent implements OnDestroy {
     {
       price: new FormControl('', [
         Validators.required,
-        Validators.pattern('[0-9][.]?[0-9]*')
+        Validators.pattern('[0-9][.]?[0-9]{0,5}')
       ]),
       maxNumOfTokensPerTransaction: new FormControl('', [
         Validators.required,
-        Validators.pattern('[1-9][0-9]*'),
+        Validators.pattern('[1-9][0-9]{0,5}'),
         Validators.min(1)
       ])
   });
