@@ -4,8 +4,6 @@ import com.example.serbUber.model.*;
 import com.example.serbUber.model.user.RegularUser;
 
 import java.time.LocalDateTime;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 
 import static com.example.serbUber.model.DrivingNotification.getListOfUsers;
@@ -20,6 +18,7 @@ public class DrivingNotificationDTO {
     private Set<RegularUser> passengers;
     private double price;
     private LocalDateTime chosenDateTime;
+    private boolean reservation;
 
     public DrivingNotificationDTO(final DrivingNotification drivingNotification) {
         this.route = drivingNotification.getRoute();
@@ -31,15 +30,8 @@ public class DrivingNotificationDTO {
         Set<RegularUser> passengers = getListOfUsers(drivingNotification.getReceiversReviewed());
         passengers.add(drivingNotification.getSender());
         this.passengers = passengers;
+        this.reservation = drivingNotification.isReservation();
     }
-
-    public static List<DrivingNotificationDTO> fromDrivingNotifications(List<DrivingNotification> notifications) {
-        List<DrivingNotificationDTO> notificationDTOs = new LinkedList<>();
-        notifications.forEach(notification ->
-                notificationDTOs.add(new DrivingNotificationDTO(notification)));
-        return notificationDTOs;
-    }
-
 
     public double getPrice() {
         return price;
@@ -103,5 +95,13 @@ public class DrivingNotificationDTO {
 
     public void setChosenDateTime(LocalDateTime chosenDateTime) {
         this.chosenDateTime = chosenDateTime;
+    }
+
+    public boolean isReservation() {
+        return reservation;
+    }
+
+    public void setReservation(boolean reservation) {
+        this.reservation = reservation;
     }
 }

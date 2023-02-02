@@ -102,16 +102,16 @@ public class DrivingNotificationService implements IDrivingNotificationService {
     }
 
     public DrivingNotificationDTO createDrivingRequest (
-            final RouteRequest routeRequest,
-            final String senderEmail,
-            final double price,
-            final List<String> passengers,
-            final double duration,
-            final boolean babySeat,
-            final boolean petFriendly,
-            final String vehicleType,
-            final LocalDateTime chosenDateTime,
-            final boolean isReservation
+        final RouteRequest routeRequest,
+        final String senderEmail,
+        final double price,
+        final List<String> passengers,
+        final double duration,
+        final boolean babySeat,
+        final boolean petFriendly,
+        final String vehicleType,
+        final LocalDateTime chosenDateTime,
+        final boolean isReservation
     ) throws EntityNotFoundException, ExcessiveNumOfPassengersException, PassengerNotHaveTokensException, InvalidChosenTimeForReservationException, NotFoundException {
         DrivingNotification notification = getCreatedDrivingNotification(
                 routeRequest, senderEmail, price, passengers, duration,
@@ -201,9 +201,11 @@ public class DrivingNotificationService implements IDrivingNotificationService {
             createDrivingIfFoundDriverAndSuccessfullyPaid(drivingNotification);
             delete(drivingNotification);
         }
-        else {
+        else if (!drivingNotification.isNotified()) {
             Map<RegularUser, Integer> receiversReviewed = drivingNotification.getReceiversReviewed();
             receiversReviewed.put(drivingNotification.getSender(), 0);
+            drivingNotification.setNotified(true);
+            drivingNotificationRepository.save(drivingNotification);
             webSocketService.sendSuccessfulCreateReservation(getListOfUsers(receiversReviewed));
         }
     }

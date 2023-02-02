@@ -49,9 +49,10 @@ public class ScheduleAllPassengersReviewCallForRide {
     private void allUsersAreReviewed(DrivingNotification drivingNotification) throws PassengerNotHaveTokensException, EntityNotFoundException {
         if (drivingNotificationService.checkTimeOfStartingReservationRide(drivingNotification.getStarted())){
             drivingNotificationService.createDrivingIfFoundDriverAndSuccessfullyPaid(drivingNotification);
-
         }else if (drivingNotificationService.checkTimeOfStartingReservationIsSoonRide(drivingNotification.getStarted())){
             drivingNotificationService.deleteOutdatedReservationWithoutDriverNotification(drivingNotification);
+        }else {
+            drivingNotificationService.shouldFindDriver(drivingNotification);
         }
     }
 }

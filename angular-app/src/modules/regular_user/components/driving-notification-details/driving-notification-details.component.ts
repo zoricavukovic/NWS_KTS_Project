@@ -101,18 +101,24 @@ export class DrivingNotificationDetailsComponent implements OnInit, OnDestroy {
     this.drivingNotificationService.updateRideStatus(this.id, true, this.currentUser.email).subscribe(res => {
       console.log(res);
       this.toastService.success("Successfully accepted ride");
-      const acceptedDriving: DrivingNotification = {
-        route: this.drivingNotification.route,
-        price: this.drivingNotification.price,
-        started: this.drivingNotification.started,
-        notificationId: this.id,
-        drivingStatus: "PAYING",
-        active: false,
-        chosenDateTime: this.drivingNotification.chosenDateTime,
-        reservation: this.drivingNotification.chosenDateTime !== null
+      console.log(this.drivingNotification);
+      console.log("cao");
+      if (!this.drivingNotification.reservation){
+
+        const acceptedDriving: DrivingNotification = {
+          route: this.drivingNotification.route,
+          price: this.drivingNotification.price,
+          started: this.drivingNotification.started,
+          notificationId: this.id,
+          drivingStatus: "PAYING",
+          active: false,
+          chosenDateTime: this.drivingNotification.chosenDateTime,
+          reservation: false
+        }
+        this.store.dispatch(new AddDrivingNotification(acceptedDriving));
       }
-      this.store.dispatch(new AddDrivingNotification(acceptedDriving));
-    }, err => this.toastService.error(err.error, "Accepting ride failed"));
+      }, err => this.toastService.error(err.error, "Accepting ride failed"));
+
   }
 
   rejectRide() {

@@ -10,4 +10,5 @@ export interface DrivingNotificationResponse {
   chosenDateTime: Date
   vehicleTypeInfo: VehicleTypeInfo;
   price: number;
+  reservation: boolean;
 }
