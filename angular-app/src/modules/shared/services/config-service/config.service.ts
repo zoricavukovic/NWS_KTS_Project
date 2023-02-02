@@ -335,4 +335,8 @@ export class ConfigService {
   setAllNotificationsAsSeen(userId: number): string {
     return `${this.NOTIFICATION_BELL_URL}/seen/${userId}`;
   }
+
+  isUserReviewedUrl(notificationId: number, userId: number) {
+    return `${this.DRIVING_NOTIFICATIONS_URL}/user-reviewed/${notificationId}/${userId}`;
+  }
 }

@@ -19,6 +19,7 @@ import { DrivingNotificationState } from 'src/modules/shared/state/driving-notif
 import { Select, Store } from '@ngxs/store';
 import { DrivingNotification } from 'src/modules/shared/models/notification/driving-notification';
 import { UpdateDrivingNotification } from '../../../shared/actions/driving-notification.action';
+import {createEmptyRoute, createEmptySearchForm} from "../../../shared/utils/form-helper";
 
 @Component({
   selector: 'app-home-passanger',
@@ -41,18 +42,6 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
     return this.rideRequestForm.get('searchingRoutesForm')['controls'];
   }
 
-  createEmptySearchForm(): FormGroup {
-    return this.formBuilder.group(new SearchingRoutesForm());
-  }
-
-  createEmptyRoute(): Route {
-    return {
-      locations: [],
-      distance: 0,
-      timeInMin: 0,
-      routePathIndex: [],
-    };
-  }
   selectedRoute: Route;
   routePathIndex: number[] = [];
   loadingViewVar = false;
@@ -152,10 +141,10 @@ export class HomePassangerComponent implements OnInit, OnDestroy {
   private createRideRequestForm() {
     this.rideRequestForm = new FormGroup({
       searchingRoutesForm: this.formBuilder.array([
-        this.createEmptySearchForm(),
-        this.createEmptySearchForm(),
+        createEmptySearchForm(this.formBuilder),
+        createEmptySearchForm(this.formBuilder),
       ]),
-      selectedRoute: new FormControl(this.createEmptyRoute()),
+      selectedRoute: new FormControl(createEmptyRoute()),
       routePathIndex: new FormControl([]),
       petFriendly: new FormControl(false),
       babySeat: new FormControl(false),

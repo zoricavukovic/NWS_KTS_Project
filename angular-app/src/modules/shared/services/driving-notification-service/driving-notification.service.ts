@@ -30,4 +30,9 @@ export class DrivingNotificationService extends GenericService<DrivingNotificati
 
     return this.http.get<DrivingNotificationResponse>(`${this.configService.DRIVING_NOTIFICATIONS_URL}/${id}`);
   }
+
+  isUserReviewed(notificationId: number, userId: number): Observable<boolean> {
+
+    return this.http.get<boolean>(this.configService.isUserReviewedUrl(notificationId, userId));
+  }
 }

@@ -189,6 +189,7 @@ public class DrivingService implements IDrivingService {
         driving.getDriver().getVehicle().setCurrentLocationIndex(-1);
         driving.getDriver().getVehicle().setActiveRoute(null);
         drivingRepository.save(driving);
+        rejectOnWayToDeparture(driving.getDriver().getId());
 
         DrivingStatusNotification drivingStatusNotification = drivingStatusNotificationService.create(
                 reason, DrivingStatus.REJECTED, driving);
@@ -201,11 +202,19 @@ public class DrivingService implements IDrivingService {
         return new DrivingDTO(driving);
     }
 
+    private void rejectOnWayToDeparture(final Long id) {
+        Driving driving = getTimeToDepartureDriving(id);
+        if (driving != null){
+            driving.setActive(false);
+            drivingRepository.save(driving);
+        }
+    }
+
     @Transactional
     public void rejectOutdatedDrivings(){
         List<Driving> drivings = getAcceptedNotActiveDrivings();
         for(Driving driving : drivings){
-            if(driving.getDriver() !=null && driving.getStarted().plusMinutes(1).isBefore(LocalDateTime.now())){
+            if(driving.getDriver() !=null && driving.getStarted().plusMinutes(FIVE_MINUTES).isBefore(LocalDateTime.now())){
                 driving.setDrivingStatus(DrivingStatus.REJECTED);
                 driving.setActive(false);
                 driving.getDriver().setDrive(false);
