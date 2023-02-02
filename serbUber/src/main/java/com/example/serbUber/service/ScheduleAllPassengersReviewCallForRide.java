@@ -40,7 +40,7 @@ public class ScheduleAllPassengersReviewCallForRide {
             if (drivingNotificationService.checkIfUsersReviewed(drivingNotification)){
               allUsersAreReviewed(drivingNotification);
             }
-            else if(drivingNotificationService.checkIfDrivingNotificationIsOutdated(drivingNotification)){
+            else if(drivingNotificationService.checkIfDrivingNotificationReservationIsOutdated(drivingNotification)){
                 drivingNotificationService.deleteOutdatedNotification(drivingNotification);
             }
         }
