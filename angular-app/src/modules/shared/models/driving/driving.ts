@@ -14,5 +14,5 @@ export class Driving {
   hasReviewForUser: boolean;
   pageSize?: number;
   pageNumber?: number;
-  isFavourite?: boolean;
+  favourite?: boolean;
 }

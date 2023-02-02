@@ -177,6 +177,10 @@ export class ConfigService {
     return `${this.DRIVINGS_URL}/time-for-driving/${drivingId}`;
   }
 
+  getDrivingForUserUrl(drivingId: number, userId: number): string {
+    return `${this.DRIVINGS_URL}/${drivingId}/${userId}`;
+  }
+
   ///////////////////DRIVING-NOTIFICATION///////////////////
 
   DRIVING_NOTIFICATIONS_URL = `${this.API_URL}/driving-notifications`;
@@ -323,5 +327,4 @@ export class ConfigService {
   setAllNotificationsAsSeen(userId: number): string {
     return `${this.NOTIFICATION_BELL_URL}/seen/${userId}`;
   }
-
 }

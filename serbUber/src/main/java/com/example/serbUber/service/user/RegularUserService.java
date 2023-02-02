@@ -159,12 +159,10 @@ public class RegularUserService implements IRegularUserService {
                     .findFirst()
                     .orElse(null);
 
-            if (favouriteRoute != null) {
-                updateFavouriteRoutes(userId, routeId);
-                return true;
-            }
+            return favouriteRoute != null;
         }
-        return u != null;
+
+        return true;
     }
 
     public List<RouteDTO> getFavouriteRoutes(final Long id) throws EntityNotFoundException {

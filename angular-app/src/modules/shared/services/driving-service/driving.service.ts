@@ -113,6 +113,16 @@ export class DrivingService extends GenericService<Driving> {
     );
   }
 
+  getDrivingForUser(id: number, userId: number) {
+    return this.http.get<Driving>(
+      this.configService.getDrivingForUserUrl(id, userId)
+    );
+  }
+
+  getDriving(id: number, userId: number, isRegularUser: boolean) {
+    return isRegularUser ? this.getDrivingForUser(id, userId) : this.get(id);
+  }
+
   createChartRequest(
     id: number,
     chartType: string,

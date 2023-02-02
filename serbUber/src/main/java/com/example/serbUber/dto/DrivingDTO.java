@@ -3,7 +3,6 @@ package com.example.serbUber.dto;
 import com.example.serbUber.model.Driving;
 import com.example.serbUber.model.DrivingStatus;
 import com.example.serbUber.model.Route;
-import com.example.serbUber.model.user.Driver;
 import com.example.serbUber.model.user.RegularUser;
 
 import java.time.LocalDateTime;
@@ -24,7 +23,7 @@ public class DrivingDTO {
     private double price;
     private boolean hasReviewForUser = false;
 
-    private boolean isFavourite = false;
+    private boolean favourite;
 
 
     public DrivingDTO() {}
@@ -45,6 +44,7 @@ public class DrivingDTO {
         this.users = setPictureForUsers(driving.getUsers());
         this.price = driving.getPrice();
         this.hasReviewForUser = false;
+        this.favourite = false;
     }
 
     public DrivingDTO(Driving driving, boolean isFavourite){
@@ -63,7 +63,7 @@ public class DrivingDTO {
         this.users = setPictureForUsers(driving.getUsers());
         this.price = driving.getPrice();
         this.hasReviewForUser = false;
-        this.isFavourite = isFavourite;
+        this.favourite = isFavourite;
     }
 
     private Set<RegularUser> setPictureForUsers(Set<RegularUser> users){
@@ -131,5 +131,13 @@ public class DrivingDTO {
 
     public void setUsers(Set<RegularUser> users) {
         this.users = users;
+    }
+
+    public boolean isFavourite() {
+        return favourite;
+    }
+
+    public void setFavourite(boolean favourite) {
+        this.favourite = favourite;
     }
 }

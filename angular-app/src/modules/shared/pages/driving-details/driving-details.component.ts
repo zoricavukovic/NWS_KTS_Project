@@ -107,6 +107,7 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
         this.filterVehicleView = false;
       }
     });
+
     if (this.route.snapshot.paramMap.get('id') !== '-1') {
       this.vehiclesCurrentPosition.forEach(vehicle =>
         hideMarker(vehicle.marker)
@@ -119,77 +120,73 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
     this.router.events.subscribe(() => {
       this.ngOnDestroy();
     });
+
     this.id = +this.route.snapshot.paramMap.get('id');
     this.destinations = [];
-    this.drivingsSubscription = this.drivingService
-      .get(this.id)
-      .subscribe((driving: Driving) => {
-        this.driving = driving;
-        if (this.storedDrivingNotification === null) {
-          this.store.dispatch(
-            new AddDrivingNotification({
-              drivingId: driving.id,
-              drivingStatus: driving.drivingStatus,
-              price: driving.price,
-              active: driving.active,
-              route: driving.route,
-              started: driving.started,
-              wrongRoute: false,
-            })
-          );
-        }
-        driving.route.routePathIndex = this.getRoutePathIndex(driving.route);
-        this.rideRequestForm.get('selectedRoute').setValue(driving.route);
+    this.currentUserSubscription = this.authService
+      .getSubjectCurrentUser()
+      .subscribe(user => {
+        this.loggedUser = user;
+        this.isRegularUser = this.authService.userIsRegular();
+        this.isDriver = this.authService.userIsDriver();
 
-        if (this.map) {
-          this.routeSubscription = this.routeService
-            .getRoutePath(driving?.route?.id)
-            .subscribe(path => {
-              this.routePolyline = drawPolylineWithLngLatArray(this.map, path);
-            });
-        }
-
-        this.driverSubscription = this.driverService
-          .get(driving?.driverId)
-          .subscribe((driver: Driver) => {
-            this.driver = driver;
-            const vehicle: CurrentVehiclePosition =
-              this.vehiclesCurrentPosition.find(v => {
-                return v.vehicleCurrentLocation.id === driver.vehicle.id;
-              });
-            this.indexOfVehicleForDriving =
-              this.vehiclesCurrentPosition.indexOf(vehicle);
-            this.markers = drawActiveRide(
-              this.map,
-              driving,
-              driver,
-              vehicle,
-              this.indexOfVehicleForDriving,
-              this.directionService,
-              this.store,
-              this.authService.userIsAdmin(),
-              this.storedDrivingNotification
+        console.log(this.isRegularUser);
+        this.drivingsSubscription = this.drivingService
+          .getDriving(this.id, this.loggedUser.id, this.isRegularUser)
+          .subscribe((driving: Driving) => {
+            this.driving = driving;
+            console.log(driving);
+            if (this.storedDrivingNotification === null) {
+              this.store.dispatch(
+                new AddDrivingNotification({
+                  drivingId: driving.id,
+                  drivingStatus: driving.drivingStatus,
+                  price: driving.price,
+                  active: driving.active,
+                  route: driving.route,
+                  started: driving.started,
+                  wrongRoute: false,
+                })
+              );
+            }
+            driving.route.routePathIndex = this.getRoutePathIndex(
+              driving.route
             );
-          });
+            this.rideRequestForm.get('selectedRoute').setValue(driving.route);
 
-        this.currentUserSubscription = this.authService
-          .getSubjectCurrentUser()
-          .subscribe(user => {
-            this.loggedUser = user;
-            this.isRegularUser = this.authService.userIsRegular();
-            this.isDriver = this.authService.userIsDriver();
+            if (this.map) {
+              this.routeSubscription = this.routeService
+                .getRoutePath(driving?.route?.id)
+                .subscribe(path => {
+                  this.routePolyline = drawPolylineWithLngLatArray(
+                    this.map,
+                    path
+                  );
+                });
+            }
 
-            // this.favouriteRouteSubscription = this.regularUserService
-            //   .isFavouriteRouteForUser(
-            //     this.driving.route.id,
-            //     this.loggedUser.id
-            //   )
-            //   .subscribe(response => {
-            //     console.log(response);
-            //     if (response) {
-            //       this.favouriteRoute = true;
-            //     }
-            //   });
+            this.driverSubscription = this.driverService
+              .get(driving?.driverId)
+              .subscribe((driver: Driver) => {
+                this.driver = driver;
+                const vehicle: CurrentVehiclePosition =
+                  this.vehiclesCurrentPosition.find(v => {
+                    return v.vehicleCurrentLocation.id === driver.vehicle.id;
+                  });
+                this.indexOfVehicleForDriving =
+                  this.vehiclesCurrentPosition.indexOf(vehicle);
+                this.markers = drawActiveRide(
+                  this.map,
+                  driving,
+                  driver,
+                  vehicle,
+                  this.indexOfVehicleForDriving,
+                  this.directionService,
+                  this.store,
+                  this.authService.userIsAdmin(),
+                  this.storedDrivingNotification
+                );
+              });
           });
       });
   }
@@ -228,8 +225,8 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
     return this.router.url.includes('driving');
   }
 
-  setFavouriteRoute(favourite: boolean) {
-    if (favourite) {
+  setFavouriteRoute() {
+    if (this.driving.favourite) {
       this.regularUserService
         .updateFavouriteRoutes(
           this.regularUserService.createFavouriteRequest(
@@ -238,7 +235,7 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
           )
         )
         .subscribe(res => {
-          this.favouriteRoute = false;
+          this.driving.favourite = false;
           console.log(res);
         });
     } else {
@@ -250,7 +247,7 @@ export class DrivingDetailsComponent implements OnInit, OnDestroy {
           )
         )
         .subscribe(res => {
-          this.favouriteRoute = true;
+          this.driving.favourite = true;
           console.log(res);
         });
     }

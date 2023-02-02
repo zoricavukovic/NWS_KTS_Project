@@ -43,6 +43,9 @@ public class Driver extends User {
     @Column(name="working_minutes")
     private int workingMinutes = Constants.START_WORKING_MINUTES;
 
+    @Column(name = "locked", columnDefinition = "boolean DEFAULT false", nullable = false)
+    private boolean locked;
+
     public Driver() {
         super();
     }
@@ -168,4 +171,12 @@ public class Driver extends User {
     }
 
     public void incementWorkingMinutes() {this.workingMinutes += 1;}
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
+    }
 }

@@ -3,12 +3,17 @@ package com.example.serbUber.selenium.tests;
 import com.example.serbUber.selenium.helper.LoginHelper;
 import com.example.serbUber.selenium.pages.*;
 import com.example.serbUber.selenium.tests.bases.TwoBrowserTestBase;
+import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,6 +106,15 @@ public class RideRequestTwoPassengersTest extends TwoBrowserTestBase {
 
         DrivingDetailsPage drivingDetailsPageLinkedPassenger = new DrivingDetailsPage(edgeDriver);
         drivingDetailsPageLinkedPassenger.isDrivingDetailsPage(DRIVING_DETAILS_TITLE);
+
+        TakesScreenshot ts = (TakesScreenshot)chromeDriver;
+        File file = ts.getScreenshotAs(OutputType.FILE);
+        try {
+            //save the screenshot taken in destination path
+            FileUtils.copyFile(file, new File("./selenium-screenshots/request-two-passenger/Test2.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
