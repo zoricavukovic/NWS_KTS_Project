@@ -138,6 +138,6 @@ public class RouteServiceTest {
         wireMockServer.stop();
 
         assertEquals(1, result.size());
-        assertEquals(result.get(0).getPossibleRouteDTOList().get(0).getAveragePrice(), 4.0);
+        assertEquals(4.0, result.get(0).getPossibleRouteDTOList().get(0).getAveragePrice());
     }
 }

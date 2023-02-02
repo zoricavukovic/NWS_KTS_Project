@@ -142,8 +142,6 @@ public class DrivingService implements IDrivingService {
 
 
     public DrivingDTO getDrivingDto(final Long id) throws EntityNotFoundException {
-//        Driving driving = getDriving(id);
-//        regularUserService.isFavouriteRoute(driving.getRoute().getId());
 
         return new DrivingDTO(getDriving(id));
     }
@@ -186,6 +184,8 @@ public class DrivingService implements IDrivingService {
     public DrivingDTO rejectDriving(final Long id, final String reason) throws EntityNotFoundException {
         Driving driving = getDriving(id);
         driving.setDrivingStatus(DrivingStatus.REJECTED);
+        driving.setActive(false);
+        driving.getDriver().setDrive(false);
         driving.getDriver().getVehicle().setCurrentLocationIndex(-1);
         driving.getDriver().getVehicle().setActiveRoute(null);
         drivingRepository.save(driving);
@@ -205,8 +205,12 @@ public class DrivingService implements IDrivingService {
     public void rejectOutdatedDrivings(){
         List<Driving> drivings = getAcceptedNotActiveDrivings();
         for(Driving driving : drivings){
-            if(driving.getStarted().plusMinutes(FIVE_MINUTES).isBefore(LocalDateTime.now())){
+            if(driving.getDriver() !=null && driving.getStarted().plusMinutes(1).isBefore(LocalDateTime.now())){
                 driving.setDrivingStatus(DrivingStatus.REJECTED);
+                driving.setActive(false);
+                driving.getDriver().setDrive(false);
+                driving.getDriver().getVehicle().setCurrentLocationIndex(-1);
+                driving.getDriver().getVehicle().setActiveRoute(null);
                 drivingRepository.save(driving);
                 webSocketService.sendRejectedOutdatedDriving(driving.getUsers(), driving.getDriver().getEmail(), driving.getId());
             }
@@ -313,7 +317,7 @@ public class DrivingService implements IDrivingService {
 
     public Driving driverHasFutureDriving(final Long id) {
 
-        List<Driving> drivings = drivingRepository.driverHasFutureDriving(id);
+        List<Driving> drivings = drivingRepository.driverHasFutureDriving(id, LocalDateTime.now().minusMinutes(1));
         return drivings.size() > 0 ?
             drivings.get(0) : null;
     }

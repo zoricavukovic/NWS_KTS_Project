@@ -115,6 +115,7 @@ export class DrivingNotificationState {
     { payload }: UpdateDrivingNotification
   ) {
     const state = getState();
+    console.log(payload);
     if (state.currentDrivingNotification) {
       state.currentDrivingNotification.drivingId = payload.drivingId;
       state.currentDrivingNotification.minutes = payload.minutes;
@@ -267,10 +268,13 @@ export class DrivingNotificationState {
     { payload }: RemoveDriving
   ) {
     const state = getState();
+    const drivingId = +payload;
+
     for (const driving of state.activeDrivings) {
-      if (driving.id === payload) {
+      if (+driving.id === +drivingId) {
         const indexOfDriving = state.activeDrivings.indexOf(driving);
-        state.activeDrivings.slice(indexOfDriving, 1);
+        state.activeDrivings.splice(indexOfDriving, 1);
+        break;
       }
     }
 

@@ -110,7 +110,8 @@ export class MapPageComponent implements OnInit, OnDestroy {
             this.map,
             vehicle,
             this.currentUser?.id,
-            this.storedDrivingNotification
+            this.storedDrivingNotification,
+            this.currentUser.role.name === "ROLE_REGULAR_USER"
           ),
         };
         this.vehiclesCurrentPosition.push(newVehicle);
@@ -166,7 +167,8 @@ export class MapPageComponent implements OnInit, OnDestroy {
                 vehicle.marker,
                 vehicleCurrentLocation,
                 this.currentUser?.id,
-                this.router.url.includes('-1')
+                this.router.url.includes('-1'),
+                this.currentUser.role.name === "ROLE_REGULAR_USER"
               );
               this.iterator = updateTime(
                 this.storedDrivingNotification,
@@ -189,7 +191,8 @@ export class MapPageComponent implements OnInit, OnDestroy {
                   this.map,
                   vehicleCurrentLocation,
                   this.currentUser?.id,
-                  this.storedDrivingNotification
+                  this.storedDrivingNotification,
+                  this.currentUser.role.name === "ROLE_REGULAR_USER"
                 ),
               };
 

@@ -17,5 +17,4 @@ public class SerbUberApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SerbUberApplication.class, args);
 	}
-
 }
