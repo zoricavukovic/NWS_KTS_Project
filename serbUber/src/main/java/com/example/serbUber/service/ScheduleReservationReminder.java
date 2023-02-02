@@ -35,8 +35,8 @@ public class ScheduleReservationReminder {
 
     private boolean isTimeToRemind(Driving reservation, long minutesToStartDriving){
 
-        return (minutesToStartDriving == 15 && reservation.getLastReminder() == null) ||
-                (reservation.getLastReminder() != null && getMinutesFromLastReminderToNow(reservation.getLastReminder()) == 5);
+        return !reservation.isActive() && ((minutesToStartDriving == 15 && reservation.getLastReminder() == null) ||
+                (reservation.getLastReminder() != null && getMinutesFromLastReminderToNow(reservation.getLastReminder()) == 5));
     }
 
     private long getMinutesFromLastReminderToNow(LocalDateTime lastReminder) {
