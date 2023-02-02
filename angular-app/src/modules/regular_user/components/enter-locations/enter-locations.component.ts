@@ -1,16 +1,30 @@
-import {Component, EventEmitter, Input, OnDestroy, Output} from '@angular/core';
-import {ControlContainer, FormArray, FormBuilder, FormGroup} from '@angular/forms';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  Output,
+} from '@angular/core';
+import {
+  ControlContainer,
+  FormArray,
+  FormBuilder,
+  FormGroup,
+} from '@angular/forms';
 import { User } from '../../../shared/models/user/user';
 import { Options } from 'ngx-google-places-autocomplete/objects/options/options';
 import {
-  addMarkerWithCustomIcon, addMarkerWithLonLat,
+  addMarkerWithCustomIcon,
+  addMarkerWithLonLat,
   calculateDistance,
-  calculateMinutes, createLocationFromAutocomplete,
-  drawPolylineOnMap, drawPolylineWithClickOption,
+  calculateMinutes,
+  createLocationFromAutocomplete,
+  drawPolylineOnMap,
+  drawPolylineWithClickOption,
   getRouteCoordinates,
   removeAllPolyline,
   removeLine,
-  removeMarkerAndAllPolyline
+  removeMarkerAndAllPolyline,
 } from '../../../shared/utils/map-functions';
 import { PossibleRoutesViaPoints } from '../../../shared/models/route/possible-routes-via-points';
 import { SearchingRoutesForm } from '../../../shared/models/route/searching-routes-form';
@@ -22,7 +36,7 @@ import { Subscription } from 'rxjs';
 import { PossibleRoute } from '../../../shared/models/route/possible-routes';
 import { Route } from '../../../shared/models/route/route';
 import { DrivingLocation } from '../../../shared/models/route/driving-location';
-import {swapColorsOfRoutes} from "../../../shared/utils/color-change";
+import { swapColorsOfRoutes } from '../../../shared/utils/color-change';
 
 @Component({
   selector: 'app-enter-locations',
@@ -33,8 +47,12 @@ export class EnterLocationsComponent implements OnDestroy {
   @Input() currentUser: User;
   @Input() map: google.maps.Map;
 
-  @Output() clickedChooseVehicleAndPassengers = new EventEmitter<google.maps.Polyline[]>();
-  @Output() clickedChooseVehicleAndPassengersForLater = new EventEmitter<google.maps.Polyline[]>();
+  @Output() clickedChooseVehicleAndPassengers = new EventEmitter<
+    google.maps.Polyline[]
+  >();
+  @Output() clickedChooseVehicleAndPassengersForLater = new EventEmitter<
+    google.maps.Polyline[]
+  >();
 
   rideRequestForm: FormGroup;
   maxNumberOfLocations = 5;
@@ -73,17 +91,35 @@ export class EnterLocationsComponent implements OnDestroy {
   }
 
   deleteOneLocation(index: number) {
-    this.drawPolylineList = removeMarkerAndAllPolyline(this.drawPolylineList, this.searchingForm.at(index));
+    this.drawPolylineList = removeMarkerAndAllPolyline(
+      this.drawPolylineList,
+      this.searchingForm.at(index)
+    );
     this.drawPolylineList = removeAllPolyline(this.drawPolylineList);
-    (this.rideRequestForm.get('searchingRoutesForm') as FormArray).removeAt(index);
+    (this.rideRequestForm.get('searchingRoutesForm') as FormArray).removeAt(
+      index
+    );
+
     if (this.checkIfDeletedLocationIsDestination(index)) {
-      this.drawPolylineList = removeMarkerAndAllPolyline(this.drawPolylineList, this.searchingForm.at(index-1));
+      if (index === 0) {
+        index = 0;
+      } else {
+        index = index - 1;
+      }
+      this.drawPolylineList = removeMarkerAndAllPolyline(
+        this.drawPolylineList,
+        this.searchingForm.at(index)
+      );
+
       this.searchingForm.at(index).marker = addMarkerWithLonLat(
-        this.searchingForm.at(index - 1).location?.lat,
-        this.searchingForm.at(index - 1).location?.lon,
-        this.map, index-1, this.searchingForm
+        this.searchingForm.at(index).value.location?.lat,
+        this.searchingForm.at(index).value.location?.lon,
+        this.map,
+        index,
+        this.searchingForm
       );
     }
+
     this.possibleRoutesViaPoints = [];
   }
 
@@ -110,7 +146,9 @@ export class EnterLocationsComponent implements OnDestroy {
     indexOfRouteInPossibleRoutes: number
   ): void {
     if (this.rideRequestForm.get('routePathIndex')?.value) {
-      (this.rideRequestForm.get('routePathIndex').value)[indexOfRouteInPossibleRoutes] = indexOfSelectedPath;
+      this.rideRequestForm.get('routePathIndex').value[
+        indexOfRouteInPossibleRoutes
+      ] = indexOfSelectedPath;
     }
 
     if (this.hasOneDestination()) {
@@ -138,15 +176,28 @@ export class EnterLocationsComponent implements OnDestroy {
   }
 
   public addressChange(address: Address, index: number) {
-    this.drawPolylineList = removeMarkerAndAllPolyline(this.drawPolylineList, this.searchingForm.at(index));
+    this.drawPolylineList = removeMarkerAndAllPolyline(
+      this.drawPolylineList,
+      this.searchingForm.at(index)
+    );
     this.possibleRoutesViaPoints = [];
     if (address.formatted_address) {
       this.searchingForm.at(index).inputPlace = address.formatted_address;
       const lng: number = address.geometry.location.lng();
       const lat: number = address.geometry.location.lat();
 
-      const marker: google.maps.Marker = addMarkerWithCustomIcon(lat, lng, index, this.map, this.searchingForm);
-      const location = createLocationFromAutocomplete(address, index, this.rideRequestForm);
+      const marker: google.maps.Marker = addMarkerWithCustomIcon(
+        lat,
+        lng,
+        index,
+        this.map,
+        this.searchingForm
+      );
+      const location = createLocationFromAutocomplete(
+        address,
+        index,
+        this.rideRequestForm
+      );
       this.searchingForm.at(index).setValue({
         inputPlace: address.formatted_address,
         marker: marker,
@@ -154,7 +205,8 @@ export class EnterLocationsComponent implements OnDestroy {
       });
     } else {
       this.toast.error('Please, choose suggested locations.', 'Invalid form');
-      this.rideRequestForm.get('searchingRoutesForm').value.at(index).location = null;
+      this.rideRequestForm.get('searchingRoutesForm').value.at(index).location =
+        null;
     }
   }
 
@@ -261,8 +313,8 @@ export class EnterLocationsComponent implements OnDestroy {
       const indexOfSelectedPath = this.possibleRoutesViaPoints
         .at(0)
         .possibleRouteDTOList.indexOf(minTimePath);
-      if (this.rideRequestForm.get('routePathIndex')?.value){
-        (this.rideRequestForm.get('routePathIndex').value)[0] =
+      if (this.rideRequestForm.get('routePathIndex')?.value) {
+        this.rideRequestForm.get('routePathIndex').value[0] =
           indexOfSelectedPath;
       }
       swapColorsOfRoutes(indexOfSelectedPath, this.drawPolylineList);
@@ -274,8 +326,9 @@ export class EnterLocationsComponent implements OnDestroy {
         );
         const indexOfSelectedPath =
           route.possibleRouteDTOList.indexOf(minTimePath);
-        this.searchingForm[this.possibleRoutesViaPoints.indexOf(route)] =
-          indexOfSelectedPath;
+        this.rideRequestForm.get('routePathIndex').value[
+          this.possibleRoutesViaPoints.indexOf(route)
+        ] = indexOfSelectedPath;
         const routeCoordinates = getRouteCoordinates(
           route.possibleRouteDTOList.at(indexOfSelectedPath)
         );
@@ -296,8 +349,9 @@ export class EnterLocationsComponent implements OnDestroy {
       const indexOfSelectedPath = this.possibleRoutesViaPoints
         .at(0)
         .possibleRouteDTOList.indexOf(minTimePath);
-      if (this.rideRequestForm.get('routePathIndex')?.value){
-        (this.rideRequestForm.get('routePathIndex').value)[0] = indexOfSelectedPath;
+      if (this.rideRequestForm.get('routePathIndex')?.value) {
+        this.rideRequestForm.get('routePathIndex').value[0] =
+          indexOfSelectedPath;
       }
       swapColorsOfRoutes(indexOfSelectedPath, this.drawPolylineList);
     } else {
@@ -306,9 +360,12 @@ export class EnterLocationsComponent implements OnDestroy {
         const minDistancePath = route.possibleRouteDTOList.reduce((a, b) =>
           a.distance < b.distance ? a : b
         );
-        const indexOfSelectedPath = route.possibleRouteDTOList.indexOf(minDistancePath);
+        const indexOfSelectedPath =
+          route.possibleRouteDTOList.indexOf(minDistancePath);
         if (this.rideRequestForm.get('routePathIndex')?.value) {
-          (this.rideRequestForm.get('routePathIndex').value)[this.possibleRoutesViaPoints.indexOf(route)] = indexOfSelectedPath;
+          this.rideRequestForm.get('routePathIndex').value[
+            this.possibleRoutesViaPoints.indexOf(route)
+          ] = indexOfSelectedPath;
         }
         const routeCoordinates = getRouteCoordinates(
           route.possibleRouteDTOList.at(indexOfSelectedPath)
@@ -331,8 +388,12 @@ export class EnterLocationsComponent implements OnDestroy {
         const routeCoordinates = getRouteCoordinates(oneRoute);
         drawPolylineWithClickOption(
           routes.at(0).possibleRouteDTOList.indexOf(oneRoute),
-          0,  routeCoordinates, this.drawPolylineList, this.map, this.rideRequestForm
-        )
+          0,
+          routeCoordinates,
+          this.drawPolylineList,
+          this.map,
+          this.rideRequestForm
+        );
       });
     } else {
       routes.forEach(route => {
@@ -365,6 +426,6 @@ export class EnterLocationsComponent implements OnDestroy {
   }
 
   private checkIfDeletedLocationIsDestination(index: number) {
-    return this.searchingForm.length === index;
+    return this.searchingForm.length === index || index === 0;
   }
 }

@@ -118,7 +118,7 @@
       <h2 style="margin-left: 0.7rem">
         <strong>
           {{ getFromToLabel(i) }}
-          <mat-icon>arrow_right_alt</mat-icon>
+          <mat-icon style="vertical-align: middle">arrow_right_alt</mat-icon>
           {{ getFromToLabel(i + 1) }}
         </strong>
       </h2>
@@ -141,7 +141,8 @@
                       possibleRoute.possibleRouteDTOList.indexOf(route),
                       i
                     )
-                  "></route-row>
+                  "
+                  style="cursor: pointer"></route-row>
               </div>
             </div>
           </div>

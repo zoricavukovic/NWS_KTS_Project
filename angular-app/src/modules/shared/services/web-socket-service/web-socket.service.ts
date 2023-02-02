@@ -26,6 +26,7 @@ import {
   RemoveDriving,
   SimpleUpdateDrivingNotification,
   UpdateDurationDrivingNotification,
+  UpdateDrivingNotification,
 } from '../../actions/driving-notification.action';
 import { Store } from '@ngxs/store';
 import { SimpleDrivingInfo } from '../../models/driving/simple-driving-info';
@@ -229,15 +230,7 @@ export class WebSocketService {
           message.body
         );
         this.store.dispatch(
-          new UpdateStatusDrivingNotification({
-            active: true,
-            drivingStatus: 'ACCEPTED',
-          })
-        );
-        this.store.dispatch(
-          new UpdateIdDrivingNotification({
-            drivingId: drivingNotificationDetails.drivingId,
-          })
+          new UpdateDrivingNotification(drivingNotificationDetails)
         );
         this.toast
           .info('Ride started.Tap to follow ride!')

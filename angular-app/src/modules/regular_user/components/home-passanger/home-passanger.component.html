@@ -3,7 +3,8 @@
   *ngIf="
     !storedDrivingNotification?.active &&
     (!storedDrivingNotification ||
-      storedDrivingNotification.drivingStatus === 'FINISHED') &&
+      storedDrivingNotification.drivingStatus === 'FINISHED' ||
+      storedDrivingNotification.drivingStatus === 'REJECTED') &&
     !storedDrivingNotification?.justFinished
   ">
   <app-enter-locations

@@ -16,10 +16,14 @@ import { Driver } from '../models/user/driver';
 import { UpdateOnlyMinutesStatus } from '../actions/driving-notification.action';
 import { Store } from '@ngxs/store';
 import { DrivingNotification } from '../models/notification/driving-notification';
-import {FormGroup} from "@angular/forms";
-import {Address} from "ngx-google-places-autocomplete/objects/address";
+import { FormGroup } from '@angular/forms';
+import { Address } from 'ngx-google-places-autocomplete/objects/address';
 
-export function createLocationFromAutocomplete(address: Address, index: number, rideRequestForm: FormGroup): Location {
+export function createLocationFromAutocomplete(
+  address: Address,
+  index: number,
+  rideRequestForm: FormGroup
+): Location {
   let houseNumber = '';
   let city = '';
   let street = '';
@@ -52,7 +56,8 @@ export function createLocationFromAutocomplete(address: Address, index: number, 
     number: houseNumber,
     zipCode: zipCode,
   };
-  rideRequestForm.get('searchingRoutesForm').value.at(index).location = location;
+  rideRequestForm.get('searchingRoutesForm').value.at(index).location =
+    location;
 
   return location;
 }
@@ -76,8 +81,13 @@ export function addMarker(
   });
 }
 
-export function addMarkerWithCustomIcon(lat: number, lng: number, index: number, map: google.maps.Map, searchingForm)
-:google.maps.Marker {
+export function addMarkerWithCustomIcon(
+  lat: number,
+  lng: number,
+  index: number,
+  map: google.maps.Map,
+  searchingForm
+): google.maps.Marker {
   const marker: google.maps.Marker = addMarker(map, {
     lat: lat,
     lng: lng,
@@ -87,7 +97,17 @@ export function addMarkerWithCustomIcon(lat: number, lng: number, index: number,
   return marker;
 }
 
-export function addMarkerWithLonLat(lat: number, lon: number, map: google.maps.Map, index: number, listToCheckIndex): google.maps.Marker {
+export function addMarkerWithLonLat(
+  lat: number,
+  lon: number,
+  map: google.maps.Map,
+  index: number,
+  listToCheckIndex
+): google.maps.Marker {
+  console.log(lat);
+  console.log(lon);
+  console.log(index);
+  console.log(listToCheckIndex);
   const markerCoordinates: google.maps.LatLngLiteral = { lat: lat, lng: lon };
   const marker: google.maps.Marker = addMarker(map, markerCoordinates);
   marker.setIcon(getIconUrl(index, listToCheckIndex));
@@ -235,14 +255,16 @@ export function visibleMarker(marker: google.maps.Marker) {
   marker.setVisible(true);
 }
 
-export function removeMarkerAndAllPolyline(drawPolylineList: google.maps.Polyline[], formField): google.maps.Polyline[] {
+export function removeMarkerAndAllPolyline(
+  drawPolylineList: google.maps.Polyline[],
+  formField
+): google.maps.Polyline[] {
   if (formField.value?.marker) {
     removeMarker(formField.value.marker);
     return removeAllPolyline(drawPolylineList);
   }
   return drawPolylineList;
 }
-
 
 export function hideAllMarkers(markers: SearchingRoutesForm[]): void {
   for (let i; i < markers.length; i++) {
@@ -260,7 +282,9 @@ export function polylineFound(polyline: google.maps.Polyline[]): boolean {
   return polyline !== null && polyline !== undefined;
 }
 
-export function removeAllPolyline(polyline: google.maps.Polyline[]): google.maps.Polyline[] {
+export function removeAllPolyline(
+  polyline: google.maps.Polyline[]
+): google.maps.Polyline[] {
   if (polylineFound(polyline)) {
     polyline.forEach(polyline => removeLine(polyline));
   }
@@ -315,12 +339,18 @@ export function drawPolylineWithClickOption(
 ): void {
   const color: string = indexOfSelectedPath === 0 ? '#283b50' : '#cdd1d3';
   const weight: number = indexOfSelectedPath === 0 ? 9 : 7;
-  const polyline: google.maps.Polyline = drawPolylineOnMap(map, latLongs, color, weight);
+  const polyline: google.maps.Polyline = drawPolylineOnMap(
+    map,
+    latLongs,
+    color,
+    weight
+  );
   polyline.setOptions({ clickable: true });
   drawPolylineList[indexOfSelectedPath] = polyline;
 
   google.maps.event.addListener(polyline, 'click', function () {
-    (rideRequestForm.get('routePathIndex').value)[indexOfRouteInPossibleRoutes] = indexOfSelectedPath;
+    rideRequestForm.get('routePathIndex').value[indexOfRouteInPossibleRoutes] =
+      indexOfSelectedPath;
     drawPolylineList.forEach(p => {
       p.setOptions({
         strokeColor: '#cdd1d3',

@@ -170,7 +170,7 @@ public class RouteService implements IRouteService {
         return location;
     }
 
-    public double getTimeFromDistance(final double distance) {
+    private double getTimeFromDistance(final double distance) {
 
         return distance == ZERO_DISTANCE ? ZERO_MINUTES :  Math.ceil((distance/AVERAGE_CAR_SPEED_IN_M_H)*MINUTES_FOR_ONE_HOUR + 0.5);
     }
@@ -259,7 +259,7 @@ public class RouteService implements IRouteService {
             fromSteps(locations, steps);
             double distance = getDistance(Arrays.stream(leg.split("distance=")).toList());
             double minutes = getTimeFromDistance(distance);
-            double averagePrice = vehicleTypeInfoService.getAveragePriceForChosenRoute(distance/ONE_KILOMETER_TO_METER);
+            double averagePrice = vehicleTypeInfoService.getAveragePriceForChosenRoute(distance);
             possibleRouteDTOs.add(new PossibleRouteDTO(distance, locations, minutes, averagePrice));
         }
     }
