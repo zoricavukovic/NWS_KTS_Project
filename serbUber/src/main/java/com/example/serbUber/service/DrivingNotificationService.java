@@ -142,6 +142,9 @@ public class DrivingNotificationService implements IDrivingNotificationService {
 
         Route route = routeService.createRoute(routeRequest.getLocations(), routeRequest.getTimeInMin(), routeRequest.getDistance(), routeRequest.getRoutePathIndex());
         LocalDateTime startedDateTime = getStartedDate(chosenDateTime, isReservation);
+        if(isReservation){
+
+        }
 
         return createDrivingNotification(
                 route, price, receiversReviewed, sender, startedDateTime,
@@ -168,6 +171,11 @@ public class DrivingNotificationService implements IDrivingNotificationService {
     public boolean checkIfDrivingNotificationIsOutdated(final DrivingNotification drivingNotification) {
 
         return drivingNotification.getStarted().plusMinutes(TEN_MINUTES).isBefore(LocalDateTime.now());
+    }
+
+    public boolean checkIfDrivingNotificationReservationIsOutdated(final DrivingNotification drivingNotification) {
+
+        return drivingNotification.getCreatedReservation().plusMinutes(TEN_MINUTES).isBefore(LocalDateTime.now());
     }
 
     public boolean checkIfUsersReviewed(final DrivingNotification drivingNotification) {
@@ -483,9 +491,12 @@ public class DrivingNotificationService implements IDrivingNotificationService {
         final boolean isReservation
     ){
 
-        return drivingNotificationRepository.save(
-            new DrivingNotification(route, price, sender, started, duration, babySeat, petFriendly,
-                vehicleTypeInfo, receiversReviewed, isReservation)
-        );
+        DrivingNotification drivingNotification =  new DrivingNotification(route, price, sender, started, duration, babySeat, petFriendly,
+                vehicleTypeInfo, receiversReviewed, isReservation);
+        if(isReservation){
+            drivingNotification.setCreatedReservation(LocalDateTime.now());
+        }
+
+        return drivingNotificationRepository.save(drivingNotification);
     }
 }

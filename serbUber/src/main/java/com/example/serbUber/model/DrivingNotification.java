@@ -53,6 +53,9 @@ public class DrivingNotification {
     @Column(name="notified")
     private boolean notified = false;
 
+    @Column(name="created_reservation")
+    private LocalDateTime createdReservation;
+
     public DrivingNotification(
             final Route route,
             final double price,
@@ -180,6 +183,14 @@ public class DrivingNotification {
 
     public void setNotified(boolean notified) {
         this.notified = notified;
+    }
+
+    public LocalDateTime getCreatedReservation() {
+        return createdReservation;
+    }
+
+    public void setCreatedReservation(LocalDateTime createdReservation) {
+        this.createdReservation = createdReservation;
     }
 }
 

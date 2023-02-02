@@ -10,21 +10,21 @@ import {
   drawAllMarkers,
   drawPolylineWithLngLatArray,
   removeAllMarkersFromList,
-  removeLine
+  removeLine,
 } from 'src/modules/shared/utils/map-functions';
-import {AuthService} from "../../../auth/services/auth-service/auth.service";
-import {ToastrService} from "ngx-toastr";
-import {Vehicle} from "../../../shared/models/vehicle/vehicle";
+import { AuthService } from '../../../auth/services/auth-service/auth.service';
+import { ToastrService } from 'ngx-toastr';
+import { Vehicle } from '../../../shared/models/vehicle/vehicle';
 import { AddDrivingNotification } from 'src/modules/shared/actions/driving-notification.action';
 import { Store } from '@ngxs/store';
-import {CurrentVehiclePosition} from "../../../shared/models/vehicle/current-vehicle-position";
-import {DrivingNotificationResponse} from "../../../shared/models/notification/driving-notification-response";
-import {DrivingNotification} from "../../../shared/models/notification/driving-notification";
+import { CurrentVehiclePosition } from '../../../shared/models/vehicle/current-vehicle-position';
+import { DrivingNotificationResponse } from '../../../shared/models/notification/driving-notification-response';
+import { DrivingNotification } from '../../../shared/models/notification/driving-notification';
 
 @Component({
   selector: 'app-driving-notification-details',
   templateUrl: './driving-notification-details.component.html',
-  styleUrls: ['./driving-notification-details.component.css']
+  styleUrls: ['./driving-notification-details.component.css'],
 })
 export class DrivingNotificationDetailsComponent implements OnInit, OnDestroy {
   @Input() map: google.maps.Map;
@@ -55,12 +55,12 @@ export class DrivingNotificationDetailsComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private toastService: ToastrService,
     private store: Store
-    ) {
-      this.passengers = [];
-      this.answered = false;
-      this.vehicle = {
-        vehicleTypeInfo: null
-      }
+  ) {
+    this.passengers = [];
+    this.answered = false;
+    this.vehicle = {
+      vehicleTypeInfo: null,
+    };
   }
 
   ngOnInit(): void {
@@ -69,89 +69,106 @@ export class DrivingNotificationDetailsComponent implements OnInit, OnDestroy {
       .getSubjectCurrentUser()
       .subscribe(user => {
         this.currentUser = user;
-        this.drivingNotificationReviewedSubscription = this.drivingNotificationService.isUserReviewed(this.id, user.id)
-          .subscribe(res => this.answered = res);
+        this.drivingNotificationReviewedSubscription =
+          this.drivingNotificationService
+            .isUserReviewed(this.id, user.id)
+            .subscribe(res => (this.answered = res));
       });
 
-    this.drivingNotificationSubscription = this.drivingNotificationService.getDrivingNotificationResponse(this.id).subscribe(
-      (response) => {
-
-        this.drivingNotification = response;
-        this.vehicle = {
-          vehicleTypeInfo: response.vehicleTypeInfo
+    this.drivingNotificationSubscription = this.drivingNotificationService
+      .getDrivingNotificationResponse(this.id)
+      .subscribe(
+        response => {
+          this.drivingNotification = response;
+          this.vehicle = {
+            vehicleTypeInfo: response.vehicleTypeInfo,
+          };
+          this.passengers = response.passengers;
+          if (this.map) {
+            this.routeSubscription = this.routeService
+              .getRoutePath(this.drivingNotification?.route?.id)
+              .subscribe(path => {
+                this.routePolyline = drawPolylineWithLngLatArray(
+                  this.map,
+                  path
+                );
+                this.markers = drawAllMarkers(
+                  this.drivingNotification?.route?.locations,
+                  this.map
+                );
+              });
+          }
+        },
+        error => {
+          console.log(error);
+          this.drivingNotification = null;
         }
-        this.passengers = response.passengers;
-        if (this.map){
-          this.routeSubscription = this.routeService.getRoutePath(this.drivingNotification?.route?.id).subscribe(path => {
-              this.routePolyline = drawPolylineWithLngLatArray(this.map, path);
-              this.markers = drawAllMarkers(this.drivingNotification?.route?.locations, this.map);
-            }
-          )
-        }
-      },
-      error=>{
-        console.log(error);
-        this.drivingNotification = null;
-      }
-    )
+      );
   }
 
   acceptRide() {
     this.answered = true;
-    this.drivingNotificationService.updateRideStatus(this.id, true, this.currentUser.email).subscribe(res => {
-      console.log(res);
-      this.toastService.success("Successfully accepted ride");
-      console.log(this.drivingNotification);
-      console.log("cao");
-      if (!this.drivingNotification.reservation){
-
-        const acceptedDriving: DrivingNotification = {
-          route: this.drivingNotification.route,
-          price: this.drivingNotification.price,
-          started: this.drivingNotification.started,
-          notificationId: this.id,
-          drivingStatus: "PAYING",
-          active: false,
-          chosenDateTime: this.drivingNotification.chosenDateTime,
-          reservation: false
-        }
-        this.store.dispatch(new AddDrivingNotification(acceptedDriving));
-      }
-      }, err => this.toastService.error(err.error, "Accepting ride failed"));
-
+    this.drivingNotificationService
+      .updateRideStatus(this.id, true, this.currentUser.email)
+      .subscribe(
+        res => {
+          console.log(res);
+          this.toastService.success('Successfully accepted ride');
+          console.log(this.drivingNotification);
+          console.log('cao');
+          const acceptedDriving: DrivingNotification = {
+            route: this.drivingNotification.route,
+            price: this.drivingNotification.price,
+            started: this.drivingNotification.started,
+            notificationId: this.id,
+            drivingStatus: 'PAYING',
+            active: false,
+            chosenDateTime: this.drivingNotification.chosenDateTime,
+            reservation: false,
+          };
+          this.store.dispatch(new AddDrivingNotification(acceptedDriving));
+    
+        },
+        err => this.toastService.error(err.error, 'Accepting ride failed')
+      );
   }
 
   rejectRide() {
     this.answered = true;
-    this.drivingNotificationService.updateRideStatus(this.id, false, this.currentUser.email).subscribe(res => {
-      console.log(res);
-      this.toastService.success("Successfully rejected ride");
-    }, err => this.toastService.error(err.error, "Rejecting ride failed"));
+    this.drivingNotificationService
+      .updateRideStatus(this.id, false, this.currentUser.email)
+      .subscribe(
+        res => {
+          console.log(res);
+          this.toastService.success('Successfully rejected ride');
+        },
+        err => this.toastService.error(err.error, 'Rejecting ride failed')
+      );
   }
 
   ngOnDestroy(): void {
-    if (this.routePolyline){
+    if (this.routePolyline) {
       removeLine(this.routePolyline);
       removeAllMarkersFromList(this.markers);
     }
 
-    if(this.drivingNotificationSubscription){
+    if (this.drivingNotificationSubscription) {
       this.drivingNotificationSubscription.unsubscribe();
     }
 
-    if (this.drivingNotificationReviewedSubscription){
+    if (this.drivingNotificationReviewedSubscription) {
       this.drivingNotificationReviewedSubscription.unsubscribe();
     }
 
-    if(this.routeSubscription){
+    if (this.routeSubscription) {
       this.routeSubscription.unsubscribe();
     }
 
-    if(this.userSubscription){
+    if (this.userSubscription) {
       this.userSubscription.unsubscribe();
     }
 
-    if(this.authSubscription){
+    if (this.authSubscription) {
       this.authSubscription.unsubscribe();
     }
   }
