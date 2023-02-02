@@ -15,7 +15,8 @@ import {
   RemoveDriving,
   SimpleUpdateDrivingNotification,
   UpdateDurationDrivingNotification,
-  UpdateIfDriverChooseWrongRoute, ClearStoreWhenPayingIsNotSuccessful,
+  UpdateIfReported,
+  ClearStoreWhenPayingIsNotSuccessful,
 } from '../actions/driving-notification.action';
 import { Observable } from 'rxjs';
 import { Driving } from '../models/driving/driving';
@@ -47,7 +48,7 @@ export class DrivingNotificationState {
   ) {
     const state = getState();
     state.currentDrivingNotification = payload;
-    state.currentDrivingNotification.wrongRoute = false;
+    state.currentDrivingNotification.reported = false;
     setState({
       ...state,
       currentDrivingNotification: payload,
@@ -197,9 +198,9 @@ export class DrivingNotificationState {
     setState,
   }: StateContext<DrivingNotificationStateModel>) {
     const state = getState();
-    console.log("CAO");
+    console.log('CAO');
     console.log(state);
-    if (state.currentDrivingNotification.drivingStatus === "PAYING") {
+    if (state.currentDrivingNotification.drivingStatus === 'PAYING') {
       setState({
         ...state,
         currentDrivingNotification: null,
@@ -233,13 +234,13 @@ export class DrivingNotificationState {
     });
   }
 
-  @Action(UpdateIfDriverChooseWrongRoute)
-  updateIfDriverChooseWrongRoute(
+  @Action(UpdateIfReported)
+  updateIfReported(
     { getState, setState }: StateContext<DrivingNotificationStateModel>,
-    { payload }: UpdateIfDriverChooseWrongRoute
+    { payload }: UpdateIfReported
   ) {
     const state = getState();
-    state.currentDrivingNotification.wrongRoute = payload;
+    state.currentDrivingNotification.reported = payload;
     setState({
       ...state,
       currentDrivingNotification: state.currentDrivingNotification,

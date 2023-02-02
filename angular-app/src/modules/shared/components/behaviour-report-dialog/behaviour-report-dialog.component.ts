@@ -1,30 +1,31 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Store } from '@ngxs/store';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 import { ReportService } from 'src/modules/admin/services/report-service/report.service';
+import { UpdateIfReported } from '../../actions/driving-notification.action';
 import { BehaviourReportDialogData } from '../../models/report/report';
 
 @Component({
   selector: 'app-behaviour-report-dialog',
   templateUrl: './behaviour-report-dialog.component.html',
-  styleUrls: ['./behaviour-report-dialog.component.css']
+  styleUrls: ['./behaviour-report-dialog.component.css'],
 })
 export class BehaviourReportDialogComponent implements OnDestroy {
-
   reason: string;
   reportSubscription: Subscription;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: BehaviourReportDialogData,
     private reportService: ReportService,
-    private toast: ToastrService
+    private toast: ToastrService,
+    private store: Store
   ) {
     this.reason = '';
   }
 
   checkEnteredReason() {
-
     return this.reason.length > 5;
   }
 
@@ -40,16 +41,21 @@ export class BehaviourReportDialogComponent implements OnDestroy {
       receiverId = this.data.driver.id;
     }
 
-    this.reportSubscription = this.reportService.createReport(senderId, receiverId, this.reason).subscribe(
-      res => {
-        this.toast.success("Thank you for your feedback.", 'Your report is created!');
-        console.log(res);
-      },
-      error => {
-        this.toast.error(error.error, 'Report creation failed!')
-      }
-    );
-
+    this.reportSubscription = this.reportService
+      .createReport(senderId, receiverId, this.reason)
+      .subscribe(
+        res => {
+          this.toast.success(
+            'Thank you for your feedback.',
+            'Your report is created!'
+          );
+          console.log(res);
+          this.store.dispatch(new UpdateIfReported(true));
+        },
+        error => {
+          this.toast.error(error.error, 'Report creation failed!');
+        }
+      );
   }
 
   ngOnDestroy(): void {
@@ -57,5 +63,4 @@ export class BehaviourReportDialogComponent implements OnDestroy {
       this.reportSubscription.unsubscribe();
     }
   }
-
 }
