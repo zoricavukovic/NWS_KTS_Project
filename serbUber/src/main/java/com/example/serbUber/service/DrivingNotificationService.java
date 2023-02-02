@@ -102,16 +102,16 @@ public class DrivingNotificationService implements IDrivingNotificationService {
     }
 
     public DrivingNotificationDTO createDrivingRequest (
-            final RouteRequest routeRequest,
-            final String senderEmail,
-            final double price,
-            final List<String> passengers,
-            final double duration,
-            final boolean babySeat,
-            final boolean petFriendly,
-            final String vehicleType,
-            final LocalDateTime chosenDateTime,
-            final boolean isReservation
+        final RouteRequest routeRequest,
+        final String senderEmail,
+        final double price,
+        final List<String> passengers,
+        final double duration,
+        final boolean babySeat,
+        final boolean petFriendly,
+        final String vehicleType,
+        final LocalDateTime chosenDateTime,
+        final boolean isReservation
     ) throws EntityNotFoundException, ExcessiveNumOfPassengersException, PassengerNotHaveTokensException, InvalidChosenTimeForReservationException, NotFoundException {
         DrivingNotification notification = getCreatedDrivingNotification(
                 routeRequest, senderEmail, price, passengers, duration,
@@ -142,6 +142,9 @@ public class DrivingNotificationService implements IDrivingNotificationService {
 
         Route route = routeService.createRoute(routeRequest.getLocations(), routeRequest.getTimeInMin(), routeRequest.getDistance(), routeRequest.getRoutePathIndex());
         LocalDateTime startedDateTime = getStartedDate(chosenDateTime, isReservation);
+        if(isReservation){
+
+        }
 
         return createDrivingNotification(
                 route, price, receiversReviewed, sender, startedDateTime,
@@ -168,6 +171,11 @@ public class DrivingNotificationService implements IDrivingNotificationService {
     public boolean checkIfDrivingNotificationIsOutdated(final DrivingNotification drivingNotification) {
 
         return drivingNotification.getStarted().plusMinutes(TEN_MINUTES).isBefore(LocalDateTime.now());
+    }
+
+    public boolean checkIfDrivingNotificationReservationIsOutdated(final DrivingNotification drivingNotification) {
+
+        return drivingNotification.getCreatedReservation().plusMinutes(TEN_MINUTES).isBefore(LocalDateTime.now());
     }
 
     public boolean checkIfUsersReviewed(final DrivingNotification drivingNotification) {
@@ -201,9 +209,11 @@ public class DrivingNotificationService implements IDrivingNotificationService {
             createDrivingIfFoundDriverAndSuccessfullyPaid(drivingNotification);
             delete(drivingNotification);
         }
-        else {
+        else if (!drivingNotification.isNotified()) {
             Map<RegularUser, Integer> receiversReviewed = drivingNotification.getReceiversReviewed();
             receiversReviewed.put(drivingNotification.getSender(), 0);
+            drivingNotification.setNotified(true);
+            drivingNotificationRepository.save(drivingNotification);
             webSocketService.sendSuccessfulCreateReservation(getListOfUsers(receiversReviewed));
         }
     }
@@ -481,9 +491,12 @@ public class DrivingNotificationService implements IDrivingNotificationService {
         final boolean isReservation
     ){
 
-        return drivingNotificationRepository.save(
-            new DrivingNotification(route, price, sender, started, duration, babySeat, petFriendly,
-                vehicleTypeInfo, receiversReviewed, isReservation)
-        );
+        DrivingNotification drivingNotification =  new DrivingNotification(route, price, sender, started, duration, babySeat, petFriendly,
+                vehicleTypeInfo, receiversReviewed, isReservation);
+        if(isReservation){
+            drivingNotification.setCreatedReservation(LocalDateTime.now());
+        }
+
+        return drivingNotificationRepository.save(drivingNotification);
     }
 }

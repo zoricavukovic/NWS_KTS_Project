@@ -114,6 +114,8 @@ export class DrivingNotificationDetailsComponent implements OnInit, OnDestroy {
         res => {
           console.log(res);
           this.toastService.success('Successfully accepted ride');
+          console.log(this.drivingNotification);
+          console.log('cao');
           const acceptedDriving: DrivingNotification = {
             route: this.drivingNotification.route,
             price: this.drivingNotification.price,
@@ -122,9 +124,10 @@ export class DrivingNotificationDetailsComponent implements OnInit, OnDestroy {
             drivingStatus: 'PAYING',
             active: false,
             chosenDateTime: this.drivingNotification.chosenDateTime,
-            reservation: this.drivingNotification.chosenDateTime !== null,
+            reservation: false,
           };
           this.store.dispatch(new AddDrivingNotification(acceptedDriving));
+    
         },
         err => this.toastService.error(err.error, 'Accepting ride failed')
       );

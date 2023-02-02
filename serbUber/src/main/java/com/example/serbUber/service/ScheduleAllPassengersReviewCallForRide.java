@@ -40,7 +40,7 @@ public class ScheduleAllPassengersReviewCallForRide {
             if (drivingNotificationService.checkIfUsersReviewed(drivingNotification)){
               allUsersAreReviewed(drivingNotification);
             }
-            else if(drivingNotificationService.checkIfDrivingNotificationIsOutdated(drivingNotification)){
+            else if(drivingNotificationService.checkIfDrivingNotificationReservationIsOutdated(drivingNotification)){
                 drivingNotificationService.deleteOutdatedNotification(drivingNotification);
             }
         }
@@ -49,9 +49,10 @@ public class ScheduleAllPassengersReviewCallForRide {
     private void allUsersAreReviewed(DrivingNotification drivingNotification) throws PassengerNotHaveTokensException, EntityNotFoundException {
         if (drivingNotificationService.checkTimeOfStartingReservationRide(drivingNotification.getStarted())){
             drivingNotificationService.createDrivingIfFoundDriverAndSuccessfullyPaid(drivingNotification);
-
         }else if (drivingNotificationService.checkTimeOfStartingReservationIsSoonRide(drivingNotification.getStarted())){
             drivingNotificationService.deleteOutdatedReservationWithoutDriverNotification(drivingNotification);
+        }else {
+            drivingNotificationService.shouldFindDriver(drivingNotification);
         }
     }
 }
