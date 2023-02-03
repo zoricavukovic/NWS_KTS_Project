@@ -89,7 +89,7 @@ public class VehicleServiceTest {
 
     @Test
     @DisplayName("T5-Should throw vehicle not found exception when calling update current position")
-    public void shouldThrowVehicleNotFoundExceptionWhenCallingUpdateCurrentPosition() throws EntityNotFoundException {
+    public void shouldThrowVehicleNotFoundExceptionWhenCallingUpdateCurrentPosition() {
 
         Assertions.assertThrows(EntityNotFoundException.class,
                 () -> vehicleService.updateCurrentPosition(NOT_EXIST_OBJECT_ID, LON, LAT, EXPECTED_CROSSED_WAYPOINTS, 0));

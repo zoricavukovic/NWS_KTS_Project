@@ -122,24 +122,12 @@ public class SelectPassengersAndVehicleRideRequestPage {
         return true;
     }
 
-    public boolean decreaseTime(int numOfHours) {
-        if (downArrowScheduleTime.size() == 0) {
-            return false;
-        }
-
-        for (int i = 0; i < numOfHours; i++) {
-            actions.moveToElement(downArrowScheduleTime.get(0)).click().perform();
-        }
-
-        return true;
-    }
-
     public boolean setTimeForInvalidReservation(int increaseMinutes) {
         if (upArrowScheduleTime.size() == 0 || downArrowScheduleTime.size() == 0) {
             return false;
         }
 
-        actions.moveToElement(downArrowScheduleTime.get(0)).click().perform();  //prvo se skida jedan sat
+        actions.moveToElement(downArrowScheduleTime.get(0)).click().perform();
         for (int i = 0; i < increaseMinutes; i++) {
             actions.moveToElement(upArrowScheduleTime.get(1)).click().perform();
         }

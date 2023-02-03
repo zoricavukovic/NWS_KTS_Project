@@ -1,7 +1,6 @@
 package com.example.serbUber.server.controller.helper;
 import java.io.IOException;
 
-import com.example.serbUber.exception.EntityType;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

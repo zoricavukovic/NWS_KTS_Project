@@ -10,9 +10,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 
-import static com.example.serbUber.selenium.helper.Constants.DRIVING_DETAILS_TITLE;
-import static com.example.serbUber.selenium.helper.Constants.FILTER_VEHICLE_TITLE;
-
 public class DrivingDetailsPage {
 
     private WebDriver driver;

@@ -11,9 +11,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 
 import static com.example.serbUber.server.service.helper.DrivingConstants.*;

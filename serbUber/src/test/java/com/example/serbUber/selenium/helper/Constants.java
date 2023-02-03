@@ -27,20 +27,16 @@ public class Constants {
     public static final String LINKED_USER = "anastasija@gmail.com";
     public static final String FILTER_VEHICLE_TITLE = "Vehicle info";
     public static final String DRIVING_DETAILS_TITLE = "Driving";
-    public static final String DRIVER_NAME_RIDE_TWO_LOCATIONS_ONE_PASSENGER = "Mile Milic";
-    public static final String ACCEPT_DRIVING_DETAILS_TITLE = "Accept ride";
     public static final String USER_FREE_TO_CREATE_RIDE = "ana@gmail.com";
     public static final String REQUEST_RIDE_TITLE = "Request a ride now";
     public static final String START_POINT = "Lasla Gala 2";
     public static final String END_POINT = "Futoski put 105";
     public static final int WANTED_LOCATION_INDEX = 0;
-    public static final int DECREASE_HOUR = 1;
     public static final int INCREASE_MINUTES = 5;
 
     public static final String MY_PROFILE_LABEL = "My profile";
     public static final String ACCEPT_RIDE_MESSAGE = "add you as linked passenger.Tap to accept!";
     public static final String RIDE_RESERVATION_CREATED_MESSAGE = "Your ride reserved successfully.";
-    public static final String LOG_IN_PAGE_ERROR_TOAST_MESSAGE = "Email or password is not correct!";
     public static final String ENTER_LOCATION_ERROR_TOAST_MESSAGE = "Invalid form";
     public static final String NOT_ENOUGH_TOKENS_TOAST_MESSAGE = "Ride is rejected because payment was not successful.";
     public static final String NOT_DRIVER_FOUND_TOAST_MESSAGE = "Ride is rejected because driver is not found.";

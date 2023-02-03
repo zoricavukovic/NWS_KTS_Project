@@ -3,22 +3,15 @@ package com.example.serbUber.selenium.tests;
 import com.example.serbUber.selenium.helper.LoginHelper;
 import com.example.serbUber.selenium.pages.*;
 import com.example.serbUber.selenium.tests.bases.TwoBrowserTestBase;
-import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.serbUber.selenium.helper.Constants.*;
-import static com.example.serbUber.selenium.helper.Constants.DRIVER_NAME_RIDE_TWO_LOCATIONS_ONE_PASSENGER;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Transactional
@@ -27,7 +20,7 @@ public class RideRequestTwoPassengersTest extends TwoBrowserTestBase {
     @Test
     @DisplayName(value = "T1-Ride request failed, linked passenger rejected ride")
     public void rideRequestFailedLinkedPassengerRejectedRide() {
-        HomePage homePageSenderPassenger = LoginHelper.redirectToLoginPage(chromeDriver);
+        LoginHelper.redirectToLoginPage(chromeDriver);
         HomePage homePageLinkedPassenger = LoginHelper.redirectToLoginPage(edgeDriver);
 
         LoginHelper.loginWhenRedirectedOnLoginPage(chromeDriver, USER_FREE_TO_CREATE_RIDE, EXISTING_PASSWORD);
@@ -65,7 +58,7 @@ public class RideRequestTwoPassengersTest extends TwoBrowserTestBase {
     @Test
     @DisplayName("T2-Ride created successfully with two passengers and three locations chosen suv")
     public void rideCreatedSuccessfullyWithTwoPassengersAndThreeLocationsChosenSuvTest() {
-        HomePage homePageSenderPassenger = LoginHelper.login(chromeDriver, USER_SENDER, EXISTING_PASSWORD);
+        LoginHelper.login(chromeDriver, USER_SENDER, EXISTING_PASSWORD);
         HomePage homePageLinkedPassenger = LoginHelper.login(edgeDriver, LINKED_USER, EXISTING_PASSWORD);
 
         RideRequestPage rideRequestPage = new RideRequestPage(chromeDriver);

@@ -2,27 +2,15 @@ package com.example.serbUber.selenium.tests;
 
 import com.example.serbUber.selenium.pages.DriverActiveRidesPage;
 import com.example.serbUber.selenium.pages.HomePage;
-import com.example.serbUber.selenium.tests.bases.OneBrowserTestBase;
 import com.example.serbUber.selenium.tests.bases.TwoBrowserTestBase;
 import org.junit.jupiter.api.*;
 import com.example.serbUber.selenium.helper.LoginHelper;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.example.serbUber.selenium.helper.Constants.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-//@TestMethodOrder(MethodOrderer.DisplayName.class)
-//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-//@ExtendWith(SpringExtension.class)
-//@SpringBootTest
 
 @Transactional
 public class FinishingRideTest extends TwoBrowserTestBase {
@@ -31,7 +19,7 @@ public class FinishingRideTest extends TwoBrowserTestBase {
     @DisplayName("T1-Success finished ride, driver doesn't have next ride")
     @Rollback(true)
     public void finishingRideNotHavingNextRideSuccessfulTest() {
-        HomePage homePageChrome = LoginHelper.redirectToLoginPage(chromeDriver);
+        LoginHelper.redirectToLoginPage(chromeDriver);
 
         HomePage homePageEdge = LoginHelper.redirectToLoginPage(edgeDriver);
 
@@ -49,7 +37,7 @@ public class FinishingRideTest extends TwoBrowserTestBase {
     @DisplayName("T2-Success finished ride, driver has next ride")
     @Rollback(value = true)
     public void finishingRideDriverHasNextRideSuccessfulTest() {
-        HomePage homePageChrome = LoginHelper.redirectToLoginPage(chromeDriver);
+        LoginHelper.redirectToLoginPage(chromeDriver);
 
         HomePage homePageEdge = LoginHelper.redirectToLoginPage(edgeDriver);
 

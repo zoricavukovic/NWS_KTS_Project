@@ -159,7 +159,7 @@ public class ScheduleAllPassengersReviewCallForRideTest {
     public void shouldThrowPassengerNotHaveTokensExceptionWhenFindDriverForRide() throws PassengerNotHaveTokensException, EntityNotFoundException {
 
         when(drivingNotificationService.getAllReservation()).thenReturn(
-                Arrays.asList(RESERVATION_DRIVING_NOTIFICATION)
+            List.of(RESERVATION_DRIVING_NOTIFICATION)
         );
         when(drivingNotificationService.checkIfUsersReviewed(RESERVATION_DRIVING_NOTIFICATION))
                 .thenReturn(true);
@@ -180,7 +180,7 @@ public class ScheduleAllPassengersReviewCallForRideTest {
     public void shouldThrowEntityNotFoundExceptionWhenFindDriverForRide() throws PassengerNotHaveTokensException, EntityNotFoundException {
 
         when(drivingNotificationService.getAllReservation()).thenReturn(
-                Arrays.asList(RESERVATION_DRIVING_NOTIFICATION)
+            List.of(RESERVATION_DRIVING_NOTIFICATION)
         );
         when(drivingNotificationService.checkIfUsersReviewed(RESERVATION_DRIVING_NOTIFICATION))
                 .thenReturn(true);
@@ -230,7 +230,7 @@ public class ScheduleAllPassengersReviewCallForRideTest {
     public void shouldCallShouldFindDriverWhenFindDriverForRide() throws PassengerNotHaveTokensException, EntityNotFoundException {
 
         when(drivingNotificationService.getAllReservation()).thenReturn(
-                Arrays.asList(RESERVATION_DRIVING_NOTIFICATION)
+            List.of(RESERVATION_DRIVING_NOTIFICATION)
         );
         when(drivingNotificationService.checkIfUsersReviewed(RESERVATION_DRIVING_NOTIFICATION))
                 .thenReturn(true);

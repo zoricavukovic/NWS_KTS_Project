@@ -2,8 +2,6 @@ package com.example.serbUber.server.controller;
 
 import com.example.serbUber.exception.EntityNotFoundException;
 import com.example.serbUber.exception.EntityType;
-import com.example.serbUber.request.LongLatRequest;
-import com.example.serbUber.request.VehicleCurrentPositionRequest;
 import com.example.serbUber.server.controller.helper.TestUtil;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
