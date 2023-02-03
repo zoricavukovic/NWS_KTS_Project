@@ -50,6 +50,7 @@ public class DrivingNotificationControllerTest {
 
     @BeforeEach
     public void setup() {
+
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 

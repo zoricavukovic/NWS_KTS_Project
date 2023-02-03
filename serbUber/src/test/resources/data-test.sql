@@ -82,11 +82,11 @@ insert into drivings (active, driver_id, driving_status, duration, price, starte
             (true, 17, 5, 10, 5, to_timestamp('27.01.2023 18:50', 'DD.MM.YYYY HH24:MI'), null, 3, null, false);
 
 
-insert into driving_notifications(route_id, price, sender_id, started, duration, baby_seat, pet_friendly, vehicle_type_info, is_reservation) values
-            (3, 10, 12, CURRENT_TIMESTAMP, 5, true, true, 1, false);
+insert into driving_notifications(route_id, price, sender_id, started, duration, baby_seat, pet_friendly, vehicle_type_info, is_reservation, notified, created_reservation) values
+            (3, 10, 12, CURRENT_TIMESTAMP, 5, true, true, 1, false, false, CURRENT_TIMESTAMP );
 
-insert into driving_notifications(route_id, price, sender_id, started, duration, baby_seat, pet_friendly, vehicle_type_info, is_reservation) values
-    (3, 10, 12, CURRENT_TIMESTAMP, 5, true, true, 1, false);
+insert into driving_notifications(route_id, price, sender_id, started, duration, baby_seat, pet_friendly, vehicle_type_info, is_reservation, notified, created_reservation) values
+    (3, 10, 12, CURRENT_TIMESTAMP, 5, true, true, 1, false, false, CURRENT_TIMESTAMP );
 
 insert into driving_notification_receivers_reviewed(driving_notification_id, receivers_reviewed, receivers_reviewed_key) values
             (2, 2, 4);
