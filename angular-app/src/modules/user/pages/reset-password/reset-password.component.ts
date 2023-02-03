@@ -84,6 +84,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
           response => {
             this.toast.success("Password is changed successfully.", 'Changed password')
             this.router.navigate(['/serb-uber/auth/login']);
+            console.log(response);
           },
           error => this.toast.error(error.error, 'Reset password failed')
         );
@@ -106,6 +107,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
             this.toast.success("Password is changed successfully.", 'Updated password')
             this.authService.logOut();
             this.router.navigate(['/serb-uber/auth/login']);
+            console.log(response);
           },
           error => this.toast.error(error.error, 'Reset password failed')
         );

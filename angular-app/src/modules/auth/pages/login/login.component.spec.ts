@@ -304,7 +304,7 @@ describe('LoginComponent', () => {
     tick();
 
     authServiceSpy.loginWithGoogle(user.idToken).subscribe({
-      next(loggedUser: any): void {
+      next(loggedUser): void {
         authServiceSpy.setLocalStorage(loggedUser);
         routerMock.navigate(['/serb-uber/user/map-page-view/-1'])
       },
@@ -364,7 +364,7 @@ describe('LoginComponent', () => {
     authServiceSpy.setLocalStorage.calls.reset();
     routerMock.navigate.calls.reset();
 
-    let data = {authToken: 'token'}
+    const data = {authToken: 'token'}
     const socialAuthService = TestBed.get(SocialAuthService);
     authServiceSpy.loginWithFacebook.and.returnValue(of({} as LoginResponse));
     spyOn(socialAuthService, 'signIn').and.returnValue(Promise.resolve({ data }));
@@ -397,7 +397,7 @@ describe('LoginComponent', () => {
     authServiceSpy.setLocalStorage.calls.reset();
     routerMock.navigate.calls.reset();
 
-    let data = {authToken: 'token'}
+    const data = {authToken: 'token'}
     const socialAuthService = TestBed.get(SocialAuthService);
     authServiceSpy.loginWithFacebook.and.returnValue(throwError({errorMessage}));
     spyOn(socialAuthService, 'signIn').and.returnValue(Promise.resolve({ data }));

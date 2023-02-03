@@ -12,7 +12,7 @@ import { UserDetails } from '../../models/user/user-details';
 import { BlockNotification } from '../../models/notification/block-notification';
 import { RegularUser } from '../../models/user/regular-user';
 import { RegistrationResponse } from '../../models/user/registration-response';
-import { Driver, DriverRegistrationRequest } from '../../models/user/driver';
+import { DriverRegistrationRequest } from '../../models/user/driver';
 import { Role } from '../../models/user/role';
 
 @Injectable({

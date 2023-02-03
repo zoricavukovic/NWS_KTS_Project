@@ -2,7 +2,6 @@ import { DrivingNotification } from '../models/notification/driving-notification
 import { calculateTimeToDestination } from './map-functions';
 import { CurrentVehiclePosition } from '../models/vehicle/current-vehicle-position';
 import { Store } from '@ngxs/store';
-import { User } from '../models/user/user';
 
 function moreThanMinute(
   storedDrivingNotification: DrivingNotification

@@ -10,7 +10,6 @@ import { ConfigService } from '../../../shared/services/config-service/config.se
 import { ConfirmBlockingDialogComponent } from '../../../shared/components/confirm-blocking-dialog/confirm-blocking-dialog.component';
 import { DriverService } from 'src/modules/shared/services/driver-service/driver.service';
 import { Driver } from 'src/modules/shared/models/user/driver';
-import { BehaviourReportDialogComponent } from 'src/modules/shared/components/behaviour-report-dialog/behaviour-report-dialog.component';
 
 @Component({
   selector: 'app-basic-user-profile',
@@ -105,7 +104,6 @@ export class BasicUserProfileComponent implements OnInit, OnDestroy {
           this.driverService.setGlobalDriver(response);
         },
         error => {
-          this.driverStatus = this.driverStatus;
           this.toast.error(error.error, 'Changing activity status failed');
         }
       );
@@ -196,18 +194,6 @@ export class BasicUserProfileComponent implements OnInit, OnDestroy {
             this.toast.error(error.error, 'User cannot be unblocked!');
           }
         );
-    }
-  }
-
-  reportUser(): void {
-    if (this.currentUser?.role.name === this.configService.ROLE_DRIVER) {
-      this.dialogBlockReason.open(BehaviourReportDialogComponent, {
-        data: {
-          currentUser: this.currentUser,
-          driver: null,
-          userToReport: this.user,
-        },
-      });
     }
   }
 

@@ -118,9 +118,11 @@ export class DriverHomePageContainerComponent implements OnInit, OnDestroy {
       this.reportService.createReportDriver(this.loggedUser.id, drivingId, reason).subscribe(
         res => {
           this.toast.success("Report is sent to admin.", 'Reported!');
+          console.log(res);
         },
         err => {
-          this.toast.error("Report cannot be sent.", 'Error occured!')
+          this.toast.error("Report cannot be sent.", 'Error occured!');
+          console.log(err);
         }
     );
   }

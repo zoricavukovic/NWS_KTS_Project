@@ -1,10 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
 import { AuthService } from 'src/modules/auth/services/auth-service/auth.service';
 import { ChangeProfilePicComponent } from 'src/modules/shared/components/change-profile-pic/change-profile-pic.component';
-import { Report } from 'src/modules/shared/models/report/report';
 import { User } from 'src/modules/shared/models/user/user';
 import { ConfigService } from 'src/modules/shared/services/config-service/config.service';
 
@@ -13,10 +11,9 @@ import { ConfigService } from 'src/modules/shared/services/config-service/config
   templateUrl: './admin-and-regular-profile.component.html',
   styleUrls: ['./admin-and-regular-profile.component.css']
 })
-export class AdminAndRegularProfileComponent implements OnInit {
+export class AdminAndRegularProfileComponent {
 
   @Input() user: User;
-
   @Input() isRegular: boolean;
 
   constructor(
@@ -27,9 +24,6 @@ export class AdminAndRegularProfileComponent implements OnInit {
   ) {
     this.user = null;
     this.isRegular = false;
-  }
-
-  ngOnInit(): void {
   }
 
   showEditProfile(): void {

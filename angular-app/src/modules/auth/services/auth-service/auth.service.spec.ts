@@ -16,7 +16,7 @@ describe('AuthService', () => {
   let httpClient: HttpClient;
   let store: Store;
     const errorMessage = 'Email or password is not correct!';
-  const unAuthorizesStatus: number = 401;
+  const unAuthorizesStatus = 401;
 
   const configServiceMock = jasmine.createSpyObj('ConfigService', ['getLoginUrl', 'getGoogleLoginUrl', 'getFacebookLoginUrl']);
 
@@ -120,7 +120,7 @@ describe('AuthService', () => {
 
 
   it('loginWithGoogle should return logged user', fakeAsync(() => {
-    const token: string = "token123"
+    const token = "token123"
 
     let loginResponse: LoginResponse;
 
@@ -147,7 +147,7 @@ describe('AuthService', () => {
   }));
 
   it('loginWithGoogle should return error message', fakeAsync(() => {
-      const token: string = "token123"
+      const token = "token123"
 
       let loginResponse;
       const mockLoginResponse: HttpErrorResponse = new HttpErrorResponse({error: errorMessage, status: unAuthorizesStatus});
@@ -167,7 +167,7 @@ describe('AuthService', () => {
   ));
 
   it('loginWithFacebook should return logged user', fakeAsync(() => {
-    const token: string = "token123"
+    const token = "token123"
 
     let loginResponse: LoginResponse;
 
@@ -194,7 +194,7 @@ describe('AuthService', () => {
   }));
 
   it('loginWithGoogle should return error message', fakeAsync(() => {
-      const token: string = "token123"
+      const token = "token123"
 
       let loginResponse;
       const mockLoginResponse: HttpErrorResponse = new HttpErrorResponse({error: errorMessage, status: unAuthorizesStatus});

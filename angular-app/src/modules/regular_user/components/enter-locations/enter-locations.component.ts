@@ -27,7 +27,6 @@ import {
   removeMarkerAndAllPolyline,
 } from '../../../shared/utils/map-functions';
 import { PossibleRoutesViaPoints } from '../../../shared/models/route/possible-routes-via-points';
-import { SearchingRoutesForm } from '../../../shared/models/route/searching-routes-form';
 import { ToastrService } from 'ngx-toastr';
 import { Address } from 'ngx-google-places-autocomplete/objects/address';
 import { Location } from '../../../shared/models/route/location';

@@ -142,6 +142,7 @@ export class WebSocketService {
             'serb-uber/user/driving-notification',
             drivingNotificationResponse.id,
           ]);
+          console.log(action);
         });
       }
     );
@@ -239,6 +240,7 @@ export class WebSocketService {
             '/serb-uber/user/map-page-view',
             drivingNotificationDetails.drivingId,
           ]);
+          console.log(action);
         });
       }
     );
@@ -277,6 +279,7 @@ export class WebSocketService {
             '/serb-uber/user/map-page-view',
             drivingNotificationDetails.drivingId,
           ]);
+          console.log(action);
         });
       }
     );
@@ -506,6 +509,7 @@ export class WebSocketService {
                 '/serb-uber/user/map-page-view',
                 drivingStatusNotification.drivingId,
               ]);
+              console.log(action);
             });
             this.store.dispatch(new UpdateDrivings(response));
           });

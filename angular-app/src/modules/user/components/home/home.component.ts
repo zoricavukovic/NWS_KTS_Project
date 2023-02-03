@@ -1,11 +1,7 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import {Subscription} from 'rxjs';
+import { Component, Input, OnInit } from '@angular/core';
 import {User} from "../../../shared/models/user/user";
 import {AuthService} from "../../../auth/services/auth-service/auth.service";
-import {removeMarker} from "../../../shared/utils/map-functions";
 import {RouteService} from "../../../shared/services/route-service/route.service";
-import {VehicleService} from "../../../shared/services/vehicle-service/vehicle.service";
-import {Router} from "@angular/router";
 import {CurrentVehiclePosition} from "../../../shared/models/vehicle/current-vehicle-position";
 
 @Component({
@@ -13,7 +9,7 @@ import {CurrentVehiclePosition} from "../../../shared/models/vehicle/current-veh
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
 })
-export class HomeComponent implements OnInit, OnDestroy {
+export class HomeComponent implements OnInit {
   @Input() map: google.maps.Map;
   @Input() currentUser: User;
   @Input() vehiclesCurrentPosition: CurrentVehiclePosition[];
@@ -24,9 +20,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   constructor(
     private routeService: RouteService,
-    private authService: AuthService,
-    private vehicleService: VehicleService,
-    private router: Router
+    private authService: AuthService
   ) {
     this.isDriver = false;
     this.isRegular = false;
@@ -37,14 +31,5 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.isDriver = this.authService.userIsDriver();
     this.isRegular = this.authService.userIsRegular();
     this.isAdmin = this.authService.userIsAdmin();
-    this.router.events.subscribe(() => {
-      this.ngOnDestroy();
-    });
-  }
-
-  ngOnDestroy(): void {
-    // if (this.vehiclesCurrentPosition && this.vehiclesCurrentPosition.length > 0){
-    //   this.vehiclesCurrentPosition.forEach(vehicleCurrentPosition => removeMarker(vehicleCurrentPosition.marker));
-    // }
   }
 }

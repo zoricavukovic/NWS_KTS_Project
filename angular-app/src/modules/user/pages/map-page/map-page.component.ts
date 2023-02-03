@@ -24,7 +24,6 @@ import { Select, Store } from '@ngxs/store';
 import { DrivingNotificationState } from '../../../shared/state/driving-notification.state';
 import { DrivingNotification } from '../../../shared/models/notification/driving-notification';
 import { updateTime } from '../../../shared/utils/time';
-import { UpdateIfReported } from 'src/modules/shared/actions/driving-notification.action';
 
 @Component({
   selector: 'map-page',

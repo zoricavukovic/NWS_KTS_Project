@@ -8,10 +8,6 @@ import { ConfigService } from '../config-service/config.service';
 import { UserService } from './user.service';
 import { RegistrationResponse } from '../../models/user/registration-response';
 import { RegularUser } from '../../models/user/regular-user';
-import { Vehicle } from '../../models/vehicle/vehicle';
-import { Driver } from '../../models/user/driver';
-import { Role } from '../../models/user/role';
-import { User } from '../../models/user/user';
 
 describe('UserService', () => {
   let injector;
