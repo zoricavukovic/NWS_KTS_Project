@@ -6,7 +6,7 @@
 
 <p align="center">
   • <a href="#-project-setup-and-commands">FTN, Novi Sad, 2022</a>
-  •
+  • <a href="https://www.youtube.com/watch?v=6cuzOIhj3TQ">Video demo</a>
 </p>
 
 
@@ -19,7 +19,7 @@
 
 #### <span style="vertical-align: middle">:warning:</span> *Pre requirements:*
 
-- Installed Node.js
+- Installed Node
 - Angular version 14+
 - JDK version 17
 - PostgreSQL
