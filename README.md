@@ -6,7 +6,10 @@
 
 <p align="center">
   • <a href="#-project-setup-and-commands">FTN, Novi Sad, 2022</a>
+  •
+  <br/>
   • <a href="https://www.youtube.com/watch?v=6cuzOIhj3TQ">Video demo</a>
+  •
 </p>
 
 
